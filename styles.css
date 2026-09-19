@@ -347,3 +347,34 @@ body[data-page="venomous"] :focus-visible { outline-color: var(--green); }
   *,*::before,*::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
   .reveal { opacity: 1; transform: none; }
 }
+
+/* Liquid glass system */
+body::before { content:""; position:fixed; inset:0; z-index:-3; background:radial-gradient(ellipse at 15% 5%,rgba(76,131,255,.13),transparent 42%),radial-gradient(ellipse at 88% 38%,rgba(105,240,210,.08),transparent 38%),#07090d; pointer-events:none; }
+body::after { content:""; position:fixed; inset:0; z-index:-2; opacity:.18; pointer-events:none; background-image:linear-gradient(rgba(255,255,255,.018) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.018) 1px,transparent 1px); background-size:64px 64px; mask-image:linear-gradient(to bottom,black,transparent 75%); }
+.glass-card { position:relative; isolation:isolate; overflow:hidden; background:linear-gradient(145deg,rgba(255,255,255,.085),rgba(255,255,255,.025) 38%,rgba(9,13,20,.52)); border-color:rgba(255,255,255,.13); box-shadow:0 22px 65px rgba(0,0,0,.28),inset 0 1px 0 rgba(255,255,255,.16),inset 1px 0 0 rgba(255,255,255,.045); backdrop-filter:blur(28px) saturate(145%); -webkit-backdrop-filter:blur(28px) saturate(145%); }
+.glass-card::before { content:""; position:absolute; z-index:-1; width:62%; height:45%; left:-12%; top:-24%; border-radius:50%; background:radial-gradient(ellipse,rgba(150,195,255,.13),transparent 68%); filter:blur(10px); pointer-events:none; }
+.topbar.scrolled,.main-nav { background:rgba(11,15,22,.56); backdrop-filter:blur(28px) saturate(150%); -webkit-backdrop-filter:blur(28px) saturate(150%); }
+.project-icon.privacy,.project-icon.champion { color:#dffcff; font:700 .72rem var(--mono); letter-spacing:.08em; background:linear-gradient(145deg,rgba(93,235,211,.25),rgba(69,113,230,.13)); border:1px solid rgba(159,246,233,.2); }
+.project-icon.champion { color:#f5eac8; background:linear-gradient(145deg,rgba(236,192,91,.22),rgba(123,81,211,.13)); border-color:rgba(241,207,128,.2); }
+.project-status.muted { color:#9da39f; }
+.language-dot.neutral { background:#77818a; }
+.profile-page { padding-top:140px; padding-bottom:7rem; }
+.profile-hero { display:grid; grid-template-columns:minmax(0,1fr) minmax(340px,.62fr); gap:1rem; align-items:stretch; }
+.profile-intro,.profile-sidebar,.detail-panel { border-radius:var(--radius-xl); }
+.profile-intro { min-height:500px; padding:clamp(1.5rem,4vw,3.2rem); display:flex; flex-direction:column; justify-content:flex-end; }
+.profile-intro .avatar { width:108px; height:108px; margin-bottom:auto; object-fit:cover; border-radius:30px; border:1px solid rgba(255,255,255,.2); box-shadow:0 20px 45px rgba(0,0,0,.3); }
+.profile-intro h1 { margin:1rem 0 .5rem; font-size:clamp(3.5rem,7vw,6.5rem); line-height:.9; letter-spacing:-.07em; overflow-wrap:anywhere; }
+.profile-intro .lead { max-width:660px; margin:1rem 0 0; color:var(--muted); line-height:1.75; }
+.profile-sidebar { padding:1.4rem; display:flex; flex-direction:column; justify-content:space-between; }
+.fact-list { display:grid; gap:.6rem; }
+.fact { padding:1rem; background:rgba(255,255,255,.035); border:1px solid rgba(255,255,255,.07); border-radius:15px; }
+.fact small { display:block; color:var(--faint); font:500 .48rem var(--mono); letter-spacing:.1em; text-transform:uppercase; }
+.fact b { display:block; margin-top:.45rem; font-size:.76rem; }
+.detail-grid { display:grid; grid-template-columns:repeat(2,1fr); gap:1rem; margin-top:1rem; }
+.detail-panel { min-height:260px; padding:1.7rem; }
+.detail-panel h2 { margin:.65rem 0 1rem; font-size:1.45rem; letter-spacing:-.04em; }
+.detail-panel p,.detail-panel li { color:var(--muted); font-size:.78rem; line-height:1.75; }
+.detail-panel ul { margin:0; padding-left:1.1rem; }
+.project-page .profile-intro { min-height:540px; }
+.project-mark { width:82px; height:82px; margin-bottom:auto; display:grid; place-items:center; border-radius:24px; color:#dffcff; background:linear-gradient(145deg,rgba(89,235,210,.24),rgba(80,109,240,.13)); border:1px solid rgba(255,255,255,.14); font:750 1rem var(--mono); }
+@media(max-width:760px){.profile-hero,.detail-grid{grid-template-columns:1fr}.profile-page{padding-top:105px}.profile-intro{min-height:480px}.profile-sidebar{gap:2rem}.project-page .profile-intro{min-height:500px}}

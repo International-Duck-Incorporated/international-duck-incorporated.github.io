@@ -85,14 +85,20 @@ const languageColors = { Java: "#b07219", HTML: "#e34c26", CSS: "#563d7c", JavaS
 
 async function syncProjects() {
   const repos = await getJSON(`${API}/orgs/${ORG}/repos?per_page=100&sort=updated`);
+  const knownProjects = [
+    { name: "NullTrace", html_url: `https://github.com/${ORG}/NullTrace`, description: "A privacy-focused Minecraft client layer for identity protection, fingerprint detection, tracking defenses, and safer server connections.", language: "Java" },
+    { name: "ChampionsCode", html_url: `https://github.com/${ORG}/ChampionsCode`, description: "A newly established repository for an upcoming International Duck project.", language: null }
+  ];
+  knownProjects.forEach((project) => { if (!repos.some((repo) => repo.name === project.name)) repos.push(project); });
   const grid = $("[data-org-projects]");
   if (!grid) return;
   grid.replaceChildren(...repos.map((repo, index) => {
     const link = document.createElement("a");
     const isVenomous = repo.name === REPO;
+    const projectPages = { Venomous: "venomous.html", NullTrace: "nulltrace.html", ChampionsCode: "championscode.html" };
     link.className = `project-card glass-card reveal visible${isVenomous ? " featured" : ""}`;
-    link.href = isVenomous ? "venomous.html" : repo.html_url;
-    if (!isVenomous) { link.target = "_blank"; link.rel = "noreferrer"; }
+    link.href = projectPages[repo.name] || repo.html_url;
+    if (!projectPages[repo.name]) { link.target = "_blank"; link.rel = "noreferrer"; }
 
     const top = document.createElement("div");
     top.className = "project-card-top";
@@ -142,12 +148,16 @@ async function syncPeople() {
   grid.replaceChildren(...people.map((person) => {
     const link = document.createElement("a");
     link.className = "person-card glass-card reveal visible";
-    link.href = person.html_url; link.target = "_blank"; link.rel = "noreferrer";
+    const memberPages = { "3spress0": "3spress0.html", "E-VDV-HU": "e-vdv-hu.html" };
+    link.href = memberPages[person.login] || person.html_url;
+    if (!memberPages[person.login]) { link.target = "_blank"; link.rel = "noreferrer"; }
     const image = document.createElement("img"); image.src = `${person.avatar_url}&size=192`; image.alt = person.login; image.width = 96; image.height = 96;
     const copy = document.createElement("div");
     const label = document.createElement("span"); label.textContent = person.type === "Bot" ? "Automation" : role;
     const name = document.createElement("h3"); name.textContent = person.login;
-    const handle = document.createElement("p"); handle.textContent = `@${person.login}`;
+    const handle = document.createElement("p");
+    const summaries = { "3spress0": "Security tooling · Minecraft development", "E-VDV-HU": "Applied software · AI experiments" };
+    handle.textContent = summaries[person.login] || `@${person.login}`;
     copy.append(label, name, handle);
     link.append(image, copy); link.insertAdjacentHTML("beforeend", icon("i-external"));
     return link;
