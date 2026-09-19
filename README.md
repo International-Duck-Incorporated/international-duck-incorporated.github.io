@@ -1,19 +1,26 @@
 # International Duck Incorporated
 
-Static GitHub Pages site for [International Duck Incorporated](https://github.com/International-Duck-Incorporated), centered on [Venomous](https://github.com/International-Duck-Incorporated/Venomous).
+Static GitHub Pages site for [International Duck Incorporated](https://github.com/International-Duck-Incorporated), designed as a responsive premium-glass product dashboard.
+
+## Pages
+
+- `index.html` — organization overview and live GitHub metrics
+- `projects.html` — standalone project and repository directory
+- `people.html` — standalone public-members directory
+- `venomous.html` — complete Venomous experience with features, module browser, releases, installation, activity, and contributors
+- `404.html` — matching not-found page
 
 ## Live GitHub data
 
-The site uses the public GitHub API and raw repository source to keep these areas current automatically:
+Client-side synchronization uses the public GitHub API and raw repository source to keep these areas current automatically:
 
-- Organization logo and repository count
-- Venomous stars, forks, language, and last push
-- Stable and nightly releases with direct JAR links
+- Organization identity, repository count, followers, projects, and public members
+- Venomous stars, forks, language, and latest push
+- Stable and nightly releases with direct JAR downloads
 - Registered modules parsed from `ModuleRegistry.java`
-- Recent commits and contributors
-- Organization repositories
+- Recent commits and project contributors
 
-Checked-in fallback data and images keep the page usable if the API is unavailable.
+Checked-in content and authentic local images keep both pages useful if the API is unavailable or rate-limited. When public organization membership is unavailable, the people section falls back to project contributors.
 
 ## Local preview
 
@@ -21,8 +28,8 @@ Checked-in fallback data and images keep the page usable if the API is unavailab
 python3 -m http.server 8080
 ```
 
-Open `http://localhost:8080`.
+Open `http://localhost:8080`. No build step or external front-end dependency is required.
 
 ## Deploy
 
-No build step is required. Enable GitHub Pages for the `main` branch at `/ (root)`.
+Enable GitHub Pages for the `main` branch at `/ (root)`.

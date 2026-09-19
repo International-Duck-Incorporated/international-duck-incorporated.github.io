@@ -3,230 +3,90 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="theme-color" content="#080a09">
-  <meta name="description" content="Venomous — an optimized and refined Meteor Client addon for Minecraft 26.2.">
-  <meta property="og:title" content="Venomous — Meteor Client addon">
-  <meta property="og:description" content="111 focused modules. One streamlined addon.">
+  <meta name="theme-color" content="#07090d">
+  <meta name="description" content="International Duck Incorporated — public projects and members, synchronized with GitHub.">
+  <meta property="og:title" content="International Duck Incorporated">
+  <meta property="og:description" content="Public projects and members, live from GitHub.">
   <meta property="og:type" content="website">
-  <meta property="og:image" content="https://raw.githubusercontent.com/International-Duck-Incorporated/Venomous/main/src/main/resources/assets/venomous/icon.png">
-  <title>Venomous — International Duck</title>
-  <link rel="icon" href="https://avatars.githubusercontent.com/u/329504043?v=4" type="image/png">
+  <meta property="og:image" content="https://avatars.githubusercontent.com/u/329504043?v=4">
+  <title>International Duck Incorporated</title>
+  <link rel="icon" href="assets/org-avatar.png" type="image/png">
   <link rel="stylesheet" href="styles.css">
   <script src="script.js" defer></script>
 </head>
-<body>
+<body data-page="organization">
   <svg class="svg-sprite" aria-hidden="true">
     <symbol id="i-arrow" viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></symbol>
     <symbol id="i-external" viewBox="0 0 24 24"><path d="M14 5h5v5M19 5l-9 9M18 13v6H5V6h6"/></symbol>
-    <symbol id="i-download" viewBox="0 0 24 24"><path d="M12 3v12M7 10l5 5 5-5M4 20h16"/></symbol>
     <symbol id="i-github" viewBox="0 0 24 24"><path d="M15 22v-4a4.8 4.8 0 0 0-1-3.5c3.3-.4 6.8-1.6 6.8-7.4A5.7 5.7 0 0 0 19.3 3 5.4 5.4 0 0 0 19.1 0S17.9-.4 15 1.5a14 14 0 0 0-6 0C6.1-.4 4.9 0 4.9 0a5.4 5.4 0 0 0-.2 3A5.7 5.7 0 0 0 3.2 7.1c0 5.8 3.5 7 6.8 7.4A4.8 4.8 0 0 0 9 18v4M9 19c-3 .9-3-1.5-4-2"/></symbol>
-    <symbol id="i-sword" viewBox="0 0 24 24"><path d="m14 4 6-2-2 6L8 18l-4 2 2-4L16 6M5 15l4 4"/></symbol>
-    <symbol id="i-bolt" viewBox="0 0 24 24"><path d="M13 2 5 14h7l-1 8 8-12h-7z"/></symbol>
-    <symbol id="i-move" viewBox="0 0 24 24"><path d="M12 2v20M8 6l4-4 4 4M8 18l4 4 4-4M2 12h20M6 8l-4 4 4 4M18 8l4 4-4 4"/></symbol>
-    <symbol id="i-radar" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="3"/><path d="m12 12 6-6M4.5 4.5l3 3"/></symbol>
-    <symbol id="i-eye" viewBox="0 0 24 24"><path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7S2 12 2 12Z"/><circle cx="12" cy="12" r="3"/></symbol>
-    <symbol id="i-box" viewBox="0 0 24 24"><path d="m12 2 9 5-9 5-9-5zM3 7v10l9 5 9-5V7M12 12v10"/></symbol>
-    <symbol id="i-search" viewBox="0 0 24 24"><circle cx="10.5" cy="10.5" r="6.5"/><path d="m15.5 15.5 5 5"/></symbol>
-    <symbol id="i-package" viewBox="0 0 24 24"><path d="m4 7 8-4 8 4v10l-8 4-8-4zM4 7l8 4 8-4M12 11v10"/></symbol>
-    <symbol id="i-folder" viewBox="0 0 24 24"><path d="M3 5h7l2 2h9v12H3z"/></symbol>
-    <symbol id="i-play" viewBox="0 0 24 24"><path d="m8 4 12 8-12 8z"/></symbol>
-    <symbol id="i-star" viewBox="0 0 24 24"><path d="m12 2 3 6 7 .9-5 4.8 1.3 7-6.3-3.3-6.3 3.3 1.3-7-5-4.8L9 8z"/></symbol>
-    <symbol id="i-fork" viewBox="0 0 24 24"><circle cx="7" cy="5" r="2"/><circle cx="17" cy="5" r="2"/><circle cx="12" cy="19" r="2"/><path d="M7 7v3c0 2 2 3 5 3s5-1 5-3V7M12 13v4"/></symbol>
     <symbol id="i-code" viewBox="0 0 24 24"><path d="m8 5-6 7 6 7M16 5l6 7-6 7M14 3l-4 18"/></symbol>
-    <symbol id="i-commit" viewBox="0 0 24 24"><path d="M2 12h6M16 12h6"/><circle cx="12" cy="12" r="4"/></symbol>
-    <symbol id="i-user" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 22c0-5 3-8 8-8s8 3 8 8"/></symbol>
-    <symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></symbol>
-    <symbol id="i-check" viewBox="0 0 24 24"><path d="m4 12 5 5L20 6"/></symbol>
+    <symbol id="i-users" viewBox="0 0 24 24"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2M9 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8ZM22 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></symbol>
+    <symbol id="i-repo" viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20V3H6.5A2.5 2.5 0 0 0 4 5.5zM4 5.5v14M8 7h8"/></symbol>
+    <symbol id="i-star" viewBox="0 0 24 24"><path d="m12 2 3 6 7 .9-5 4.8 1.3 7-6.3-3.3-6.3 3.3 1.3-7-5-4.8L9 8z"/></symbol>
+    <symbol id="i-pulse" viewBox="0 0 24 24"><path d="M3 12h4l2-7 4 14 2-7h6"/></symbol>
     <symbol id="i-menu" viewBox="0 0 24 24"><path d="M4 8h16M4 16h16"/></symbol>
     <symbol id="i-close" viewBox="0 0 24 24"><path d="m5 5 14 14M19 5 5 19"/></symbol>
   </svg>
 
-  <a class="skip" href="#main">Skip to content</a>
+  <a class="skip-link" href="#main">Skip to content</a>
+  <div class="site-glow site-glow-blue" aria-hidden="true"></div>
 
-  <header class="header" data-header>
-    <div class="header-brands">
-      <a class="org" href="https://github.com/International-Duck-Incorporated" target="_blank" rel="noreferrer" aria-label="International Duck Incorporated on GitHub">
-        <img data-org-avatar src="assets/org-avatar.png" alt="International Duck Incorporated logo" width="42" height="42">
-        <span><b>International Duck</b><small>GitHub organization</small></span>
+  <header class="topbar" data-header>
+    <div class="shell topbar-inner">
+      <a class="brand" href="index.html" aria-label="International Duck Incorporated home">
+        <img data-org-avatar src="assets/org-avatar.png" alt="" width="40" height="40">
+        <span><b>International Duck</b><small>Incorporated</small></span>
       </a>
-      <span class="brand-divider" aria-hidden="true"></span>
-      <a class="product-id" href="#main" aria-label="Venomous home">
-        <span class="product-logo"><img src="assets/venomous-icon.png" alt="" width="32" height="32"></span>
-        <b>Venomous</b>
-      </a>
+      <nav class="main-nav" id="main-navigation" data-nav aria-label="Primary navigation">
+        <a class="active" href="index.html" aria-current="page">Overview</a>
+        <a href="projects.html">Projects</a>
+        <a href="people.html">People</a>
+        <a class="project-link" href="venomous.html"><span><img src="assets/venomous-icon.png" alt="" width="24" height="24"></span>Venomous</a>
+        <a class="icon-link" href="https://github.com/International-Duck-Incorporated" target="_blank" rel="noreferrer" aria-label="Organization on GitHub"><svg><use href="#i-github"/></svg></a>
+      </nav>
+      <button class="menu-button" type="button" data-menu aria-label="Open navigation" aria-controls="main-navigation" aria-expanded="false"><svg class="menu-open"><use href="#i-menu"/></svg><svg class="menu-close"><use href="#i-close"/></svg></button>
     </div>
-    <nav class="nav" id="navigation" data-nav aria-label="Main navigation">
-      <a href="#features">Features</a>
-      <a href="#modules">Modules</a>
-      <a href="#releases">Releases</a>
-      <a class="nav-source" href="https://github.com/International-Duck-Incorporated/Venomous" target="_blank" rel="noreferrer">
-        <svg><use href="#i-github"/></svg> Source
-      </a>
-    </nav>
-    <button class="menu" type="button" data-menu aria-label="Open navigation" aria-expanded="false" aria-controls="navigation">
-      <svg class="menu-open"><use href="#i-menu"/></svg><svg class="menu-close"><use href="#i-close"/></svg>
-    </button>
   </header>
 
   <main id="main">
-    <section class="hero shell">
-      <div class="hero-copy reveal">
-        <div class="live-pill"><i></i><span>Stable</span><b data-release-version>v7.0.0</b></div>
-        <h1>Venomous</h1>
-        <p class="hero-lead">Optimized &amp; refined<br>Meteor Client addon.</p>
-        <p class="hero-support">111 focused modules for Minecraft 26.2, covering combat, movement, detection, rendering, automation, and more.</p>
-        <div class="hero-actions">
-          <a class="button primary" data-stable-download href="https://github.com/International-Duck-Incorporated/Venomous/releases/download/v7.0.0/Venomous-7.0.0.jar">
-            <svg><use href="#i-download"/></svg> Download <span data-release-version>v7.0.0</span>
-          </a>
-          <a class="button secondary" href="https://github.com/International-Duck-Incorporated/Venomous" target="_blank" rel="noreferrer">
-            <svg><use href="#i-github"/></svg> View source
-          </a>
-        </div>
-        <div class="hero-requirements">
-          <span>Minecraft <b>26.2</b></span><span>Meteor Client</span><span>Java <b>25</b></span>
+    <section class="org-hero shell">
+      <div class="org-hero-copy reveal">
+        <div class="status-pill"><i></i> Public GitHub organization</div>
+        <h1>International Duck <span>Incorporated.</span></h1>
+        <p>Public projects, releases, and members—synchronized directly with GitHub.</p>
+        <div class="action-row">
+          <a class="button button-blue" href="projects.html">Explore projects <svg><use href="#i-arrow"/></svg></a>
+          <a class="button button-glass" href="https://github.com/International-Duck-Incorporated" target="_blank" rel="noreferrer"><svg><use href="#i-github"/></svg>Open GitHub</a>
         </div>
       </div>
 
-      <div class="hero-card reveal" aria-label="Venomous project logo and live repository status">
-        <div class="card-grid" aria-hidden="true"></div>
-        <div class="card-head"><span>VENOMOUS / 07</span><span class="online"><i></i> ONLINE</span></div>
-        <div class="logo-stage">
-          <div class="logo-orbit" aria-hidden="true"></div>
-          <img data-project-logo src="assets/venomous-icon.png" alt="Venomous snake logo" width="512" height="512">
+      <aside class="org-profile glass-card reveal" aria-label="Live organization profile">
+        <div class="profile-topline"><span>ORGANIZATION PROFILE</span><span class="live-label"><i></i> LIVE</span></div>
+        <div class="profile-identity">
+          <img data-org-avatar src="assets/org-avatar.png" alt="International Duck Incorporated logo" width="154" height="154">
+          <div><small>github.com</small><h2 data-org-name>International Duck Incorporated</h2><a href="https://github.com/International-Duck-Incorporated" target="_blank" rel="noreferrer">@International-Duck-Incorporated <svg><use href="#i-external"/></svg></a></div>
         </div>
-        <div class="card-metrics">
-          <span><small>VERSION</small><b data-release-short>7.0.0</b></span>
-          <span><small>MODULES</small><b data-module-total>111</b></span>
-          <span><small>LANGUAGE</small><b data-language>Java</b></span>
+        <div class="profile-stats">
+          <div><svg><use href="#i-repo"/></svg><span>Repositories</span><b data-org-repos>2</b></div>
+          <div><svg><use href="#i-users"/></svg><span>People</span><b data-org-people-count>2</b></div>
+          <div><svg><use href="#i-star"/></svg><span>Followers</span><b data-org-followers>2</b></div>
         </div>
-      </div>
+      </aside>
     </section>
 
-    <section class="repo-strip" aria-label="Live GitHub repository data">
-      <div class="shell strip-inner">
-        <div><svg><use href="#i-star"/></svg><span>Stars</span><b data-stars>0</b></div>
-        <div><svg><use href="#i-fork"/></svg><span>Forks</span><b data-forks>0</b></div>
-        <div><svg><use href="#i-code"/></svg><span>Language</span><b data-language>Java</b></div>
-        <div><svg><use href="#i-clock"/></svg><span>Last push</span><b data-last-push>recently</b></div>
-        <a href="https://github.com/International-Duck-Incorporated/Venomous" target="_blank" rel="noreferrer">Live on GitHub <svg><use href="#i-external"/></svg></a>
-      </div>
+    <section class="metric-dock shell reveal" aria-label="Organization status">
+      <div class="glass-card"><span class="metric-icon blue"><svg><use href="#i-repo"/></svg></span><span><small>PUBLIC REPOSITORIES</small><b data-org-repos>2</b></span></div>
+      <div class="glass-card"><span class="metric-icon violet"><svg><use href="#i-users"/></svg></span><span><small>PUBLIC MEMBERS</small><b data-org-people-count>2</b></span></div>
+      <div class="glass-card"><span class="metric-icon green"><svg><use href="#i-pulse"/></svg></span><span><small>DATA SOURCE</small><b>GitHub API</b></span></div>
     </section>
 
-    <section class="section shell" id="features">
-      <div class="section-head reveal">
-        <div><span class="kicker">Capabilities</span><h2>Everything in one addon.</h2></div>
-        <p>Purpose-built modules, organized around the way you play.</p>
-      </div>
-      <div class="feature-grid">
-        <article class="feature reveal"><svg><use href="#i-sword"/></svg><div><h3>Combat</h3><p>CrystalPvP, KillAura, MaceKill, Aimbot, shields, macros, and more.</p></div><b data-category-count="combat">28</b></article>
-        <article class="feature reveal"><svg><use href="#i-bolt"/></svg><div><h3>Exploits</h3><p>Packet, timing, portal, movement, and server interaction utilities.</p></div><b data-category-count="exploit">23</b></article>
-        <article class="feature reveal"><svg><use href="#i-move"/></svg><div><h3>Movement</h3><p>Fly, Speed, Phase, Blink, BoatPhase, SnapTap, and precise control.</p></div><b data-category-count="movement">11</b></article>
-        <article class="feature reveal"><svg><use href="#i-radar"/></svg><div><h3>Detection</h3><p>AntiCheat, staff, vanish, spectator, and player detection modules.</p></div><b data-category-count="detection">5</b></article>
-        <article class="feature reveal"><svg><use href="#i-eye"/></svg><div><h3>ESP &amp; Render</h3><p>Skeleton, light, invisibility, chunk, and visibility enhancements.</p></div><b data-category-count="visual">5</b></article>
-        <article class="feature reveal"><svg><use href="#i-box"/></svg><div><h3>Utility</h3><p>Automation, inventory, world, safety, notification, and fun modules.</p></div><b data-category-count="utility">39</b></article>
-      </div>
-    </section>
-
-    <section class="section modules-section" id="modules">
-      <div class="shell">
-        <div class="section-head reveal">
-          <div><span class="kicker">Source index</span><h2>Modules</h2></div>
-          <div class="source-state"><i></i><span data-module-source>Synced from ModuleRegistry.java</span></div>
-        </div>
-
-        <div class="module-toolbar reveal">
-          <div class="module-filters" data-module-filters aria-label="Filter modules">
-            <button class="active" type="button" data-filter="all">All <b data-module-total>111</b></button>
-            <button type="button" data-filter="combat">Combat <b>28</b></button>
-            <button type="button" data-filter="exploit">Exploit <b>23</b></button>
-            <button type="button" data-filter="movement">Movement <b>11</b></button>
-            <button type="button" data-filter="detection">Detection <b>5</b></button>
-            <button type="button" data-filter="visual">Visual <b>5</b></button>
-            <button type="button" data-filter="utility">Utility <b>39</b></button>
-          </div>
-          <label class="module-search">
-            <svg><use href="#i-search"/></svg>
-            <span class="sr-only">Search modules</span>
-            <input type="search" placeholder="Search modules" data-module-search autocomplete="off">
-          </label>
-        </div>
-
-        <div class="module-results reveal">
-          <div class="results-head"><span data-results-label>All modules</span><b data-results-count>111 results</b></div>
-          <div class="module-grid" data-module-grid aria-live="polite">
-            <span>CrystalPvP<small>combat</small></span><span>VKillAura<small>combat</small></span><span>SuperKnockback<small>combat</small></span><span>MaceKill<small>combat</small></span><span>Disabler<small>exploit</small></span><span>PingSpoof<small>exploit</small></span><span>TimeShift<small>exploit</small></span><span>Fly<small>movement</small></span><span>Speed<small>movement</small></span><span>VNewChunks<small>visual</small></span><span>VAutoFarm<small>utility</small></span><span>ItemOrganizer<small>utility</small></span>
-          </div>
-          <div class="empty-state" data-empty hidden>No modules match this search.</div>
-          <button class="show-all" type="button" data-show-all>Show all modules <svg><use href="#i-arrow"/></svg></button>
-        </div>
-      </div>
-    </section>
-
-    <section class="section shell" id="releases">
-      <div class="section-head reveal">
-        <div><span class="kicker">Downloads</span><h2>Choose a channel.</h2></div>
-        <p>Release data and files are loaded directly from GitHub.</p>
-      </div>
-      <div class="release-grid">
-        <article class="release-card stable reveal">
-          <div class="release-icon"><svg><use href="#i-check"/></svg></div>
-          <div class="release-copy"><span>Stable</span><h3 data-release-version>v7.0.0</h3><p>Recommended build. Tagged and ready to use.</p></div>
-          <div class="release-meta"><span data-stable-date>Latest release</span><span data-stable-size>JAR</span></div>
-          <a class="release-link" data-stable-download href="https://github.com/International-Duck-Incorporated/Venomous/releases/download/v7.0.0/Venomous-7.0.0.jar" aria-label="Download latest stable release"><svg><use href="#i-download"/></svg></a>
-        </article>
-        <article class="release-card reveal">
-          <div class="release-icon"><svg><use href="#i-bolt"/></svg></div>
-          <div class="release-copy"><span>Nightly</span><h3 data-nightly-version>Latest main</h3><p>Freshest automated build. Expect rapid changes.</p></div>
-          <div class="release-meta"><span data-nightly-date>Automated</span><span data-nightly-size>JAR</span></div>
-          <a class="release-link" data-nightly-download href="https://github.com/International-Duck-Incorporated/Venomous/releases/tag/nightly" aria-label="Download latest nightly release"><svg><use href="#i-download"/></svg></a>
-        </article>
-      </div>
-
-      <div class="install-block reveal">
-        <div class="install-title"><span class="kicker">Installation</span><h2>Three steps.</h2></div>
-        <ol>
-          <li><span><svg><use href="#i-package"/></svg></span><div><b>01</b><h3>Install Meteor</h3><p>Set up Fabric Loader and Meteor Client for Minecraft 26.2.</p></div></li>
-          <li><span><svg><use href="#i-folder"/></svg></span><div><b>02</b><h3>Add the JAR</h3><p>Move the downloaded Venomous file into the <code>mods</code> folder.</p></div></li>
-          <li><span><svg><use href="#i-play"/></svg></span><div><b>03</b><h3>Launch</h3><p>Start the Fabric profile. Venomous appears inside Meteor.</p></div></li>
-        </ol>
-      </div>
-    </section>
-
-    <section class="section github-section">
-      <div class="shell github-grid">
-        <div class="activity reveal">
-          <div class="mini-head"><div><svg><use href="#i-commit"/></svg><h2>Recent activity</h2></div><a href="https://github.com/International-Duck-Incorporated/Venomous/commits/main" target="_blank" rel="noreferrer">All commits <svg><use href="#i-external"/></svg></a></div>
-          <div class="commit-list" data-commits>
-            <a href="https://github.com/International-Duck-Incorporated/Venomous/commits/main"><i></i><span><b>Loading current commits…</b><small>GitHub</small></span><code>•••••••</code></a>
-          </div>
-        </div>
-        <div class="contributors reveal">
-          <div class="mini-head"><div><svg><use href="#i-user"/></svg><h2>Contributors</h2></div><a href="https://github.com/International-Duck-Incorporated/Venomous/graphs/contributors" target="_blank" rel="noreferrer">View graph <svg><use href="#i-external"/></svg></a></div>
-          <div class="contributor-list" data-contributors>
-            <a href="https://github.com/3spress0" target="_blank" rel="noreferrer"><img src="assets/contributor-3spress0.png" width="48" height="48" alt="3spress0"><span><b>3spress0</b><small>Contributor</small></span><strong>13 commits</strong></a>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <section class="repos shell section reveal" aria-labelledby="repos-title">
-      <div class="section-head compact"><div><span class="kicker">Organization</span><h2 id="repos-title">Repositories</h2></div><p><span data-repo-count>2</span> public repositories</p></div>
-      <div class="repo-grid" data-repositories>
-        <a class="repo-card" href="https://github.com/International-Duck-Incorporated/Venomous" target="_blank" rel="noreferrer"><span><svg><use href="#i-code"/></svg> Public</span><h3>Venomous</h3><p>Optimized &amp; refined Meteor Client addon.</p><footer><b><i></i> Java</b><svg><use href="#i-arrow"/></svg></footer></a>
-        <a class="repo-card" href="https://github.com/International-Duck-Incorporated/International-Duck-Incorporated.github.io" target="_blank" rel="noreferrer"><span><svg><use href="#i-code"/></svg> Public</span><h3>International-Duck-Incorporated.github.io</h3><p>Organization website.</p><footer><b><i></i> HTML</b><svg><use href="#i-arrow"/></svg></footer></a>
-      </div>
-    </section>
   </main>
 
-  <footer class="footer">
+  <footer class="site-footer">
     <div class="shell footer-inner">
-      <a class="org" href="https://github.com/International-Duck-Incorporated" target="_blank" rel="noreferrer">
-        <img data-org-avatar src="assets/org-avatar.png" alt="" width="42" height="42">
-        <span><b>International Duck</b><small>Incorporated</small></span>
-      </a>
-      <div class="footer-links"><a href="https://github.com/International-Duck-Incorporated/Venomous" target="_blank" rel="noreferrer">Source</a><a href="https://github.com/International-Duck-Incorporated/Venomous/issues" target="_blank" rel="noreferrer">Issues</a><a href="https://github.com/International-Duck-Incorporated/Venomous/releases" target="_blank" rel="noreferrer">Releases</a></div>
-      <span class="sync-note"><i></i> GitHub data synced live</span>
+      <a class="brand" href="index.html"><img data-org-avatar src="assets/org-avatar.png" alt="" width="40" height="40"><span><b>International Duck</b><small>Incorporated</small></span></a>
+      <nav><a href="index.html">Overview</a><a href="projects.html">Projects</a><a href="people.html">People</a><a href="venomous.html">Venomous</a><a href="https://github.com/International-Duck-Incorporated" target="_blank" rel="noreferrer">GitHub</a></nav>
+      <span class="sync-state"><i></i><span data-sync-text>GitHub data synced live</span></span>
     </div>
   </footer>
 </body>
