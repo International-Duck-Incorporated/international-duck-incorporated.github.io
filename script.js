@@ -86,16 +86,22 @@ const languageColors = { Java: "#b07219", HTML: "#e34c26", CSS: "#563d7c", JavaS
 async function syncProjects() {
   const repos = await getJSON(`${API}/orgs/${ORG}/repos?per_page=100&sort=updated`);
   const knownProjects = [
-    { name: "NullTrace", html_url: `https://github.com/${ORG}/NullTrace`, description: "A privacy-focused Minecraft client layer for identity protection, fingerprint detection, tracking defenses, and safer server connections.", language: "Java" },
-    { name: "ChampionsCode", html_url: `https://github.com/${ORG}/ChampionsCode`, description: "A newly established repository for an upcoming International Duck project.", language: null }
+    { name: "NullTrace", html_url: `https://github.com/${ORG}/NullTrace`, description: "A client-side Fabric privacy mod for Minecraft 26.2 and 26.3 covering client brand spoofing, fingerprint protection, tracking defenses, and safer server connections.", language: "Java" },
+    { name: "ChampionsCode", html_url: `https://github.com/${ORG}/ChampionsCode`, description: "A client-side Fabric mod for Minecraft 26.3 for authorized, defensive server and plugin research and controlled runtime Java addon development.", language: "Java" }
   ];
   knownProjects.forEach((project) => { if (!repos.some((repo) => repo.name === project.name)) repos.push(project); });
   const grid = $("[data-org-projects]");
   if (!grid) return;
+  const projectPages = { Venomous: "venomous.html", NullTrace: "nulltrace.html", ChampionsCode: "championscode.html" };
+  const projectMeta = {
+    Venomous: { label: "Featured project", icon: "venom", logo: "assets/venomous-icon.png", status: "Active", action: "Open project" },
+    NullTrace: { label: "Privacy project", icon: "privacy", logo: "assets/nulltrace-icon.png", status: "Active", action: "Open project" },
+    ChampionsCode: { label: "Research project", icon: "champion", logo: "assets/championscode-icon.png", status: "Alpha", statusMuted: true, action: "Open project" }
+  };
   grid.replaceChildren(...repos.map((repo, index) => {
     const link = document.createElement("a");
     const isVenomous = repo.name === REPO;
-    const projectPages = { Venomous: "venomous.html", NullTrace: "nulltrace.html", ChampionsCode: "championscode.html" };
+    const meta = projectMeta[repo.name];
     link.className = `project-card glass-card reveal visible${isVenomous ? " featured" : ""}`;
     link.href = projectPages[repo.name] || repo.html_url;
     if (!projectPages[repo.name]) { link.target = "_blank"; link.rel = "noreferrer"; }
@@ -103,23 +109,24 @@ async function syncProjects() {
     const top = document.createElement("div");
     top.className = "project-card-top";
     const projectIcon = document.createElement("span");
-    projectIcon.className = `project-icon ${isVenomous ? "venom" : "web"}`;
-    if (isVenomous) {
+    projectIcon.className = `project-icon ${meta ? meta.icon : "web"}`;
+    if (meta && meta.logo) {
       const image = document.createElement("img");
-      image.src = "assets/venomous-icon.png"; image.alt = ""; image.width = 64; image.height = 64;
+      image.src = meta.logo; image.alt = ""; image.width = 64; image.height = 64;
       projectIcon.append(image);
+    } else projectIcon.innerHTML = icon("i-code");
+    if (meta && meta.status) {
       const status = document.createElement("span");
-      status.className = "project-status";
-      status.innerHTML = "<i></i> Active";
+      status.className = `project-status${meta.statusMuted ? " muted" : ""}`;
+      status.innerHTML = meta.statusMuted ? meta.status : `<i></i> ${meta.status}`;
       top.append(projectIcon, status);
     } else {
-      projectIcon.innerHTML = icon("i-code");
       const external = document.createElement("span"); external.innerHTML = icon("i-external");
       top.append(projectIcon, external);
     }
 
     const copy = document.createElement("div");
-    const label = document.createElement("span"); label.className = "card-label"; label.textContent = isVenomous ? "Featured project" : "Repository";
+    const label = document.createElement("span"); label.className = "card-label"; label.textContent = (meta && meta.label) || "Repository";
     const title = document.createElement("h3"); title.textContent = repo.name;
     const description = document.createElement("p"); description.textContent = repo.description || (isVenomous ? "Optimized & refined Meteor Client addon for Minecraft 26.2." : "Organization website and project directory.");
     copy.append(label, title, description);
@@ -128,7 +135,7 @@ async function syncProjects() {
     const language = document.createElement("span");
     const dot = document.createElement("i"); dot.className = "language-dot"; dot.style.background = languageColors[repo.language] || "#6e7681";
     language.append(dot, document.createTextNode(repo.language || "Repository"));
-    const action = document.createElement("span"); action.append(document.createTextNode(isVenomous ? "Open project " : "View repository ")); action.insertAdjacentHTML("beforeend", icon("i-arrow"));
+    const action = document.createElement("span"); action.append(document.createTextNode(`${(meta && meta.action) || "View repository"} `)); action.insertAdjacentHTML("beforeend", icon("i-arrow"));
     footer.append(language, action);
     link.append(top, copy, footer);
     return link;
