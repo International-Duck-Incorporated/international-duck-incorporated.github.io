@@ -4,7 +4,7 @@
  * Adapted from "Stormy Window ⛈️ 1024 Bytes" by Frank Force (KilledByAPixel),
  * made for JS1024 2025: https://codepen.io/KilledByAPixel/pen/EaVVQgp
  * Original features kept: sky gradient, moon, procedural mountains, rain,
- * raindrops on glass, lightning, window panels.
+ * raindrops on glass, and lightning. The window panels are intentionally removed.
  *
  * Site adaptation: the five canvases are inserted as fixed background layers
  * (z-index -2, below the page and below any z-index -1 scrims), the document
@@ -30,7 +30,7 @@ Features
 - rain
 - raindrops
 - lightning
-- window panels
+- window panels removed for the full-screen site background
 
 */
 
@@ -70,15 +70,7 @@ drawBackground = () =>
     g += h = Math.random() < .1 ? Math.random() * 2 - 1 : h - g / 1e4;
   }
 
-  // foreground window
-  const w = 50;
-  c.fillStyle = grayColor(4);
-  c.fillRect(0, a.height / 2 - w / 2, a.width, w);
-  c.fillRect(a.width / 2 - w / 2, 0, w, a.height);
-  c.fillRect(0, 0, w, a.height);
-  c.fillRect(a.width, 0, -w, a.height);
-  c.fillRect(0, 0, a.width, w);
-  c.fillRect(0, a.height, a.width, -w);
+  // Window frame intentionally omitted so the storm fills the entire page.
 },
 
 lightning = (X, Y, V, Z) =>
@@ -183,7 +175,7 @@ function start() {
   canvasMid3 = a.cloneNode();
   canvasMid2 = a.cloneNode();
 
-  // DOM order = paint order: back, rain, lightning, raindrops, window frame
+  // DOM order = paint order: back, rain, lightning, raindrops
   styleLayer(canvasBack);
   styleLayer(canvasMid);
   styleLayer(canvasMid3);
