@@ -254,31 +254,37 @@ function initAtmosphere(canvas) {
   const mode = canvas.dataset.background || "dust";
   const reduceMotion = matchMedia("(prefers-reduced-motion: reduce)").matches;
   const network = mode === "network";
+  const storm = mode === "storm";
   const palette = network
     ? { dot: [111, 221, 255], glow: [69, 166, 255], line: [91, 203, 255] }
-    : { dot: [232, 200, 148], glow: [255, 177, 84], line: [185, 203, 224] };
+    : storm
+      ? { dot: [173, 196, 225], glow: [229, 239, 255], line: [149, 170, 201] }
+      : { dot: [232, 200, 148], glow: [255, 177, 84], line: [185, 203, 224] };
   let width = 1, height = 1, dpr = 1, particles = [], frame = 0, last = performance.now();
   let pointerX = .5, pointerY = .5, targetX = .5, targetY = .5, pointerActive = false;
+  let flash = 0, nextFlash = performance.now() + 2800 + Math.random() * 3800;
   const random = (min, max) => min + Math.random() * (max - min);
 
   function makeParticle() {
-    const large = Math.random() < (network ? .18 : .24);
-    const speed = network ? random(.004, .012) : random(.0015, .007);
-    const angle = random(0, Math.PI * 2);
+    const large = Math.random() < (storm ? .2 : (network ? .18 : .24));
+    const speed = storm ? random(.012, .026) : (network ? random(.004, .012) : random(.0015, .007));
+    const angle = storm ? random(Math.PI * .42, Math.PI * .58) : random(0, Math.PI * 2);
     return {
       x: random(0, width), y: random(0, height),
-      r: large ? random(1.2, network ? 2.8 : 3.8) : random(.35, network ? 1.7 : 1.65),
-      a: random(network ? .22 : .2, network ? .72 : .82),
+      r: large ? random(1.2, network ? 2.8 : (storm ? 2.2 : 3.8)) : random(.35, network ? 1.7 : (storm ? 1.1 : 1.65)),
+      a: random(network ? .22 : (storm ? .12 : .2), network ? .72 : (storm ? .32 : .82)),
       vx: Math.cos(angle) * speed, vy: Math.sin(angle) * speed,
-      phase: random(0, Math.PI * 2), pulse: random(.0005, .0018), trail: random(10, 32)
+      phase: random(0, Math.PI * 2), pulse: random(storm ? .00012 : .0005, storm ? .00052 : .0018), trail: random(storm ? 24 : 10, storm ? 52 : 32)
     };
   }
 
   function populate() {
     const area = width * height;
-    const count = network
-      ? Math.round(Math.max(100, Math.min(170, area / 9000)))
-      : Math.round(Math.max(210, Math.min(360, area / 5000)));
+    const count = storm
+      ? Math.round(Math.max(130, Math.min(230, area / 6500)))
+      : network
+        ? Math.round(Math.max(100, Math.min(170, area / 9000)))
+        : Math.round(Math.max(210, Math.min(360, area / 5000)));
     particles = Array.from({ length: reduceMotion ? Math.round(count * .72) : count }, makeParticle);
   }
 
@@ -302,8 +308,8 @@ function initAtmosphere(canvas) {
     for (const particle of particles) {
       if (delta && !reduceMotion) {
         particle.phase += particle.pulse * delta;
-        particle.x += particle.vx * delta + Math.sin(particle.phase) * (network ? .012 : .025) * delta;
-        particle.y += particle.vy * delta + Math.cos(particle.phase * .8) * (network ? .009 : .018) * delta;
+        particle.x += particle.vx * delta + Math.sin(particle.phase) * (network ? .012 : (storm ? .004 : .025)) * delta;
+        particle.y += particle.vy * delta + Math.cos(particle.phase * .8) * (network ? .009 : (storm ? .006 : .018)) * delta;
         if (pointerActive) {
           const dx = particle.x - cursorX, dy = particle.y - cursorY;
           const distance = Math.max(1, Math.hypot(dx, dy));
@@ -314,14 +320,38 @@ function initAtmosphere(canvas) {
             particle.y += (dy / distance) * force;
           }
         }
-        if (particle.x < -8) particle.x = width + 8;
+        if (storm && particle.x < -8) particle.x = random(0, width);
+        else if (particle.x < -8) particle.x = width + 8;
         if (particle.x > width + 8) particle.x = -8;
         if (particle.y < -8) particle.y = height + 8;
-        if (particle.y > height + 8) particle.y = -8;
+        if (particle.y > height + 8) particle.y = storm ? -random(0, height * .45) : -8;
       }
     }
 
-    if (network) {
+    if (storm) {
+      const moonX = width * .76, moonY = height * .2;
+      const moon = context.createRadialGradient(moonX, moonY, 0, moonX, moonY, Math.max(width, height) * .33);
+      moon.addColorStop(0, "rgba(229, 236, 249, .17)");
+      moon.addColorStop(.35, "rgba(180, 194, 221, .07)");
+      moon.addColorStop(1, "rgba(38, 58, 87, 0)");
+      context.fillStyle = moon; context.fillRect(0, 0, width, height);
+      context.fillStyle = "rgba(7, 13, 22, .82)";
+      context.beginPath(); context.moveTo(0, height * .82); context.lineTo(width * .2, height * .63); context.lineTo(width * .38, height * .76); context.lineTo(width * .58, height * .57); context.lineTo(width * .82, height * .72); context.lineTo(width, height * .61); context.lineTo(width, height); context.lineTo(0, height); context.closePath(); context.fill();
+      context.fillStyle = "rgba(10, 18, 30, .92)";
+      context.beginPath(); context.moveTo(0, height * .9); context.lineTo(width * .18, height * .74); context.lineTo(width * .34, height * .84); context.lineTo(width * .48, height * .7); context.lineTo(width * .64, height * .86); context.lineTo(width * .86, height * .76); context.lineTo(width, height * .82); context.lineTo(width, height); context.lineTo(0, height); context.closePath(); context.fill();
+      context.save();
+      context.strokeStyle = "rgba(198, 214, 238, .26)";
+      context.lineWidth = 1.05;
+      for (const particle of particles) {
+        const length = particle.trail * (1 + Math.sin(particle.phase) * .15);
+        context.globalAlpha = particle.a;
+        context.beginPath();
+        context.moveTo(particle.x, particle.y);
+        context.lineTo(particle.x - particle.vx * length, particle.y - particle.vy * length * 2.2);
+        context.stroke();
+      }
+      context.restore();
+    } else if (network) {
       const maxDistance = Math.min(220, Math.max(118, width * .14));
       context.lineWidth = .7;
       for (let i = 0; i < particles.length; i += 1) {
@@ -338,37 +368,51 @@ function initAtmosphere(canvas) {
     }
 
     if (!network) {
-      const warm = context.createRadialGradient(width * .72, height * .2, 0, width * .72, height * .2, Math.max(width, height) * .65);
-      warm.addColorStop(0, "rgba(255, 183, 86, .13)"); warm.addColorStop(.42, "rgba(224, 139, 49, .045)"); warm.addColorStop(1, "rgba(224, 139, 49, 0)");
-      context.fillStyle = warm; context.fillRect(0, 0, width, height);
-      context.save(); context.globalCompositeOperation = "lighter"; context.lineWidth = .55;
-      for (const particle of particles) {
-        if (particle.r < 1.35) continue;
-        const speed = Math.max(.001, Math.hypot(particle.vx, particle.vy));
-        const length = particle.trail * (0.7 + Math.sin(particle.phase) * .3);
-        context.globalAlpha = particle.a * .38;
-        context.strokeStyle = `rgba(${palette.line.join(",")},${context.globalAlpha})`;
-        context.beginPath(); context.moveTo(particle.x, particle.y); context.lineTo(particle.x - particle.vx / speed * length, particle.y - particle.vy / speed * length); context.stroke();
+      if (!storm) {
+        const warm = context.createRadialGradient(width * .72, height * .2, 0, width * .72, height * .2, Math.max(width, height) * .65);
+        warm.addColorStop(0, "rgba(255, 183, 86, .13)"); warm.addColorStop(.42, "rgba(224, 139, 49, .045)"); warm.addColorStop(1, "rgba(224, 139, 49, 0)");
+        context.fillStyle = warm; context.fillRect(0, 0, width, height);
+        context.save(); context.globalCompositeOperation = "lighter"; context.lineWidth = .55;
+        for (const particle of particles) {
+          if (particle.r < 1.35) continue;
+          const speed = Math.max(.001, Math.hypot(particle.vx, particle.vy));
+          const length = particle.trail * (0.7 + Math.sin(particle.phase) * .3);
+          context.globalAlpha = particle.a * .38;
+          context.strokeStyle = `rgba(${palette.line.join(",")},${context.globalAlpha})`;
+          context.beginPath(); context.moveTo(particle.x, particle.y); context.lineTo(particle.x - particle.vx / speed * length, particle.y - particle.vy / speed * length); context.stroke();
+        }
+        context.restore();
       }
-      context.restore();
     }
 
     if (pointerActive) {
-      const radius = network ? 230 : 190;
+      const radius = network ? 230 : (storm ? 250 : 190);
       const glow = context.createRadialGradient(cursorX, cursorY, 0, cursorX, cursorY, radius);
-      glow.addColorStop(0, `rgba(${palette.glow.join(",")},${network ? .1 : .08})`);
+      glow.addColorStop(0, `rgba(${palette.glow.join(",")},${network ? .1 : (storm ? .13 : .08)})`);
       glow.addColorStop(1, `rgba(${palette.glow.join(",")},0)`);
       context.fillStyle = glow; context.fillRect(cursorX - radius, cursorY - radius, radius * 2, radius * 2);
     }
 
+    if (storm) {
+      if (!reduceMotion && time >= nextFlash) {
+        flash = random(.22, .44);
+        nextFlash = time + random(2500, 6300);
+      }
+      flash = Math.max(0, flash - delta * .0018);
+      if (flash > 0) {
+        context.fillStyle = `rgba(222,236,255,${flash})`;
+        context.fillRect(0, 0, width, height);
+      }
+    }
+
     context.save();
-    context.globalCompositeOperation = "lighter";
+    context.globalCompositeOperation = storm ? "screen" : "lighter";
     for (const particle of particles) {
       const pulse = .72 + Math.sin(particle.phase + seconds) * .28;
-      context.globalAlpha = particle.a * pulse;
+      context.globalAlpha = particle.a * (storm ? .6 : pulse);
       context.fillStyle = `rgb(${palette.dot.join(",")})`;
-      context.shadowColor = `rgba(${palette.glow.join(",")},.7)`;
-      context.shadowBlur = particle.r > 1.1 ? (network ? 14 : 18) : (network ? 6 : 8);
+      context.shadowColor = `rgba(${palette.glow.join(",")},${storm ? .42 : .7})`;
+      context.shadowBlur = particle.r > 1.1 ? (network ? 14 : (storm ? 6 : 18)) : (network ? 6 : (storm ? 2 : 8));
       context.beginPath(); context.arc(particle.x, particle.y, particle.r, 0, Math.PI * 2); context.fill();
     }
     context.restore();
