@@ -5,15 +5,22 @@ const MEMBER_LOGIN = "3spress0";
 const API = "https://api.github.com";
 const SHADOWBANNED_USERS = new Set(["3spress0", "espress0"]);
 const isShadowbannedLogin = (login) => SHADOWBANNED_USERS.has(String(login || "").toLowerCase());
-const RAW = "https://raw.githubusercontent.com";
+const GITLAB = "https://gitlab.com";
+const GITLAB_API = `${GITLAB}/api/v4`;
+const GL_GROUP_PATH = "international-duck-incorporated";
+const GL_GROUP = `${GITLAB}/groups/${GL_GROUP_PATH}`;
+const GL_GROUP_API = `${GITLAB_API}/groups/${GL_GROUP_PATH}`;
+const GL_PROJECT_PATH = `${GL_GROUP_PATH}/Venomous`;
+const GL_PROJECT = `${GITLAB_API}/projects/${encodeURIComponent(GL_PROJECT_PATH)}`;
+const GL_SITE_PROJECT = `${GITLAB_API}/projects/${encodeURIComponent(`${GL_GROUP_PATH}/International-Duck-Incorporated.github.io`)}`;
 const fallbackModules = [{"name":"Aimbot","category":"combat"},{"name":"AntiProjectile","category":"combat"},{"name":"AutoClickerPlus","category":"combat"},{"name":"AutoPotion","category":"combat"},{"name":"AutoShield","category":"combat"},{"name":"CriticalsPlus","category":"combat"},{"name":"CrystalPvP","category":"combat"},{"name":"Hunt","category":"combat"},{"name":"MaceKill","category":"combat"},{"name":"ProjectilePuncher","category":"combat"},{"name":"SuperKnockback","category":"combat"},{"name":"SwordBlock","category":"combat"},{"name":"TargetObsidian","category":"combat"},{"name":"TickBase","category":"combat"},{"name":"TimerRange","category":"combat"},{"name":"TpAura","category":"combat"},{"name":"VAnchorMacro","category":"combat"},{"name":"VAntiTrap","category":"combat"},{"name":"VAutoCity","category":"combat"},{"name":"VAutoDoubleHand","category":"combat"},{"name":"VAutoInvTotem","category":"combat"},{"name":"VBreachSwap","category":"combat"},{"name":"VKeyPearl","category":"combat"},{"name":"VKillAura","category":"combat"},{"name":"VMaceKill","category":"combat"},{"name":"VPopCounter","category":"combat"},{"name":"VShieldBreaker","category":"combat"},{"name":"VShieldBypass","category":"combat"},{"name":"VSwordPlaceObsidian","category":"combat"},{"name":"VWindPearlMacro","category":"combat"},{"name":"VelocityPlus","category":"combat"},{"name":"AntiCheatDetect","category":"detection"},{"name":"AntiStaff","category":"detection"},{"name":"SpectatorAlert","category":"detection"},{"name":"VAntiVanish","category":"detection"},{"name":"VPlayerDetection","category":"detection"},{"name":"VInvisESP","category":"visual"},{"name":"VLightESP","category":"visual"},{"name":"VSkeletonESP","category":"visual"},{"name":"AbortBreaking","category":"exploit"},{"name":"AntiReducedDebugInfo","category":"exploit"},{"name":"ClickTp","category":"exploit"},{"name":"Damage","category":"exploit"},{"name":"Disabler","category":"exploit"},{"name":"Dupe","category":"exploit"},{"name":"ExtendedFirework","category":"exploit"},{"name":"Kick","category":"exploit"},{"name":"LbClip","category":"exploit"},{"name":"MoreCarry","category":"exploit"},{"name":"NameCollector","category":"exploit"},{"name":"NoPitchLimit","category":"exploit"},{"name":"PingSpoof","category":"exploit"},{"name":"PortalMenu","category":"exploit"},{"name":"ResetVL","category":"exploit"},{"name":"SleepWalker","category":"exploit"},{"name":"TimeShift","category":"exploit"},{"name":"VAntiHunger","category":"exploit"},{"name":"VBungeeCordSpoof","category":"exploit"},{"name":"VChorusExploit","category":"exploit"},{"name":"VGhostHand","category":"exploit"},{"name":"VNoPortalHitbox","category":"exploit"},{"name":"VPortalGodMode","category":"exploit"},{"name":"VVehicleOneHit","category":"exploit"},{"name":"DankBobbing","category":"utility"},{"name":"Derp","category":"utility"},{"name":"Twerk","category":"utility"},{"name":"Vomit","category":"utility"},{"name":"ArmorWarning","category":"utility"},{"name":"AutoChatGame","category":"utility"},{"name":"AutoPearl","category":"utility"},{"name":"Chat","category":"utility"},{"name":"ElytraSwap","category":"utility"},{"name":"FarmlandTremble","category":"utility"},{"name":"FlagCheck","category":"utility"},{"name":"GUICloser","category":"utility"},{"name":"InventoryTracker","category":"utility"},{"name":"ItemOrganizer","category":"utility"},{"name":"LagNotifier","category":"utility"},{"name":"MiddleClickAction","category":"utility"},{"name":"PearlTools","category":"utility"},{"name":"ProphuntESP","category":"utility"},{"name":"SafeLogout","category":"utility"},{"name":"SoundESP","category":"utility"},{"name":"Spammer","category":"utility"},{"name":"TNTTimer","category":"utility"},{"name":"TargetLock","category":"utility"},{"name":"Teams","category":"utility"},{"name":"TextFieldProtect","category":"utility"},{"name":"TrueSight","category":"utility"},{"name":"VAntiBot","category":"utility"},{"name":"VAutoEZ","category":"utility"},{"name":"VBookBot","category":"utility"},{"name":"VChoir","category":"utility"},{"name":"VCoordSnapper","category":"utility"},{"name":"VFreecamMining","category":"utility"},{"name":"VHideScoreboard","category":"utility"},{"name":"VNameProtect","category":"utility"},{"name":"VNoBlockInteract","category":"utility"},{"name":"VNotifier","category":"utility"},{"name":"VPacketLogger","category":"utility"},{"name":"AntiBounce","category":"movement"},{"name":"AssertDominance","category":"movement"},{"name":"Clip","category":"movement"},{"name":"Fly","category":"movement"},{"name":"NoPush","category":"movement"},{"name":"Phase","category":"movement"},{"name":"SnapTap","category":"movement"},{"name":"Speed","category":"movement"},{"name":"VBlink","category":"movement"},{"name":"VBoatPhase","category":"movement"},{"name":"VHoleSnap","category":"movement"},{"name":"VRoboWalk","category":"movement"},{"name":"GlobalNetworkInterceptor","category":"utility"},{"name":"NoFallPlus","category":"utility"},{"name":"AntiBlind","category":"visual"},{"name":"VNewChunks","category":"visual"},{"name":"AntiVoid","category":"utility"},{"name":"AutoBreakSelected","category":"utility"},{"name":"AutoToolPlus","category":"utility"},{"name":"NoSignScreen","category":"utility"},{"name":"Scaffold","category":"utility"},{"name":"TimerPlus","category":"utility"},{"name":"VAirPlace","category":"utility"},{"name":"VAutoFarm","category":"utility"}];
 
 const $ = (selector, root = document) => root.querySelector(selector);
 const $$ = (selector, root = document) => [...root.querySelectorAll(selector)];
 const page = document.body.dataset.page;
 
-async function getJSON(url) {
-  const response = await fetch(url, { headers: { Accept: "application/vnd.github+json" } });
+async function getJSON(url, accept = "application/vnd.github+json") {
+  const response = await fetch(url, { headers: { Accept: accept } });
   if (!response.ok) throw new Error(`${response.status} at ${url}`);
   return response.json();
 }
@@ -75,20 +82,28 @@ if ("IntersectionObserver" in window) {
 } else revealItems.forEach((item) => item.classList.add("visible"));
 
 async function syncOrganization() {
-  const org = await getJSON(`${API}/orgs/${ORG}`);
+  const [group, projects] = await Promise.all([
+    getJSON(GL_GROUP_API, "application/json"),
+    getJSON(`${GL_GROUP_API}/projects?per_page=100&include_subgroups=true`, "application/json")
+  ]);
   $$('[data-org-avatar]').forEach((image) => {
     image.onerror = () => { image.onerror = null; image.src = "assets/org-avatar.png"; };
-    image.src = `${org.avatar_url}&size=460`;
+    image.src = group.avatar_url || "assets/org-avatar.png";
   });
-  setText("[data-org-name]", org.name || "International Duck Incorporated");
-  setText("[data-org-repos]", org.public_repos);
-  setText("[data-org-followers]", org.followers);
+  setText("[data-org-name]", group.name || "International Duck Incorporated");
+  setText("[data-org-repos]", projects.length);
+  setText("[data-org-stars]", projects.reduce((total, project) => total + (project.star_count || 0), 0));
 }
 
 const languageColors = { Java: "#b07219", HTML: "#e34c26", CSS: "#563d7c", JavaScript: "#f1e05a", Python: "#3572A5" };
 
 async function syncProjects() {
-  const repos = await getJSON(`${API}/orgs/${ORG}/repos?per_page=100&sort=updated`);
+  const glProjects = await getJSON(`${GL_GROUP_API}/projects?per_page=100&order_by=last_activity_at&sort=desc&include_subgroups=true`, "application/json");
+  const languageByProject = new Map(await Promise.all(glProjects.map(async (project) => {
+    const languages = await getJSON(`${GITLAB_API}/projects/${project.id}/languages`, "application/json").catch(() => ({}));
+    return [project.path, Object.entries(languages).sort((a, b) => b[1] - a[1])[0]?.[0] || null];
+  })));
+  const repos = glProjects.map((project) => ({ name: project.path, html_url: project.web_url, description: project.description, language: languageByProject.get(project.path) }));
   const knownProjects = [
     { name: "NullTrace", html_url: `https://github.com/${ORG}/NullTrace`, description: "A client-side Fabric privacy mod for Minecraft 1.21.11, 26.1, 26.2, and 26.3 covering client brand spoofing, fingerprint protection, tracking defenses, and safer server connections.", language: "Java" },
     { name: "ChampionsCode", html_url: `https://github.com/${ORG}/ChampionsCode`, description: "A client-side Fabric mod for Minecraft 26.3 for authorized, defensive server and plugin research and controlled runtime Java addon development.", language: "Java" }
@@ -148,14 +163,15 @@ async function syncProjects() {
 }
 
 async function syncPeople() {
-  let people = await getJSON(`${API}/orgs/${ORG}/public_members?per_page=100`);
-  let role = "Public member";
-  if (!people.length) {
-    people = await getJSON(`${API}/repos/${ORG}/${REPO}/contributors?per_page=100`);
-    role = "Project contributor";
-  }
-  const restoredMember = { login: "3spress0", html_url: "https://github.com/3spress0", avatar_url: "", type: "User" };
-  if (!people.some((person) => isShadowbannedLogin(person.login))) people.push(restoredMember);
+  // GitLab does not expose group membership through its public API, so the directory renders the checked-in member roster.
+  const people = [
+    { login: "0xFFshell", display: "0xFFshell", type: "User" },
+    { login: "3spress0", display: "espress0", type: "User" },
+    { login: "E-VDV-HU", display: "E-VDV-HU", type: "User" },
+    { login: "Xx-superIvar-xX", display: "Xx-superIvar-xX", type: "User" },
+    { login: "midas735", display: "midas735", type: "User" }
+  ];
+  const role = "Public member";
   setText("[data-org-people-count]", people.length);
   const grid = $("[data-org-people]");
   if (!grid || !people.length) return;
@@ -167,16 +183,17 @@ async function syncPeople() {
     if (!memberPages[person.login]) { link.target = "_blank"; link.rel = "noreferrer"; }
     const image = document.createElement("img");
     const localMemberImages = { "3spress0": "assets/contributor-3spress0.png", "0xFFshell": "assets/member-0xffshell.png", "E-VDV-HU": "assets/member-e-vdv-hu.png", "Xx-superIvar-xX": "assets/member-xx-superivar-xx.png", "midas735": "assets/member-midas735.png" };
-    image.src = localMemberImages[person.login] || (person.avatar_url ? `${person.avatar_url}&size=192` : "assets/org-avatar.png");
-    image.alt = person.login; image.width = 96; image.height = 96;
+    image.src = localMemberImages[person.login] || (person.avatar_url ? person.avatar_url : "assets/org-avatar.png");
+    image.alt = person.display; image.width = 96; image.height = 96;
     const copy = document.createElement("div");
     const label = document.createElement("span");
     label.className = isShadowbannedLogin(person.login) ? "shadowban-label" : "";
     label.textContent = isShadowbannedLogin(person.login) ? "Currently shadowbanned 😢" : (person.type === "Bot" ? "Automation" : role);
-    const name = document.createElement("h3"); name.textContent = person.login;
+    const name = document.createElement("h3"); name.textContent = person.display || person.login;
     const handle = document.createElement("p");
     const summaries = {
       "0xFFshell": "Venomous writer",
+      "3spress0": "Security tooling · Minecraft development",
       "E-VDV-HU": "Applied software · Python projects",
       "Xx-superIvar-xX": "New member · GitHub profile",
       "midas735": "New member · GitHub profile"
@@ -460,12 +477,15 @@ function parseRegistry(source) {
   while((match=addPattern.exec(source)))result.push({name:match[1],category:group(imports[match[1]])});return result;
 }
 async function syncModules() {
-  const response=await fetch(`${RAW}/${ORG}/${REPO}/main/src/main/java/net/venomous/meteoraddon/modules/ModuleRegistry.java`,{cache:"no-store"});if(!response.ok)throw new Error("Module source unavailable");
+  const response=await fetch(`${GITLAB}/${GL_PROJECT_PATH}/-/raw/main/src/main/java/net/venomous/meteoraddon/modules/ModuleRegistry.java`,{cache:"no-store"});if(!response.ok)throw new Error("Module source unavailable");
   const parsed=parseRegistry(await response.text());if(!parsed.length)throw new Error("No modules found");modules=parsed.sort((a,b)=>a.name.localeCompare(b.name));updateModuleCounts();renderModules();setText("[data-module-source]","Live from ModuleRegistry.java");
 }
 
 async function syncRepository() {
-  const repo=await getJSON(`${API}/repos/${ORG}/${REPO}`);setText("[data-stars]",repo.stargazers_count.toLocaleString());setText("[data-forks]",repo.forks_count.toLocaleString());setText("[data-language]",repo.language||"Code");setText("[data-last-push]",relativeDate(repo.pushed_at));
+  const [repo,languages]=await Promise.all([getJSON(`${GL_PROJECT}`,"application/json"),getJSON(`${GL_PROJECT}/languages`,"application/json")]);
+  setText("[data-stars]",repo.star_count.toLocaleString());setText("[data-forks]",repo.forks_count.toLocaleString());
+  const topLanguage=Object.entries(languages).sort((a,b)=>b[1]-a[1])[0];setText("[data-language]",topLanguage?.[0]||"Code");
+  setText("[data-last-push]",relativeDate(repo.last_activity_at));
 }
 async function syncNullTraceRelease() {
   const releases = await getJSON(`${API}/repos/${ORG}/${NULLTRACE}/releases?per_page=20`);
@@ -480,53 +500,66 @@ async function syncNullTraceRelease() {
 }
 
 async function syncMemberContributions() {
-  const query = (value, options = "") => getJSON(`${API}/search/commits?q=${encodeURIComponent(value)}&per_page=100${options}`);
-  const orgQuery = `author:${MEMBER_LOGIN} org:${ORG}`;
-  const [orgResults, venomousResults, championsResults, siteResults] = await Promise.all([
-    query(orgQuery),
-    query(`author:${MEMBER_LOGIN} repo:${ORG}/${REPO}`),
-    query(`author:${MEMBER_LOGIN} repo:${ORG}/ChampionsCode`),
-    query(`author:${MEMBER_LOGIN} repo:${ORG}/${ORG}.github.io`)
+  // Contribution counts come from the GitLab group's mirrored repositories. ChampionsCode no longer has a
+  // public home and its author is shadowbanned on GitHub, so that count keeps its checked-in value.
+  const isMemberCommit = (commit) => /espervanderven|3spress0|espress0|166116795/i.test(`${commit.author_name || ""} ${commit.author_email || ""}`);
+  const [venomousCommits, siteCommits] = await Promise.all([
+    getJSON(`${GL_PROJECT}/repository/commits?per_page=100`, "application/json"),
+    getJSON(`${GL_SITE_PROJECT}/repository/commits?per_page=100`, "application/json")
   ]);
-  setText("[data-member-contributions]", orgResults.total_count);
-  setText("[data-member-venomous-contributions]", venomousResults.total_count);
-  setText("[data-member-champions-contributions]", championsResults.total_count);
-  setText("[data-member-site-contributions]", siteResults.total_count);
+  const venomous = venomousCommits.filter(isMemberCommit), site = siteCommits.filter(isMemberCommit);
+  const champions = Number($("[data-member-champions-contributions]")?.textContent) || 0;
+  setText("[data-member-venomous-contributions]", venomous.length);
+  setText("[data-member-site-contributions]", site.length);
+  setText("[data-member-contributions]", venomous.length + site.length + champions);
 
-  const recent = await query(orgQuery, "&sort=committer-date&order=desc");
   const list = $("[data-member-commits]");
-  if (!list || !recent.items?.length) return;
-  list.replaceChildren(...recent.items.slice(0, 8).map((item) => {
+  if (!list) return;
+  const recent = [...venomous, ...site].sort((a, b) => new Date(b.committed_date) - new Date(a.committed_date)).slice(0, 8);
+  if (!recent.length) return;
+  list.replaceChildren(...recent.map((item) => {
     const link = document.createElement("a");
     const dot = document.createElement("i");
     const copy = document.createElement("span");
     const title = document.createElement("b");
     const meta = document.createElement("small");
     const hash = document.createElement("code");
-    const date = item.commit?.author?.date || item.commit?.committer?.date;
-    link.href = item.html_url; link.target = "_blank"; link.rel = "noreferrer";
-    title.textContent = item.commit?.message?.split("\n")[0] || "Commit";
-    meta.textContent = `${item.repository?.name || "GitHub"} · ${relativeDate(date)}`;
-    hash.textContent = item.sha.slice(0, 7);
+    const repoSegment = item.web_url.split("/-/")[0].split("/").pop();
+    link.href = item.web_url; link.target = "_blank"; link.rel = "noreferrer";
+    title.textContent = item.title?.split("\n")[0] || "Commit";
+    meta.textContent = `${repoSegment === "International-Duck-Incorporated.github.io" ? "Website" : repoSegment} · ${relativeDate(item.committed_date)}`;
+    hash.textContent = (item.short_id || item.id).slice(0, 7);
     copy.append(title, meta); link.append(dot, copy, hash);
     return link;
   }));
 }
 
 async function syncReleases() {
-  const releases=await getJSON(`${API}/repos/${ORG}/${REPO}/releases?per_page=20`),stable=releases.find((r)=>!r.draft&&!r.prerelease&&r.tag_name!=="nightly"),nightly=releases.find((r)=>r.tag_name==="nightly"||r.prerelease);
-  if(stable){const asset=stable.assets?.find((a)=>a.name.toLowerCase().endsWith(".jar"));setText("[data-release-version]",stable.tag_name);setText("[data-release-short]",stable.tag_name.replace(/^v/i,""));setText("[data-stable-date]",fullDate(stable.published_at));setText("[data-stable-size]",fileSize(asset?.size));if(asset)$$('[data-stable-download]').forEach((link)=>{link.href=asset.browser_download_url;});}
-  if(nightly){const asset=nightly.assets?.find((a)=>a.name.toLowerCase().endsWith(".jar"));setText("[data-nightly-version]",asset?.name?.replace(/\.jar$/i,"")||nightly.name||"Latest main");setText("[data-nightly-date]",fullDate(nightly.published_at));setText("[data-nightly-size]",fileSize(asset?.size));if(asset)$$('[data-nightly-download]').forEach((link)=>{link.href=asset.browser_download_url;});}
+  const releases=await getJSON(`${GL_PROJECT}/releases?per_page=20`,"application/json"),stable=releases.find((r)=>r.tag_name!=="nightly"),nightly=releases.find((r)=>r.tag_name==="nightly");
+  const jarAsset=(release)=>release.assets?.links?.find((a)=>`${a.name||""} ${a.url||""}`.toLowerCase().includes(".jar"));
+  if(stable){const asset=jarAsset(stable);setText("[data-release-version]",stable.tag_name);setText("[data-release-short]",stable.tag_name.replace(/^v/i,""));setText("[data-stable-date]",fullDate(stable.released_at));if(asset)$$('[data-stable-download]').forEach((link)=>{link.href=asset.url;});}
+  if(nightly){const asset=jarAsset(nightly);setText("[data-nightly-version]",asset?.name?.replace(/\.jar$/i,"")||nightly.name||"Latest main");setText("[data-nightly-date]",fullDate(nightly.released_at));if(asset)$$('[data-nightly-download]').forEach((link)=>{link.href=asset.url;});}
 }
 async function syncCommits() {
-  const commits=await getJSON(`${API}/repos/${ORG}/${REPO}/commits?per_page=5`);
+  const commits=await getJSON(`${GL_PROJECT}/repository/commits?per_page=5`,"application/json");
   const list=$("[data-commits]");if(!list)return;
-  list.replaceChildren(...commits.map((item)=>{const link=document.createElement("a"),dot=document.createElement("i"),copy=document.createElement("span"),title=document.createElement("b"),meta=document.createElement("small"),hash=document.createElement("code");link.href=item.html_url;link.target="_blank";link.rel="noreferrer";title.textContent=item.commit.message.split("\n")[0];meta.textContent=`${item.author?.login||item.commit.author.name} · ${relativeDate(item.commit.author.date)}`;hash.textContent=item.sha.slice(0,7);copy.append(title,meta);link.append(dot,copy,hash);return link;}));
+  list.replaceChildren(...commits.map((item)=>{const link=document.createElement("a"),dot=document.createElement("i"),copy=document.createElement("span"),title=document.createElement("b"),meta=document.createElement("small"),hash=document.createElement("code");link.href=item.web_url;link.target="_blank";link.rel="noreferrer";title.textContent=item.title||item.message?.split("\n")[0]||"Commit";meta.textContent=`${item.author_name} · ${relativeDate(item.authored_date||item.committed_date)}`;hash.textContent=(item.short_id||item.id).slice(0,7);copy.append(title,meta);link.append(dot,copy,hash);return link;}));
 }
 async function syncContributors() {
-  const people=await getJSON(`${API}/repos/${ORG}/${REPO}/contributors?per_page=30`);
+  const people=await getJSON(`${GL_PROJECT}/repository/contributors`,"application/json");
   const list=$("[data-contributors]");if(!list || !people.length)return;
-  list.replaceChildren(...people.map((person)=>{const link=document.createElement("a"),image=document.createElement("img"),copy=document.createElement("span"),name=document.createElement("b"),role=document.createElement("small"),total=document.createElement("strong");link.href=person.html_url;link.target="_blank";link.rel="noreferrer";image.src=`${person.avatar_url}&size=96`;image.alt=person.login;name.textContent=person.login;role.textContent=person.type==="Bot"?"Bot":"Contributor";total.textContent=`${person.contributions} contributions`;copy.append(name,role);link.append(image,copy,total);return link;}));
+  const known=[
+    {test:(person)=>person.name==="0xFF"||person.email==="pieterr.games@gmail.com",label:"0xFFshell",role:"Writer",url:`${GITLAB}/0xFFshell`,avatar:"assets/member-0xffshell.png"},
+    {test:(person)=>/espress0|3spress0|espervanderven|166116795/i.test(`${person.name||""} ${person.email||""}`),label:"espress0",role:"Writer",url:`${GITLAB}/espress0`,avatar:"assets/contributor-3spress0.png"}
+  ];
+  const merged=new Map();
+  for(const person of people){
+    const profile=known.find((entry)=>entry.test(person));
+    const key=profile?profile.label:(person.name||"Contributor");
+    const entry=merged.get(key)||{label:key,role:profile?.role||"Contributor",url:profile?.url||`${GITLAB}/${GL_PROJECT_PATH}/-/graphs/main`,avatar:profile?.avatar||"assets/org-avatar.png",commits:0};
+    entry.commits+=person.commits||0;merged.set(key,entry);
+  }
+  list.replaceChildren(...[...merged.values()].sort((a,b)=>b.commits-a.commits).map((entry)=>{const link=document.createElement("a"),image=document.createElement("img"),copy=document.createElement("span"),name=document.createElement("b"),role=document.createElement("small"),total=document.createElement("strong");link.href=entry.url;link.target="_blank";link.rel="noreferrer";image.src=entry.avatar;image.alt=entry.label;name.textContent=entry.label;role.textContent=entry.role;total.textContent=`${entry.commits} ${entry.commits===1?"contribution":"contributions"}`;copy.append(name,role);link.append(image,copy,total);return link;}));
 }
 
 $$('[data-background]').forEach(initAtmosphere);
@@ -540,4 +573,5 @@ if (page === "venomous") {
   setupModules();$$('[data-ambient]').forEach(initAmbient);
   tasks.push(syncRepository(),syncReleases(),syncCommits(),syncContributors(),syncModules());
 }
-Promise.allSettled(tasks).then((results)=>{const done=results.filter((result)=>result.status==="fulfilled").length;setText("[data-sync-text]",done===results.length?"GitHub data synced live":`GitHub data synced (${done}/${results.length})`);});
+const syncProvider = page === "project" && document.body.dataset.project === "nulltrace" ? "GitHub" : "GitLab";
+Promise.allSettled(tasks).then((results)=>{const done=results.filter((result)=>result.status==="fulfilled").length;setText("[data-sync-text]",done===results.length?`${syncProvider} data synced live`:`${syncProvider} data synced (${done}/${results.length})`);});

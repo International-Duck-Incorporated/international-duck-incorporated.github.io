@@ -1,32 +1,31 @@
 # International Duck Incorporated
 
-Static GitHub Pages site for [International Duck Incorporated](https://github.com/International-Duck-Incorporated), designed as a responsive premium-glass product dashboard.
+Static GitLab Pages site for [International Duck Incorporated](https://gitlab.com/international-duck-incorporated), designed as a responsive premium-glass product dashboard.
 
 ## Pages
 
-- `index.html` - organization overview and live GitHub metrics
+- `index.html` - organization overview and live GitLab group metrics
 - `projects.html` - standalone project and repository directory
 - `website.html` - a small page about the source repository for this website
-- `people.html` - standalone public-members directory
+- `people.html` - member directory
 - `venomous.html` - complete Venomous experience with features, module browser, releases, installation, activity, and contributors
 - `nulltrace.html` - NullTrace project page with protection surface, scope, the v2.0.0 official release, nightly downloads, and diagnostics
 - `championscode.html` - ChampionsCode project page with research console, modules, safety model, and development status
 - `404.html` - matching not-found page
 
-## Live GitHub data
+## Live GitLab data
 
-Client-side synchronization uses the public GitHub API and raw repository source to keep these areas current automatically:
+Client-side synchronization uses the public GitLab API and raw repository source to keep these areas current automatically:
 
-- Organization identity, repository count, followers, projects, and public members
-- Venomous stars, forks, language, and latest push
-- Stable official and nightly releases with direct JAR downloads
+- Group identity, avatar, and project directory from the GitLab group
+- Venomous stars, forks, language, and latest activity
+- Recent commits and project contributors with GitLab profile links
 - Registered modules parsed from `ModuleRegistry.java`
-- Recent commits and project contributors
 
-Checked-in content and authentic local images keep both pages useful if the API is unavailable or rate-limited. When public organization membership is unavailable, the people section falls back to project contributors.
+GitLab does not expose group membership through its public API, so the people directory renders the checked-in member roster. Projects that currently live only on GitHub (NullTrace, ChampionsCode) keep pulling release data from the GitHub API, and their repository links stay on GitHub. Checked-in content and authentic local images keep the pages useful if the API is unavailable or rate-limited.
 
 Open `http://localhost:8080`. No build step or external front-end dependency is required.
 
 ## Deploy
 
-Enable GitHub Pages for the `main` branch at `/ (root)`.
+GitLab Pages deploys from `main` via `.gitlab-ci.yml`.
