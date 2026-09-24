@@ -1,6 +1,10 @@
 const ORG = "International-Duck-Incorporated";
 const REPO = "Venomous";
+const NULLTRACE = "NullTrace";
+const MEMBER_LOGIN = "3spress0";
 const API = "https://api.github.com";
+const SHADOWBANNED_USERS = new Set(["3spress0", "espress0"]);
+const isShadowbannedLogin = (login) => SHADOWBANNED_USERS.has(String(login || "").toLowerCase());
 const RAW = "https://raw.githubusercontent.com";
 const fallbackModules = [{"name":"Aimbot","category":"combat"},{"name":"AntiProjectile","category":"combat"},{"name":"AutoClickerPlus","category":"combat"},{"name":"AutoPotion","category":"combat"},{"name":"AutoShield","category":"combat"},{"name":"CriticalsPlus","category":"combat"},{"name":"CrystalPvP","category":"combat"},{"name":"Hunt","category":"combat"},{"name":"MaceKill","category":"combat"},{"name":"ProjectilePuncher","category":"combat"},{"name":"SuperKnockback","category":"combat"},{"name":"SwordBlock","category":"combat"},{"name":"TargetObsidian","category":"combat"},{"name":"TickBase","category":"combat"},{"name":"TimerRange","category":"combat"},{"name":"TpAura","category":"combat"},{"name":"VAnchorMacro","category":"combat"},{"name":"VAntiTrap","category":"combat"},{"name":"VAutoCity","category":"combat"},{"name":"VAutoDoubleHand","category":"combat"},{"name":"VAutoInvTotem","category":"combat"},{"name":"VBreachSwap","category":"combat"},{"name":"VKeyPearl","category":"combat"},{"name":"VKillAura","category":"combat"},{"name":"VMaceKill","category":"combat"},{"name":"VPopCounter","category":"combat"},{"name":"VShieldBreaker","category":"combat"},{"name":"VShieldBypass","category":"combat"},{"name":"VSwordPlaceObsidian","category":"combat"},{"name":"VWindPearlMacro","category":"combat"},{"name":"VelocityPlus","category":"combat"},{"name":"AntiCheatDetect","category":"detection"},{"name":"AntiStaff","category":"detection"},{"name":"SpectatorAlert","category":"detection"},{"name":"VAntiVanish","category":"detection"},{"name":"VPlayerDetection","category":"detection"},{"name":"VInvisESP","category":"visual"},{"name":"VLightESP","category":"visual"},{"name":"VSkeletonESP","category":"visual"},{"name":"AbortBreaking","category":"exploit"},{"name":"AntiReducedDebugInfo","category":"exploit"},{"name":"ClickTp","category":"exploit"},{"name":"Damage","category":"exploit"},{"name":"Disabler","category":"exploit"},{"name":"Dupe","category":"exploit"},{"name":"ExtendedFirework","category":"exploit"},{"name":"Kick","category":"exploit"},{"name":"LbClip","category":"exploit"},{"name":"MoreCarry","category":"exploit"},{"name":"NameCollector","category":"exploit"},{"name":"NoPitchLimit","category":"exploit"},{"name":"PingSpoof","category":"exploit"},{"name":"PortalMenu","category":"exploit"},{"name":"ResetVL","category":"exploit"},{"name":"SleepWalker","category":"exploit"},{"name":"TimeShift","category":"exploit"},{"name":"VAntiHunger","category":"exploit"},{"name":"VBungeeCordSpoof","category":"exploit"},{"name":"VChorusExploit","category":"exploit"},{"name":"VGhostHand","category":"exploit"},{"name":"VNoPortalHitbox","category":"exploit"},{"name":"VPortalGodMode","category":"exploit"},{"name":"VVehicleOneHit","category":"exploit"},{"name":"DankBobbing","category":"utility"},{"name":"Derp","category":"utility"},{"name":"Twerk","category":"utility"},{"name":"Vomit","category":"utility"},{"name":"ArmorWarning","category":"utility"},{"name":"AutoChatGame","category":"utility"},{"name":"AutoPearl","category":"utility"},{"name":"Chat","category":"utility"},{"name":"ElytraSwap","category":"utility"},{"name":"FarmlandTremble","category":"utility"},{"name":"FlagCheck","category":"utility"},{"name":"GUICloser","category":"utility"},{"name":"InventoryTracker","category":"utility"},{"name":"ItemOrganizer","category":"utility"},{"name":"LagNotifier","category":"utility"},{"name":"MiddleClickAction","category":"utility"},{"name":"PearlTools","category":"utility"},{"name":"ProphuntESP","category":"utility"},{"name":"SafeLogout","category":"utility"},{"name":"SoundESP","category":"utility"},{"name":"Spammer","category":"utility"},{"name":"TNTTimer","category":"utility"},{"name":"TargetLock","category":"utility"},{"name":"Teams","category":"utility"},{"name":"TextFieldProtect","category":"utility"},{"name":"TrueSight","category":"utility"},{"name":"VAntiBot","category":"utility"},{"name":"VAutoEZ","category":"utility"},{"name":"VBookBot","category":"utility"},{"name":"VChoir","category":"utility"},{"name":"VCoordSnapper","category":"utility"},{"name":"VFreecamMining","category":"utility"},{"name":"VHideScoreboard","category":"utility"},{"name":"VNameProtect","category":"utility"},{"name":"VNoBlockInteract","category":"utility"},{"name":"VNotifier","category":"utility"},{"name":"VPacketLogger","category":"utility"},{"name":"AntiBounce","category":"movement"},{"name":"AssertDominance","category":"movement"},{"name":"Clip","category":"movement"},{"name":"Fly","category":"movement"},{"name":"NoPush","category":"movement"},{"name":"Phase","category":"movement"},{"name":"SnapTap","category":"movement"},{"name":"Speed","category":"movement"},{"name":"VBlink","category":"movement"},{"name":"VBoatPhase","category":"movement"},{"name":"VHoleSnap","category":"movement"},{"name":"VRoboWalk","category":"movement"},{"name":"GlobalNetworkInterceptor","category":"utility"},{"name":"NoFallPlus","category":"utility"},{"name":"AntiBlind","category":"visual"},{"name":"VNewChunks","category":"visual"},{"name":"AntiVoid","category":"utility"},{"name":"AutoBreakSelected","category":"utility"},{"name":"AutoToolPlus","category":"utility"},{"name":"NoSignScreen","category":"utility"},{"name":"Scaffold","category":"utility"},{"name":"TimerPlus","category":"utility"},{"name":"VAirPlace","category":"utility"},{"name":"VAutoFarm","category":"utility"}];
 
@@ -86,7 +90,7 @@ const languageColors = { Java: "#b07219", HTML: "#e34c26", CSS: "#563d7c", JavaS
 async function syncProjects() {
   const repos = await getJSON(`${API}/orgs/${ORG}/repos?per_page=100&sort=updated`);
   const knownProjects = [
-    { name: "NullTrace", html_url: `https://github.com/${ORG}/NullTrace`, description: "A client-side Fabric privacy mod for Minecraft 26.2 and 26.3 covering client brand spoofing, fingerprint protection, tracking defenses, and safer server connections.", language: "Java" },
+    { name: "NullTrace", html_url: `https://github.com/${ORG}/NullTrace`, description: "A client-side Fabric privacy mod for Minecraft 1.21.11, 26.1, 26.2, and 26.3 covering client brand spoofing, fingerprint protection, tracking defenses, and safer server connections.", language: "Java" },
     { name: "ChampionsCode", html_url: `https://github.com/${ORG}/ChampionsCode`, description: "A client-side Fabric mod for Minecraft 26.3 for authorized, defensive server and plugin research and controlled runtime Java addon development.", language: "Java" }
   ];
   knownProjects.forEach((project) => { if (!repos.some((repo) => repo.name === project.name)) repos.push(project); });
@@ -95,7 +99,7 @@ async function syncProjects() {
   const projectPages = { Venomous: "venomous.html", NullTrace: "nulltrace.html", ChampionsCode: "championscode.html" };
   const projectMeta = {
     Venomous: { label: "Featured project", icon: "venom", logo: "assets/venomous-icon.png", status: "Active", action: "Open project" },
-    NullTrace: { label: "Privacy project", icon: "privacy", logo: "assets/nulltrace-icon.png", status: "Active", action: "Open project" },
+    NullTrace: { label: "Privacy project", icon: "privacy", logo: "assets/nulltrace-icon.png", status: "Official release", action: "Open project" },
     ChampionsCode: { label: "Research project", icon: "champion", logo: "assets/championscode-icon.png", status: "Alpha", statusMuted: true, action: "Open project" }
   };
   grid.replaceChildren(...repos.map((repo, index) => {
@@ -149,21 +153,32 @@ async function syncPeople() {
     people = await getJSON(`${API}/repos/${ORG}/${REPO}/contributors?per_page=100`);
     role = "Project contributor";
   }
+  const restoredMember = { login: "3spress0", html_url: "https://github.com/3spress0", avatar_url: "", type: "User" };
+  if (!people.some((person) => isShadowbannedLogin(person.login))) people.push(restoredMember);
   setText("[data-org-people-count]", people.length);
   const grid = $("[data-org-people]");
   if (!grid || !people.length) return;
   grid.replaceChildren(...people.map((person) => {
     const link = document.createElement("a");
     link.className = "person-card glass-card reveal visible";
-    const memberPages = { "3spress0": "3spress0.html", "E-VDV-HU": "e-vdv-hu.html" };
+    const memberPages = { "3spress0": "3spress0.html", "E-VDV-HU": "e-vdv-hu.html", "0xFFshell": "0xffshell.html", "Xx-superIvar-xX": "superivar.html" };
     link.href = memberPages[person.login] || person.html_url;
     if (!memberPages[person.login]) { link.target = "_blank"; link.rel = "noreferrer"; }
-    const image = document.createElement("img"); image.src = `${person.avatar_url}&size=192`; image.alt = person.login; image.width = 96; image.height = 96;
+    const image = document.createElement("img");
+    const localMemberImages = { "3spress0": "assets/contributor-3spress0.png", "0xFFshell": "assets/member-0xffshell.png", "E-VDV-HU": "assets/member-e-vdv-hu.png", "Xx-superIvar-xX": "assets/member-xx-superivar-xx.png" };
+    image.src = localMemberImages[person.login] || (person.avatar_url ? `${person.avatar_url}&size=192` : "assets/org-avatar.png");
+    image.alt = person.login; image.width = 96; image.height = 96;
     const copy = document.createElement("div");
-    const label = document.createElement("span"); label.textContent = person.type === "Bot" ? "Automation" : role;
+    const label = document.createElement("span");
+    label.className = isShadowbannedLogin(person.login) ? "shadowban-label" : "";
+    label.textContent = isShadowbannedLogin(person.login) ? "Currently shadowbanned 😢" : (person.type === "Bot" ? "Automation" : role);
     const name = document.createElement("h3"); name.textContent = person.login;
     const handle = document.createElement("p");
-    const summaries = { "3spress0": "Security tooling · Minecraft development", "E-VDV-HU": "Applied software · AI experiments" };
+    const summaries = {
+      "0xFFshell": "Venomous writer",
+      "E-VDV-HU": "Applied software · Python projects",
+      "Xx-superIvar-xX": "New member · GitHub profile"
+    };
     handle.textContent = summaries[person.login] || `@${person.login}`;
     copy.append(label, name, handle);
     link.append(image, copy); link.insertAdjacentHTML("beforeend", icon("i-external"));
@@ -231,6 +246,129 @@ function initAmbient(canvas) {
   resize(); if(reduceMotion)draw(performance.now(),0);else start();
 }
 
+
+function initAtmosphere(canvas) {
+  const context = canvas.getContext("2d");
+  const mode = canvas.dataset.background || "dust";
+  const reduceMotion = matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const network = mode === "network";
+  const palette = network
+    ? { dot: [111, 221, 255], glow: [69, 166, 255], line: [91, 203, 255] }
+    : { dot: [232, 200, 148], glow: [255, 177, 84], line: [185, 203, 224] };
+  let width = 1, height = 1, dpr = 1, particles = [], frame = 0, last = performance.now();
+  let pointerX = .5, pointerY = .5, targetX = .5, targetY = .5, pointerActive = false;
+  const random = (min, max) => min + Math.random() * (max - min);
+
+  function makeParticle() {
+    const large = Math.random() < (network ? .18 : .1);
+    const speed = network ? random(.004, .012) : random(.0015, .007);
+    const angle = random(0, Math.PI * 2);
+    return {
+      x: random(0, width), y: random(0, height),
+      r: large ? random(1.2, 2.8) : random(.35, network ? 1.7 : 1.35),
+      a: random(network ? .22 : .12, network ? .72 : .62),
+      vx: Math.cos(angle) * speed, vy: Math.sin(angle) * speed,
+      phase: random(0, Math.PI * 2), pulse: random(.0005, .0018)
+    };
+  }
+
+  function populate() {
+    const area = width * height;
+    const count = network
+      ? Math.round(Math.max(100, Math.min(170, area / 9000)))
+      : Math.round(Math.max(150, Math.min(280, area / 6500)));
+    particles = Array.from({ length: reduceMotion ? Math.round(count * .72) : count }, makeParticle);
+  }
+
+  function resize() {
+    width = Math.max(1, innerWidth);
+    height = Math.max(1, innerHeight);
+    dpr = Math.min(devicePixelRatio || 1, 1.75);
+    canvas.width = Math.round(width * dpr);
+    canvas.height = Math.round(height * dpr);
+    context.setTransform(dpr, 0, 0, dpr, 0, 0);
+    populate();
+    draw(performance.now(), 0);
+  }
+
+  function draw(time, delta) {
+    context.clearRect(0, 0, width, height);
+    const seconds = time * .001;
+    pointerX += (targetX - pointerX) * .08;
+    pointerY += (targetY - pointerY) * .08;
+    const cursorX = pointerX * width, cursorY = pointerY * height;
+    for (const particle of particles) {
+      if (delta && !reduceMotion) {
+        particle.phase += particle.pulse * delta;
+        particle.x += particle.vx * delta + Math.sin(particle.phase) * (network ? .012 : .02) * delta;
+        particle.y += particle.vy * delta + Math.cos(particle.phase * .8) * (network ? .009 : .014) * delta;
+        if (pointerActive) {
+          const dx = particle.x - cursorX, dy = particle.y - cursorY;
+          const distance = Math.max(1, Math.hypot(dx, dy));
+          const radius = network ? 235 : 190;
+          if (distance < radius) {
+            const force = (1 - distance / radius) * (network ? .014 : .02) * delta;
+            particle.x += (dx / distance) * force;
+            particle.y += (dy / distance) * force;
+          }
+        }
+        if (particle.x < -8) particle.x = width + 8;
+        if (particle.x > width + 8) particle.x = -8;
+        if (particle.y < -8) particle.y = height + 8;
+        if (particle.y > height + 8) particle.y = -8;
+      }
+    }
+
+    if (network) {
+      const maxDistance = Math.min(220, Math.max(118, width * .14));
+      context.lineWidth = .7;
+      for (let i = 0; i < particles.length; i += 1) {
+        for (let j = i + 1; j < particles.length; j += 1) {
+          const first = particles[i], second = particles[j];
+          const dx = first.x - second.x, dy = first.y - second.y;
+          const distance = Math.hypot(dx, dy);
+          if (distance >= maxDistance) continue;
+          const alpha = (1 - distance / maxDistance) * .22;
+          context.strokeStyle = `rgba(${palette.line.join(",")},${alpha})`;
+          context.beginPath(); context.moveTo(first.x, first.y); context.lineTo(second.x, second.y); context.stroke();
+        }
+      }
+    }
+
+    if (pointerActive) {
+      const radius = network ? 230 : 190;
+      const glow = context.createRadialGradient(cursorX, cursorY, 0, cursorX, cursorY, radius);
+      glow.addColorStop(0, `rgba(${palette.glow.join(",")},${network ? .1 : .08})`);
+      glow.addColorStop(1, `rgba(${palette.glow.join(",")},0)`);
+      context.fillStyle = glow; context.fillRect(cursorX - radius, cursorY - radius, radius * 2, radius * 2);
+    }
+
+    context.save();
+    context.globalCompositeOperation = "lighter";
+    for (const particle of particles) {
+      const pulse = .72 + Math.sin(particle.phase + seconds) * .28;
+      context.globalAlpha = particle.a * pulse;
+      context.fillStyle = `rgb(${palette.dot.join(",")})`;
+      context.shadowColor = `rgba(${palette.glow.join(",")},.7)`;
+      context.shadowBlur = particle.r > 1.1 ? (network ? 14 : 18) : (network ? 6 : 8);
+      context.beginPath(); context.arc(particle.x, particle.y, particle.r, 0, Math.PI * 2); context.fill();
+    }
+    context.restore();
+  }
+
+  function animate(time) {
+    const delta = Math.min(32, time - last); last = time; draw(time, delta);
+    frame = document.hidden ? 0 : requestAnimationFrame(animate);
+  }
+  function start() { if (!frame && !reduceMotion && !document.hidden) { last = performance.now(); frame = requestAnimationFrame(animate); } }
+  function stop() { if (frame) cancelAnimationFrame(frame); frame = 0; }
+  addEventListener("resize", resize, { passive: true });
+  addEventListener("pointermove", (event) => { targetX = event.clientX / width; targetY = event.clientY / height; pointerActive = true; }, { passive: true });
+  addEventListener("pointerleave", () => { pointerActive = false; targetX = .5; targetY = .5; });
+  document.addEventListener("visibilitychange", () => document.hidden ? stop() : start());
+  resize();
+  if (!reduceMotion) start();
+}
 let modules = fallbackModules.slice().sort((a,b)=>a.name.localeCompare(b.name));
 let activeCategory = "all", searchTerm = "", showEverything = false;
 
@@ -267,24 +405,75 @@ async function syncModules() {
 async function syncRepository() {
   const repo=await getJSON(`${API}/repos/${ORG}/${REPO}`);setText("[data-stars]",repo.stargazers_count.toLocaleString());setText("[data-forks]",repo.forks_count.toLocaleString());setText("[data-language]",repo.language||"Code");setText("[data-last-push]",relativeDate(repo.pushed_at));
 }
+async function syncNullTraceRelease() {
+  const releases = await getJSON(`${API}/repos/${ORG}/${NULLTRACE}/releases?per_page=20`);
+  const stable = releases.find((release) => !release.draft && !release.prerelease);
+  if (!stable) return;
+  const semanticVersion = stable.name?.match(/v?\d+\.\d+\.\d+/)?.[0] || stable.tag_name;
+  setText("[data-nulltrace-version]", semanticVersion);
+  setText("[data-nulltrace-release-note]", stable.body?.split("\n").find(Boolean) || "First official release");
+  setText("[data-nulltrace-date]", fullDate(stable.published_at));
+  setText("[data-nulltrace-release-label]", `Download ${semanticVersion}`);
+  $$('[data-nulltrace-release-link]').forEach((link) => { link.href = stable.html_url; });
+}
+
+async function syncMemberContributions() {
+  const query = (value, options = "") => getJSON(`${API}/search/commits?q=${encodeURIComponent(value)}&per_page=100${options}`);
+  const orgQuery = `author:${MEMBER_LOGIN} org:${ORG}`;
+  const [orgResults, venomousResults, championsResults, siteResults] = await Promise.all([
+    query(orgQuery),
+    query(`author:${MEMBER_LOGIN} repo:${ORG}/${REPO}`),
+    query(`author:${MEMBER_LOGIN} repo:${ORG}/ChampionsCode`),
+    query(`author:${MEMBER_LOGIN} repo:${ORG}/${ORG}.github.io`)
+  ]);
+  setText("[data-member-contributions]", orgResults.total_count);
+  setText("[data-member-venomous-contributions]", venomousResults.total_count);
+  setText("[data-member-champions-contributions]", championsResults.total_count);
+  setText("[data-member-site-contributions]", siteResults.total_count);
+
+  const recent = await query(orgQuery, "&sort=committer-date&order=desc");
+  const list = $("[data-member-commits]");
+  if (!list || !recent.items?.length) return;
+  list.replaceChildren(...recent.items.slice(0, 8).map((item) => {
+    const link = document.createElement("a");
+    const dot = document.createElement("i");
+    const copy = document.createElement("span");
+    const title = document.createElement("b");
+    const meta = document.createElement("small");
+    const hash = document.createElement("code");
+    const date = item.commit?.author?.date || item.commit?.committer?.date;
+    link.href = item.html_url; link.target = "_blank"; link.rel = "noreferrer";
+    title.textContent = item.commit?.message?.split("\n")[0] || "Commit";
+    meta.textContent = `${item.repository?.name || "GitHub"} · ${relativeDate(date)}`;
+    hash.textContent = item.sha.slice(0, 7);
+    copy.append(title, meta); link.append(dot, copy, hash);
+    return link;
+  }));
+}
+
 async function syncReleases() {
   const releases=await getJSON(`${API}/repos/${ORG}/${REPO}/releases?per_page=20`),stable=releases.find((r)=>!r.draft&&!r.prerelease&&r.tag_name!=="nightly"),nightly=releases.find((r)=>r.tag_name==="nightly"||r.prerelease);
   if(stable){const asset=stable.assets?.find((a)=>a.name.toLowerCase().endsWith(".jar"));setText("[data-release-version]",stable.tag_name);setText("[data-release-short]",stable.tag_name.replace(/^v/i,""));setText("[data-stable-date]",fullDate(stable.published_at));setText("[data-stable-size]",fileSize(asset?.size));if(asset)$$('[data-stable-download]').forEach((link)=>{link.href=asset.browser_download_url;});}
   if(nightly){const asset=nightly.assets?.find((a)=>a.name.toLowerCase().endsWith(".jar"));setText("[data-nightly-version]",asset?.name?.replace(/\.jar$/i,"")||nightly.name||"Latest main");setText("[data-nightly-date]",fullDate(nightly.published_at));setText("[data-nightly-size]",fileSize(asset?.size));if(asset)$$('[data-nightly-download]').forEach((link)=>{link.href=asset.browser_download_url;});}
 }
 async function syncCommits() {
-  const commits=await getJSON(`${API}/repos/${ORG}/${REPO}/commits?per_page=5`),list=$("[data-commits]");if(!list)return;
+  const commits=await getJSON(`${API}/repos/${ORG}/${REPO}/commits?per_page=5`);
+  const list=$("[data-commits]");if(!list)return;
   list.replaceChildren(...commits.map((item)=>{const link=document.createElement("a"),dot=document.createElement("i"),copy=document.createElement("span"),title=document.createElement("b"),meta=document.createElement("small"),hash=document.createElement("code");link.href=item.html_url;link.target="_blank";link.rel="noreferrer";title.textContent=item.commit.message.split("\n")[0];meta.textContent=`${item.author?.login||item.commit.author.name} · ${relativeDate(item.commit.author.date)}`;hash.textContent=item.sha.slice(0,7);copy.append(title,meta);link.append(dot,copy,hash);return link;}));
 }
 async function syncContributors() {
-  const people=await getJSON(`${API}/repos/${ORG}/${REPO}/contributors?per_page=30`),list=$("[data-contributors]");if(!list)return;
+  const people=await getJSON(`${API}/repos/${ORG}/${REPO}/contributors?per_page=30`);
+  const list=$("[data-contributors]");if(!list || !people.length)return;
   list.replaceChildren(...people.map((person)=>{const link=document.createElement("a"),image=document.createElement("img"),copy=document.createElement("span"),name=document.createElement("b"),role=document.createElement("small"),total=document.createElement("strong");link.href=person.html_url;link.target="_blank";link.rel="noreferrer";image.src=`${person.avatar_url}&size=96`;image.alt=person.login;name.textContent=person.login;role.textContent=person.type==="Bot"?"Bot":"Contributor";total.textContent=`${person.contributions} contributions`;copy.append(name,role);link.append(image,copy,total);return link;}));
 }
 
+$$('[data-background]').forEach(initAtmosphere);
 const tasks = [syncOrganization()];
 if (page === "organization") tasks.push(syncPeople());
 if (page === "projects") tasks.push(syncProjects());
 if (page === "people") tasks.push(syncPeople());
+if (page === "project" && document.body.dataset.project === "nulltrace") tasks.push(syncNullTraceRelease());
+if (page === "member" && document.body.dataset.member === MEMBER_LOGIN) tasks.push(syncMemberContributions());
 if (page === "venomous") {
   setupModules();$$('[data-ambient]').forEach(initAmbient);
   tasks.push(syncRepository(),syncReleases(),syncCommits(),syncContributors(),syncModules());

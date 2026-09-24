@@ -4,9 +4,9 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#07090d">
-  <meta name="description" content="Client-side Minecraft privacy and fingerprinting protection mod for Fabric.">
+  <meta name="description" content="NullTrace is a client-side Fabric privacy mod with its first official release, v2.0.0, for Minecraft 1.21.11, 26.1, 26.2, and 26.3.">
   <meta property="og:title" content="NullTrace - International Duck">
-  <meta property="og:description" content="Client-side Fabric privacy mod for Minecraft 26.2 and 26.3.">
+  <meta property="og:description" content="Client-side Fabric privacy mod with its first official release, v2.0.0, for Minecraft 1.21.11, 26.1, 26.2, and 26.3.">
   <meta property="og:type" content="website">
   <meta property="og:image" content="https://raw.githubusercontent.com/International-Duck-Incorporated/NullTrace/main/docs/assets/nulltrace-logo.png">
   <title>NullTrace - International Duck</title>
@@ -14,7 +14,7 @@
   <link rel="stylesheet" href="styles.css">
   <script src="script.js" defer></script>
 </head>
-<body data-page="project">
+<body data-page="project" data-project="nulltrace">
   <svg class="svg-sprite" aria-hidden="true">
     <symbol id="i-github" viewBox="0 0 24 24"><path d="M15 22v-4a4.8 4.8 0 0 0-1-3.5c3.3-.4 6.8-1.6 6.8-7.4A5.7 5.7 0 0 0 19.3 3 5.4 5.4 0 0 0 19.1 0S17.9-.4 15 1.5a14 14 0 0 0-6 0C6.1-.4 4.9 0 4.9 0a5.4 5.4 0 0 0-.2 3A5.7 5.7 0 0 0 3.2 7.1c0 5.8 3.5 7 6.8 7.4A4.8 4.8 0 0 0 9 18v4M9 19c-3 .9-3-1.5-4-2"/></symbol>
     <symbol id="i-download" viewBox="0 0 24 24"><path d="M12 3v12M7 10l5 5 5-5M4 20h16"/></symbol>
@@ -26,6 +26,7 @@
 
   <a class="skip-link" href="#main">Skip to content</a>
   <div class="site-glow site-glow-blue" aria-hidden="true"></div>
+  <canvas class="atmosphere-canvas" data-background="network" aria-hidden="true"></canvas>
 
   <header class="topbar" data-header>
     <div class="shell topbar-inner">
@@ -34,7 +35,6 @@
         <a href="index.html">Overview</a>
         <a class="active" href="projects.html" aria-current="page">Projects</a>
         <a href="people.html">People</a>
-        <a class="project-link" href="venomous.html"><span><img src="assets/venomous-icon.png" alt="" width="24" height="24"></span>Venomous</a>
         <a class="icon-link" href="https://github.com/International-Duck-Incorporated" target="_blank" rel="noreferrer" aria-label="Organization on GitHub"><svg><use href="#i-github"/></svg></a>
       </nav>
       <button class="menu-button" type="button" data-menu aria-label="Open navigation" aria-controls="main-navigation" aria-expanded="false"><svg class="menu-open"><use href="#i-menu"/></svg><svg class="menu-close"><use href="#i-close"/></svg></button>
@@ -49,10 +49,12 @@
         <article class="profile-intro glass-card reveal">
           <img class="project-mark" src="assets/nulltrace-icon.png" alt="NullTrace logo" width="82" height="82">
           <span class="eyebrow">Privacy engineering</span>
+          <span class="status-pill green release-badge"><i></i> Official release · <b data-nulltrace-version>v2.0.0</b></span>
           <h1>NullTrace.</h1>
-          <p class="lead">NullTrace is a client-side Fabric mod that reduces the information Minecraft servers can use to identify, fingerprint, or track a modded client. It started from OpSec's client-side privacy work and now runs its own codebase, branding, and version support for Minecraft 26.2 and 26.3.</p>
+          <p class="lead">NullTrace is a client-side Fabric mod that reduces the information Minecraft servers can use to identify, fingerprint, or track a modded client. It started from OpSec's client-side privacy work and now runs its own codebase, branding, and version support for Minecraft 1.21.11, 26.1, 26.2, and 26.3.</p>
           <div class="action-row">
-            <a class="button button-blue" href="https://github.com/International-Duck-Incorporated/NullTrace" target="_blank" rel="noreferrer"><svg><use href="#i-github"/></svg>View repository</a>
+            <a class="button button-blue" data-nulltrace-release-link href="https://github.com/International-Duck-Incorporated/NullTrace/releases/tag/v2" target="_blank" rel="noreferrer"><svg><use href="#i-download"/></svg><span data-nulltrace-release-label>Download v2.0.0</span></a>
+            <a class="button button-glass" href="https://github.com/International-Duck-Incorporated/NullTrace" target="_blank" rel="noreferrer"><svg><use href="#i-github"/></svg>View repository</a>
             <a class="button button-glass" href="https://github.com/International-Duck-Incorporated/NullTrace/releases" target="_blank" rel="noreferrer"><svg><use href="#i-download"/></svg>Nightly builds</a>
           </div>
         </article>
@@ -62,8 +64,8 @@
             <div class="fact-list">
               <div class="fact"><small>Status</small><b>Active development</b></div>
               <div class="fact"><small>Technology</small><b>Java 25 · Fabric</b></div>
-              <div class="fact"><small>Target</small><b>Minecraft 26.2 / 26.3</b></div>
-              <div class="fact"><small>Version</small><b>1.1.7.1</b></div>
+              <div class="fact"><small>Target</small><b>Minecraft 1.21.11 / 26.1 / 26.2 / 26.3</b></div>
+              <div class="fact"><small>Version</small><b data-nulltrace-version>v2.0.0</b></div>
               <div class="fact"><small>License</small><b>GPL-3.0</b></div>
               <div class="fact"><small>Distribution</small><b>GitHub Releases only</b></div>
             </div>
@@ -88,10 +90,12 @@
           <h2>Honest boundaries.</h2>
           <p>NullTrace does not make you anonymous. It does not hide your IP address, server-side activity, or every fingerprinting technique. It is specifically focused on reducing common client-side fingerprinting and tracking surfaces.</p>
         </article>
-        <article class="detail-panel glass-card reveal">
-          <span class="eyebrow">Downloads</span>
-          <h2>Nightly builds.</h2>
-          <p>Automated nightly JARs are published for Minecraft 26.2 and 26.3 through GitHub Releases, the only official distribution channel. Any NullTrace JAR found elsewhere should be treated as unofficial.</p>
+        <article class="detail-panel glass-card reveal release-detail">
+          <span class="eyebrow">Official release</span>
+          <h2>First release.</h2>
+          <p><b data-nulltrace-release-note>First official release</b> is now available through GitHub Releases. The v2.0.0 release includes builds for Minecraft 1.21.11, 26.1, 26.2, and 26.3.</p>
+          <div class="release-meta"><span>Version <b data-nulltrace-version>v2.0.0</b></span><span data-nulltrace-date>23 Sep 2026</span></div>
+          <a class="inline-link" data-nulltrace-release-link href="https://github.com/International-Duck-Incorporated/NullTrace/releases/tag/v2" target="_blank" rel="noreferrer">View official release <svg><use href="#i-arrow"/></svg></a>
         </article>
         <article class="detail-panel glass-card reveal">
           <span class="eyebrow">Diagnostics</span>

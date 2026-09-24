@@ -8,7 +8,7 @@ Static GitHub Pages site for [International Duck Incorporated](https://github.co
 - `projects.html` - standalone project and repository directory
 - `people.html` - standalone public-members directory
 - `venomous.html` - complete Venomous experience with features, module browser, releases, installation, activity, and contributors
-- `nulltrace.html` - NullTrace project page with protection surface, scope, nightly downloads, and diagnostics
+- `nulltrace.html` - NullTrace project page with protection surface, scope, the v2.0.0 official release, nightly downloads, and diagnostics
 - `championscode.html` - ChampionsCode project page with research console, modules, safety model, and development status
 - `404.html` - matching not-found page
 
@@ -18,7 +18,7 @@ Client-side synchronization uses the public GitHub API and raw repository source
 
 - Organization identity, repository count, followers, projects, and public members
 - Venomous stars, forks, language, and latest push
-- Stable and nightly releases with direct JAR downloads
+- Stable official and nightly releases with direct JAR downloads
 - Registered modules parsed from `ModuleRegistry.java`
 - Recent commits and project contributors
 
