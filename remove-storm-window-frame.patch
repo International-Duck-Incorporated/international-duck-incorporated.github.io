@@ -1,0 +1,74 @@
+diff --git a/storm-window.js b/storm-window.js
+index 6e77153..dc65e0f 100644
+--- a/storm-window.js
++++ b/storm-window.js
+@@ -4,7 +4,7 @@
+  * Adapted from "Stormy Window ⛈️ 1024 Bytes" by Frank Force (KilledByAPixel),
+  * made for JS1024 2025: https://codepen.io/KilledByAPixel/pen/EaVVQgp
+  * Original features kept: sky gradient, moon, procedural mountains, rain,
+- * raindrops on glass, lightning, window panels.
++ * raindrops on glass, and lightning. The window panels are intentionally removed.
+  *
+  * Site adaptation: the five canvases are inserted as fixed background layers
+  * (z-index -2, below the page and below any z-index -1 scrims), the document
+@@ -30,7 +30,7 @@ Features
+ - rain
+ - raindrops
+ - lightning
+-- window panels
++- window panels removed for the full-screen site background
+ 
+ */
+ 
+@@ -70,15 +70,7 @@ drawBackground = () =>
+     g += h = Math.random() < .1 ? Math.random() * 2 - 1 : h - g / 1e4;
+   }
+ 
+-  // foreground window
+-  const w = 50;
+-  c.fillStyle = grayColor(4);
+-  c.fillRect(0, a.height / 2 - w / 2, a.width, w);
+-  c.fillRect(a.width / 2 - w / 2, 0, w, a.height);
+-  c.fillRect(0, 0, w, a.height);
+-  c.fillRect(a.width, 0, -w, a.height);
+-  c.fillRect(0, 0, a.width, w);
+-  c.fillRect(0, a.height, a.width, -w);
++  // Window frame intentionally omitted so the storm fills the entire page.
+ },
+ 
+ lightning = (X, Y, V, Z) =>
+@@ -183,7 +175,7 @@ function start() {
+   canvasMid3 = a.cloneNode();
+   canvasMid2 = a.cloneNode();
+ 
+-  // DOM order = paint order: back, rain, lightning, raindrops, window frame
++  // DOM order = paint order: back, rain, lightning, raindrops
+   styleLayer(canvasBack);
+   styleLayer(canvasMid);
+   styleLayer(canvasMid3);
+diff --git a/superivar.html b/superivar.html
+index 2e223f1..04ea620 100644
+--- a/superivar.html
++++ b/superivar.html
+@@ -9,7 +9,11 @@
+   <link rel="icon" href="assets/org-avatar.png" type="image/png">
+   <link rel="stylesheet" href="styles.css">
+   <style>
+-    /* stormy window background effect */
++    /* Full-screen storm background effect (without the window frame). */
++    body.storm-window-page {
++      background: transparent;
++      isolation: isolate;
++    }
+     body.storm-window-page .site-glow { display: none; }
+     /* readability scrim over the storm, under the content */
+     body.storm-window-page::before {
+@@ -35,8 +39,6 @@
+ 
+   <a class="skip-link" href="#main">Skip to content</a>
+   <div class="site-glow site-glow-blue" aria-hidden="true"></div>
+-  <canvas class="atmosphere-canvas" data-background="storm" aria-hidden="true"></canvas>
+-
+   <header class="topbar" data-header>
+     <div class="shell topbar-inner">
+       <a class="brand" href="index.html" aria-label="International Duck Incorporated home"><img data-org-avatar src="assets/org-avatar.png" alt="" width="40" height="40"><span><b>International Duck</b><small>Incorporated</small></span></a>
