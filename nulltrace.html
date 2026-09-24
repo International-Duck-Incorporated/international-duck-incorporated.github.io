@@ -8,7 +8,7 @@
   <meta property="og:title" content="NullTrace - International Duck">
   <meta property="og:description" content="Client-side Fabric privacy mod with its first official release, v2.0.0, for Minecraft 1.21.11, 26.1, 26.2, and 26.3.">
   <meta property="og:type" content="website">
-  <meta property="og:image" content="https://raw.githubusercontent.com/International-Duck-Incorporated/NullTrace/main/docs/assets/nulltrace-logo.png">
+  <meta property="og:image" content="https://gitlab.com/international-duck-incorporated/NullTrace/-/raw/main/docs/assets/nulltrace-logo.png">
 
   <title>NullTrace - International Duck</title>
 
@@ -16,6 +16,7 @@
   <link rel="stylesheet" href="styles.css">
 
   <script src="script.js" defer></script>
+  <script src="pixel-canvas.js" defer></script>
 </head>
 
 <body data-page="project" data-project="nulltrace">
@@ -157,30 +158,33 @@
             <a
               class="button button-blue"
               data-nulltrace-release-link
-              href="https://github.com/International-Duck-Incorporated/NullTrace/releases/tag/v2"
+              href="https://gitlab.com/international-duck-incorporated/NullTrace/-/releases/v2.0.0"
               target="_blank"
               rel="noreferrer"
             >
+              <pixel-canvas data-gap="6" data-speed="35" data-colors="#dcecff, #8ab8f6, #4a7fc0"></pixel-canvas>
               <svg><use href="#i-download"/></svg>
               <span data-nulltrace-release-label>Download v2.0.0</span>
             </a>
 
             <a
               class="button button-glass"
-              href="https://github.com/International-Duck-Incorporated/NullTrace"
+              href="https://gitlab.com/international-duck-incorporated/NullTrace"
               target="_blank"
               rel="noreferrer"
             >
-              <svg><use href="#i-github"/></svg>
+              <pixel-canvas data-gap="6" data-speed="35" data-colors="#dcecff, #8ab8f6, #4a7fc0"></pixel-canvas>
+              <svg><use href="#i-gitlab"/></svg>
               View repository
             </a>
 
             <a
               class="button button-glass"
-              href="https://github.com/International-Duck-Incorporated/NullTrace/releases"
+              href="https://gitlab.com/international-duck-incorporated/NullTrace/-/releases"
               target="_blank"
               rel="noreferrer"
             >
+              <pixel-canvas data-gap="6" data-speed="35" data-colors="#dcecff, #8ab8f6, #4a7fc0"></pixel-canvas>
               <svg><use href="#i-download"/></svg>
               Nightly builds
             </a>
@@ -219,7 +223,7 @@
 
               <div class="fact">
                 <small>Distribution</small>
-                <b>GitHub Releases only</b>
+                <b>GitLab Releases only</b>
               </div>
             </div>
           </div>
@@ -258,7 +262,7 @@
 
           <p>
             <b data-nulltrace-release-note>First official release</b>
-            is now available through GitHub Releases. The v2.0.0 release
+            is now available through GitLab Releases. The v2.0.0 release
             includes builds for Minecraft 1.21.11, 26.1, 26.2, and 26.3.
           </p>
 
@@ -274,7 +278,7 @@
           <a
             class="inline-link"
             data-nulltrace-release-link
-            href="https://github.com/International-Duck-Incorporated/NullTrace/releases/tag/v2"
+            href="https://gitlab.com/international-duck-incorporated/NullTrace/-/releases/v2.0.0"
             target="_blank"
             rel="noreferrer"
           >
@@ -423,11 +427,12 @@
 
         <a
           class="button button-glass"
-          href="https://github.com/International-Duck-Incorporated/NullTrace"
+          href="https://gitlab.com/international-duck-incorporated/NullTrace"
           target="_blank"
           rel="noreferrer"
         >
-          <svg><use href="#i-github"/></svg>
+          <pixel-canvas data-gap="6" data-speed="35" data-colors="#dcecff, #8ab8f6, #4a7fc0"></pixel-canvas>
+          <svg><use href="#i-gitlab"/></svg>
           Read the source
         </a>
       </section>

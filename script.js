@@ -1,8 +1,6 @@
-const ORG = "International-Duck-Incorporated";
 const REPO = "Venomous";
 const NULLTRACE = "NullTrace";
 const MEMBER_LOGIN = "3spress0";
-const API = "https://api.github.com";
 const SHADOWBANNED_USERS = new Set(["3spress0", "espress0"]);
 const isShadowbannedLogin = (login) => SHADOWBANNED_USERS.has(String(login || "").toLowerCase());
 const GITLAB = "https://gitlab.com";
@@ -12,6 +10,7 @@ const GL_GROUP = `${GITLAB}/groups/${GL_GROUP_PATH}`;
 const GL_GROUP_API = `${GITLAB_API}/groups/${GL_GROUP_PATH}`;
 const GL_PROJECT_PATH = `${GL_GROUP_PATH}/Venomous`;
 const GL_PROJECT = `${GITLAB_API}/projects/${encodeURIComponent(GL_PROJECT_PATH)}`;
+const GL_NULLTRACE_PROJECT = `${GITLAB_API}/projects/${encodeURIComponent(`${GL_GROUP_PATH}/${NULLTRACE}`)}`;
 const SITE_ROUTES = Object.freeze({
   home: "/", projects: "/projects", people: "/people", venomous: "/venomous",
   nulltrace: "/nulltrace", championscode: "/championscode", website: "/website", migration: "/migration"
@@ -23,7 +22,7 @@ const $ = (selector, root = document) => root.querySelector(selector);
 const $$ = (selector, root = document) => [...root.querySelectorAll(selector)];
 const page = document.body.dataset.page;
 
-async function getJSON(url, accept = "application/vnd.github+json") {
+async function getJSON(url, accept = "application/json") {
   const response = await fetch(url, { headers: { Accept: accept } });
   if (!response.ok) throw new Error(`${response.status} at ${url}`);
   return response.json();
@@ -101,6 +100,22 @@ async function syncOrganization() {
 
 const languageColors = { Java: "#b07219", HTML: "#e34c26", CSS: "#563d7c", JavaScript: "#f1e05a", Python: "#3572A5" };
 
+// <pixel-canvas> shimmer palettes, tuned to each surface's accent.
+const pixelPalettes = {
+  green: "#ddfbe4, #8cf77a, #4caf6d",
+  blue: "#dcecff, #8ab8f6, #4a7fc0",
+  amber: "#f9ecd4, #eec06a, #b98a2e",
+  slate: "#e8edf2, #9aa7b4, #5f6d7c"
+};
+
+function pixelEffect(colors = pixelPalettes.slate, gap = 6, speed = 35) {
+  const effect = document.createElement("pixel-canvas");
+  effect.dataset.gap = gap;
+  effect.dataset.speed = speed;
+  effect.setAttribute("data-colors", colors);
+  return effect;
+}
+
 async function syncProjects() {
   const glProjects = await getJSON(`${GL_GROUP_API}/projects?per_page=100&order_by=last_activity_at&sort=desc&include_subgroups=true`, "application/json");
   const languageByProject = new Map(await Promise.all(glProjects.map(async (project) => {
@@ -109,8 +124,8 @@ async function syncProjects() {
   })));
   const repos = glProjects.map((project) => ({ name: project.path, html_url: project.web_url, description: project.description, language: languageByProject.get(project.path) }));
   const knownProjects = [
-    { name: "NullTrace", html_url: `https://github.com/${ORG}/NullTrace`, description: "A client-side Fabric privacy mod for Minecraft 1.21.11, 26.1, 26.2, and 26.3 covering client brand spoofing, fingerprint protection, tracking defenses, and safer server connections.", language: "Java" },
-    { name: "ChampionsCode", html_url: `https://github.com/${ORG}/ChampionsCode`, description: "A client-side Fabric mod for Minecraft 26.3 for authorized, defensive server and plugin research and controlled runtime Java addon development.", language: "Java" }
+    { name: "NullTrace", html_url: `${GITLAB}/${GL_GROUP_PATH}/NullTrace`, description: "A client-side Fabric privacy mod for Minecraft 1.21.11, 26.1, 26.2, and 26.3 covering client brand spoofing, fingerprint protection, tracking defenses, and safer server connections.", language: "Java" },
+    { name: "ChampionsCode", html_url: `${GITLAB}/${GL_GROUP_PATH}/ChampionsCode`, description: "A client-side Fabric mod for Minecraft 26.3 for authorized, defensive server and plugin research and controlled runtime Java addon development.", language: "Java" }
   ];
   knownProjects.forEach((project) => { if (!repos.some((repo) => repo.name === project.name)) repos.push(project); });
   const grid = $("[data-org-projects]");
@@ -169,6 +184,8 @@ async function syncProjects() {
     const action = document.createElement("span"); action.append(document.createTextNode(`${(meta && meta.action) || "View repository"} `)); action.insertAdjacentHTML("beforeend", icon("i-arrow"));
     footer.append(language, action);
     link.append(top, copy, footer);
+    const palette = repo.name === REPO ? pixelPalettes.green : repo.name === NULLTRACE ? pixelPalettes.blue : repo.name === "ChampionsCode" ? pixelPalettes.amber : pixelPalettes.slate;
+    link.append(pixelEffect(palette));
     return link;
   }));
 }
@@ -215,70 +232,10 @@ async function syncPeople() {
     handle.textContent = summaries[person.login] || `@${person.login}`;
     copy.append(label, name, handle);
     link.append(image, copy); link.insertAdjacentHTML("beforeend", icon("i-external"));
+    if (page === "organization") link.append(pixelEffect(pixelPalettes.slate));
     return link;
   }));
 }
-
-function initAmbient(canvas) {
-  const context = canvas.getContext("2d");
-  const host = canvas.parentElement;
-  const reduceMotion = matchMedia("(prefers-reduced-motion: reduce)").matches;
-  let width = 1, height = 1, dpr = 1, particles = [], frame = 0, visible = true, last = performance.now();
-  let px = .5, py = .45, tx = .5, ty = .45;
-  const random = (min, max) => min + Math.random() * (max - min);
-
-  function particle(type) {
-    const set = { small:[[.5,1.3],[.1,.36],[.04,.14]], medium:[[2,4.2],[.05,.18],[.02,.08]], large:[[8,18],[.015,.045],[.008,.03]] }[type];
-    const angle = random(0, Math.PI * 2), speed = random(...set[2]);
-    return { type, x:random(0,width), y:random(height*.08,height*.92), r:random(...set[0]), a:random(...set[1]), phase:random(0,Math.PI*2), ps:random(.00035,.0011), vx:Math.cos(angle)*speed, vy:Math.sin(angle)*speed };
-  }
-
-  function populate() {
-    const scale = Math.max(.7, Math.min(1.2, width * height / 280000));
-    const counts = reduceMotion ? [28,7,1] : [Math.round(76*scale),Math.round(18*scale),Math.round(2*scale)];
-    particles = [...Array.from({length:counts[0]},()=>particle("small")),...Array.from({length:counts[1]},()=>particle("medium")),...Array.from({length:counts[2]},()=>particle("large"))];
-  }
-
-  function resize() {
-    const rect = canvas.getBoundingClientRect();
-    const nextW = Math.max(1,Math.round(rect.width)), nextH = Math.max(1,Math.round(rect.height));
-    if (nextW === width && nextH === height) return;
-    width = nextW; height = nextH; dpr = Math.min(devicePixelRatio || 1,1.75);
-    canvas.width = Math.round(width*dpr); canvas.height = Math.round(height*dpr); context.setTransform(dpr,0,0,dpr,0,0); populate(); draw(performance.now(),0);
-  }
-
-  function glow(x,y,rx,ry,alpha) {
-    context.save(); context.translate(x,y); context.scale(1,ry/rx);
-    const gradient = context.createRadialGradient(0,0,0,0,0,rx);
-    gradient.addColorStop(0,`rgba(140,247,122,${alpha})`); gradient.addColorStop(.4,`rgba(88,217,85,${alpha*.42})`); gradient.addColorStop(1,"rgba(44,174,62,0)");
-    context.fillStyle = gradient; context.beginPath(); context.arc(0,0,rx,0,Math.PI*2); context.fill(); context.restore();
-  }
-
-  function draw(time,delta) {
-    context.clearRect(0,0,width,height); px += (tx-px)*.025; py += (ty-py)*.025;
-    const wave = time*.00016;
-    glow(width*(.44+px*.1)+Math.sin(wave)*width*.08,height*(.38+py*.11),width*.43,height*.16,.12);
-    glow(width*.34+Math.cos(wave*.8)*width*.1,height*.62,width*.25,height*.2,.055);
-    context.save(); context.globalCompositeOperation = "lighter";
-    for (const p of particles) {
-      if (delta) { p.phase += p.ps*delta; p.x += p.vx*delta+Math.sin(p.phase)*.016*delta; p.y += p.vy*delta+Math.cos(p.phase*.8)*.011*delta; if(p.x<-p.r)p.x=width+p.r;if(p.x>width+p.r)p.x=-p.r;if(p.y<-p.r)p.y=height+p.r;if(p.y>height+p.r)p.y=-p.r; }
-      context.globalAlpha = p.a*(.72+Math.sin(p.phase*2)*.28); context.beginPath(); context.arc(p.x,p.y,p.r,0,Math.PI*2);
-      if (p.type === "small") { context.strokeStyle="rgb(140,247,122)";context.lineWidth=.7;context.stroke(); }
-      else { context.fillStyle=p.type==="large"?"rgb(102,231,98)":"rgb(158,255,139)";context.shadowColor="rgba(140,247,122,.6)";context.shadowBlur=p.type==="large"?22:8;context.fill();context.shadowBlur=0; }
-    }
-    context.restore(); context.globalAlpha=1;
-  }
-
-  function animate(time) { const delta=Math.min(32,time-last);last=time;draw(time,delta);frame=visible&&!document.hidden?requestAnimationFrame(animate):0; }
-  function start(){if(!frame&&!reduceMotion&&visible&&!document.hidden){last=performance.now();frame=requestAnimationFrame(animate);}}
-  function stop(){if(frame)cancelAnimationFrame(frame);frame=0;}
-  host.addEventListener("pointermove",(event)=>{const rect=host.getBoundingClientRect();tx=(event.clientX-rect.left)/rect.width;ty=(event.clientY-rect.top)/rect.height;},{passive:true});
-  host.addEventListener("pointerleave",()=>{tx=.5;ty=.45;}); document.addEventListener("visibilitychange",()=>document.hidden?stop():start());
-  if("IntersectionObserver"in window)new IntersectionObserver(([entry])=>{visible=entry.isIntersecting;visible?start():stop();},{rootMargin:"100px"}).observe(host);
-  if("ResizeObserver"in window)new ResizeObserver(resize).observe(host);else addEventListener("resize",resize,{passive:true});
-  resize(); if(reduceMotion)draw(performance.now(),0);else start();
-}
-
 
 function initAtmosphere(canvas) {
   const context = canvas.getContext("2d");
@@ -502,15 +459,15 @@ async function syncRepository() {
   setText("[data-last-push]",relativeDate(repo.last_activity_at));
 }
 async function syncNullTraceRelease() {
-  const releases = await getJSON(`${API}/repos/${ORG}/${NULLTRACE}/releases?per_page=20`);
-  const stable = releases.find((release) => !release.draft && !release.prerelease);
+  const releases = await getJSON(`${GL_NULLTRACE_PROJECT}/releases?per_page=20`);
+  const stable = releases.find((release) => !release.upcoming_release);
   if (!stable) return;
   const semanticVersion = stable.name?.match(/v?\d+\.\d+\.\d+/)?.[0] || stable.tag_name;
   setText("[data-nulltrace-version]", semanticVersion);
-  setText("[data-nulltrace-release-note]", stable.body?.split("\n").find(Boolean) || "First official release");
-  setText("[data-nulltrace-date]", fullDate(stable.published_at));
+  setText("[data-nulltrace-release-note]", stable.description?.split("\n").find(Boolean) || "First official release");
+  setText("[data-nulltrace-date]", fullDate(stable.released_at));
   setText("[data-nulltrace-release-label]", `Download ${semanticVersion}`);
-  $$('[data-nulltrace-release-link]').forEach((link) => { link.href = stable.html_url; });
+  $$('[data-nulltrace-release-link]').forEach((link) => { link.href = stable._links?.self || `${GITLAB}/${GL_GROUP_PATH}/${NULLTRACE}/-/releases`; });
 }
 
 async function syncMemberContributions() {
@@ -584,8 +541,8 @@ if (page === "people") tasks.push(syncPeople());
 if (page === "project" && document.body.dataset.project === "nulltrace") tasks.push(syncNullTraceRelease());
 if (page === "member" && document.body.dataset.member === MEMBER_LOGIN) tasks.push(syncMemberContributions());
 if (page === "venomous") {
-  setupModules();$$('[data-ambient]').forEach(initAmbient);
+  setupModules();
   tasks.push(syncRepository(),syncReleases(),syncCommits(),syncContributors(),syncModules());
 }
-const syncProvider = page === "project" && document.body.dataset.project === "nulltrace" ? "GitHub" : "GitLab";
+const syncProvider = "GitLab";
 Promise.allSettled(tasks).then((results)=>{const done=results.filter((result)=>result.status==="fulfilled").length;setText("[data-sync-text]",done===results.length?`${syncProvider} data synced live`:`${syncProvider} data synced (${done}/${results.length})`);});

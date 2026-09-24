@@ -174,7 +174,6 @@ svg { display: block; width: 1.1rem; height: 1.1rem; fill: none; stroke: current
 .requirement-row span:not(:last-child)::after { content: ""; position: absolute; top: 50%; right: -.7rem; width: 3px; height: 3px; background: #424a45; border-radius: 50%; }
 .requirement-row b { color: #99a29c; font-weight: 500; }
 .venom-visual { position: relative; isolation: isolate; min-height: 590px; overflow: hidden; border-radius: var(--radius-xl); }
-.venom-visual canvas { position: absolute; inset: 0; z-index: 0; width: 100%; height: 100%; opacity: .78; pointer-events: none; }
 .visual-topline { position: absolute; inset: 1.25rem 1.3rem auto; z-index: 3; padding: 0; }
 .venom-logo-stage { position: absolute; top: 47%; left: 50%; z-index: 2; display: grid; width: min(72%,390px); aspect-ratio: 1; place-items: center; transform: translate(-50%,-50%); }
 .venom-logo-stage::before { content: ""; position: absolute; inset: 11%; z-index: -1; background: url("assets/venomous-icon.png") center/contain no-repeat; opacity: .42; filter: brightness(0) saturate(100%) invert(78%) sepia(52%) saturate(600%) hue-rotate(57deg) brightness(105%); transform: translate(15px,18px); }
@@ -714,3 +713,19 @@ body.matrix-rain-page .button-blue:hover { background: #7cff99; }
   .project-callout { gap: 2rem; }
   .project-callout .button { width: 100%; }
 }
+
+/* Pixel shimmer buttons ---------------------------------------------------
+   <pixel-canvas> paints an animated pixel grid behind text on hover/focus.
+   Hosts need a local stacking context so the canvas can sit above the
+   button surface while staying below the icon and label. */
+.button { position: relative; isolation: isolate; overflow: hidden; }
+pixel-canvas { position: absolute; inset: 0; z-index: -1; border-radius: inherit; overflow: hidden; pointer-events: none; }
+
+/* Full-page canvas effects ------------------------------------------------ */
+.effect-background { position: fixed; inset: 0; z-index: -1; width: 100%; height: 100%; pointer-events: none; }
+
+/* Pages with an effect canvas: the canvas is the page background. The body
+   background is opaque and would paint over a negative z-index canvas, so it
+   is cleared on those pages (html still provides the base color). */
+body[data-page="venomous"],
+body[data-member="0xffshell"] { background: transparent; }

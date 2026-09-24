@@ -22,7 +22,7 @@ Client-side synchronization uses the public GitLab API and raw repository source
 - Recent commits and project contributors with GitLab profile links
 - Registered modules parsed from `ModuleRegistry.java`
 
-GitLab does not expose group membership through its public API, so the people directory renders the checked-in member roster. Projects that currently live only on GitHub (NullTrace, ChampionsCode) keep pulling release data from the GitHub API, and their repository links stay on GitHub. Checked-in content and authentic local images keep the pages useful if the API is unavailable or rate-limited.
+GitLab does not expose group membership through its public API, so the people directory renders the checked-in member roster. All project repositories (Venomous, NullTrace, ChampionsCode, and this website) live in the GitLab group, and NullTrace release data is pulled from the GitLab releases API. Personal profiles that remain on GitHub keep their original destinations. Checked-in content and authentic local images keep the pages useful if the API is unavailable or rate-limited.
 
 Open `http://localhost:8080`. No build step or external front-end dependency is required.
 

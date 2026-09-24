@@ -13,6 +13,7 @@
   <link rel="icon" href="assets/venomous-icon.png" type="image/png">
   <link rel="stylesheet" href="styles.css">
   <script src="script.js" defer></script>
+  <script src="pixel-canvas.js" defer></script> <script src="venom-hex.js" defer></script>
 </head>
 <body data-page="venomous">
   <svg class="svg-sprite" aria-hidden="true">
@@ -44,6 +45,7 @@
 
   <a class="skip-link" href="#main">Skip to content</a>
   <div class="site-glow site-glow-green" aria-hidden="true"></div>
+  <canvas id="venom-hex" class="effect-background" aria-hidden="true"></canvas>
 
   <header class="topbar" data-header>
     <div class="shell topbar-inner">
@@ -68,14 +70,13 @@
         <p class="venom-tagline">Optimized &amp; refined<br>Meteor Client addon.</p>
         <p class="venom-description"><span data-module-total>124</span> focused modules for Minecraft 26.2, covering combat, movement, detection, rendering, automation, and more.</p>
         <div class="action-row">
-          <a class="button button-green" data-stable-download href="https://gitlab.com/international-duck-incorporated/Venomous/-/releases/v7.0.0/downloads/Venomous-7.0.0.jar"><svg><use href="#i-download"/></svg>Download <span data-release-version>v7.0.0</span></a>
-          <a class="button button-glass" href="https://gitlab.com/international-duck-incorporated/Venomous" target="_blank" rel="noreferrer"><svg><use href="#i-gitlab"/></svg>View source</a>
+          <a class="button button-green" data-stable-download href="https://gitlab.com/international-duck-incorporated/Venomous/-/releases/v7.0.0/downloads/Venomous-7.0.0.jar"><pixel-canvas data-gap="6" data-speed="35" data-colors="#ddfbe4, #8cf77a, #4caf6d"></pixel-canvas><svg><use href="#i-download"/></svg>Download <span data-release-version>v7.0.0</span></a>
+          <a class="button button-glass" href="https://gitlab.com/international-duck-incorporated/Venomous" target="_blank" rel="noreferrer"><pixel-canvas data-gap="6" data-speed="35" data-colors="#ddfbe4, #8cf77a, #4caf6d"></pixel-canvas><svg><use href="#i-gitlab"/></svg>View source</a>
         </div>
         <div class="requirement-row"><span>Minecraft <b>26.2</b></span><span>Meteor Client</span><span>Java <b>25</b></span></div>
       </div>
 
       <div class="venom-visual glass-card reveal" aria-label="Venomous project identity">
-        <canvas data-ambient aria-hidden="true"></canvas>
         <div class="visual-topline"><span>VENOMOUS / PROJECT 01</span><span class="live-label"><i></i> ONLINE</span></div>
         <div class="venom-logo-stage"><img src="assets/venomous-icon.png" alt="Venomous snake logo" width="512" height="512"></div>
         <div class="visual-metrics"><div><small>VERSION</small><b data-release-short>7.0.0</b></div><div><small>MODULES</small><b data-module-total>124</b></div><div><small>LANGUAGE</small><b data-language>Java</b></div></div>
@@ -127,8 +128,8 @@
     <section class="content-section shell" id="releases">
       <header class="section-heading reveal"><div><span class="eyebrow green">Downloads</span><h2>Choose a channel.</h2></div><p>Release files and metadata come directly from GitLab.</p></header>
       <div class="release-grid">
-        <article class="release-card glass-card featured reveal"><span class="release-icon"><svg><use href="#i-check"/></svg></span><div><span class="card-label">Stable</span><h3 data-release-version>v7.0.0</h3><p>Recommended tagged build.</p></div><div class="release-info"><span data-stable-date>Latest release</span><span data-stable-size>JAR</span></div><a data-stable-download href="https://gitlab.com/international-duck-incorporated/Venomous/-/releases/v7.0.0/downloads/Venomous-7.0.0.jar" aria-label="Download stable release"><svg><use href="#i-download"/></svg></a></article>
-        <article class="release-card glass-card reveal"><span class="release-icon"><svg><use href="#i-zap"/></svg></span><div><span class="card-label">Nightly</span><h3 data-nightly-version>Latest main</h3><p>Fresh automated build.</p></div><div class="release-info"><span data-nightly-date>Automated</span><span data-nightly-size>JAR</span></div><a data-nightly-download href="https://gitlab.com/international-duck-incorporated/Venomous/-/tags/nightly" aria-label="Download nightly release"><svg><use href="#i-download"/></svg></a></article>
+        <article class="release-card glass-card featured reveal"><span class="release-icon"><svg><use href="#i-check"/></svg></span><div><span class="card-label">Stable</span><h3 data-release-version>v7.0.0</h3><p>Recommended tagged build.</p></div><div class="release-info"><span data-stable-date>Latest release</span><span data-stable-size>JAR</span></div><a data-stable-download href="https://gitlab.com/international-duck-incorporated/Venomous/-/releases/v7.0.0/downloads/Venomous-7.0.0.jar" aria-label="Download stable release"><svg><use href="#i-download"/></svg></a><pixel-canvas data-gap="7" data-speed="35" data-colors="#ddfbe4, #8cf77a, #4caf6d"></pixel-canvas></article>
+        <article class="release-card glass-card reveal"><span class="release-icon"><svg><use href="#i-zap"/></svg></span><div><span class="card-label">Nightly</span><h3 data-nightly-version>Latest main</h3><p>Fresh automated build.</p></div><div class="release-info"><span data-nightly-date>Automated</span><span data-nightly-size>JAR</span></div><a data-nightly-download href="https://gitlab.com/international-duck-incorporated/Venomous/-/tags/nightly" aria-label="Download nightly release"><svg><use href="#i-download"/></svg></a><pixel-canvas data-gap="7" data-speed="35" data-colors="#e8edf2, #9aa7b4, #5f6d7c"></pixel-canvas></article>
       </div>
 
       <div class="install-panel glass-card reveal">
