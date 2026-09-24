@@ -25,12 +25,6 @@ Client-side synchronization uses the public GitHub API and raw repository source
 
 Checked-in content and authentic local images keep both pages useful if the API is unavailable or rate-limited. When public organization membership is unavailable, the people section falls back to project contributors.
 
-## Local preview
-
-```bash
-python3 -m http.server 8080
-```
-
 Open `http://localhost:8080`. No build step or external front-end dependency is required.
 
 ## Deploy
