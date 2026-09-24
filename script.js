@@ -268,7 +268,7 @@ function initAtmosphere(canvas) {
   function makeParticle() {
     const large = Math.random() < (storm ? .2 : (network ? .18 : .24));
     const speed = storm ? random(.012, .026) : (network ? random(.004, .012) : random(.0015, .007));
-    const angle = random(0, Math.PI * 2);
+    const angle = storm ? random(Math.PI * .42, Math.PI * .58) : random(0, Math.PI * 2);
     return {
       x: random(0, width), y: random(0, height),
       r: large ? random(1.2, network ? 2.8 : (storm ? 2.2 : 3.8)) : random(.35, network ? 1.7 : (storm ? 1.1 : 1.65)),
