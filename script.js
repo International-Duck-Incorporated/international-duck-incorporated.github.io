@@ -161,11 +161,11 @@ async function syncPeople() {
   grid.replaceChildren(...people.map((person) => {
     const link = document.createElement("a");
     link.className = "person-card glass-card reveal visible";
-    const memberPages = { "3spress0": "3spress0.html", "E-VDV-HU": "e-vdv-hu.html", "0xFFshell": "0xffshell.html", "Xx-superIvar-xX": "superivar.html" };
+    const memberPages = { "3spress0": "3spress0.html", "E-VDV-HU": "e-vdv-hu.html", "0xFFshell": "0xffshell.html", "Xx-superIvar-xX": "superivar.html", "midas735": "midas735.html" };
     link.href = memberPages[person.login] || person.html_url;
     if (!memberPages[person.login]) { link.target = "_blank"; link.rel = "noreferrer"; }
     const image = document.createElement("img");
-    const localMemberImages = { "3spress0": "assets/contributor-3spress0.png", "0xFFshell": "assets/member-0xffshell.png", "E-VDV-HU": "assets/member-e-vdv-hu.png", "Xx-superIvar-xX": "assets/member-xx-superivar-xx.png" };
+    const localMemberImages = { "3spress0": "assets/contributor-3spress0.png", "0xFFshell": "assets/member-0xffshell.png", "E-VDV-HU": "assets/member-e-vdv-hu.png", "Xx-superIvar-xX": "assets/member-xx-superivar-xx.png", "midas735": "assets/member-midas735.png" };
     image.src = localMemberImages[person.login] || (person.avatar_url ? `${person.avatar_url}&size=192` : "assets/org-avatar.png");
     image.alt = person.login; image.width = 96; image.height = 96;
     const copy = document.createElement("div");
@@ -177,7 +177,8 @@ async function syncPeople() {
     const summaries = {
       "0xFFshell": "Venomous writer",
       "E-VDV-HU": "Applied software · Python projects",
-      "Xx-superIvar-xX": "New member · GitHub profile"
+      "Xx-superIvar-xX": "New member · GitHub profile",
+      "midas735": "New member · GitHub profile"
     };
     handle.textContent = summaries[person.login] || `@${person.login}`;
     copy.append(label, name, handle);
