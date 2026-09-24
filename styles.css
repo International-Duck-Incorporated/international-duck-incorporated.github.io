@@ -438,18 +438,6 @@ body[data-project="nulltrace"] {
   position: relative;
   background: #07090d;
 }
-body[data-page="organization"] {
-  background: radial-gradient(ellipse at 66% 18%, rgba(40, 63, 97, .16), transparent 38%), #06080c;
-}
-body[data-page="organization"] main,
-body[data-page="organization"] footer {
-  position: relative;
-  z-index: 1;
-}
-body[data-page="organization"] .atmosphere-canvas {
-  opacity: .88;
-  mix-blend-mode: screen;
-}
 body[data-project="championscode"]::before {
   background: radial-gradient(ellipse at 76% 18%, rgba(202, 137, 45, .16), transparent 36%), #07090d;
   opacity: .96;
