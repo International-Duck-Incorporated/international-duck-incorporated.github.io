@@ -9,66 +9,218 @@
   <meta property="og:description" content="Client-side Fabric privacy mod with its first official release, v2.0.0, for Minecraft 1.21.11, 26.1, 26.2, and 26.3.">
   <meta property="og:type" content="website">
   <meta property="og:image" content="https://raw.githubusercontent.com/International-Duck-Incorporated/NullTrace/main/docs/assets/nulltrace-logo.png">
+
   <title>NullTrace - International Duck</title>
+
   <link rel="icon" href="assets/nulltrace-icon.png" type="image/png">
   <link rel="stylesheet" href="styles.css">
+
   <script src="script.js" defer></script>
 </head>
+
 <body data-page="project" data-project="nulltrace">
   <svg class="svg-sprite" aria-hidden="true">
-    <symbol id="i-github" viewBox="0 0 24 24"><path d="M15 22v-4a4.8 4.8 0 0 0-1-3.5c3.3-.4 6.8-1.6 6.8-7.4A5.7 5.7 0 0 0 19.3 3 5.4 5.4 0 0 0 19.1 0S17.9-.4 15 1.5a14 14 0 0 0-6 0C6.1-.4 4.9 0 4.9 0a5.4 5.4 0 0 0-.2 3A5.7 5.7 0 0 0 3.2 7.1c0 5.8 3.5 7 6.8 7.4A4.8 4.8 0 0 0 9 18v4M9 19c-3 .9-3-1.5-4-2"/></symbol><symbol id="i-gitlab" viewBox="0 0 24 24"><path fill="currentColor" stroke="none" d="m23.6004 9.5927-.0337-.0862L20.3.9814a.851.851 0 0 0-.3362-.405.8748.8748 0 0 0-.9997.0539.8748.8748 0 0 0-.29.4399l-2.2055 6.748H7.5375l-2.2057-6.748a.8573.8573 0 0 0-.29-.4412.8748.8748 0 0 0-.9997-.0537.8585.8585 0 0 0-.3362.4049L.4332 9.5015l-.0325.0862a6.0657 6.0657 0 0 0 2.0119 7.0105l.0113.0087.03.0213 4.976 3.7264 2.462 1.8633 1.4995 1.1321a1.0085 1.0085 0 0 0 1.2197 0l1.4995-1.1321 2.4619-1.8633 5.006-3.7489.0125-.01a6.0682 6.0682 0 0 0 2.0094-7.003z"/></symbol>
-    <symbol id="i-download" viewBox="0 0 24 24"><path d="M12 3v12M7 10l5 5 5-5M4 20h16"/></symbol>
-    <symbol id="i-arrow" viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></symbol>
-    <symbol id="i-external" viewBox="0 0 24 24"><path d="M14 5h5v5M19 5l-9 9M18 13v6H5V6h6"/></symbol>
-    <symbol id="i-menu" viewBox="0 0 24 24"><path d="M4 8h16M4 16h16"/></symbol>
-    <symbol id="i-close" viewBox="0 0 24 24"><path d="m5 5 14 14M19 5 5 19"/></symbol>
+    <symbol id="i-github" viewBox="0 0 24 24">
+      <path d="M15 22v-4a4.8 4.8 0 0 0-1-3.5c3.3-.4 6.8-1.6 6.8-7.4A5.7 5.7 0 0 0 19.3 3 5.4 5.4 0 0 0 19.1 0S17.9-.4 15 1.5a14 14 0 0 0-6 0C6.1-.4 4.9 0 4.9 0a5.4 5.4 0 0 0-.2 3A5.7 5.7 0 0 0 3.2 7.1c0 5.8 3.5 7 6.8 7.4A4.8 4.8 0 0 0 9 18v4M9 19c-3 .9-3-1.5-4-2"/>
+    </symbol>
+
+    <symbol id="i-gitlab" viewBox="0 0 24 24">
+      <path fill="currentColor" stroke="none" d="m23.6004 9.5927-.0337-.0862L20.3.9814a.851.851 0 0 0-.3362-.405.8748.8748 0 0 0-.9997.0539.8748.8748 0 0 0-.29.4399l-2.2055 6.748H7.5375l-2.2057-6.748a.8573.8573 0 0 0-.29-.4412.8748.8748 0 0 0-.9997-.0537.8585.8585 0 0 0-.3362.4049L.4332 9.5015l-.0325.0862a6.0657 6.0657 0 0 0 2.0119 7.0105l.0113.0087.03.0213 4.976 3.7264 2.462 1.8633 1.4995 1.1321a1.0085 1.0085 0 0 0 1.2197 0l1.4995-1.1321 2.4619-1.8633 5.006-3.7489.0125-.01a6.0682 6.0682 0 0 0 2.0094-7.003z"/>
+    </symbol>
+
+    <symbol id="i-download" viewBox="0 0 24 24">
+      <path d="M12 3v12M7 10l5 5 5-5M4 20h16"/>
+    </symbol>
+
+    <symbol id="i-arrow" viewBox="0 0 24 24">
+      <path d="M5 12h14M13 6l6 6-6 6"/>
+    </symbol>
+
+    <symbol id="i-external" viewBox="0 0 24 24">
+      <path d="M14 5h5v5M19 5l-9 9M18 13v6H5V6h6"/>
+    </symbol>
+
+    <symbol id="i-menu" viewBox="0 0 24 24">
+      <path d="M4 8h16M4 16h16"/>
+    </symbol>
+
+    <symbol id="i-close" viewBox="0 0 24 24">
+      <path d="m5 5 14 14M19 5 5 19"/>
+    </symbol>
   </svg>
 
   <a class="skip-link" href="#main">Skip to content</a>
+
   <div class="site-glow site-glow-blue" aria-hidden="true"></div>
-  <canvas class="atmosphere-canvas" data-background="network" aria-hidden="true"></canvas>
+  <canvas
+    class="atmosphere-canvas"
+    data-background="network"
+    aria-hidden="true"
+  ></canvas>
 
   <header class="topbar" data-header>
     <div class="shell topbar-inner">
-      <a class="brand" href="/" aria-label="International Duck Incorporated home"><img data-org-avatar src="assets/org-avatar.png" alt="" width="40" height="40"><span><b>International Duck</b><small>Incorporated</small></span></a>
-      <nav class="main-nav" id="main-navigation" data-nav aria-label="Primary navigation">
+      <a
+        class="brand"
+        href="/"
+        aria-label="International Duck Incorporated home"
+      >
+        <img
+          data-org-avatar
+          src="assets/org-avatar.png"
+          alt=""
+          width="40"
+          height="40"
+        >
+
+        <span>
+          <b>International Duck</b>
+          <small>Incorporated</small>
+        </span>
+      </a>
+
+      <nav
+        class="main-nav"
+        id="main-navigation"
+        data-nav
+        aria-label="Primary navigation"
+      >
         <a href="/">Overview</a>
         <a class="active" href="/projects" aria-current="page">Projects</a>
         <a href="/people">People</a>
         <a href="/migration">Migration</a>
-        <a class="icon-link" href="https://gitlab.com/international-duck-incorporated" target="_blank" rel="noreferrer" aria-label="International Duck Incorporated on GitLab"><svg><use href="#i-gitlab"/></svg></a>
+
+        <a
+          class="icon-link"
+          href="https://gitlab.com/international-duck-incorporated"
+          target="_blank"
+          rel="noreferrer"
+          aria-label="International Duck Incorporated on GitLab"
+        >
+          <svg><use href="#i-gitlab"/></svg>
+        </a>
       </nav>
-      <button class="menu-button" type="button" data-menu aria-label="Open navigation" aria-controls="main-navigation" aria-expanded="false"><svg class="menu-open"><use href="#i-menu"/></svg><svg class="menu-close"><use href="#i-close"/></svg></button>
+
+      <button
+        class="menu-button"
+        type="button"
+        data-menu
+        aria-label="Open navigation"
+        aria-controls="main-navigation"
+        aria-expanded="false"
+      >
+        <svg class="menu-open"><use href="#i-menu"/></svg>
+        <svg class="menu-close"><use href="#i-close"/></svg>
+      </button>
     </div>
   </header>
 
   <main id="main" class="profile-page project-page">
     <div class="shell">
-      <div class="breadcrumbs"><a href="/">International Duck</a><span>/</span><a href="/projects">Projects</a><span>/</span><b>NullTrace</b></div>
+      <div class="breadcrumbs">
+        <a href="/">International Duck</a>
+        <span>/</span>
+        <a href="/projects">Projects</a>
+        <span>/</span>
+        <b>NullTrace</b>
+      </div>
 
       <section class="profile-hero">
         <article class="profile-intro glass-card reveal">
-          <img class="project-mark" src="assets/nulltrace-icon.png" alt="NullTrace logo" width="82" height="82">
+          <img
+            class="project-mark"
+            src="assets/nulltrace-icon.png"
+            alt="NullTrace logo"
+            width="82"
+            height="82"
+          >
+
           <span class="eyebrow">Privacy engineering</span>
-          <span class="status-pill green release-badge"><i></i> Official release · <b data-nulltrace-version>v2.0.0</b></span>
+
+          <span class="status-pill green release-badge">
+            <i></i>
+            Official release ·
+            <b data-nulltrace-version>v2.0.0</b>
+          </span>
+
           <h1>NullTrace.</h1>
-          <p class="lead">NullTrace is a client-side Fabric mod that reduces the information Minecraft servers can use to identify, fingerprint, or track a modded client. It started from OpSec's client-side privacy work and now runs its own codebase, branding, and version support for Minecraft 1.21.11, 26.1, 26.2, and 26.3.</p>
+
+          <p class="lead">
+            NullTrace is a client-side Fabric mod that reduces the information
+            Minecraft servers can use to identify, fingerprint, or track a
+            modded client. It started from OpSec's client-side privacy work and
+            now runs its own codebase, branding, and version support for
+            Minecraft 1.21.11, 26.1, 26.2, and 26.3.
+          </p>
+
           <div class="action-row">
-            <a class="button button-blue" data-nulltrace-release-link href="https://github.com/International-Duck-Incorporated/NullTrace/releases/tag/v2" target="_blank" rel="noreferrer"><svg><use href="#i-download"/></svg><span data-nulltrace-release-label>Download v2.0.0</span></a>
-            <a class="button button-glass" href="https://github.com/International-Duck-Incorporated/NullTrace" target="_blank" rel="noreferrer"><svg><use href="#i-github"/></svg>View repository</a>
-            <a class="button button-glass" href="https://github.com/International-Duck-Incorporated/NullTrace/releases" target="_blank" rel="noreferrer"><svg><use href="#i-download"/></svg>Nightly builds</a>
+            <a
+              class="button button-blue"
+              data-nulltrace-release-link
+              href="https://github.com/International-Duck-Incorporated/NullTrace/releases/tag/v2"
+              target="_blank"
+              rel="noreferrer"
+            >
+              <svg><use href="#i-download"/></svg>
+              <span data-nulltrace-release-label>Download v2.0.0</span>
+            </a>
+
+            <a
+              class="button button-glass"
+              href="https://github.com/International-Duck-Incorporated/NullTrace"
+              target="_blank"
+              rel="noreferrer"
+            >
+              <svg><use href="#i-github"/></svg>
+              View repository
+            </a>
+
+            <a
+              class="button button-glass"
+              href="https://github.com/International-Duck-Incorporated/NullTrace/releases"
+              target="_blank"
+              rel="noreferrer"
+            >
+              <svg><use href="#i-download"/></svg>
+              Nightly builds
+            </a>
           </div>
         </article>
+
         <aside class="profile-sidebar glass-card reveal">
           <div>
             <span class="eyebrow">Project facts</span>
+
             <div class="fact-list">
-              <div class="fact"><small>Status</small><b>Active development</b></div>
-              <div class="fact"><small>Technology</small><b>Java 25 · Fabric</b></div>
-              <div class="fact"><small>Target</small><b>Minecraft 1.21.11 / 26.1 / 26.2 / 26.3</b></div>
-              <div class="fact"><small>Version</small><b data-nulltrace-version>v2.0.0</b></div>
-              <div class="fact"><small>License</small><b>GPL-3.0</b></div>
-              <div class="fact"><small>Distribution</small><b>GitHub Releases only</b></div>
+              <div class="fact">
+                <small>Status</small>
+                <b>Active development</b>
+              </div>
+
+              <div class="fact">
+                <small>Technology</small>
+                <b>Java 25 · Fabric</b>
+              </div>
+
+              <div class="fact">
+                <small>Target</small>
+                <b>Minecraft 1.21.11 / 26.1 / 26.2 / 26.3</b>
+              </div>
+
+              <div class="fact">
+                <small>Version</small>
+                <b data-nulltrace-version>v2.0.0</b>
+              </div>
+
+              <div class="fact">
+                <small>License</small>
+                <b>GPL-3.0</b>
+              </div>
+
+              <div class="fact">
+                <small>Distribution</small>
+                <b>GitHub Releases only</b>
+              </div>
             </div>
           </div>
         </aside>
@@ -78,6 +230,7 @@
         <article class="detail-panel glass-card reveal">
           <span class="eyebrow">Protection surface</span>
           <h2>What it defends.</h2>
+
           <ul>
             <li>Client brand spoofing with vanilla-like reporting</li>
             <li>Network-channel, known-pack, and key-resolution filtering</li>
@@ -86,21 +239,54 @@
             <li>Chat signing, telemetry blocking, and account switching</li>
           </ul>
         </article>
+
         <article class="detail-panel glass-card reveal">
           <span class="eyebrow">Scope</span>
           <h2>Honest boundaries.</h2>
-          <p>NullTrace does not make you anonymous. It does not hide your IP address, server-side activity, or every fingerprinting technique. It is specifically focused on reducing common client-side fingerprinting and tracking surfaces.</p>
+
+          <p>
+            NullTrace does not make you anonymous. It does not hide your IP
+            address, server-side activity, or every fingerprinting technique.
+            It is specifically focused on reducing common client-side
+            fingerprinting and tracking surfaces.
+          </p>
         </article>
+
         <article class="detail-panel glass-card reveal release-detail">
           <span class="eyebrow">Official release</span>
           <h2>First release.</h2>
-          <p><b data-nulltrace-release-note>First official release</b> is now available through GitHub Releases. The v2.0.0 release includes builds for Minecraft 1.21.11, 26.1, 26.2, and 26.3.</p>
-          <div class="release-meta"><span>Version <b data-nulltrace-version>v2.0.0</b></span><span data-nulltrace-date>23 Sep 2026</span></div>
-          <a class="inline-link" data-nulltrace-release-link href="https://github.com/International-Duck-Incorporated/NullTrace/releases/tag/v2" target="_blank" rel="noreferrer">View official release <svg><use href="#i-arrow"/></svg></a>
+
+          <p>
+            <b data-nulltrace-release-note>First official release</b>
+            is now available through GitHub Releases. The v2.0.0 release
+            includes builds for Minecraft 1.21.11, 26.1, 26.2, and 26.3.
+          </p>
+
+          <div class="release-meta">
+            <span>
+              Version
+              <b data-nulltrace-version>v2.0.0</b>
+            </span>
+
+            <span data-nulltrace-date>23 Sep 2026</span>
+          </div>
+
+          <a
+            class="inline-link"
+            data-nulltrace-release-link
+            href="https://github.com/International-Duck-Incorporated/NullTrace/releases/tag/v2"
+            target="_blank"
+            rel="noreferrer"
+          >
+            View official release
+            <svg><use href="#i-arrow"/></svg>
+          </a>
         </article>
+
         <article class="detail-panel glass-card reveal">
           <span class="eyebrow">Diagnostics</span>
           <h2>Stay informed.</h2>
+
           <ul>
             <li>Alerts, toast notifications, and detection logging</li>
             <li>Optional /nulltrace debug command, disabled by default</li>
@@ -109,11 +295,170 @@
           </ul>
         </article>
       </section>
+
+      <section
+        class="project-deep-dive"
+        aria-labelledby="nulltrace-workflow-title"
+      >
+        <header class="section-heading reveal">
+          <div>
+            <span class="eyebrow">How it works</span>
+            <h2 id="nulltrace-workflow-title">
+              A layered privacy workflow.
+            </h2>
+          </div>
+
+          <p>
+            NullTrace focuses on specific client-side signals instead of
+            promising anonymity it cannot provide.
+          </p>
+        </header>
+
+        <div class="project-feature-grid">
+          <article class="project-feature glass-card reveal">
+            <span>01</span>
+            <h3>Inspect the connection</h3>
+
+            <p>
+              Connection posture and known fingerprinting surfaces are
+              evaluated when joining a server, before normal play produces
+              additional client signals.
+            </p>
+          </article>
+
+          <article class="project-feature glass-card reveal">
+            <span>02</span>
+            <h3>Reduce exposed signals</h3>
+
+            <p>
+              Brand reporting, network channels, known packs, key resolution,
+              telemetry, and selected resource-pack behavior can be filtered or
+              isolated.
+            </p>
+          </article>
+
+          <article class="project-feature glass-card reveal">
+            <span>03</span>
+            <h3>Keep control visible</h3>
+
+            <p>
+              Alerts, logs, configuration screens, and optional diagnostics
+              make active protections understandable rather than silently
+              changing behavior.
+            </p>
+          </article>
+        </div>
+      </section>
+
+      <section
+        class="project-deep-dive project-deep-dive-muted"
+        aria-labelledby="nulltrace-controls-title"
+      >
+        <header class="section-heading reveal">
+          <div>
+            <span class="eyebrow">Controls</span>
+            <h2 id="nulltrace-controls-title">
+              Designed for different trust levels.
+            </h2>
+          </div>
+
+          <p>
+            Settings can be adjusted for a server instead of forcing one global
+            policy onto every connection.
+          </p>
+        </header>
+
+        <div class="project-info-grid">
+          <article class="glass-card reveal">
+            <h3>Manual</h3>
+
+            <p>
+              Keep potentially identifying behavior behind an explicit user
+              action. This is the most deliberate option for unfamiliar
+              servers.
+            </p>
+          </article>
+
+          <article class="glass-card reveal">
+            <h3>Ask</h3>
+
+            <p>
+              Prompt when a protected action needs a decision, providing
+              context without permanently blocking the workflow.
+            </p>
+          </article>
+
+          <article class="glass-card reveal">
+            <h3>Always on</h3>
+
+            <p>
+              Apply the selected protection automatically for users who prefer
+              a consistent default posture.
+            </p>
+          </article>
+
+          <article class="glass-card reveal">
+            <h3>Compatibility lists</h3>
+
+            <p>
+              Allow trusted mods or known services to communicate intentionally
+              while retaining protections for everything else.
+            </p>
+          </article>
+        </div>
+      </section>
+
+      <section class="project-callout glass-card reveal">
+        <div>
+          <span class="eyebrow">Responsible use</span>
+          <h2>Privacy reduction, not invisibility.</h2>
+
+          <p>
+            Servers still receive an IP address and can observe account
+            identity, movement, chat, timing, and server-side behavior.
+            NullTrace narrows selected fingerprinting surfaces; it does not
+            erase the connection.
+          </p>
+        </div>
+
+        <a
+          class="button button-glass"
+          href="https://github.com/International-Duck-Incorporated/NullTrace"
+          target="_blank"
+          rel="noreferrer"
+        >
+          <svg><use href="#i-github"/></svg>
+          Read the source
+        </a>
+      </section>
     </div>
   </main>
 
   <footer class="site-footer">
-    <div class="shell footer-inner"><a class="brand" href="/"><img src="assets/org-avatar.png" alt=""><span><b>International Duck</b><small>Incorporated</small></span></a><nav><a href="/projects">Projects</a><a href="/people">People</a><a href="/migration">Migration</a><a href="https://gitlab.com/international-duck-incorporated">GitLab</a></nav><span class="sync-state"><i></i><span data-sync-text>GitLab data synced live</span></span></div>
+    <div class="shell footer-inner">
+      <a class="brand" href="/">
+        <img src="assets/org-avatar.png" alt="">
+
+        <span>
+          <b>International Duck</b>
+          <small>Incorporated</small>
+        </span>
+      </a>
+
+      <nav>
+        <a href="/projects">Projects</a>
+        <a href="/people">People</a>
+        <a href="/migration">Migration</a>
+        <a href="https://gitlab.com/international-duck-incorporated">
+          GitLab
+        </a>
+      </nav>
+
+      <span class="sync-state">
+        <i></i>
+        <span data-sync-text>GitLab data synced live</span>
+      </span>
+    </div>
   </footer>
 </body>
 </html>

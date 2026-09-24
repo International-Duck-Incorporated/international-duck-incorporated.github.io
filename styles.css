@@ -557,7 +557,7 @@ body[data-project="nulltrace"] footer {
   .migration-next .button { width: 100%; }
 }
 
-/* StarryNightVibrant adaptation — espress0 profile
+/* StarryNightVibrant adaptation â€” espress0 profile
    Source: https://github.com/ElPioterro/StarryNightVibrant (MIT) */
 body.starry-night-page {
   position: relative;
@@ -619,11 +619,12 @@ body.starry-night-page .site-glow { display: none; }
   content: "";
   position: absolute;
   top: 50%;
-  right: 0;
+  left: 0;
   width: min(300px, 35vw);
   height: 1px;
   transform: translateY(-50%);
-  background: linear-gradient(90deg, transparent, rgba(218,225,255,.9));
+  /* The star travels toward its local -X direction, so the tail extends +X. */
+  background: linear-gradient(90deg, rgba(218,225,255,.9), transparent);
 }
 @keyframes starrynight-gradient {
   from { background-position: 0% 20%; filter: hue-rotate(0deg); }
@@ -647,4 +648,69 @@ body.starry-night-page .site-glow { display: none; }
   .starrynight-star,
   .starrynight-shooting-star { animation: none !important; }
   .starrynight-shooting-star { display: none; }
+}
+
+/* Green Matrix background â€” 0xFFshell profile
+   Adapted from https://codepen.io/wefiy/pen/WPpEwo */
+body.matrix-rain-page {
+  position: relative;
+  isolation: isolate;
+  background: #020704;
+}
+body.matrix-rain-page::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background:
+    linear-gradient(180deg, rgba(1,7,3,.7), transparent 25%),
+    linear-gradient(0deg, rgba(1,7,3,.78), transparent 30%);
+}
+body.matrix-rain-page .site-glow { display: none; }
+.matrix-rain-canvas {
+  position: fixed;
+  inset: 0;
+  z-index: -2;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  background: #020704;
+}
+body.matrix-rain-page .eyebrow { color: #64f889; }
+body.matrix-rain-page .button-blue {
+  color: #021006;
+  background: #5cf47f;
+  border-color: #5cf47f;
+  box-shadow: 0 10px 30px rgba(62,235,105,.18);
+}
+body.matrix-rain-page .button-blue:hover { background: #7cff99; }
+
+/* Extended project pages */
+.project-deep-dive { padding-top: clamp(5rem, 8vw, 7.5rem); }
+.project-deep-dive-muted { margin-top: clamp(5rem, 8vw, 7rem); padding: clamp(3rem, 5vw, 5rem); background: rgba(12,15,21,.46); border: 1px solid rgba(255,255,255,.05); border-radius: var(--radius-xl); }
+.project-feature-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: .8rem; }
+.project-feature { min-height: 280px; padding: 1.5rem; border-radius: var(--radius-lg); }
+.project-feature > span { display: inline-grid; width: 38px; height: 38px; place-items: center; color: var(--blue); background: var(--blue-soft); border-radius: 12px; font: 650 .58rem var(--mono); }
+.project-feature h3, .project-info-grid h3 { margin: 2.6rem 0 .75rem; font-size: 1.2rem; letter-spacing: -.035em; }
+.project-feature p, .project-info-grid p { margin: 0; color: var(--muted); font-size: .75rem; line-height: 1.72; }
+.project-info-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: .8rem; }
+.project-info-grid > article { min-height: 230px; padding: 1.5rem; border-radius: var(--radius-lg); }
+.project-info-grid h3 { margin-top: 0; }
+.project-callout { display: grid; margin-top: clamp(5rem, 8vw, 7rem); padding: clamp(1.5rem, 4vw, 3rem); grid-template-columns: 1fr auto; gap: 3rem; align-items: center; border-radius: var(--radius-xl); }
+.project-callout h2 { max-width: 760px; margin: .7rem 0 1rem; font-size: clamp(2.3rem, 4.5vw, 4rem); line-height: .96; letter-spacing: -.06em; }
+.project-callout p { max-width: 740px; margin: 0; color: var(--muted); font-size: .82rem; line-height: 1.75; }
+.project-callout .button { white-space: nowrap; }
+.project-page > .shell { padding-bottom: clamp(2rem, 5vw, 4rem); }
+@media (max-width: 900px) {
+  .project-feature-grid { grid-template-columns: 1fr; }
+  .project-feature { min-height: 220px; }
+  .project-feature h3 { margin-top: 1.8rem; }
+}
+@media (max-width: 760px) {
+  .project-deep-dive-muted { margin-inline: -.25rem; padding: 2rem 1rem; }
+  .project-info-grid, .project-callout { grid-template-columns: 1fr; }
+  .project-info-grid > article { min-height: 190px; }
+  .project-callout { gap: 2rem; }
+  .project-callout .button { width: 100%; }
 }

@@ -4,61 +4,397 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#07090d">
-  <meta name="description" content="The source project behind the International Duck Incorporated website.">
+  <meta
+    name="description"
+    content="The source project behind the International Duck Incorporated website."
+  >
   <meta property="og:title" content="This website - International Duck">
-  <meta property="og:description" content="This is uh... this website... :)">
+  <meta
+    property="og:description"
+    content="This is uh... this website... :)"
+  >
   <meta property="og:type" content="website">
+
   <title>This website - International Duck</title>
+
   <link rel="icon" href="assets/org-avatar.png" type="image/png">
   <link rel="stylesheet" href="styles.css">
+
   <script src="script.js" defer></script>
 </head>
+
 <body data-page="project" data-project="website">
   <svg class="svg-sprite" aria-hidden="true">
-    <symbol id="i-github" viewBox="0 0 24 24"><path d="M15 22v-4a4.8 4.8 0 0 0-1-3.5c3.3-.4 6.8-1.6 6.8-7.4A5.7 5.7 0 0 0 19.3 3 5.4 5.4 0 0 0 19.1 0S17.9-.4 15 1.5a14 14 0 0 0-6 0C6.1-.4 4.9 0 4.9 0a5.4 5.4 0 0 0-.2 3A5.7 5.7 0 0 0 3.2 7.1c0 5.8 3.5 7 6.8 7.4A4.8 4.8 0 0 0 9 18v4M9 19c-3 .9-3-1.5-4-2"/></symbol><symbol id="i-gitlab" viewBox="0 0 24 24"><path fill="currentColor" stroke="none" d="m23.6004 9.5927-.0337-.0862L20.3.9814a.851.851 0 0 0-.3362-.405.8748.8748 0 0 0-.9997.0539.8748.8748 0 0 0-.29.4399l-2.2055 6.748H7.5375l-2.2057-6.748a.8573.8573 0 0 0-.29-.4412.8748.8748 0 0 0-.9997-.0537.8585.8585 0 0 0-.3362.4049L.4332 9.5015l-.0325.0862a6.0657 6.0657 0 0 0 2.0119 7.0105l.0113.0087.03.0213 4.976 3.7264 2.462 1.8633 1.4995 1.1321a1.0085 1.0085 0 0 0 1.2197 0l1.4995-1.1321 2.4619-1.8633 5.006-3.7489.0125-.01a6.0682 6.0682 0 0 0 2.0094-7.003z"/></symbol>
-    <symbol id="i-menu" viewBox="0 0 24 24"><path d="M4 8h16M4 16h16"/></symbol>
-    <symbol id="i-close" viewBox="0 0 24 24"><path d="m5 5 14 14M19 5 5 19"/></symbol>
+    <symbol id="i-github" viewBox="0 0 24 24">
+      <path d="M15 22v-4a4.8 4.8 0 0 0-1-3.5c3.3-.4 6.8-1.6 6.8-7.4A5.7 5.7 0 0 0 19.3 3 5.4 5.4 0 0 0 19.1 0S17.9-.4 15 1.5a14 14 0 0 0-6 0C6.1-.4 4.9 0 4.9 0a5.4 5.4 0 0 0-.2 3A5.7 5.7 0 0 0 3.2 7.1c0 5.8 3.5 7 6.8 7.4A4.8 4.8 0 0 0 9 18v4M9 19c-3 .9-3-1.5-4-2"/>
+    </symbol>
+
+    <symbol id="i-gitlab" viewBox="0 0 24 24">
+      <path
+        fill="currentColor"
+        stroke="none"
+        d="m23.6004 9.5927-.0337-.0862L20.3.9814a.851.851 0 0 0-.3362-.405.8748.8748 0 0 0-.9997.0539.8748.8748 0 0 0-.29.4399l-2.2055 6.748H7.5375l-2.2057-6.748a.8573.8573 0 0 0-.29-.4412.8748.8748 0 0 0-.9997-.0537.8585.8585 0 0 0-.3362.4049L.4332 9.5015l-.0325.0862a6.0657 6.0657 0 0 0 2.0119 7.0105l.0113.0087.03.0213 4.976 3.7264 2.462 1.8633 1.4995 1.1321a1.0085 1.0085 0 0 0 1.2197 0l1.4995-1.1321 2.4619-1.8633 5.006-3.7489.0125-.01a6.0682 6.0682 0 0 0 2.0094-7.003z"
+      />
+    </symbol>
+
+    <symbol id="i-menu" viewBox="0 0 24 24">
+      <path d="M4 8h16M4 16h16"/>
+    </symbol>
+
+    <symbol id="i-close" viewBox="0 0 24 24">
+      <path d="m5 5 14 14M19 5 5 19"/>
+    </symbol>
   </svg>
 
   <a class="skip-link" href="#main">Skip to content</a>
+
   <div class="site-glow site-glow-blue" aria-hidden="true"></div>
 
   <header class="topbar" data-header>
     <div class="shell topbar-inner">
-      <a class="brand" href="/" aria-label="International Duck Incorporated home"><img data-org-avatar src="assets/org-avatar.png" alt="" width="40" height="40"><span><b>International Duck</b><small>Incorporated</small></span></a>
-      <nav class="main-nav" id="main-navigation" data-nav aria-label="Primary navigation">
-        <a href="/">Overview</a><a class="active" href="/projects" aria-current="page">Projects</a><a href="/people">People</a><a href="/migration">Migration</a><a class="icon-link" href="https://gitlab.com/international-duck-incorporated" target="_blank" rel="noreferrer" aria-label="International Duck Incorporated on GitLab"><svg><use href="#i-gitlab"/></svg></a>
+      <a
+        class="brand"
+        href="/"
+        aria-label="International Duck Incorporated home"
+      >
+        <img
+          data-org-avatar
+          src="assets/org-avatar.png"
+          alt=""
+          width="40"
+          height="40"
+        >
+
+        <span>
+          <b>International Duck</b>
+          <small>Incorporated</small>
+        </span>
+      </a>
+
+      <nav
+        class="main-nav"
+        id="main-navigation"
+        data-nav
+        aria-label="Primary navigation"
+      >
+        <a href="/">Overview</a>
+        <a class="active" href="/projects" aria-current="page">Projects</a>
+        <a href="/people">People</a>
+        <a href="/migration">Migration</a>
+
+        <a
+          class="icon-link"
+          href="https://gitlab.com/international-duck-incorporated"
+          target="_blank"
+          rel="noreferrer"
+          aria-label="International Duck Incorporated on GitLab"
+        >
+          <svg><use href="#i-gitlab"/></svg>
+        </a>
       </nav>
-      <button class="menu-button" type="button" data-menu aria-label="Open navigation" aria-controls="main-navigation" aria-expanded="false"><svg class="menu-open"><use href="#i-menu"/></svg><svg class="menu-close"><use href="#i-close"/></svg></button>
+
+      <button
+        class="menu-button"
+        type="button"
+        data-menu
+        aria-label="Open navigation"
+        aria-controls="main-navigation"
+        aria-expanded="false"
+      >
+        <svg class="menu-open"><use href="#i-menu"/></svg>
+        <svg class="menu-close"><use href="#i-close"/></svg>
+      </button>
     </div>
   </header>
 
   <main id="main" class="profile-page project-page website-page">
     <div class="shell">
-      <div class="breadcrumbs"><a href="/">International Duck</a><span>/</span><a href="/projects">Projects</a><span>/</span><b>This website</b></div>
+      <div class="breadcrumbs">
+        <a href="/">International Duck</a>
+        <span>/</span>
+        <a href="/projects">Projects</a>
+        <span>/</span>
+        <b>This website</b>
+      </div>
 
       <section class="profile-hero">
         <article class="profile-intro glass-card reveal">
           <div class="project-mark website-mark" aria-hidden="true">:)</div>
+
           <span class="eyebrow">The source repo</span>
+
           <h1>This website.</h1>
-          <p class="lead">This is uh... this website... :) A small static GitLab Pages site for International Duck Incorporated, with live organization data, project pages, member profiles, and a frankly excessive amount of glass.</p>
-          <div class="action-row"><a class="button button-blue" href="https://gitlab.com/international-duck-incorporated/home" target="_blank" rel="noreferrer"><svg><use href="#i-gitlab"/></svg>View repository</a></div>
+
+          <p class="lead">
+            This is uh... this website... :) A small static GitLab Pages site
+            for International Duck Incorporated, with live organization data,
+            project pages, member profiles, and a frankly excessive amount of
+            glass.
+          </p>
+
+          <div class="action-row">
+            <a
+              class="button button-blue"
+              href="https://gitlab.com/international-duck-incorporated/home"
+              target="_blank"
+              rel="noreferrer"
+            >
+              <svg><use href="#i-gitlab"/></svg>
+              View repository
+            </a>
+          </div>
         </article>
+
         <aside class="profile-sidebar glass-card reveal">
-          <div><span class="eyebrow">Project facts</span><div class="fact-list"><div class="fact"><small>Status</small><b>Live on GitLab Pages</b></div><div class="fact"><small>Technology</small><b>HTML · CSS · JavaScript</b></div><div class="fact"><small>Data</small><b>GitLab API</b></div><div class="fact"><small>Build</small><b>No build step</b></div><div class="fact"><small>Source</small><b>Public repository</b></div></div></div>
+          <div>
+            <span class="eyebrow">Project facts</span>
+
+            <div class="fact-list">
+              <div class="fact">
+                <small>Status</small>
+                <b>Live on GitLab Pages</b>
+              </div>
+
+              <div class="fact">
+                <small>Technology</small>
+                <b>HTML · CSS · JavaScript</b>
+              </div>
+
+              <div class="fact">
+                <small>Data</small>
+                <b>GitLab API</b>
+              </div>
+
+              <div class="fact">
+                <small>Build</small>
+                <b>No build step</b>
+              </div>
+
+              <div class="fact">
+                <small>Source</small>
+                <b>Public repository</b>
+              </div>
+            </div>
+          </div>
         </aside>
       </section>
 
       <section class="detail-grid">
-        <article class="detail-panel glass-card reveal"><span class="eyebrow">The idea</span><h2>It is the website.</h2><p>There is no secret product behind this page. This repository is the product page, project directory, people directory, and occasional excuse to add another animated background.</p></article>
-        <article class="detail-panel glass-card reveal"><span class="eyebrow">Under the hood</span><h2>Small, static, live.</h2><ul><li>Plain HTML pages with no framework dependency</li><li>Responsive glass UI with local assets</li><li>Client-side GitLab API synchronization</li><li>GitLab Pages deployment from the main branch</li></ul></article>
-        <article class="detail-panel glass-card reveal"><span class="eyebrow">Source</span><h2>Open by default.</h2><p>The source, content, and design live in the public repository. Browse the files, inspect the styles, or improve the next weird little page.</p><a class="inline-link" href="https://gitlab.com/international-duck-incorporated/home" target="_blank" rel="noreferrer">Open on GitLab <svg><use href="#i-gitlab"/></svg></a></article>
-        <article class="detail-panel glass-card reveal"><span class="eyebrow">Status</span><h2>Still being tinkered with.</h2><p>Projects, people, releases, and the copy can change as the organization changes. The page is intentionally more alive than a README, but less serious than a product launch.</p></article>
+        <article class="detail-panel glass-card reveal">
+          <span class="eyebrow">The idea</span>
+          <h2>It is the website.</h2>
+
+          <p>
+            There is no secret product behind this page. This repository is the
+            product page, project directory, people directory, and occasional
+            excuse to add another animated background.
+          </p>
+        </article>
+
+        <article class="detail-panel glass-card reveal">
+          <span class="eyebrow">Under the hood</span>
+          <h2>Small, static, live.</h2>
+
+          <ul>
+            <li>Plain HTML pages with no framework dependency</li>
+            <li>Responsive glass UI with local assets</li>
+            <li>Client-side GitLab API synchronization</li>
+            <li>GitLab Pages deployment from the main branch</li>
+          </ul>
+        </article>
+
+        <article class="detail-panel glass-card reveal">
+          <span class="eyebrow">Source</span>
+          <h2>Open by default.</h2>
+
+          <p>
+            The source, content, and design live in the public repository.
+            Browse the files, inspect the styles, or improve the next weird
+            little page.
+          </p>
+
+          <a
+            class="inline-link"
+            href="https://gitlab.com/international-duck-incorporated/home"
+            target="_blank"
+            rel="noreferrer"
+          >
+            Open on GitLab
+            <svg><use href="#i-gitlab"/></svg>
+          </a>
+        </article>
+
+        <article class="detail-panel glass-card reveal">
+          <span class="eyebrow">Status</span>
+          <h2>Still being tinkered with.</h2>
+
+          <p>
+            Projects, people, releases, and the copy can change as the
+            organization changes. The page is intentionally more alive than a
+            README, but less serious than a product launch.
+          </p>
+        </article>
+      </section>
+
+      <section
+        class="project-deep-dive"
+        aria-labelledby="website-architecture-title"
+      >
+        <header class="section-heading reveal">
+          <div>
+            <span class="eyebrow">Architecture</span>
+            <h2 id="website-architecture-title">
+              Simple files, clear responsibilities.
+            </h2>
+          </div>
+
+          <p>
+            The site stays deployable without a package manager, framework
+            runtime, or generated bundle.
+          </p>
+        </header>
+
+        <div class="project-feature-grid">
+          <article class="project-feature glass-card reveal">
+            <span>01</span>
+            <h3>Documents</h3>
+
+            <p>
+              Each destination is a real HTML document with semantic landmarks,
+              metadata, readable fallback content, and extensionless public
+              links.
+            </p>
+          </article>
+
+          <article class="project-feature glass-card reveal">
+            <span>02</span>
+            <h3>Presentation</h3>
+
+            <p>
+              A shared stylesheet provides layout, glass surfaces, responsive
+              behavior, project components, and accessible motion preferences.
+            </p>
+          </article>
+
+          <article class="project-feature glass-card reveal">
+            <span>03</span>
+            <h3>Enhancement</h3>
+
+            <p>
+              Shared JavaScript adds navigation behavior, reveal transitions,
+              live public data, and optional page-specific backgrounds.
+            </p>
+          </article>
+        </div>
+      </section>
+
+      <section
+        class="project-deep-dive project-deep-dive-muted"
+        aria-labelledby="website-data-title"
+      >
+        <header class="section-heading reveal">
+          <div>
+            <span class="eyebrow">Data strategy</span>
+            <h2 id="website-data-title">
+              Useful before the API responds.
+            </h2>
+          </div>
+
+          <p>
+            Checked-in content is the baseline; public APIs enhance it when
+            they are available.
+          </p>
+        </header>
+
+        <div class="project-info-grid">
+          <article class="glass-card reveal">
+            <h3>Static first</h3>
+
+            <p>
+              Project cards, profiles, release summaries, and navigation remain
+              usable if a network request is blocked or rate-limited.
+            </p>
+          </article>
+
+          <article class="glass-card reveal">
+            <h3>Live where helpful</h3>
+
+            <p>
+              GitLab provides organization, repository, activity, release, and
+              contributor updates without controlling the core page layout.
+            </p>
+          </article>
+
+          <article class="glass-card reveal">
+            <h3>Host-aware links</h3>
+
+            <p>
+              GitLab projects point to GitLab, while projects and personal
+              profiles that remain on GitHub keep their original destinations.
+            </p>
+          </article>
+
+          <article class="glass-card reveal">
+            <h3>Local visual assets</h3>
+
+            <p>
+              Logos, member images, scripts, and styling ship with the
+              repository so the interface does not depend on a third-party CDN.
+            </p>
+          </article>
+        </div>
+      </section>
+
+      <section class="project-callout glass-card reveal">
+        <div>
+          <span class="eyebrow">Deployment</span>
+          <h2>One repository, one Pages pipeline.</h2>
+
+          <p>
+            Changes merged into the primary branch are published through
+            GitLab Pages. With no compilation step, the deployed output stays
+            close to the source contributors review.
+          </p>
+        </div>
+
+        <a
+          class="button button-glass"
+          href="https://gitlab.com/international-duck-incorporated/home"
+          target="_blank"
+          rel="noreferrer"
+        >
+          <svg><use href="#i-gitlab"/></svg>
+          Browse the repository
+        </a>
       </section>
     </div>
   </main>
 
-  <footer class="site-footer"><div class="shell footer-inner"><a class="brand" href="/"><img src="assets/org-avatar.png" alt=""><span><b>International Duck</b><small>Incorporated</small></span></a><nav><a href="/projects">Projects</a><a href="/people">People</a><a href="/migration">Migration</a><a href="https://gitlab.com/international-duck-incorporated">GitLab</a></nav><span class="sync-state"><i></i><span data-sync-text>GitLab data synced live</span></span></div></footer>
+  <footer class="site-footer">
+    <div class="shell footer-inner">
+      <a class="brand" href="/">
+        <img src="assets/org-avatar.png" alt="">
+
+        <span>
+          <b>International Duck</b>
+          <small>Incorporated</small>
+        </span>
+      </a>
+
+      <nav>
+        <a href="/projects">Projects</a>
+        <a href="/people">People</a>
+        <a href="/migration">Migration</a>
+        <a href="https://gitlab.com/international-duck-incorporated">
+          GitLab
+        </a>
+      </nav>
+
+      <span class="sync-state">
+        <i></i>
+        <span data-sync-text>GitLab data synced live</span>
+      </span>
+    </div>
+  </footer>
 </body>
 </html>
