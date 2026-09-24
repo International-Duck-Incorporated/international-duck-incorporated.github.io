@@ -6,6 +6,7 @@ Static GitHub Pages site for [International Duck Incorporated](https://github.co
 
 - `index.html` - organization overview and live GitHub metrics
 - `projects.html` - standalone project and repository directory
+- `website.html` - a small page about the source repository for this website
 - `people.html` - standalone public-members directory
 - `venomous.html` - complete Venomous experience with features, module browser, releases, installation, activity, and contributors
 - `nulltrace.html` - NullTrace project page with protection surface, scope, the v2.0.0 official release, nightly downloads, and diagnostics

@@ -448,7 +448,7 @@ body[data-project="championscode"]::after {
   background-size: 64px 64px;
   mask-image: linear-gradient(to bottom, black 0%, transparent 88%);
 }
-body[data-project="championscode"] .atmosphere-canvas { opacity: .88; }
+body[data-project="championscode"] .atmosphere-canvas { opacity: 1; filter: saturate(1.35) contrast(1.12); }
 body[data-project="championscode"] .site-glow-blue {
   background: radial-gradient(circle, rgba(219, 157, 65, .36), transparent 66%);
   opacity: .16;
@@ -491,4 +491,15 @@ body[data-project="nulltrace"] main,
 body[data-project="nulltrace"] footer {
   position: relative;
   z-index: 1;
+}
+
+.website-page .project-mark.website-mark {
+  display: grid;
+  color: #dffcff;
+  background: linear-gradient(145deg, rgba(90, 155, 242, .3), rgba(117, 78, 214, .18));
+  border-color: rgba(150, 211, 255, .28);
+  font: 800 1.7rem var(--mono);
+  letter-spacing: -.12em;
+  text-indent: -.12em;
+  box-shadow: 0 16px 38px rgba(0, 0, 0, .28), 0 0 42px rgba(90, 155, 242, .1);
 }

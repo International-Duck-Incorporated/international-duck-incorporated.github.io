@@ -96,11 +96,12 @@ async function syncProjects() {
   knownProjects.forEach((project) => { if (!repos.some((repo) => repo.name === project.name)) repos.push(project); });
   const grid = $("[data-org-projects]");
   if (!grid) return;
-  const projectPages = { Venomous: "venomous.html", NullTrace: "nulltrace.html", ChampionsCode: "championscode.html" };
+  const projectPages = { Venomous: "venomous.html", NullTrace: "nulltrace.html", ChampionsCode: "championscode.html", "International-Duck-Incorporated.github.io": "website.html" };
   const projectMeta = {
     Venomous: { label: "Featured project", icon: "venom", logo: "assets/venomous-icon.png", status: "Active", action: "Open project" },
     NullTrace: { label: "Privacy project", icon: "privacy", logo: "assets/nulltrace-icon.png", status: "Official release", action: "Open project" },
-    ChampionsCode: { label: "Research project", icon: "champion", logo: "assets/championscode-icon.png", status: "Alpha", statusMuted: true, action: "Open project" }
+    ChampionsCode: { label: "Research project", icon: "champion", logo: "assets/championscode-icon.png", status: "Alpha", statusMuted: true, action: "Open project" },
+    "International-Duck-Incorporated.github.io": { label: "Website project", icon: "web", status: "Live", action: "Open page" }
   };
   grid.replaceChildren(...repos.map((repo, index) => {
     const link = document.createElement("a");
@@ -261,15 +262,15 @@ function initAtmosphere(canvas) {
   const random = (min, max) => min + Math.random() * (max - min);
 
   function makeParticle() {
-    const large = Math.random() < (network ? .18 : .1);
+    const large = Math.random() < (network ? .18 : .24);
     const speed = network ? random(.004, .012) : random(.0015, .007);
     const angle = random(0, Math.PI * 2);
     return {
       x: random(0, width), y: random(0, height),
-      r: large ? random(1.2, 2.8) : random(.35, network ? 1.7 : 1.35),
-      a: random(network ? .22 : .12, network ? .72 : .62),
+      r: large ? random(1.2, network ? 2.8 : 3.8) : random(.35, network ? 1.7 : 1.65),
+      a: random(network ? .22 : .2, network ? .72 : .82),
       vx: Math.cos(angle) * speed, vy: Math.sin(angle) * speed,
-      phase: random(0, Math.PI * 2), pulse: random(.0005, .0018)
+      phase: random(0, Math.PI * 2), pulse: random(.0005, .0018), trail: random(10, 32)
     };
   }
 
@@ -277,7 +278,7 @@ function initAtmosphere(canvas) {
     const area = width * height;
     const count = network
       ? Math.round(Math.max(100, Math.min(170, area / 9000)))
-      : Math.round(Math.max(150, Math.min(280, area / 6500)));
+      : Math.round(Math.max(210, Math.min(360, area / 5000)));
     particles = Array.from({ length: reduceMotion ? Math.round(count * .72) : count }, makeParticle);
   }
 
@@ -301,8 +302,8 @@ function initAtmosphere(canvas) {
     for (const particle of particles) {
       if (delta && !reduceMotion) {
         particle.phase += particle.pulse * delta;
-        particle.x += particle.vx * delta + Math.sin(particle.phase) * (network ? .012 : .02) * delta;
-        particle.y += particle.vy * delta + Math.cos(particle.phase * .8) * (network ? .009 : .014) * delta;
+        particle.x += particle.vx * delta + Math.sin(particle.phase) * (network ? .012 : .025) * delta;
+        particle.y += particle.vy * delta + Math.cos(particle.phase * .8) * (network ? .009 : .018) * delta;
         if (pointerActive) {
           const dx = particle.x - cursorX, dy = particle.y - cursorY;
           const distance = Math.max(1, Math.hypot(dx, dy));
@@ -334,6 +335,22 @@ function initAtmosphere(canvas) {
           context.beginPath(); context.moveTo(first.x, first.y); context.lineTo(second.x, second.y); context.stroke();
         }
       }
+    }
+
+    if (!network) {
+      const warm = context.createRadialGradient(width * .72, height * .2, 0, width * .72, height * .2, Math.max(width, height) * .65);
+      warm.addColorStop(0, "rgba(255, 183, 86, .13)"); warm.addColorStop(.42, "rgba(224, 139, 49, .045)"); warm.addColorStop(1, "rgba(224, 139, 49, 0)");
+      context.fillStyle = warm; context.fillRect(0, 0, width, height);
+      context.save(); context.globalCompositeOperation = "lighter"; context.lineWidth = .55;
+      for (const particle of particles) {
+        if (particle.r < 1.35) continue;
+        const speed = Math.max(.001, Math.hypot(particle.vx, particle.vy));
+        const length = particle.trail * (0.7 + Math.sin(particle.phase) * .3);
+        context.globalAlpha = particle.a * .38;
+        context.strokeStyle = `rgba(${palette.line.join(",")},${context.globalAlpha})`;
+        context.beginPath(); context.moveTo(particle.x, particle.y); context.lineTo(particle.x - particle.vx / speed * length, particle.y - particle.vy / speed * length); context.stroke();
+      }
+      context.restore();
     }
 
     if (pointerActive) {
