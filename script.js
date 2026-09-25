@@ -15,6 +15,7 @@ const GL_GROUP_API = `${GITLAB_API}/groups/${GL_GROUP_PATH}`;
 const GL_PROJECT_PATH = `${GL_GROUP_PATH}/Venomous`;
 const GL_PROJECT = `${GITLAB_API}/projects/${encodeURIComponent(GL_PROJECT_PATH)}`;
 const GL_NULLTRACE_PROJECT = `${GITLAB_API}/projects/${encodeURIComponent(`${GL_GROUP_PATH}/${NULLTRACE}`)}`;
+const GL_BEACON_PROJECT = `${GITLAB_API}/projects/${encodeURIComponent(`${GL_GROUP_PATH}/${BEACON}`)}`;
 const SITE_ROUTES = Object.freeze({
   home: "/", projects: "/projects", people: "/people", venomous: "/venomous",
   nulltrace: "/nulltrace", championscode: "/championscode", beacon: "/beacon",
@@ -150,7 +151,7 @@ async function syncProjects() {
   };
   const projectMeta = {
     Venomous: { label: "Featured project", icon: "venom", logo: "assets/venomous-icon.png", status: "Active", action: "Open project" },
-    Beacon: { label: "Utility project", icon: "beacon", logo: "assets/beacon-icon.png", status: "New on GitLab", action: "Open project" },
+    Beacon: { label: "Utility project", icon: "beacon", logo: "assets/beacon-icon.png", status: "Release 1.8.16", action: "Open project" },
     NullTrace: { label: "Privacy project", icon: "privacy", logo: "assets/nulltrace-icon.png", status: "Official release", action: "Open project" },
     ChampionsCode: { label: "Research project", icon: "champion", logo: "assets/championscode-icon.png", status: "Alpha", statusMuted: true, action: "Open project" },
     home: { label: "Website project", icon: "web", status: "Live", action: "Open page" },
@@ -487,6 +488,22 @@ async function syncNullTraceRelease() {
   $$('[data-nulltrace-release-link]').forEach((link) => { link.href = stable._links?.self || `${GITLAB}/${GL_GROUP_PATH}/${NULLTRACE}/-/releases`; });
 }
 
+async function syncBeaconRelease() {
+  const releases = await getJSON(`${GL_BEACON_PROJECT}/releases?per_page=100`);
+  const stable = releases.find((release) => !release.upcoming_release);
+  if (!stable) return;
+  const version = stable.tag_name || stable.name || "1.8.16";
+  const jar = stable.assets?.links?.find((asset) => `${asset.name || ""} ${asset.url || ""}`.toLowerCase().includes(".jar"));
+  const releaseUrl = stable._links?.self || `${GITLAB}/${GL_GROUP_PATH}/${BEACON}/-/releases/${encodeURIComponent(version)}`;
+  const downloadUrl = jar?.direct_asset_url || jar?.url || releaseUrl;
+  setText("[data-beacon-version]", version);
+  setText("[data-beacon-date]", fullDate(stable.released_at));
+  setText("[data-beacon-release-count]", releases.length.toLocaleString());
+  setText("[data-beacon-download-label]", `Download ${version}`);
+  $$('[data-beacon-release-link]').forEach((link) => { link.href = releaseUrl; });
+  $$('[data-beacon-download]').forEach((link) => { link.href = downloadUrl; });
+}
+
 async function syncMemberContributions() {
   // Contribution counts come from the GitLab group's mirrored repositories. ChampionsCode no longer has a
   // public home and its author is shadowbanned on GitHub, so that count keeps its checked-in value.
@@ -556,6 +573,7 @@ if (page === "organization") tasks.push(syncPeople());
 if (page === "projects") tasks.push(syncProjects());
 if (page === "people") tasks.push(syncPeople());
 if (page === "project" && document.body.dataset.project === "nulltrace") tasks.push(syncNullTraceRelease());
+if (page === "project" && document.body.dataset.project === "beacon") tasks.push(syncBeaconRelease());
 if (page === "member" && document.body.dataset.member === MEMBER_LOGIN) tasks.push(syncMemberContributions());
 if (page === "venomous") {
   setupModules();

@@ -21,10 +21,11 @@ Client-side synchronization uses the public GitLab API and raw repository source
 
 - Group identity, avatar, and project directory from the GitLab group
 - Venomous stars, forks, language, and latest activity
+- Beacon and NullTrace release versions, dates, counts, and download destinations
 - Recent commits and project contributors with GitLab profile links
 - Registered modules parsed from `ModuleRegistry.java`
 
-GitLab does not expose group membership through its public API, so the people directory renders the checked-in member roster. All five public project repositories (Beacon, Venomous, NullTrace, ChampionsCode, and this website) live in the GitLab group, and NullTrace release data is pulled from the GitLab releases API. 0xFF remains an active member and now links to his GitLab profile because his GitHub account is unavailable. Other personal profiles keep their original destinations where available. Checked-in content and authentic local images keep the pages useful if the API is unavailable or rate-limited.
+GitLab does not expose group membership through its public API, so the people directory renders the checked-in member roster. All five public project repositories (Beacon, Venomous, NullTrace, ChampionsCode, and this website) live in the GitLab group, and Beacon and NullTrace release data is pulled from the GitLab releases API. 0xFF remains an active member and now links to his GitLab profile because his GitHub account is unavailable. Other personal profiles keep their original destinations where available. Checked-in content and authentic local images keep the pages useful if the API is unavailable or rate-limited.
 
 Open `http://localhost:8080`. No build step or external front-end dependency is required.
 

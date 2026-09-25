@@ -19,6 +19,7 @@
   <svg class="svg-sprite" aria-hidden="true">
     <symbol id="i-gitlab" viewBox="0 0 24 24"><path fill="currentColor" stroke="none" d="m23.6004 9.5927-.0337-.0862L20.3.9814a.851.851 0 0 0-.3362-.405.8748.8748 0 0 0-.9997.0539.8748.8748 0 0 0-.29.4399l-2.2055 6.748H7.5375l-2.2057-6.748a.8573.8573 0 0 0-.29-.4412.8748.8748 0 0 0-.9997-.0537.8585.8585 0 0 0-.3362.4049L.4332 9.5015l-.0325.0862a6.0657 6.0657 0 0 0 2.0119 7.0105l.0113.0087.03.0213 4.976 3.7264 2.462 1.8633 1.4995 1.1321a1.0085 1.0085 0 0 0 1.2197 0l1.4995-1.1321 2.4619-1.8633 5.006-3.7489.0125-.01a6.0682 6.0682 0 0 0 2.0094-7.003z"/></symbol>
     <symbol id="i-arrow" viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></symbol>
+    <symbol id="i-download" viewBox="0 0 24 24"><path d="M12 3v12M7 10l5 5 5-5M4 20h16"/></symbol>
     <symbol id="i-menu" viewBox="0 0 24 24"><path d="M4 8h16M4 16h16"/></symbol>
     <symbol id="i-close" viewBox="0 0 24 24"><path d="m5 5 14 14M19 5 5 19"/></symbol>
   </svg>
@@ -52,17 +53,21 @@
         <article class="profile-intro glass-card reveal">
           <img class="project-mark" src="assets/beacon-icon.png" alt="Beacon logo" width="82" height="82">
           <span class="eyebrow">Client-side utility mod</span>
-          <span class="status-pill green release-badge"><i></i><b>New on GitLab</b> · source available</span>
+          <span class="status-pill green release-badge"><i></i>Official release · <b data-beacon-version>1.8.16</b></span>
           <h1>Beacon.</h1>
           <p class="lead">A modular utility mod for Minecraft 26.2 and Fabric, built around quality-of-life tools, visual improvements, world utilities, persistent configuration, and a strict vanilla-server-safe policy.</p>
           <div class="action-row">
-            <a class="button button-blue" href="https://gitlab.com/international-duck-incorporated/Beacon" target="_blank" rel="noreferrer">
+            <a class="button button-blue" data-beacon-download href="https://gitlab.com/international-duck-incorporated/Beacon/-/releases/1.8.16/downloads/Beacon-1.8.16.jar" target="_blank" rel="noreferrer">
+              <pixel-canvas data-gap="6" data-speed="35" data-colors="#e2fbff, #7edcff, #3d91e8"></pixel-canvas>
+              <svg><use href="#i-download"/></svg><span data-beacon-download-label>Download 1.8.16</span>
+            </a>
+            <a class="button button-glass" href="https://gitlab.com/international-duck-incorporated/Beacon" target="_blank" rel="noreferrer">
               <pixel-canvas data-gap="6" data-speed="35" data-colors="#e2fbff, #7edcff, #3d91e8"></pixel-canvas>
               <svg><use href="#i-gitlab"/></svg>View repository
             </a>
-            <a class="button button-glass" href="https://gitlab.com/international-duck-incorporated/Beacon/-/issues" target="_blank" rel="noreferrer">
+            <a class="button button-glass" data-beacon-release-link href="https://gitlab.com/international-duck-incorporated/Beacon/-/releases/1.8.16" target="_blank" rel="noreferrer">
               <pixel-canvas data-gap="6" data-speed="35" data-colors="#e2fbff, #7edcff, #3d91e8"></pixel-canvas>
-              Issues <svg><use href="#i-arrow"/></svg>
+              Release notes <svg><use href="#i-arrow"/></svg>
             </a>
           </div>
         </article>
@@ -71,10 +76,11 @@
           <div>
             <span class="eyebrow">Project facts</span>
             <div class="fact-list">
-              <div class="fact"><small>Status</small><b>Active · 2.0 preparation</b></div>
-              <div class="fact"><small>Current manifest</small><b>1.8.16</b></div>
-              <div class="fact"><small>Technology</small><b>Java · Fabric</b></div>
-              <div class="fact"><small>Target</small><b>Minecraft 26.2</b></div>
+              <div class="fact"><small>Status</small><b>Official release available</b></div>
+              <div class="fact"><small>Latest release</small><b data-beacon-version>1.8.16</b></div>
+              <div class="fact"><small>Released</small><b data-beacon-date>25 Sep 2026</b></div>
+              <div class="fact"><small>Release catalog</small><b><span data-beacon-release-count>43</span> downloadable builds</b></div>
+              <div class="fact"><small>Technology</small><b>Java · Fabric · Minecraft 26.2</b></div>
               <div class="fact"><small>Registered modules</small><b>55 across 5 categories</b></div>
               <div class="fact"><small>License</small><b>GPL-3.0-only</b></div>
             </div>
@@ -145,11 +151,11 @@
 
       <section class="project-callout glass-card reveal">
         <div>
-          <span class="eyebrow">Release status</span>
-          <h2>Source first, release next.</h2>
-          <p>The repository currently identifies the manifest as 1.8.16, contains 1.8.17 release notes and 2.0 preparation work, and has no published GitLab Release yet. The site links to source rather than advertising a build that is not available.</p>
+          <span class="eyebrow">Latest release</span>
+          <h2>Beacon <span data-beacon-version>1.8.16</span> is available.</h2>
+          <p>The GitLab Releases catalog now contains <b data-beacon-release-count>43</b> downloadable builds with attached JAR files. Version <b data-beacon-version>1.8.16</b> is the newest published release; the repository’s 1.8.17 notes and 2.0 preparation remain newer source work rather than published builds.</p>
         </div>
-        <a class="button button-glass" href="https://gitlab.com/international-duck-incorporated/Beacon/-/blob/main/README.md" target="_blank" rel="noreferrer">Read the documentation <svg><use href="#i-arrow"/></svg></a>
+        <a class="button button-blue" data-beacon-download href="https://gitlab.com/international-duck-incorporated/Beacon/-/releases/1.8.16/downloads/Beacon-1.8.16.jar" target="_blank" rel="noreferrer"><svg><use href="#i-download"/></svg><span data-beacon-download-label>Download 1.8.16</span></a>
       </section>
     </div>
   </main>
