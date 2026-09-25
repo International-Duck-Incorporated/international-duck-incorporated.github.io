@@ -1,0 +1,165 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#071015">
+  <meta name="description" content="Beacon is a vanilla-server-safe, modular client-side utility mod for Minecraft 26.2 and Fabric.">
+  <meta property="og:title" content="Beacon - International Duck">
+  <meta property="og:description" content="Quality-of-life, rendering, world, utility, and fun modules for Minecraft 26.2, with configuration and an addon API.">
+  <meta property="og:type" content="website">
+  <meta property="og:image" content="https://gitlab.com/international-duck-incorporated/Beacon/-/raw/main/assets/icon.png">
+  <title>Beacon - International Duck</title>
+  <link rel="icon" href="assets/beacon-icon.png" type="image/png">
+  <link rel="stylesheet" href="styles.css">
+  <script src="script.js" defer></script>
+  <script src="pixel-canvas.js" defer></script>
+</head>
+<body data-page="project" data-project="beacon">
+  <svg class="svg-sprite" aria-hidden="true">
+    <symbol id="i-gitlab" viewBox="0 0 24 24"><path fill="currentColor" stroke="none" d="m23.6004 9.5927-.0337-.0862L20.3.9814a.851.851 0 0 0-.3362-.405.8748.8748 0 0 0-.9997.0539.8748.8748 0 0 0-.29.4399l-2.2055 6.748H7.5375l-2.2057-6.748a.8573.8573 0 0 0-.29-.4412.8748.8748 0 0 0-.9997-.0537.8585.8585 0 0 0-.3362.4049L.4332 9.5015l-.0325.0862a6.0657 6.0657 0 0 0 2.0119 7.0105l.0113.0087.03.0213 4.976 3.7264 2.462 1.8633 1.4995 1.1321a1.0085 1.0085 0 0 0 1.2197 0l1.4995-1.1321 2.4619-1.8633 5.006-3.7489.0125-.01a6.0682 6.0682 0 0 0 2.0094-7.003z"/></symbol>
+    <symbol id="i-arrow" viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></symbol>
+    <symbol id="i-menu" viewBox="0 0 24 24"><path d="M4 8h16M4 16h16"/></symbol>
+    <symbol id="i-close" viewBox="0 0 24 24"><path d="m5 5 14 14M19 5 5 19"/></symbol>
+  </svg>
+
+  <a class="skip-link" href="#main">Skip to content</a>
+  <div class="site-glow site-glow-blue" aria-hidden="true"></div>
+  <canvas class="atmosphere-canvas" data-background="network" aria-hidden="true"></canvas>
+
+  <header class="topbar" data-header>
+    <div class="shell topbar-inner">
+      <a class="brand" href="/" aria-label="International Duck Incorporated home">
+        <img data-org-avatar src="assets/org-avatar.png" alt="" width="40" height="40">
+        <span><b>International Duck</b><small>Incorporated</small></span>
+      </a>
+      <nav class="main-nav" id="main-navigation" data-nav aria-label="Primary navigation">
+        <a href="/">Overview</a>
+        <a class="active" href="/projects" aria-current="page">Projects</a>
+        <a href="/people">People</a>
+        <a href="/migration">Migration</a>
+        <a class="icon-link" href="https://gitlab.com/international-duck-incorporated" target="_blank" rel="noreferrer" aria-label="International Duck Incorporated on GitLab"><svg><use href="#i-gitlab"/></svg></a>
+      </nav>
+      <button class="menu-button" type="button" data-menu aria-label="Open navigation" aria-controls="main-navigation" aria-expanded="false"><svg class="menu-open"><use href="#i-menu"/></svg><svg class="menu-close"><use href="#i-close"/></svg></button>
+    </div>
+  </header>
+
+  <main id="main" class="profile-page project-page">
+    <div class="shell">
+      <div class="breadcrumbs"><a href="/">International Duck</a><span>/</span><a href="/projects">Projects</a><span>/</span><b>Beacon</b></div>
+
+      <section class="profile-hero">
+        <article class="profile-intro glass-card reveal">
+          <img class="project-mark" src="assets/beacon-icon.png" alt="Beacon logo" width="82" height="82">
+          <span class="eyebrow">Client-side utility mod</span>
+          <span class="status-pill green release-badge"><i></i><b>New on GitLab</b> · source available</span>
+          <h1>Beacon.</h1>
+          <p class="lead">A modular utility mod for Minecraft 26.2 and Fabric, built around quality-of-life tools, visual improvements, world utilities, persistent configuration, and a strict vanilla-server-safe policy.</p>
+          <div class="action-row">
+            <a class="button button-blue" href="https://gitlab.com/international-duck-incorporated/Beacon" target="_blank" rel="noreferrer">
+              <pixel-canvas data-gap="6" data-speed="35" data-colors="#e2fbff, #7edcff, #3d91e8"></pixel-canvas>
+              <svg><use href="#i-gitlab"/></svg>View repository
+            </a>
+            <a class="button button-glass" href="https://gitlab.com/international-duck-incorporated/Beacon/-/issues" target="_blank" rel="noreferrer">
+              <pixel-canvas data-gap="6" data-speed="35" data-colors="#e2fbff, #7edcff, #3d91e8"></pixel-canvas>
+              Issues <svg><use href="#i-arrow"/></svg>
+            </a>
+          </div>
+        </article>
+
+        <aside class="profile-sidebar glass-card reveal">
+          <div>
+            <span class="eyebrow">Project facts</span>
+            <div class="fact-list">
+              <div class="fact"><small>Status</small><b>Active · 2.0 preparation</b></div>
+              <div class="fact"><small>Current manifest</small><b>1.8.16</b></div>
+              <div class="fact"><small>Technology</small><b>Java · Fabric</b></div>
+              <div class="fact"><small>Target</small><b>Minecraft 26.2</b></div>
+              <div class="fact"><small>Registered modules</small><b>55 across 5 categories</b></div>
+              <div class="fact"><small>License</small><b>GPL-3.0-only</b></div>
+            </div>
+          </div>
+        </aside>
+      </section>
+
+      <section class="detail-grid">
+        <article class="detail-panel glass-card reveal">
+          <span class="eyebrow">Everyday tools</span>
+          <h2>Five focused categories.</h2>
+          <ul>
+            <li>Render: Fullbright, Freecam, HUDs, Custom F3, and visual controls</li>
+            <li>World: Item Search, Light Level, Crop Progress, and Mob Stats</li>
+            <li>Utility: chat, inventory, reconnect, macros, audio, and session tools</li>
+            <li>Fun and Misc: cosmetic effects, alerts, timers, teams, and UI helpers</li>
+          </ul>
+        </article>
+
+        <article class="detail-panel glass-card reveal">
+          <span class="eyebrow">Project policy</span>
+          <h2>Vanilla-server-safe.</h2>
+          <p>Beacon intentionally excludes combat automation, movement automation, ESP and wallhacks, and server exploits. Its automation stays on the client and outside combat.</p>
+        </article>
+
+        <article class="detail-panel glass-card reveal">
+          <span class="eyebrow">Configuration</span>
+          <h2>State that persists.</h2>
+          <ul>
+            <li>Module state and per-module settings in <code>config/beacon.json</code></li>
+            <li>Keybinds, favorites, and client preferences</li>
+            <li>Automatic configuration re-application on server join</li>
+            <li>Preserved configuration for temporarily absent addons</li>
+          </ul>
+        </article>
+
+        <article class="detail-panel glass-card reveal">
+          <span class="eyebrow">Extension</span>
+          <h2>Addon-ready.</h2>
+          <p>The Beacon addon API lets developers register additional modules without changing the core module implementation. The custom GUI exposes categories, search, favorites, settings, keybinds, configuration controls, and themes.</p>
+        </article>
+      </section>
+
+      <section class="project-deep-dive" aria-labelledby="beacon-highlights-title">
+        <header class="section-heading reveal">
+          <div><span class="eyebrow">Highlights</span><h2 id="beacon-highlights-title">Useful without overreach.</h2></div>
+          <p>The source combines broad client customization with clearly documented boundaries.</p>
+        </header>
+        <div class="project-feature-grid">
+          <article class="project-feature glass-card reveal"><span>01</span><h3>Render clearly</h3><p>Customize visibility, HUD information, particles, crosshairs, outlines, camera behavior, and viewmodels.</p></article>
+          <article class="project-feature glass-card reveal"><span>02</span><h3>Work faster</h3><p>Improve chat, tools, inventory routines, reconnects, macros, ender-chest access, recipes, and session tracking.</p></article>
+          <article class="project-feature glass-card reveal"><span>03</span><h3>Extend safely</h3><p>Addons, persistent settings, verification tooling, and documented module boundaries keep the project maintainable.</p></article>
+        </div>
+      </section>
+
+      <section class="project-deep-dive project-deep-dive-muted" aria-labelledby="beacon-engineering-title">
+        <header class="section-heading reveal">
+          <div><span class="eyebrow">Engineering</span><h2 id="beacon-engineering-title">A tested client foundation.</h2></div>
+          <p>Dedicated verification tools cover Freecam, configuration semantics, and the user interface.</p>
+        </header>
+        <div class="project-info-grid">
+          <article class="glass-card reveal"><h3>Freecam</h3><p>A true detached camera with tick-based movement, configurable speed, optional collision, static view, and explicit interaction controls.</p></article>
+          <article class="glass-card reveal"><h3>Atomic config</h3><p>Versioned configuration, deferred saves, temporary files, and atomic moves reduce the risk of a truncated settings file.</p></article>
+          <article class="glass-card reveal"><h3>UI verification</h3><p>Python and Node-based checks exercise UI structure, runtime behavior, settings editing, keybinds, and configuration round trips.</p></article>
+          <article class="glass-card reveal"><h3>Open development</h3><p>Source, documentation, release notes, verification tools, issue tracking, and contribution workflows now live together on GitLab.</p></article>
+        </div>
+      </section>
+
+      <section class="project-callout glass-card reveal">
+        <div>
+          <span class="eyebrow">Release status</span>
+          <h2>Source first, release next.</h2>
+          <p>The repository currently identifies the manifest as 1.8.16, contains 1.8.17 release notes and 2.0 preparation work, and has no published GitLab Release yet. The site links to source rather than advertising a build that is not available.</p>
+        </div>
+        <a class="button button-glass" href="https://gitlab.com/international-duck-incorporated/Beacon/-/blob/main/README.md" target="_blank" rel="noreferrer">Read the documentation <svg><use href="#i-arrow"/></svg></a>
+      </section>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="shell footer-inner">
+      <a class="brand" href="/"><img data-org-avatar src="assets/org-avatar.png" alt="" width="40" height="40"><span><b>International Duck</b><small>Incorporated</small></span></a>
+      <nav><a href="/">Overview</a><a href="/projects">Projects</a><a href="/people">People</a><a href="/migration">Migration</a><a href="/beacon">Beacon</a><a href="https://gitlab.com/international-duck-incorporated" target="_blank" rel="noreferrer">GitLab</a></nav>
+      <span class="sync-state"><i></i><span data-sync-text>GitLab data synced live</span></span>
+    </div>
+  </footer>
+</body>
+</html>

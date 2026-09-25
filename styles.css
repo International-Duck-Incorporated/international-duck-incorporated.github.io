@@ -512,6 +512,45 @@ body[data-project="nulltrace"] footer {
 .account-status span { color: #e9bfc5; }
 .fact b.fact-danger { color: #ff9eae; }
 
+/* Beacon project */
+.project-icon.beacon {
+  overflow: hidden;
+  background: linear-gradient(145deg, rgba(115, 226, 255, .24), rgba(54, 122, 235, .14));
+  border: 1px solid rgba(143, 230, 255, .24);
+  box-shadow: 0 10px 30px rgba(72, 184, 255, .11);
+}
+.project-icon.beacon img { width: 59px; height: 59px; object-fit: contain; }
+body[data-project="beacon"] { position: relative; background: #050c11; }
+body[data-project="beacon"]::before {
+  background: radial-gradient(ellipse at 78% 15%, rgba(66, 190, 244, .16), transparent 38%), #050c11;
+  opacity: .98;
+}
+body[data-project="beacon"]::after {
+  opacity: .11;
+  background-image: linear-gradient(rgba(132, 226, 255, .026) 1px, transparent 1px), linear-gradient(90deg, rgba(132, 226, 255, .026) 1px, transparent 1px);
+  background-size: 64px 64px;
+  mask-image: linear-gradient(to bottom, black 0%, transparent 88%);
+}
+body[data-project="beacon"] .atmosphere-canvas { opacity: .9; }
+body[data-project="beacon"] .site-glow-blue {
+  background: radial-gradient(circle, rgba(67, 199, 255, .42), transparent 66%);
+  opacity: .18;
+}
+body[data-project="beacon"] .profile-intro,
+body[data-project="beacon"] .profile-sidebar,
+body[data-project="beacon"] .detail-panel { border-color: rgba(113, 220, 255, .2); }
+body[data-project="beacon"] .eyebrow { color: #77dfff; }
+body[data-project="beacon"] .project-mark {
+  padding: .35rem;
+  object-fit: contain;
+  background: linear-gradient(145deg, rgba(127, 230, 255, .22), rgba(62, 119, 230, .14));
+  border-color: rgba(151, 232, 255, .3);
+  box-shadow: 0 16px 38px rgba(0, 0, 0, .28), 0 0 42px rgba(75, 195, 255, .12);
+}
+body[data-project="beacon"] main,
+body[data-project="beacon"] footer { position: relative; z-index: 1; }
+.detail-panel code { padding: .12rem .3rem; color: #c7eaf4; background: rgba(117, 214, 246, .08); border-radius: 5px; font: .9em var(--mono); }
+
 /* Migration record */
 .migration-page { padding-top: 140px; }
 .migration-hero { padding-bottom: clamp(5rem, 9vw, 8rem); }
