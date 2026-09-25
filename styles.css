@@ -531,7 +531,32 @@ body[data-project="beacon"]::after {
   background-size: 64px 64px;
   mask-image: linear-gradient(to bottom, black 0%, transparent 88%);
 }
-body[data-project="beacon"] .atmosphere-canvas { opacity: .9; }
+.beacon-video-background {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+  pointer-events: none;
+  background: #050c11;
+}
+.beacon-video-background video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  filter: saturate(.82) contrast(1.05) brightness(.62);
+}
+.beacon-video-background::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(180deg, rgba(3, 8, 13, .58) 0%, rgba(3, 9, 14, .38) 35%, rgba(3, 8, 13, .72) 100%),
+    radial-gradient(circle at 50% 34%, transparent 0%, rgba(3, 9, 14, .18) 58%, rgba(3, 8, 13, .56) 100%);
+}
+body[data-project="beacon"] .glass-card {
+  background: linear-gradient(145deg, rgba(20, 31, 40, .82), rgba(7, 14, 21, .72));
+}
 body[data-project="beacon"] .site-glow-blue {
   background: radial-gradient(circle, rgba(67, 199, 255, .42), transparent 66%);
   opacity: .18;
@@ -549,6 +574,9 @@ body[data-project="beacon"] .project-mark {
 }
 body[data-project="beacon"] main,
 body[data-project="beacon"] footer { position: relative; z-index: 1; }
+@media (prefers-reduced-motion: reduce) {
+  .beacon-video-background video { display: none; }
+}
 .detail-panel code { padding: .12rem .3rem; color: #c7eaf4; background: rgba(117, 214, 246, .08); border-radius: 5px; font: .9em var(--mono); }
 
 /* Migration record */
