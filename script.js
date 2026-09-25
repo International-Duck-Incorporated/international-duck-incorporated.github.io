@@ -162,6 +162,7 @@ async function syncProjects() {
     const isVenomous = repo.name === REPO;
     const meta = projectMeta[repo.name];
     link.className = `project-card glass-card reveal visible${isVenomous ? " featured" : ""}`;
+    link.dataset.projectCard = repo.name.toLowerCase().replace(/[^a-z0-9]+/g, "-");
     link.href = projectPages[repo.name] || repo.html_url;
     if (!projectPages[repo.name]) { link.target = "_blank"; link.rel = "noreferrer"; }
 
@@ -219,6 +220,7 @@ async function syncPeople() {
   grid.replaceChildren(...people.map((person) => {
     const link = document.createElement("a");
     link.className = "person-card glass-card reveal visible";
+    link.dataset.memberCard = normalizeLogin(person.login);
     const memberPages = {
       "3spress0": "/3spress0", "E-VDV-HU": "/e-vdv-hu", "0xFFshell": "/0xffshell",
       "Xx-superIvar-xX": "/superivar", "midas735": "/midas735"

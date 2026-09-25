@@ -796,3 +796,210 @@ pixel-canvas { position: absolute; inset: 0; z-index: -1; border-radius: inherit
    is cleared on those pages (html still provides the base color). */
 body[data-page="venomous"],
 body[data-member="0xffshell"] { background: transparent; }
+
+/* Directories use an editorial grid instead of identical tiles. */
+body[data-page="projects"] .project-grid { grid-template-columns: repeat(12,1fr); }
+body[data-page="projects"] .project-card { grid-column: span 4; min-height: 320px; }
+body[data-page="projects"] .project-card[data-project-card="beacon"] { grid-column: span 7; min-height: 410px; background: linear-gradient(145deg, rgba(49,145,191,.2), rgba(8,18,27,.78)); }
+body[data-page="projects"] .project-card[data-project-card="venomous"] { grid-column: span 5; min-height: 410px; }
+body[data-page="projects"] .project-card[data-project-card="championscode"] { background: linear-gradient(145deg, rgba(181,130,47,.16), rgba(14,16,22,.76)); }
+body[data-page="projects"] .project-card[data-project-card="nulltrace"] { background: linear-gradient(145deg, rgba(46,164,187,.14), rgba(9,19,25,.76)); }
+body[data-page="projects"] .project-card[data-project-card="home"] { background: linear-gradient(145deg, rgba(104,117,139,.14), rgba(14,17,23,.76)); }
+body[data-page="people"] .people-grid { grid-template-columns: repeat(12,1fr); align-items: stretch; }
+body[data-page="people"] .person-card { grid-column: span 4; }
+body[data-page="people"] .person-card[data-member-card="0xffshell"] { grid-column: span 7; min-height: 230px; background: linear-gradient(145deg, rgba(28,120,53,.16), rgba(7,17,10,.78)); }
+body[data-page="people"] .person-card[data-member-card="3spress0"] { grid-column: span 5; min-height: 230px; background: linear-gradient(145deg, rgba(91,88,190,.16), rgba(14,14,28,.78)); }
+body[data-page="people"] .person-card[data-member-card="e-vdv-hu"] { border-top: 2px solid rgba(97,184,237,.28); }
+body[data-page="people"] .person-card[data-member-card="xx-superivar-xx"] { border-top: 2px solid rgba(170,193,229,.28); }
+body[data-page="people"] .person-card[data-member-card="midas735"] { border-top: 2px solid rgba(226,183,73,.3); }
+
+/* Content-shaped project and member layouts ------------------------------ */
+/* Beacon: cinematic product launch over the gameplay reel. */
+body[data-project="beacon"] .profile-hero { position: relative; display: block; min-height: 720px; }
+body[data-project="beacon"] .profile-intro { min-height: 700px; padding-right: min(34vw, 410px); justify-content: flex-end; background: linear-gradient(105deg, rgba(5,13,20,.94), rgba(8,19,28,.72) 55%, rgba(8,19,28,.34)); }
+body[data-project="beacon"] .profile-intro h1 { font-size: clamp(5.5rem, 10vw, 9.5rem); text-shadow: 0 10px 45px rgba(0,0,0,.45); }
+body[data-project="beacon"] .profile-intro .project-mark { position: absolute; top: 2rem; left: 2rem; width: 98px; height: 98px; }
+body[data-project="beacon"] .profile-intro .lead { max-width: 730px; }
+body[data-project="beacon"] .profile-sidebar { position: absolute; z-index: 3; top: 2rem; right: 2rem; width: min(31%, 360px); min-height: auto; background: rgba(5,13,20,.78); }
+body[data-project="beacon"] .profile-sidebar .fact { background: rgba(111,220,255,.055); }
+body[data-project="beacon"] .detail-grid { grid-template-columns: repeat(12, 1fr); }
+body[data-project="beacon"] .detail-grid > :nth-child(1),
+body[data-project="beacon"] .detail-grid > :nth-child(4) { grid-column: span 7; }
+body[data-project="beacon"] .detail-grid > :nth-child(2),
+body[data-project="beacon"] .detail-grid > :nth-child(3) { grid-column: span 5; }
+
+/* NullTrace: a wide privacy dashboard with staggered protection layers. */
+body[data-project="nulltrace"] .profile-hero { grid-template-columns: 1fr; }
+body[data-project="nulltrace"] .profile-intro { min-height: 560px; padding-right: min(28vw, 330px); background: linear-gradient(120deg, rgba(5,20,27,.94), rgba(8,29,36,.64)); }
+body[data-project="nulltrace"] .profile-intro::after { content: "PRIVACY SURFACE / MONITORED"; position: absolute; top: 2rem; right: 2rem; color: rgba(121,231,245,.58); font: 600 .54rem var(--mono); letter-spacing: .16em; writing-mode: vertical-rl; }
+body[data-project="nulltrace"] .project-mark { border-radius: 50%; box-shadow: 0 0 0 12px rgba(82,210,231,.035), 0 0 0 24px rgba(82,210,231,.02), 0 18px 45px rgba(0,0,0,.32); }
+body[data-project="nulltrace"] .profile-sidebar { min-height: auto; }
+body[data-project="nulltrace"] .profile-sidebar .fact-list { grid-template-columns: repeat(3, 1fr); }
+body[data-project="nulltrace"] .detail-grid { grid-template-columns: repeat(12, 1fr); }
+body[data-project="nulltrace"] .detail-grid > :nth-child(1),
+body[data-project="nulltrace"] .detail-grid > :nth-child(4) { grid-column: span 7; }
+body[data-project="nulltrace"] .detail-grid > :nth-child(2),
+body[data-project="nulltrace"] .detail-grid > :nth-child(3) { grid-column: span 5; }
+body[data-project="nulltrace"] .detail-panel { border-left: 3px solid rgba(102,220,237,.32); }
+
+/* ChampionsCode: terminal first, content second. */
+body[data-project="championscode"] .profile-hero { grid-template-columns: minmax(290px,.62fr) minmax(0,1.38fr); }
+body[data-project="championscode"] .profile-intro { order: 2; min-height: 610px; border-radius: 12px 28px 28px 12px; background: linear-gradient(145deg, rgba(31,23,12,.76), rgba(10,13,19,.84)); }
+body[data-project="championscode"] .profile-intro h1 { font-family: var(--mono); font-size: clamp(3.4rem, 6vw, 6rem); letter-spacing: -.075em; }
+body[data-project="championscode"] .profile-sidebar { order: 1; min-height: 610px; padding-top: 4.6rem; border-radius: 28px 12px 12px 28px; background: rgba(9,12,17,.9); }
+body[data-project="championscode"] .profile-sidebar::after { content: "champions@research:~$ status --authorized"; position: absolute; inset: 1.4rem 1.3rem auto; padding-bottom: 1rem; color: #e9b965; border-bottom: 1px solid rgba(240,194,111,.16); font: 500 .54rem var(--mono); }
+body[data-project="championscode"] .profile-sidebar .fact { border-left: 2px solid rgba(233,185,101,.32); border-radius: 4px 12px 12px 4px; }
+body[data-project="championscode"] .detail-grid { grid-template-columns: repeat(12, 1fr); }
+body[data-project="championscode"] .detail-grid > :nth-child(1) { grid-column: span 7; }
+body[data-project="championscode"] .detail-grid > :nth-child(2) { grid-column: span 5; }
+body[data-project="championscode"] .detail-grid > :nth-child(3) { grid-column: span 5; }
+body[data-project="championscode"] .detail-grid > :nth-child(4) { grid-column: span 7; }
+body[data-project="championscode"] .project-feature { border-top: 2px solid rgba(233,185,101,.24); }
+
+/* Website: source browser and inspector. */
+body[data-project="website"] .profile-hero { grid-template-columns: minmax(270px,.55fr) minmax(0,1.45fr); }
+body[data-project="website"] .profile-intro { order: 2; min-height: 620px; padding-top: 6rem; background-image: linear-gradient(rgba(255,255,255,.018) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,.018) 1px, transparent 1px); background-size: 28px 28px; }
+body[data-project="website"] .profile-intro::after { content: "index.html    styles.css    script.js"; position: absolute; inset: 1.2rem 1.4rem auto; padding: .8rem 1rem; color: #84909b; background: rgba(5,9,14,.78); border: 1px solid rgba(255,255,255,.08); border-radius: 11px; font: 500 .55rem var(--mono); letter-spacing: .04em; }
+body[data-project="website"] .profile-sidebar { order: 1; min-height: 620px; border-radius: 28px 10px 10px 28px; }
+body[data-project="website"] .profile-sidebar::after { content: "INSPECTOR"; position: absolute; right: 1.3rem; bottom: 1.2rem; color: #505c67; font: 600 .5rem var(--mono); letter-spacing: .14em; }
+body[data-project="website"] .detail-grid { grid-template-columns: repeat(12,1fr); }
+body[data-project="website"] .detail-grid > :nth-child(1) { grid-column: span 8; }
+body[data-project="website"] .detail-grid > :nth-child(2) { grid-column: span 4; }
+body[data-project="website"] .detail-grid > :nth-child(3) { grid-column: span 5; }
+body[data-project="website"] .detail-grid > :nth-child(4) { grid-column: span 7; }
+
+/* 0xFF: one large operations card with a docked status strip. */
+body[data-member="0xffshell"] .profile-hero { display: block; position: relative; padding-bottom: 4.4rem; }
+body[data-member="0xffshell"] .profile-intro { min-height: 620px; padding: clamp(2rem,5vw,4rem); justify-content: flex-end; background: linear-gradient(135deg, rgba(3,19,8,.82), rgba(2,8,4,.74)); }
+body[data-member="0xffshell"] .profile-intro::after { content: "ACTIVE NODE // GITLAB"; position: absolute; top: 2rem; right: 2rem; color: #64f889; font: 600 .56rem var(--mono); letter-spacing: .14em; }
+body[data-member="0xffshell"] .profile-intro .avatar { position: absolute; top: 2rem; left: 2rem; width: 138px; height: 138px; border-radius: 22px; }
+body[data-member="0xffshell"] .profile-intro h1 { font-family: var(--mono); font-size: clamp(4rem,8vw,7.5rem); }
+body[data-member="0xffshell"] .profile-sidebar { position: absolute; z-index: 4; inset: auto 2rem 0; min-height: auto; padding: 1rem; transform: translateY(50%); background: rgba(2,12,5,.92); }
+body[data-member="0xffshell"] .profile-sidebar .fact-list { grid-template-columns: repeat(5,1fr); }
+body[data-member="0xffshell"] .profile-sidebar .fact { min-height: 88px; }
+body[data-member="0xffshell"] .detail-grid { grid-template-columns: 1.35fr .65fr; margin-top: 4rem; }
+
+/* espress0: contribution-led editorial layout. */
+body[data-member="3spress0"] .profile-hero { grid-template-columns: minmax(260px,.58fr) minmax(0,1.42fr); }
+body[data-member="3spress0"] .profile-intro { order: 2; min-height: 610px; }
+body[data-member="3spress0"] .profile-sidebar { order: 1; min-height: 610px; justify-content: flex-end; }
+body[data-member="3spress0"] .profile-sidebar::after { content: "PUBLIC BUILD LOG"; position: absolute; top: 1.4rem; right: 1.4rem; color: rgba(190,199,255,.48); font: 600 .5rem var(--mono); letter-spacing: .14em; writing-mode: vertical-rl; }
+body[data-member="3spress0"] .profile-intro h1 { font-size: clamp(4.4rem,8vw,7.5rem); }
+body[data-member="3spress0"] .detail-grid { grid-template-columns: 1.45fr .55fr; }
+body[data-member="3spress0"] .member-contribution-metrics { grid-template-columns: 1.6fr .7fr .7fr; }
+body[data-member="3spress0"] .member-contribution-metric:first-child { min-height: 190px; background: linear-gradient(145deg, rgba(102,118,246,.2), rgba(17,20,42,.7)); }
+body[data-member="3spress0"] .member-activity-grid { grid-template-columns: 1.45fr .55fr; }
+
+/* E: a Python notebook with a compact project rail. */
+body[data-member="e-vdv-hu"] .profile-hero { grid-template-columns: minmax(0,1.35fr) minmax(270px,.65fr); align-items: start; }
+body[data-member="e-vdv-hu"] .profile-intro { min-height: 660px; background: linear-gradient(145deg, rgba(16,27,35,.78), rgba(8,13,20,.76)); }
+body[data-member="e-vdv-hu"] .profile-intro::after { content: "def build():\A    learn()\A    ship()"; position: absolute; top: 2rem; right: 2rem; padding: 1rem 1.15rem; white-space: pre; color: #98d7ff; background: rgba(3,11,18,.7); border: 1px solid rgba(126,199,245,.16); border-radius: 12px; font: 500 .68rem/1.7 var(--mono); }
+body[data-member="e-vdv-hu"] .profile-intro h1 { font-size: clamp(7rem,14vw,12rem); line-height: .72; }
+body[data-member="e-vdv-hu"] .profile-sidebar { min-height: 520px; margin-top: 70px; border-left: 3px solid rgba(105,191,245,.35); border-radius: 5px 24px 24px 5px; }
+body[data-member="e-vdv-hu"] .profile-sidebar .fact { background: rgba(75,164,221,.065); }
+body[data-member="e-vdv-hu"] .detail-grid { width: 88%; margin-top: -42px; grid-template-columns: .8fr 1.2fr; }
+
+/* SuperIvar: a centered storm poster with a floating stat deck. */
+body[data-member="superivar"] .profile-hero { display: block; position: relative; padding-bottom: 4.5rem; }
+body[data-member="superivar"] .profile-intro { min-height: 680px; padding-inline: clamp(2rem,8vw,7rem); align-items: center; justify-content: center; text-align: center; background: linear-gradient(145deg, rgba(11,18,32,.72), rgba(5,10,18,.78)); }
+body[data-member="superivar"] .profile-intro .avatar { width: 160px; height: 160px; margin: 0 0 1.5rem; border-radius: 50%; box-shadow: 0 0 0 10px rgba(180,205,241,.04), 0 25px 60px rgba(0,0,0,.4); }
+body[data-member="superivar"] .profile-intro h1 { max-width: 900px; font-size: clamp(3.6rem,8vw,7rem); text-shadow: 0 0 34px rgba(175,203,245,.18); }
+body[data-member="superivar"] .profile-intro .lead { max-width: 650px; }
+body[data-member="superivar"] .profile-intro .action-row { margin-top: 2rem; }
+body[data-member="superivar"] .profile-sidebar { position: absolute; z-index: 4; inset: auto 8% 0; min-height: auto; transform: translateY(50%); background: rgba(7,13,23,.9); }
+body[data-member="superivar"] .profile-sidebar .fact-list { grid-template-columns: repeat(4,1fr); }
+body[data-member="superivar"] .detail-grid { margin-top: 4.5rem; grid-template-columns: 1.25fr .75fr; }
+body[data-member="superivar"] .detail-grid > :first-child { transform: translateY(-18px); }
+
+/* Midas: a deliberately sparse gold membership card. */
+body[data-member="midas735"]::before { background: radial-gradient(circle at 75% 14%, rgba(222,178,72,.16), transparent 34%), #07090d; }
+body[data-member="midas735"] .profile-hero { grid-template-columns: minmax(250px,.55fr) minmax(0,1.45fr); gap: 1.3rem; }
+body[data-member="midas735"] .profile-intro { order: 2; min-height: 590px; border-color: rgba(236,196,96,.24); background: linear-gradient(145deg, rgba(58,43,15,.3), rgba(13,15,20,.78)); transform: rotate(.35deg); }
+body[data-member="midas735"] .profile-intro .avatar { width: 140px; height: 140px; border-radius: 50%; box-shadow: 0 0 0 12px rgba(224,182,77,.04), 0 20px 45px rgba(0,0,0,.35); }
+body[data-member="midas735"] .profile-intro h1 { color: #f0d68c; font-size: clamp(4.2rem,8vw,7.5rem); }
+body[data-member="midas735"] .profile-sidebar { order: 1; min-height: 590px; border-color: rgba(236,196,96,.24); transform: rotate(-.65deg); }
+body[data-member="midas735"] .profile-sidebar .fact { border-bottom: 1px solid rgba(236,196,96,.12); border-radius: 0; }
+body[data-member="midas735"] .eyebrow { color: #e0b64d; }
+body[data-member="midas735"] .detail-grid { display: block; }
+body[data-member="midas735"] .detail-panel { width: 72%; margin-bottom: 1rem; border-color: rgba(236,196,96,.18); }
+body[data-member="midas735"] .detail-panel:last-child { margin-left: auto; }
+
+/* Migration: a real continuous rail with numbered milestones. */
+.migration-timeline { gap: 0; }
+.migration-timeline::before { top: 1.05rem; bottom: 3.8rem; left: calc(170px + 1rem + 26px); z-index: 0; width: 3px; background: linear-gradient(180deg, #5a9bf2, #72d4ee 70%, #8cf77a); border-radius: 99px; box-shadow: 0 0 22px rgba(90,155,242,.4); }
+.migration-timeline li { position: relative; z-index: 1; min-height: 0; padding: 0 0 2rem; grid-template-columns: 170px 52px minmax(0,1fr); gap: 1rem; background: transparent; border: 0; box-shadow: none; overflow: visible; }
+.migration-timeline time { padding-top: .55rem; text-align: right; }
+.timeline-dot { display: grid; width: 36px; height: 36px; margin: 0 auto; place-items: center; color: #dcecff; background: #0b1726; border: 2px solid #6caaf5; box-shadow: 0 0 0 7px #080c12, 0 0 24px rgba(90,155,242,.56); }
+.timeline-dot b { font: 650 .48rem var(--mono); }
+.timeline-content { min-height: 175px; padding: 1.6rem; border-radius: var(--radius-lg); overflow: visible; }
+.migration-timeline li:nth-child(4) .timeline-dot,
+.migration-timeline li:nth-child(5) .timeline-dot { color: #dfffd9; border-color: #8cf77a; box-shadow: 0 0 0 7px #080c12, 0 0 24px rgba(140,247,122,.4); }
+
+@media (max-width: 900px) {
+  body[data-page="projects"] .project-grid { grid-template-columns: 1fr; }
+  body[data-page="projects"] .project-card,
+  body[data-page="projects"] .project-card[data-project-card] { grid-column: auto; min-height: 320px; }
+  body[data-page="people"] .people-grid { grid-template-columns: repeat(2,1fr); }
+  body[data-page="people"] .person-card,
+  body[data-page="people"] .person-card[data-member-card] { grid-column: auto; }
+  body[data-project="beacon"] .profile-hero,
+  body[data-member="0xffshell"] .profile-hero,
+  body[data-member="superivar"] .profile-hero { min-height: 0; padding-bottom: 0; }
+  body[data-project="beacon"] .profile-intro { min-height: 620px; padding-right: clamp(1.5rem,4vw,3rem); }
+  body[data-project="beacon"] .profile-sidebar,
+  body[data-member="0xffshell"] .profile-sidebar,
+  body[data-member="superivar"] .profile-sidebar { position: relative; inset: auto; width: auto; margin-top: 1rem; transform: none; }
+  body[data-project="beacon"] .profile-sidebar .fact-list,
+  body[data-member="0xffshell"] .profile-sidebar .fact-list,
+  body[data-member="superivar"] .profile-sidebar .fact-list,
+  body[data-project="nulltrace"] .profile-sidebar .fact-list { grid-template-columns: repeat(2,1fr); }
+  body[data-project="championscode"] .profile-hero,
+  body[data-project="website"] .profile-hero,
+  body[data-member="3spress0"] .profile-hero,
+  body[data-member="e-vdv-hu"] .profile-hero,
+  body[data-member="midas735"] .profile-hero { grid-template-columns: 1fr; }
+  body[data-project="championscode"] .profile-intro,
+  body[data-project="championscode"] .profile-sidebar,
+  body[data-project="website"] .profile-intro,
+  body[data-project="website"] .profile-sidebar,
+  body[data-member="3spress0"] .profile-intro,
+  body[data-member="3spress0"] .profile-sidebar,
+  body[data-member="midas735"] .profile-intro,
+  body[data-member="midas735"] .profile-sidebar { order: initial; min-height: auto; border-radius: var(--radius-xl); transform: none; }
+  body[data-member="e-vdv-hu"] .profile-sidebar { min-height: auto; margin-top: 1rem; }
+  body[data-member="e-vdv-hu"] .detail-grid { width: 100%; margin-top: 1rem; }
+  body[data-member="midas735"] .detail-panel { width: 100%; }
+  body[data-project="beacon"] .detail-grid,
+  body[data-project="nulltrace"] .detail-grid,
+  body[data-project="championscode"] .detail-grid,
+  body[data-project="website"] .detail-grid { grid-template-columns: 1fr; }
+  body[data-project="beacon"] .detail-grid > *,
+  body[data-project="nulltrace"] .detail-grid > *,
+  body[data-project="championscode"] .detail-grid > *,
+  body[data-project="website"] .detail-grid > * { grid-column: auto !important; }
+  body[data-member="3spress0"] .member-contribution-metrics,
+  body[data-member="3spress0"] .member-activity-grid { grid-template-columns: 1fr; }
+}
+
+@media (max-width: 760px) {
+  body[data-page="people"] .people-grid { grid-template-columns: 1fr; }
+  body[data-project="beacon"] .profile-intro .project-mark,
+  body[data-member="0xffshell"] .profile-intro .avatar { position: static; width: 96px; height: 96px; }
+  body[data-project="nulltrace"] .profile-intro { padding-right: 1.5rem; }
+  body[data-project="nulltrace"] .profile-intro::after,
+  body[data-member="e-vdv-hu"] .profile-intro::after { display: none; }
+  body[data-member="superivar"] .profile-intro { min-height: 580px; padding-inline: 1.25rem; }
+  body[data-member="superivar"] .profile-sidebar .fact-list,
+  body[data-member="0xffshell"] .profile-sidebar .fact-list,
+  body[data-project="beacon"] .profile-sidebar .fact-list,
+  body[data-project="nulltrace"] .profile-sidebar .fact-list { grid-template-columns: 1fr; }
+  body[data-member="0xffshell"] .detail-grid,
+  body[data-member="3spress0"] .detail-grid,
+  body[data-member="e-vdv-hu"] .detail-grid,
+  body[data-member="superivar"] .detail-grid { grid-template-columns: 1fr; }
+  .migration-timeline::before { top: .4rem; bottom: 3.5rem; left: 17px; }
+  .migration-timeline li { grid-template-columns: 36px minmax(0,1fr); gap: .85rem; padding-bottom: 1.4rem; }
+  .migration-timeline time { grid-column: 2; padding: .15rem 0 .35rem; text-align: left; }
+  .timeline-dot { grid-row: 1 / 3; grid-column: 1; width: 32px; height: 32px; margin: 0; }
+  .timeline-content { grid-column: 2; min-height: 0; padding: 1.25rem; }
+}
