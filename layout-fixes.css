@@ -1,0 +1,139 @@
+/* Shared layout hardening and homepage background treatment. */
+
+/* Prevent grid children from forcing their tracks wider than the viewport. */
+.profile-hero > *,
+.detail-grid > *,
+.project-grid > *,
+.people-grid > *,
+.capability-grid > *,
+.module-grid > *,
+.release-grid > *,
+.activity-grid > *,
+.install-panel > *,
+.project-info-grid > *,
+.project-feature-grid > * {
+  min-width: 0;
+}
+
+/* Keep normal page cards inside their allocated space. */
+.profile-intro,
+.profile-sidebar,
+.detail-panel,
+.project-card,
+.person-card,
+.capability-card,
+.module-card,
+.release-card,
+.activity-card,
+.install-panel,
+.project-info-grid > article,
+.project-feature {
+  min-width: 0;
+}
+
+/* Beacon uses a cinematic hero, but the sidebar should not overlap the hero card. */
+body[data-project="beacon"] .profile-hero {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 1rem;
+  min-height: 0;
+  padding-bottom: 0;
+}
+
+body[data-project="beacon"] .profile-sidebar {
+  position: relative;
+  inset: auto;
+  width: auto;
+  margin-top: 0;
+  transform: none;
+}
+
+body[data-project="beacon"] .detail-grid {
+  margin-top: 1rem;
+}
+
+/* Docked member stat decks are moved back into document flow. */
+body[data-member="0xffshell"] .profile-hero,
+body[data-member="superivar"] .profile-hero {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 1rem;
+  min-height: 0;
+  padding-bottom: 0;
+}
+
+body[data-member="0xffshell"] .profile-sidebar,
+body[data-member="superivar"] .profile-sidebar {
+  position: relative;
+  inset: auto;
+  width: auto;
+  margin-top: 0;
+  transform: none;
+}
+
+body[data-member="0xffshell"] .detail-grid,
+body[data-member="superivar"] .detail-grid {
+  margin-top: 1rem;
+}
+
+body[data-member="superivar"] .detail-grid > :first-child {
+  transform: none;
+}
+
+/* Do not let the notebook/detail rail visually intrude into the hero. */
+body[data-member="e-vdv-hu"] .profile-sidebar {
+  margin-top: 1rem;
+}
+
+body[data-member="e-vdv-hu"] .detail-grid {
+  width: 100%;
+  margin-top: 1.5rem;
+}
+
+/* The gold cards are intentionally angled, but the rotation should not make
+   their boxes collide with adjacent content. */
+body[data-member="midas735"] .profile-intro,
+body[data-member="midas735"] .profile-sidebar {
+  transform: none;
+}
+
+/* Long text should wrap instead of expanding cards into neighbouring tracks. */
+.profile-intro h1,
+.profile-sidebar h2,
+.detail-panel h2,
+.detail-panel h3,
+.project-card h3,
+.person-card h3,
+.module-card h3,
+.release-card h3,
+.activity-card h3,
+.project-feature h3,
+.project-info-grid h3 {
+  overflow-wrap: anywhere;
+  word-break: break-word;
+}
+
+/* Homepage: keep the member collage behind the UI and blur only that layer. */
+body[data-page="organization"] {
+  position: relative;
+  isolation: isolate;
+  background: #05090b;
+}
+
+body[data-page="organization"]::before {
+  content: "";
+  position: fixed;
+  inset: -32px;
+  z-index: -2;
+  pointer-events: none;
+  background:
+    linear-gradient(180deg, rgba(4,8,11,.42), rgba(4,8,11,.7) 58%, #05090b 100%),
+    url("assets/idi-member-collage.png") center top / cover no-repeat;
+  filter: blur(14px);
+  transform: scale(1.04);
+}
+
+/* The page already has a subtle grid overlay; keep it above the blurred photo. */
+body[data-page="organization"]::after {
+  z-index: -1;
+}
