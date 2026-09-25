@@ -798,10 +798,21 @@ body[data-page="venomous"],
 body[data-member="0xffshell"] { background: transparent; }
 
 /* Directories use an editorial grid instead of identical tiles. */
+body[data-page="organization"] {
+  background: #05090b url("assets/idi-member-collage.png") center top / cover fixed no-repeat;
+}
+body[data-page="organization"]::before {
+  content: ""; position: fixed; inset: 0; z-index: -1; pointer-events: none;
+  background: linear-gradient(180deg, rgba(4,8,11,.48), rgba(4,8,11,.78) 58%, #05090b 100%);
+}
+
 body[data-page="projects"] .project-grid { grid-template-columns: repeat(12,1fr); }
 body[data-page="projects"] .project-card { grid-column: span 4; min-height: 320px; }
-body[data-page="projects"] .project-card[data-project-card="beacon"] { grid-column: span 7; min-height: 410px; background: linear-gradient(145deg, rgba(49,145,191,.2), rgba(8,18,27,.78)); }
-body[data-page="projects"] .project-card[data-project-card="venomous"] { grid-column: span 5; min-height: 410px; }
+body[data-page="projects"] .project-card[data-project-card="beacon"] { grid-column: 1 / -1; min-height: 410px; background: linear-gradient(145deg, rgba(49,145,191,.2), rgba(8,18,27,.78)); }
+body[data-page="projects"] .project-card[data-project-card="venomous"] { grid-column: span 6; min-height: 360px; }
+body[data-page="projects"] .project-card[data-project-card="home"],
+body[data-page="projects"] .project-card[data-project-card="nulltrace"],
+body[data-page="projects"] .project-card[data-project-card="championscode"] { grid-column: span 6; min-height: 360px; }
 body[data-page="projects"] .project-card[data-project-card="championscode"] { background: linear-gradient(145deg, rgba(181,130,47,.16), rgba(14,16,22,.76)); }
 body[data-page="projects"] .project-card[data-project-card="nulltrace"] { background: linear-gradient(145deg, rgba(46,164,187,.14), rgba(9,19,25,.76)); }
 body[data-page="projects"] .project-card[data-project-card="home"] { background: linear-gradient(145deg, rgba(104,117,139,.14), rgba(14,17,23,.76)); }
@@ -936,7 +947,15 @@ body[data-member="midas735"] .detail-panel:last-child { margin-left: auto; }
 .migration-timeline li:nth-child(5) .timeline-dot { color: #dfffd9; border-color: #8cf77a; box-shadow: 0 0 0 7px #080c12, 0 0 24px rgba(140,247,122,.4); }
 
 @media (max-width: 900px) {
-  body[data-page="projects"] .project-grid { grid-template-columns: 1fr; }
+  body[data-page="organization"] {
+  background: #05090b url("assets/idi-member-collage.png") center top / cover fixed no-repeat;
+}
+body[data-page="organization"]::before {
+  content: ""; position: fixed; inset: 0; z-index: -1; pointer-events: none;
+  background: linear-gradient(180deg, rgba(4,8,11,.48), rgba(4,8,11,.78) 58%, #05090b 100%);
+}
+
+body[data-page="projects"] .project-grid { grid-template-columns: 1fr; }
   body[data-page="projects"] .project-card,
   body[data-page="projects"] .project-card[data-project-card] { grid-column: auto; min-height: 320px; }
   body[data-page="people"] .people-grid { grid-template-columns: repeat(2,1fr); }
