@@ -11,7 +11,7 @@ Static GitLab Pages site for [International Duck Incorporated](https://gitlab.co
 - `migration.html` - sourced GitHub-to-GitLab migration timeline
 - `venomous.html` - complete Venomous experience with features, module browser, releases, installation, activity, and contributors
 - `beacon.html` - Beacon project page with module categories, safety policy, configuration, addon API, engineering notes, and current release status
-- `nulltrace.html` - NullTrace project page with protection surface, scope, the v2.0.0 official release, nightly downloads, and diagnostics
+- `nulltrace.html` - NullTrace project page with protection surface, scope, the v2.0.0 official release on GitLab and CurseForge, nightly downloads, and diagnostics
 - `championscode.html` - ChampionsCode project page with research console, modules, safety model, and development status
 - `404.html` - matching not-found page
 
