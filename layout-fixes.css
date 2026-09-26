@@ -1,4 +1,15 @@
-/* Shared layout hardening and homepage background treatment. */
+/* Shared layout hardening and homepage background treatment.
+ *
+ * IMPORTANT: this file must be linked AFTER styles.css in every page
+ * (<link rel="stylesheet" href="styles.css">
+ *  <link rel="stylesheet" href="layout-fixes.css">).
+ * It used to be pulled in with @import at the top of styles.css, which placed
+ * every rule below *before* the page-specific rules it is meant to override.
+ * Because the selectors here have the same specificity as the ones in
+ * styles.css, the later declarations won, the overrides never applied, and the
+ * absolutely positioned / translated hero cards collided with the cards
+ * underneath them on the Beacon, 0xFFshell, Superivar and E-VDV-HU pages.
+ */
 
 /* Prevent grid children from forcing their tracks wider than the viewport. */
 .profile-hero > *,
@@ -52,6 +63,13 @@ body[data-project="beacon"] .detail-grid {
   margin-top: 1rem;
 }
 
+/* The Beacon fact rail was styled as a narrow column. Now that it sits in the
+   flow at full width, lay the facts out in a responsive row instead of one
+   very tall stack. */
+body[data-project="beacon"] .profile-sidebar .fact-list {
+  grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+}
+
 /* Docked member stat decks are moved back into document flow. */
 body[data-member="0xffshell"] .profile-hero,
 body[data-member="superivar"] .profile-hero {
@@ -82,7 +100,7 @@ body[data-member="superivar"] .detail-grid > :first-child {
 
 /* Do not let the notebook/detail rail visually intrude into the hero. */
 body[data-member="e-vdv-hu"] .profile-sidebar {
-  margin-top: 1rem;
+  margin-top: 0;
 }
 
 body[data-member="e-vdv-hu"] .detail-grid {
@@ -95,6 +113,23 @@ body[data-member="e-vdv-hu"] .detail-grid {
 body[data-member="midas735"] .profile-intro,
 body[data-member="midas735"] .profile-sidebar {
   transform: none;
+}
+
+/* Pinned hero marks (0xFFshell's avatar, Beacon's project mark) are taken out
+   of flow with position:absolute, so the bottom-aligned hero copy underneath
+   was free to rise up behind them — on 0xFFshell the eyebrow and the account
+   status banner ran straight through the profile picture. Reserve the height
+   of the pinned mark as top padding so the copy always starts below it.
+   Below 760px both marks return to static flow and need no reservation. */
+@media (min-width: 761px) {
+  body[data-member="0xffshell"] .profile-intro {
+    /* top offset + avatar height + breathing room */
+    padding-top: calc(2rem + 138px + 1.5rem);
+  }
+
+  body[data-project="beacon"] .profile-intro {
+    padding-top: calc(2rem + 98px + 1.5rem);
+  }
 }
 
 /* Long text should wrap instead of expanding cards into neighbouring tracks. */
