@@ -2,12 +2,15 @@
 
 Static GitLab Pages site for [International Duck Incorporated](https://gitlab.com/international-duck-incorporated), designed as a responsive premium-glass product dashboard.
 
+**Platform policy:** wherever this site or this organization references both GitLab and GitHub, **GitLab is IDI's main platform** and GitHub the legacy mirror. The GitHub organization remains publicly visible as a backup, but active development, releases, and all source-of-truth links point to GitLab.
+
 ## Pages
 
 - `index.html` - organization overview and live GitLab group metrics
 - `projects.html` - standalone project and repository directory
-- `website.html` - a small page about the source repository for this website
+- `Website` - a small page about the source repository for this website (`website.html`)
 - `people.html` - member directory
+- `activity.html` - cross-platform live commit feed: every project on both organizations, per-member attribution, and a merged timeline, marking GitLab as **main** and GitHub as legacy
 - `migration.html` - sourced GitHub-to-GitLab migration timeline
 - `venomous.html` - complete Venomous experience with features, module browser, releases, installation, activity, and contributors
 - `beacon.html` - Beacon project page with module categories, safety policy, configuration, addon API, engineering notes, and current release status
@@ -15,17 +18,21 @@ Static GitLab Pages site for [International Duck Incorporated](https://gitlab.co
 - `championscode.html` - ChampionsCode project page with research console, modules, safety model, and development status
 - `404.html` - matching not-found page
 
-## Live GitLab data
+## Live GitLab + GitHub data
 
-Client-side synchronization uses the public GitLab API and raw repository source to keep these areas current automatically:
+Client-side synchronization uses the public **GitLab API** (main) and, since September 2026, the public **GitHub API** (legacy mirror) to keep these areas current automatically:
 
-- Group identity, avatar, and project directory from the GitLab group
+- Group identity, avatar, and project directory from the GitLab group (main)
+- Cross-platform commit activity on `/activity`: per-project repositories from both organizations (`GET /groups/:id/projects` on GitLab, `GET /orgs/:org/repos` on GitHub) and the newest 100 commits per repository per platform, attributed to members with a checked-in alias table (`activity.js`)
+- Per-member commit cards with GitLab (main) and GitHub (legacy) splits; upstream OpSec contributors (aurickk, KaPlayz) and automation accounts are bucketed separately instead of counted as members
 - Venomous stars, forks, language, and latest activity
 - Beacon and NullTrace release versions, dates, counts, and download destinations
 - Recent commits and project contributors with GitLab profile links
 - Registered modules parsed from `ModuleRegistry.java`
 
-GitLab does not expose group membership through its public API, so the people directory renders the checked-in member roster. All five public project repositories (Beacon, Venomous, NullTrace, ChampionsCode, and this website) live in the GitLab group, and Beacon and NullTrace release data is pulled from the GitLab releases API. 0xFF remains an active member and now links to his GitLab profile because his GitHub account is unavailable. Other personal profiles keep their original destinations where available. Checked-in content and authentic local images keep the pages useful if the API is unavailable or rate-limited.
+GitHub's anonymous API is rate-limited (60 requests/hour per visitor IP) and after the September 2026 account actions it intermittently returns 404 for individual repository endpoints. The activity page therefore fetches each platform independently and degrades panel-by-panel: if GitHub commits are unreachable, the GitHub panel falls back to mirrored `pushed_at` metadata; if a platform is entirely unavailable, the other still renders, and the footer sync state reports which sources answered.
+
+GitLab does not expose group membership through its public API, so the people directory renders the checked-in member roster. All five public project repositories (Beacon, Venomous, NullTrace, ChampionsCode, and this website) live in the GitLab group (main), and Beacon and NullTrace release data is pulled from the GitLab releases API. 0xFF remains an active member and now links to his GitLab profile because his GitHub account is unavailable. Other personal profiles keep their original destinations where available. Checked-in content and authentic local images keep the pages useful if the API is unavailable or rate-limited.
 
 Open `http://localhost:8080`. No build step or external front-end dependency is required.
 

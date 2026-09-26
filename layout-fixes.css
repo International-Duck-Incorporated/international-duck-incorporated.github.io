@@ -242,3 +242,92 @@ body.egg-bg[data-page="organization"]::before {
   }
 }
 /* ---- /Easter egg ---- */
+
+/* ---- Activity page: platform badges, repo rows, member cards ---- */
+.platform-badge {
+  font-style: normal;
+  font-family: var(--mono);
+  font-size: .5rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: .09em;
+  padding: .18rem .5rem;
+  border-radius: 999px;
+  white-space: nowrap;
+}
+
+.platform-badge.gitlab { color: #ffb38a; background: rgba(252, 109, 38, .13); border: 1px solid rgba(252, 109, 38, .28); }
+.platform-badge.github { color: #c9ccd8; background: rgba(140, 148, 165, .12); border: 1px solid rgba(160, 170, 190, .22); }
+
+.platform-inline { font-weight: 700; }
+.platform-inline.gitlab { color: #ffb38a; }
+.platform-inline.github { color: #c9ccd8; }
+
+.platform-chip { gap: .45rem; }
+.platform-chip svg { width: .75rem; height: .75rem; }
+.platform-chip.gitlab svg { color: #fc6d26; }
+.platform-chip.github svg { color: #c9ccd8; }
+.platform-chip i { background: var(--green); }
+
+.activity-card > header em.platform-badge { margin-left: .15rem; }
+
+/* Repo rows reuse the commit-list look: dot · label · trailing code. */
+.repo-list > a {
+  display: flex;
+  min-height: 56px;
+  padding: .75rem .1rem;
+  gap: .75rem;
+  align-items: center;
+  border-bottom: 1px solid rgba(255, 255, 255, .045);
+}
+.repo-list > a:last-child { border: 0; }
+.repo-list i { width: 6px; height: 6px; flex: 0 0 auto; background: var(--green); border-radius: 50%; box-shadow: 0 0 9px rgba(140, 247, 122, .3); }
+.repo-list span { display: flex; min-width: 0; flex: 1; flex-direction: column; gap: .3rem; }
+.repo-list b { overflow: hidden; font-size: .68rem; font-weight: 600; text-overflow: ellipsis; white-space: nowrap; }
+.repo-list small { color: #626c65; font-size: .54rem; }
+.repo-list code { color: #68726b; font-family: var(--mono); font-size: .52rem; }
+
+/* Feed rows carry an extra platform badge before the hash. */
+.feed-list > a { display: flex; min-height: 72px; padding: .9rem .1rem; gap: .75rem; align-items: center; border-bottom: 1px solid rgba(255, 255, 255, .045); }
+.feed-list > a:last-child { border: 0; }
+.feed-list i { width: 6px; height: 6px; flex: 0 0 auto; background: var(--green); border-radius: 50%; box-shadow: 0 0 9px rgba(140, 247, 122, .3); }
+.feed-list span:not(.platform-badge) { display: flex; min-width: 0; flex: 1; flex-direction: column; gap: .3rem; }
+.feed-list b { overflow: hidden; font-size: .68rem; font-weight: 600; text-overflow: ellipsis; white-space: nowrap; }
+.feed-list small { color: #626c65; font-size: .54rem; }
+.feed-list code { color: #68726b; font-family: var(--mono); font-size: .52rem; }
+.feed-list em.platform-badge { flex: 0 0 auto; }
+
+.member-activity-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+  gap: .8rem;
+}
+
+.member-activity-cards .person-card {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+}
+
+.member-activity-summary {
+  margin-top: .9rem;
+  color: #79837c;
+  font-size: .6rem;
+}
+
+.activity-note {
+  margin-top: 1rem;
+  max-width: 62ch;
+  color: #79837c;
+  font-size: .62rem;
+  line-height: 1.6;
+}
+
+.activity-section-block { margin-top: 2.6rem; }
+.activity-orgs { margin-top: 1.4rem; }
+
+@media (max-width: 460px) {
+  .feed-list em.platform-badge { display: none; }
+  .repo-list code { display: none; }
+}
+/* ---- /Activity page ---- */
