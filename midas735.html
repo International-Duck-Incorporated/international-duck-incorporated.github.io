@@ -11,6 +11,20 @@
   <link rel="stylesheet" href="layout-fixes.css">
   <script src="script.js" defer></script>
   <script src="pixel-canvas.js" defer></script>
+  <style>
+    /* Goofy ahh gif: THE background. Not an accent. THE background. */
+    /* isolation makes body its own stacking context, so the z-index:-2 layer
+       paints ABOVE body's opaque gradient instead of being buried under it. */
+    body[data-member="midas735"]{isolation:isolate;}
+    .goofy-bg{position:fixed;inset:0;z-index:-2;background:url("assets/goofy-ahh.gif") center / cover no-repeat;pointer-events:none;}
+    .goofy-bg::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg, rgba(7,9,13,.66), rgba(7,9,13,.52) 45%, rgba(7,9,13,.78));}
+    .commit-log{display:flex;flex-direction:column;gap:.9rem;margin-top:1rem;}
+    .commit-log .commit{display:grid;grid-template-columns:auto 1fr;gap:.35rem .8rem;padding:.85rem 1rem;border:1px solid rgba(140,180,255,.18);border-radius:12px;background:rgba(10,16,28,.45);}
+    .commit code{font-size:.8rem;opacity:.75;align-self:start;padding-top:.15rem;}
+    .commit b{font-size:.95rem;}
+    .commit small{grid-column:2;opacity:.7;line-height:1.5;}
+    .commit .meta{grid-column:2;font-size:.75rem;letter-spacing:.04em;text-transform:uppercase;opacity:.55;}
+  </style>
 </head>
 <body data-page="member" data-member="midas735">
   <svg class="svg-sprite" aria-hidden="true">
@@ -20,6 +34,7 @@
   </svg>
 
   <a class="skip-link" href="#main">Skip to content</a>
+  <div class="goofy-bg" aria-hidden="true"></div>
   <div class="site-glow site-glow-blue" aria-hidden="true"></div>
 
   <header class="topbar" data-header>
@@ -37,19 +52,28 @@
       <div class="breadcrumbs"><a href="/">International Duck</a><span>/</span><a href="/people">People</a><span>/</span><b>midas735</b></div>
       <section class="profile-hero">
         <article class="profile-intro glass-card reveal">
-          <img class="avatar" src="assets/member-midas735.png" alt="midas735">
-          <span class="eyebrow">Member profile</span>
+          <img class="avatar" src="assets/member-midas735.png" alt="midas735's GitHub avatar: a person in a Snorlax costume">
+          <span class="eyebrow">Member profile / cryptid sighting</span>
           <h1>Midas735.</h1>
-          <p class="lead">A public member of International Duck. This profile only includes information that has been publicly shared through the organization and GitHub.</p>
+          <p class="lead">Everything he touches turns to gold. Everything he commits turns to a branch named <code>patch-1</code> that nobody ever merges. Midas is International Duck's most elusive member: officially classified as a goofy ahh developer, spotted in the wild about twice a month, and always mid-fumble when it happens.</p>
           <div class="action-row"><a class="button button-blue" href="https://github.com/midas735" target="_blank" rel="noreferrer"><pixel-canvas data-gap="6" data-speed="35" data-colors="#dcecff, #8ab8f6, #4a7fc0"></pixel-canvas><svg><use href="#i-github"/></svg>View GitHub</a></div>
         </article>
         <aside class="profile-sidebar glass-card reveal">
-          <div><span class="eyebrow">At a glance</span><div class="fact-list"><div class="fact"><small>Handle</small><b>@midas735</b></div><div class="fact"><small>Role</small><b>Public member</b></div><div class="fact"><small>Focus</small><b>International Duck</b></div><div class="fact"><small>GitHub</small><b>Public profile</b></div></div></div>
+          <div><span class="eyebrow">At a glance</span><div class="fact-list"><div class="fact"><small>Handle</small><b>@midas735</b></div><div class="fact"><small>Role</small><b>Professional forker</b></div><div class="fact"><small>Commits this week</small><b>2 (a personal record)</b></div><div class="fact"><small>Branches merged</small><b>0, and proud of it</b></div><div class="fact"><small>Natural habitat</small><b>patch-1</b></div><div class="fact"><small>Top speed</small><b>735 (units unknown)</b></div></div></div>
         </aside>
       </section>
       <section class="detail-grid">
-        <article class="detail-panel glass-card reveal"><span class="eyebrow">Member</span><h2>Part of the group.</h2><p>midas735 is listed as a public member of International Duck Incorporated.</p></article>
-        <article class="detail-panel glass-card reveal"><span class="eyebrow">Profile note</span><h2>Source-aware by design</h2><p>This profile avoids assigning private roles, projects, or experience that have not been published.</p></article>
+        <article class="detail-panel glass-card reveal"><span class="eyebrow">Member</span><h2>Part of the group. Allegedly.</h2><p>midas735 is listed as a public member of International Duck Incorporated, which is legally the most that can be proven. Witnesses report he joined GitHub on September 15th, took a well-deserved two-week rest from that exhausting achievement, and then unleashed both of his commits on the same morning. Efficiency.</p></article>
+        <article class="detail-panel glass-card reveal"><span class="eyebrow">Why the background?</span><h2>The goofy ahh thing.</h2><p>The background is a scientifically accurate reenactment of midas's development workflow, playing fullscreen on infinite loop, exactly as nature intended. The profile picture is pulled straight from his actual GitHub, where he is legally a Snorlax: a creature famous for sleeping 20 hours a day and still shipping more than midas. Both serve as a decoy so you stop looking at his contribution graph.</p></article>
+        <article class="detail-panel glass-card reveal" style="grid-column:1 / -1;"><span class="eyebrow">Recent activity</span><h2>The commits of the last few days.</h2><p>Both of them. Recorded here in full, for historians.</p>
+          <div class="commit-log">
+            <div class="commit"><code>fork</code><b>Forked Xx-superIvar-xX/gitdemo</b><small>Sep 28, 2026 - The classic opening move. Why write code when someone else already did?</small><span class="meta">midas735/gitdemo</span></div>
+            <div class="commit"><code>fork</code><b>Forked E-VDV-HU/very-epic-cool-repo</b><small>Sep 28, 2026 - Double fork morning. The man was unstoppable. For about eight minutes.</small><span class="meta">midas735/very-epic-cool-repo</span></div>
+            <div class="commit"><code>a783a2c</code><b>Remove humorous fumbles list from readme</b><small>Sep 28, 2026 - espress0 had published a "top 10 biggest fumbles of the day" list in the readme, starring midas in entries 1 through 4. Midas's response: delete the evidence. Historians call this "damage control"; midas calls it "code cleanup".</small><span class="meta">midas735/very-epic-cool-repo @ patch-1 - +1 / -8</span></div>
+            <div class="commit"><code>9f74799</code><b>Update README with additional commentary</b><small>Sep 28, 2026 - Four whole lines of "additional commentary" added to superIvar's readme. The contents have been sealed by the International Duck legal department. On a branch nobody merged, so technically it never happened.</small><span class="meta">midas735/gitdemo @ patch-1 - +4 / -0</span></div>
+          </div>
+          <p style="margin-top:1rem;opacity:.7;"><em>Total output, last few days: 2 forks, 2 commits, 5 lines added, 8 lines deleted. Net contribution: -3 lines. The fumbles list retaliation-to-original-work ratio remains at a flawless 100%.</em></p>
+        </article>
       </section>
     </div>
   </main>
