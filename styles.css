@@ -1027,3 +1027,19 @@ body[data-page="projects"] .project-grid { grid-template-columns: 1fr; }
 .project-icon.bagley img { width: 59px; height: 59px; object-fit: contain; }
 body[data-project="bagley"]::before { background: radial-gradient(ellipse at 80% 16%, rgba(95,143,236,.17), transparent 38%), #07090d; }
 body[data-project="bagley"] .project-mark { background: linear-gradient(145deg, rgba(90,155,242,.28), rgba(167,139,250,.16)); box-shadow: 0 16px 38px rgba(0,0,0,.28), 0 0 42px rgba(90,155,242,.1); }
+.bagley-network {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  opacity: .86;
+  filter: saturate(1.35) contrast(1.08);
+}
+body[data-project="bagley"] .site-glow-blue { opacity: .3; }
+body[data-project="bagley"] main,
+body[data-project="bagley"] footer { position: relative; z-index: 1; }
+@media (prefers-reduced-motion: reduce) {
+  .bagley-network { opacity: .58; }
+}
