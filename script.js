@@ -18,7 +18,7 @@ const GL_NULLTRACE_PROJECT = `${GITLAB_API}/projects/${encodeURIComponent(`${GL_
 const GL_BEACON_PROJECT = `${GITLAB_API}/projects/${encodeURIComponent(`${GL_GROUP_PATH}/${BEACON}`)}`;
 const SITE_ROUTES = Object.freeze({
   home: "/", projects: "/projects", people: "/people", venomous: "/venomous",
-  nulltrace: "/nulltrace", championscode: "/championscode", beacon: "/beacon",
+  nulltrace: "/nulltrace", championscode: "/championscode", beacon: "/beacon", bagley: "/bagley",
   website: "/website", migration: "/migration"
 });
 const GL_SITE_PROJECT = `${GITLAB_API}/projects/${encodeURIComponent(`${GL_GROUP_PATH}/home`)}`;
@@ -132,7 +132,8 @@ async function syncProjects() {
   const knownProjects = [
     { name: "Beacon", html_url: `${GITLAB}/${GL_GROUP_PATH}/Beacon`, description: "A vanilla-server-safe, modular client-side utility mod for Minecraft 26.2 with quality-of-life, rendering, world, utility, and fun features.", language: "Java" },
     { name: "NullTrace", html_url: `${GITLAB}/${GL_GROUP_PATH}/NullTrace`, description: "A client-side Fabric privacy mod for Minecraft 1.21.11, 26.1, 26.2, and 26.3 covering client brand spoofing, fingerprint protection, tracking defenses, and safer server connections.", language: "Java" },
-    { name: "ChampionsCode", html_url: `${GITLAB}/${GL_GROUP_PATH}/ChampionsCode`, description: "A client-side Fabric mod for Minecraft 26.3 for authorized, defensive server and plugin research and controlled runtime Java addon development.", language: "Java" }
+    { name: "ChampionsCode", html_url: `${GITLAB}/${GL_GROUP_PATH}/ChampionsCode`, description: "A client-side Fabric mod for Minecraft 26.3 for authorized, defensive server and plugin research and controlled runtime Java addon development.", language: "Java" },
+    { name: "beacon-bagley", html_url: `${GITLAB}/${GL_GROUP_PATH}/beacon-bagley`, description: "An opt-in, client-side AI chat assistant addon for Beacon with local provider configuration and optional memory.", language: "Java" }
   ];
   knownProjects.forEach((project) => {
     const existing = repos.find((repo) => repo.name === project.name);
@@ -144,6 +145,7 @@ async function syncProjects() {
   const projectPages = {
     Venomous: SITE_ROUTES.venomous,
     Beacon: SITE_ROUTES.beacon,
+    "beacon-bagley": SITE_ROUTES.bagley,
     NullTrace: SITE_ROUTES.nulltrace,
     ChampionsCode: SITE_ROUTES.championscode,
     home: SITE_ROUTES.website,
@@ -152,6 +154,7 @@ async function syncProjects() {
   const projectMeta = {
     Venomous: { label: "Featured project", icon: "venom", logo: "assets/venomous-icon.png", status: "Active", action: "Open project" },
     Beacon: { label: "Utility project", icon: "beacon", logo: "assets/beacon-icon.png", status: "Release 1.8.16", action: "Open project" },
+    "beacon-bagley": { title: "Bagley", label: "Beacon addon", icon: "bagley", logo: "assets/bagley-icon.png", status: "New", action: "Open project" },
     NullTrace: { label: "Privacy project", icon: "privacy", logo: "assets/nulltrace-icon.png", status: "Official release", action: "Open project" },
     ChampionsCode: { label: "Research project", icon: "champion", logo: "assets/championscode-icon.png", status: "Alpha", statusMuted: true, action: "Open project" },
     home: { label: "Website project", icon: "web", status: "Live", action: "Open page" },
@@ -187,7 +190,7 @@ async function syncProjects() {
 
     const copy = document.createElement("div");
     const label = document.createElement("span"); label.className = "card-label"; label.textContent = (meta && meta.label) || "Repository";
-    const title = document.createElement("h3"); title.textContent = repo.name;
+    const title = document.createElement("h3"); title.textContent = (meta && meta.title) || repo.name;
     const description = document.createElement("p"); description.textContent = repo.description || (isVenomous ? "Optimized & refined Meteor Client addon for Minecraft 26.2." : "Organization website and project directory.");
     copy.append(label, title, description);
 
@@ -198,7 +201,7 @@ async function syncProjects() {
     const action = document.createElement("span"); action.append(document.createTextNode(`${(meta && meta.action) || "View repository"} `)); action.insertAdjacentHTML("beforeend", icon("i-arrow"));
     footer.append(language, action);
     link.append(top, copy, footer);
-    const palette = repo.name === REPO ? pixelPalettes.green : repo.name === NULLTRACE || repo.name === BEACON ? pixelPalettes.blue : repo.name === "ChampionsCode" ? pixelPalettes.amber : pixelPalettes.slate;
+    const palette = repo.name === REPO ? pixelPalettes.green : repo.name === NULLTRACE || repo.name === BEACON || repo.name === "beacon-bagley" ? pixelPalettes.blue : repo.name === "ChampionsCode" ? pixelPalettes.amber : pixelPalettes.slate;
     link.append(pixelEffect(palette));
     return link;
   }));

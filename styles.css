@@ -1022,3 +1022,8 @@ body[data-page="projects"] .project-grid { grid-template-columns: 1fr; }
   .timeline-dot { grid-row: 1 / 3; grid-column: 1; width: 32px; height: 32px; margin: 0; }
   .timeline-content { grid-column: 2; min-height: 0; padding: 1.25rem; }
 }
+/* Bagley project */
+.project-icon.bagley { overflow: hidden; background: linear-gradient(145deg, rgba(90,155,242,.25), rgba(167,139,250,.15)); border: 1px solid rgba(138,184,246,.22); }
+.project-icon.bagley img { width: 59px; height: 59px; object-fit: contain; }
+body[data-project="bagley"]::before { background: radial-gradient(ellipse at 80% 16%, rgba(95,143,236,.17), transparent 38%), #07090d; }
+body[data-project="bagley"] .project-mark { background: linear-gradient(145deg, rgba(90,155,242,.28), rgba(167,139,250,.16)); box-shadow: 0 16px 38px rgba(0,0,0,.28), 0 0 42px rgba(90,155,242,.1); }
