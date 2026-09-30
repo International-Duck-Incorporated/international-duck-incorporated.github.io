@@ -163,7 +163,7 @@ body[data-page="organization"]::before {
   pointer-events: none;
   background:
     linear-gradient(180deg, rgba(4,8,11,.42), rgba(4,8,11,.7) 58%, #05090b 100%),
-    url("assets/idi-member-collage.png") center top / cover no-repeat;
+    url("assets/homepage-community-background-v4.jpg") center top / cover no-repeat;
   filter: blur(14px);
   transform: scale(1.04);
 }
