@@ -275,6 +275,7 @@ body[data-page="venomous"] :focus-visible { outline-color: var(--green); }
   .org-hero-copy, .venom-copy { max-width: 760px; }
   .org-profile, .venom-visual { min-height: 590px; }
   .project-grid { grid-template-columns: 1fr; }
+  body[data-page="projects"] .project-grid { grid-template-columns: repeat(2,1fr); }
   .capability-grid { grid-template-columns: repeat(2,1fr); }
   .module-toolbar { align-items: stretch; flex-direction: column; }
   .module-search { width: 100%; }
@@ -806,16 +807,18 @@ body[data-page="organization"]::before {
   background: linear-gradient(180deg, rgba(4,8,11,.48), rgba(4,8,11,.78) 58%, #05090b 100%);
 }
 
-body[data-page="projects"] .project-grid { grid-template-columns: repeat(12,1fr); }
-body[data-page="projects"] .project-card { grid-column: span 4; min-height: 320px; }
-body[data-page="projects"] .project-card[data-project-card="beacon"] { grid-column: 1 / -1; min-height: 410px; background: linear-gradient(145deg, rgba(49,145,191,.2), rgba(8,18,27,.78)); }
-body[data-page="projects"] .project-card[data-project-card="venomous"] { grid-column: span 6; min-height: 360px; }
-body[data-page="projects"] .project-card[data-project-card="home"],
-body[data-page="projects"] .project-card[data-project-card="nulltrace"],
-body[data-page="projects"] .project-card[data-project-card="championscode"] { grid-column: span 6; min-height: 360px; }
+/* Project tiles are equal-sized so the grid stays balanced no matter how
+   many projects exist (hardcoded 4/6/12-column spans used to leave gaps
+   whenever a project was added or removed). Color accents still vary per
+   project for visual flavor, just not their size. */
+body[data-page="projects"] .project-grid { grid-template-columns: repeat(3,1fr); }
+body[data-page="projects"] .project-card { grid-column: auto; min-height: 360px; }
+body[data-page="projects"] .project-card.featured { border-top: 2px solid rgba(140,247,122,.35); }
+body[data-page="projects"] .project-card[data-project-card="beacon"] { background: linear-gradient(145deg, rgba(49,145,191,.2), rgba(8,18,27,.78)); }
 body[data-page="projects"] .project-card[data-project-card="championscode"] { background: linear-gradient(145deg, rgba(181,130,47,.16), rgba(14,16,22,.76)); }
 body[data-page="projects"] .project-card[data-project-card="nulltrace"] { background: linear-gradient(145deg, rgba(46,164,187,.14), rgba(9,19,25,.76)); }
 body[data-page="projects"] .project-card[data-project-card="home"] { background: linear-gradient(145deg, rgba(104,117,139,.14), rgba(14,17,23,.76)); }
+
 body[data-page="people"] .people-grid { grid-template-columns: repeat(12,1fr); align-items: stretch; }
 body[data-page="people"] .person-card { grid-column: span 4; }
 body[data-page="people"] .person-card[data-member-card="0xffshell"] { grid-column: span 7; min-height: 230px; background: linear-gradient(145deg, rgba(28,120,53,.16), rgba(7,17,10,.78)); }

@@ -1,0 +1,18 @@
+# Keep old flat URLs working after projects/people pages were reorganized
+# into /projects/* and /people/* folders (see commit "Reorganize project and
+# member pages into folders"). 301 = permanent redirect, so browsers,
+# bookmarks, and search engines update to the new URL.
+# https://docs.gitlab.com/user/project/pages/redirects/
+
+/beacon /projects/beacon 301
+/bagley /projects/bagley 301
+/venomous /projects/venomous 301
+/nulltrace /projects/nulltrace 301
+/championscode /projects/championscode 301
+/website /projects/website 301
+
+/0xffshell /people/0xffshell 301
+/3spress0 /people/3spress0 301
+/e-vdv-hu /people/e-vdv-hu 301
+/superivar /people/superivar 301
+/midas735 /people/midas735 301

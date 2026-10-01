@@ -6,12 +6,12 @@
  *
  * Usage:
  *   <canvas data-plus-rain
- *           data-rain-sprite="assets/plus-sprite.png"
- *           data-rain-background="assets/member-e-vdv-hu-bg.jpg"
+ *           data-rain-sprite="/assets/plus-sprite.png"
+ *           data-rain-background="/assets/member-e-vdv-hu-bg.jpg"
  *           data-rain-dim="0.45"
  *           data-rain-max-pixels="3500000"
  *           aria-hidden="true"></canvas>
- *   <script src="plus-rain.js" defer></script>
+ *   <script src="/plus-rain.js" defer></script>
  *
  * Style the canvas yourself, e.g.:
  *   [data-plus-rain] { position: fixed; inset: 0; z-index: -1; width: 100%; height: 100%; pointer-events: none; }

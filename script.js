@@ -2,8 +2,8 @@ const REPO = "Venomous";
 const NULLTRACE = "NullTrace";
 const BEACON = "Beacon";
 const MEMBER_LOGIN = "3spress0";
-const SHADOWBANNED_USERS = new Set(["3spress0", "espress0"]);
-const GITHUB_BANNED_USERS = new Set(["0xffshell"]);
+const SHADOWBANNED_USERS = new Set([]);
+const GITHUB_BANNED_USERS = new Set(["0xffshell", "3spress0"]);
 const normalizeLogin = (login) => String(login || "").toLowerCase();
 const isShadowbannedLogin = (login) => SHADOWBANNED_USERS.has(normalizeLogin(login));
 const isGithubBannedLogin = (login) => GITHUB_BANNED_USERS.has(normalizeLogin(login));
@@ -16,10 +16,11 @@ const GL_PROJECT_PATH = `${GL_GROUP_PATH}/Venomous`;
 const GL_PROJECT = `${GITLAB_API}/projects/${encodeURIComponent(GL_PROJECT_PATH)}`;
 const GL_NULLTRACE_PROJECT = `${GITLAB_API}/projects/${encodeURIComponent(`${GL_GROUP_PATH}/${NULLTRACE}`)}`;
 const GL_BEACON_PROJECT = `${GITLAB_API}/projects/${encodeURIComponent(`${GL_GROUP_PATH}/${BEACON}`)}`;
+const GL_CHAMPIONSCODE_PROJECT = `${GITLAB_API}/projects/${encodeURIComponent(`${GL_GROUP_PATH}/ChampionsCode`)}`;
 const SITE_ROUTES = Object.freeze({
-  home: "/", projects: "/projects", people: "/people", venomous: "/venomous",
-  nulltrace: "/nulltrace", championscode: "/championscode", beacon: "/beacon", bagley: "/bagley",
-  website: "/website", migration: "/migration"
+  home: "/", projects: "/projects", people: "/people", venomous: "/projects/venomous",
+  nulltrace: "/projects/nulltrace", championscode: "/projects/championscode", beacon: "/projects/beacon", bagley: "/projects/bagley",
+  website: "/projects/website", migration: "/migration"
 });
 const GL_SITE_PROJECT = `${GITLAB_API}/projects/${encodeURIComponent(`${GL_GROUP_PATH}/home`)}`;
 const fallbackModules = [{"name":"Aimbot","category":"combat"},{"name":"AntiProjectile","category":"combat"},{"name":"AutoClickerPlus","category":"combat"},{"name":"AutoPotion","category":"combat"},{"name":"AutoShield","category":"combat"},{"name":"CriticalsPlus","category":"combat"},{"name":"CrystalPvP","category":"combat"},{"name":"Hunt","category":"combat"},{"name":"MaceKill","category":"combat"},{"name":"ProjectilePuncher","category":"combat"},{"name":"SuperKnockback","category":"combat"},{"name":"SwordBlock","category":"combat"},{"name":"TargetObsidian","category":"combat"},{"name":"TickBase","category":"combat"},{"name":"TimerRange","category":"combat"},{"name":"TpAura","category":"combat"},{"name":"VAnchorMacro","category":"combat"},{"name":"VAntiTrap","category":"combat"},{"name":"VAutoCity","category":"combat"},{"name":"VAutoDoubleHand","category":"combat"},{"name":"VAutoInvTotem","category":"combat"},{"name":"VBreachSwap","category":"combat"},{"name":"VKeyPearl","category":"combat"},{"name":"VKillAura","category":"combat"},{"name":"VMaceKill","category":"combat"},{"name":"VPopCounter","category":"combat"},{"name":"VShieldBreaker","category":"combat"},{"name":"VShieldBypass","category":"combat"},{"name":"VSwordPlaceObsidian","category":"combat"},{"name":"VWindPearlMacro","category":"combat"},{"name":"VelocityPlus","category":"combat"},{"name":"AntiCheatDetect","category":"detection"},{"name":"AntiStaff","category":"detection"},{"name":"SpectatorAlert","category":"detection"},{"name":"VAntiVanish","category":"detection"},{"name":"VPlayerDetection","category":"detection"},{"name":"VInvisESP","category":"visual"},{"name":"VLightESP","category":"visual"},{"name":"VSkeletonESP","category":"visual"},{"name":"AbortBreaking","category":"exploit"},{"name":"AntiReducedDebugInfo","category":"exploit"},{"name":"ClickTp","category":"exploit"},{"name":"Damage","category":"exploit"},{"name":"Disabler","category":"exploit"},{"name":"Dupe","category":"exploit"},{"name":"ExtendedFirework","category":"exploit"},{"name":"Kick","category":"exploit"},{"name":"LbClip","category":"exploit"},{"name":"MoreCarry","category":"exploit"},{"name":"NameCollector","category":"exploit"},{"name":"NoPitchLimit","category":"exploit"},{"name":"PingSpoof","category":"exploit"},{"name":"PortalMenu","category":"exploit"},{"name":"ResetVL","category":"exploit"},{"name":"SleepWalker","category":"exploit"},{"name":"TimeShift","category":"exploit"},{"name":"VAntiHunger","category":"exploit"},{"name":"VBungeeCordSpoof","category":"exploit"},{"name":"VChorusExploit","category":"exploit"},{"name":"VGhostHand","category":"exploit"},{"name":"VNoPortalHitbox","category":"exploit"},{"name":"VPortalGodMode","category":"exploit"},{"name":"VVehicleOneHit","category":"exploit"},{"name":"DankBobbing","category":"utility"},{"name":"Derp","category":"utility"},{"name":"Twerk","category":"utility"},{"name":"Vomit","category":"utility"},{"name":"ArmorWarning","category":"utility"},{"name":"AutoChatGame","category":"utility"},{"name":"AutoPearl","category":"utility"},{"name":"Chat","category":"utility"},{"name":"ElytraSwap","category":"utility"},{"name":"FarmlandTremble","category":"utility"},{"name":"FlagCheck","category":"utility"},{"name":"GUICloser","category":"utility"},{"name":"InventoryTracker","category":"utility"},{"name":"ItemOrganizer","category":"utility"},{"name":"LagNotifier","category":"utility"},{"name":"MiddleClickAction","category":"utility"},{"name":"PearlTools","category":"utility"},{"name":"ProphuntESP","category":"utility"},{"name":"SafeLogout","category":"utility"},{"name":"SoundESP","category":"utility"},{"name":"Spammer","category":"utility"},{"name":"TNTTimer","category":"utility"},{"name":"TargetLock","category":"utility"},{"name":"Teams","category":"utility"},{"name":"TextFieldProtect","category":"utility"},{"name":"TrueSight","category":"utility"},{"name":"VAntiBot","category":"utility"},{"name":"VAutoEZ","category":"utility"},{"name":"VBookBot","category":"utility"},{"name":"VChoir","category":"utility"},{"name":"VCoordSnapper","category":"utility"},{"name":"VFreecamMining","category":"utility"},{"name":"VHideScoreboard","category":"utility"},{"name":"VNameProtect","category":"utility"},{"name":"VNoBlockInteract","category":"utility"},{"name":"VNotifier","category":"utility"},{"name":"VPacketLogger","category":"utility"},{"name":"AntiBounce","category":"movement"},{"name":"AssertDominance","category":"movement"},{"name":"Clip","category":"movement"},{"name":"Fly","category":"movement"},{"name":"NoPush","category":"movement"},{"name":"Phase","category":"movement"},{"name":"SnapTap","category":"movement"},{"name":"Speed","category":"movement"},{"name":"VBlink","category":"movement"},{"name":"VBoatPhase","category":"movement"},{"name":"VHoleSnap","category":"movement"},{"name":"VRoboWalk","category":"movement"},{"name":"GlobalNetworkInterceptor","category":"utility"},{"name":"NoFallPlus","category":"utility"},{"name":"AntiBlind","category":"visual"},{"name":"VNewChunks","category":"visual"},{"name":"AntiVoid","category":"utility"},{"name":"AutoBreakSelected","category":"utility"},{"name":"AutoToolPlus","category":"utility"},{"name":"NoSignScreen","category":"utility"},{"name":"Scaffold","category":"utility"},{"name":"TimerPlus","category":"utility"},{"name":"VAirPlace","category":"utility"},{"name":"VAutoFarm","category":"utility"}];
@@ -96,8 +97,8 @@ async function syncOrganization() {
     getJSON(`${GL_GROUP_API}/projects?per_page=100&include_subgroups=true`, "application/json")
   ]);
   $$('[data-org-avatar]').forEach((image) => {
-    image.onerror = () => { image.onerror = null; image.src = "assets/org-avatar.png"; };
-    image.src = group.avatar_url || "assets/org-avatar.png";
+    image.onerror = () => { image.onerror = null; image.src = "/assets/org-avatar.png"; };
+    image.src = group.avatar_url || "/assets/org-avatar.png";
   });
   setText("[data-org-name]", group.name || "International Duck Incorporated");
   setText("[data-org-repos]", projects.length);
@@ -122,8 +123,18 @@ function pixelEffect(colors = pixelPalettes.slate, gap = 6, speed = 35) {
   return effect;
 }
 
+async function latestReleaseTag(projectApiBase) {
+  const releases = await getJSON(`${projectApiBase}/releases?per_page=20`, "application/json").catch(() => []);
+  const stable = releases.find((release) => !release.upcoming_release);
+  return stable ? (stable.tag_name || stable.name || "").replace(/^v/i, "") : null;
+}
+
 async function syncProjects() {
   const glProjects = await getJSON(`${GL_GROUP_API}/projects?per_page=100&order_by=last_activity_at&sort=desc&include_subgroups=true`, "application/json");
+  const [beaconVersion, championscodeVersion] = await Promise.all([
+    latestReleaseTag(GL_BEACON_PROJECT),
+    latestReleaseTag(GL_CHAMPIONSCODE_PROJECT)
+  ]);
   const languageByProject = new Map(await Promise.all(glProjects.map(async (project) => {
     const languages = await getJSON(`${GITLAB_API}/projects/${project.id}/languages`, "application/json").catch(() => ({}));
     return [project.path, Object.entries(languages).sort((a, b) => b[1] - a[1])[0]?.[0] || null];
@@ -152,13 +163,13 @@ async function syncProjects() {
     "International-Duck-Incorporated.github.io": SITE_ROUTES.website
   };
   const projectMeta = {
-    Venomous: { label: "Featured project", icon: "venom", logo: "assets/venomous-icon.png", status: "Active", action: "Open project" },
-    Beacon: { label: "Utility project", icon: "beacon", logo: "assets/beacon-icon.png", status: "Release 1.8.16", action: "Open project" },
-    "beacon-bagley": { title: "Bagley", label: "Beacon addon", icon: "bagley", logo: "assets/bagley-icon.png", status: "New", action: "Open project" },
-    NullTrace: { label: "Privacy project", icon: "privacy", logo: "assets/nulltrace-icon.png", status: "Official release", action: "Open project" },
-    ChampionsCode: { label: "Research project", icon: "champion", logo: "assets/championscode-icon.png", status: "Alpha", statusMuted: true, action: "Open project" },
-    home: { label: "Website project", icon: "web", status: "Live", action: "Open page" },
-    "International-Duck-Incorporated.github.io": { label: "Website project", icon: "web", status: "Live", action: "Open page" }
+    Venomous: { label: "Featured project", icon: "venom", logo: "/assets/venomous-icon.png", status: "Active", action: "Open project" },
+    Beacon: { label: "Utility project", icon: "beacon", logo: "/assets/beacon-icon.png", status: beaconVersion ? `Release ${beaconVersion}` : "Release", action: "Open project" },
+    "beacon-bagley": { title: "Bagley", label: "Beacon addon", icon: "bagley", logo: "/assets/bagley-icon.png", status: "New", action: "Open project" },
+    NullTrace: { label: "Privacy project", icon: "privacy", logo: "/assets/nulltrace-icon.png", status: "Official release", action: "Open project" },
+    ChampionsCode: { label: "Research project", icon: "champion", logo: "/assets/championscode-icon.png", status: championscodeVersion ? `First launch · ${championscodeVersion}` : "First launch", action: "Open project" },
+    home: { title: "Website source", label: "Website project", icon: "web", status: "Live", action: "Open page" },
+    "International-Duck-Incorporated.github.io": { title: "Website source", label: "Website project", icon: "web", status: "Live", action: "Open page" }
   };
   grid.replaceChildren(...repos.map((repo, index) => {
     const link = document.createElement("a");
@@ -225,14 +236,14 @@ async function syncPeople() {
     link.className = "person-card glass-card reveal visible";
     link.dataset.memberCard = normalizeLogin(person.login);
     const memberPages = {
-      "3spress0": "/3spress0", "E-VDV-HU": "/e-vdv-hu", "0xFFshell": "/0xffshell",
-      "Xx-superIvar-xX": "/superivar", "midas735": "/midas735"
+      "3spress0": "/people/3spress0", "E-VDV-HU": "/people/e-vdv-hu", "0xFFshell": "/people/0xffshell",
+      "Xx-superIvar-xX": "/people/superivar", "midas735": "/people/midas735"
     };
     link.href = memberPages[person.login] || person.html_url;
     if (!memberPages[person.login]) { link.target = "_blank"; link.rel = "noreferrer"; }
     const image = document.createElement("img");
-    const localMemberImages = { "3spress0": "assets/contributor-3spress0.png", "0xFFshell": "assets/member-0xffshell.png", "E-VDV-HU": "assets/member-e-vdv-hu.png", "Xx-superIvar-xX": "assets/member-xx-superivar-xx.png", "midas735": "assets/member-midas735.png" };
-    image.src = localMemberImages[person.login] || (person.avatar_url ? person.avatar_url : "assets/org-avatar.png");
+    const localMemberImages = { "3spress0": "/assets/contributor-3spress0.png", "0xFFshell": "/assets/member-0xffshell.png", "E-VDV-HU": "/assets/member-e-vdv-hu.png", "Xx-superIvar-xX": "/assets/member-xx-superivar-xx.png", "midas735": "/assets/member-midas735.png" };
+    image.src = localMemberImages[person.login] || (person.avatar_url ? person.avatar_url : "/assets/org-avatar.png");
     image.alt = person.display; image.width = 96; image.height = 96;
     const copy = document.createElement("div");
     const label = document.createElement("span");
@@ -509,6 +520,21 @@ async function syncBeaconRelease() {
   $$('[data-beacon-download]').forEach((link) => { link.href = downloadUrl; });
 }
 
+async function syncChampionsCodeRelease() {
+  const releases = await getJSON(`${GL_CHAMPIONSCODE_PROJECT}/releases?per_page=100`);
+  const stable = releases.find((release) => !release.upcoming_release);
+  if (!stable) return;
+  const version = (stable.tag_name || stable.name || "v0.1.0-beta.1").replace(/^v/i, "");
+  const jar = stable.assets?.links?.find((asset) => `${asset.name || ""} ${asset.url || ""}`.toLowerCase().includes(".jar") && !`${asset.name || ""}`.toLowerCase().includes("sources"));
+  const releaseUrl = stable._links?.self || `${GITLAB}/${GL_GROUP_PATH}/ChampionsCode/-/releases/${encodeURIComponent(stable.tag_name)}`;
+  const downloadUrl = jar?.direct_asset_url || jar?.url || releaseUrl;
+  setText("[data-championscode-version]", version);
+  setText("[data-championscode-date]", fullDate(stable.released_at));
+  setText("[data-championscode-download-label]", `Download ${version}`);
+  $$('[data-championscode-release-link]').forEach((link) => { link.href = releaseUrl; });
+  $$('[data-championscode-download]').forEach((link) => { link.href = downloadUrl; });
+}
+
 async function syncMemberContributions() {
   // Contribution counts come from the GitLab group's mirrored repositories. ChampionsCode no longer has a
   // public home and its author is shadowbanned on GitHub, so that count keeps its checked-in value.
@@ -559,14 +585,14 @@ async function syncContributors() {
   const people=await getJSON(`${GL_PROJECT}/repository/contributors`,"application/json");
   const list=$("[data-contributors]");if(!list || !people.length)return;
   const known=[
-    {test:(person)=>person.name==="0xFF"||person.email==="pieterr.games@gmail.com",label:"0xFFshell",role:"Writer",url:`${GITLAB}/0xFFshell`,avatar:"assets/member-0xffshell.png"},
-    {test:(person)=>/espress0|3spress0|espervanderven|166116795/i.test(`${person.name||""} ${person.email||""}`),label:"espress0",role:"Writer",url:"https://github.com/3spress0",avatar:"assets/contributor-3spress0.png"}
+    {test:(person)=>person.name==="0xFF"||person.email==="pieterr.games@gmail.com",label:"0xFFshell",role:"Writer",url:`${GITLAB}/0xFFshell`,avatar:"/assets/member-0xffshell.png"},
+    {test:(person)=>/espress0|3spress0|espervanderven|166116795/i.test(`${person.name||""} ${person.email||""}`),label:"espress0",role:"Writer",url:"https://gitlab.com/espress0",avatar:"/assets/contributor-3spress0.png"}
   ];
   const merged=new Map();
   for(const person of people){
     const profile=known.find((entry)=>entry.test(person));
     const key=profile?profile.label:(person.name||"Contributor");
-    const entry=merged.get(key)||{label:key,role:profile?.role||"Contributor",url:profile?.url||`${GITLAB}/${GL_PROJECT_PATH}/-/graphs/main`,avatar:profile?.avatar||"assets/org-avatar.png",commits:0};
+    const entry=merged.get(key)||{label:key,role:profile?.role||"Contributor",url:profile?.url||`${GITLAB}/${GL_PROJECT_PATH}/-/graphs/main`,avatar:profile?.avatar||"/assets/org-avatar.png",commits:0};
     entry.commits+=person.commits||0;merged.set(key,entry);
   }
   list.replaceChildren(...[...merged.values()].sort((a,b)=>b.commits-a.commits).map((entry)=>{const link=document.createElement("a"),image=document.createElement("img"),copy=document.createElement("span"),name=document.createElement("b"),role=document.createElement("small"),total=document.createElement("strong");link.href=entry.url;link.target="_blank";link.rel="noreferrer";image.src=entry.avatar;image.alt=entry.label;name.textContent=entry.label;role.textContent=entry.role;total.textContent=`${entry.commits} ${entry.commits===1?"contribution":"contributions"}`;copy.append(name,role);link.append(image,copy,total);return link;}));
@@ -579,6 +605,7 @@ if (page === "projects") tasks.push(syncProjects());
 if (page === "people") tasks.push(syncPeople());
 if (page === "project" && document.body.dataset.project === "nulltrace") tasks.push(syncNullTraceRelease());
 if (page === "project" && document.body.dataset.project === "beacon") tasks.push(syncBeaconRelease());
+if (page === "project" && document.body.dataset.project === "championscode") tasks.push(syncChampionsCodeRelease());
 if (page === "member" && document.body.dataset.member === MEMBER_LOGIN) tasks.push(syncMemberContributions());
 if (page === "venomous") {
   setupModules();

@@ -38,32 +38,32 @@
    * gitlab.com/Name links come from the people directory). */
   const MEMBERS = [
     {
-      key: "0xffshell", display: "0xFFshell", page: "/0xffshell",
-      avatar: "assets/member-0xffshell.png",
+      key: "0xffshell", display: "0xFFshell", page: "/people/0xffshell",
+      avatar: "/assets/member-0xffshell.png",
       aliases: [/0xff/i, /pieterr\.games@gmail\.com/i, /0xffshell/i],
       gitlab: `${GITLAB}/0xFFshell`, github: `${GH}`
     },
     {
-      key: "3spress0", display: "espress0", page: "/3spress0",
-      avatar: "assets/contributor-3spress0.png",
+      key: "3spress0", display: "espress0", page: "/people/3spress0",
+      avatar: "/assets/contributor-3spress0.png",
       aliases: [/espress0/i, /3spress0/i, /vanderven/i, /166116795/],
       gitlab: null, github: `${GH}/3spress0`
     },
     {
-      key: "e-vdv-hu", display: "E-VDV-HU", page: "/e-vdv-hu",
-      avatar: "assets/member-e-vdv-hu.png",
+      key: "e-vdv-hu", display: "E-VDV-HU", page: "/people/e-vdv-hu",
+      avatar: "/assets/member-e-vdv-hu.png",
       aliases: [/e-?vdv-?hu/i],
       gitlab: null, github: `${GH}/E-VDV-HU`
     },
     {
-      key: "superivar", display: "Xx-superIvar-xX", page: "/superivar",
-      avatar: "assets/member-xx-superivar-xx.png",
+      key: "superivar", display: "Xx-superIvar-xX", page: "/people/superivar",
+      avatar: "/assets/member-xx-superivar-xx.png",
       aliases: [/superivar/i, /ivar\.boot@student\.hu\.nl/i],
       gitlab: null, github: `${GH}/Xx-superIvar-xX`
     },
     {
-      key: "midas735", display: "midas735", page: "/midas735",
-      avatar: "assets/member-midas735.png",
+      key: "midas735", display: "midas735", page: "/people/midas735",
+      avatar: "/assets/member-midas735.png",
       aliases: [/midas735/i],
       gitlab: null, github: `${GH}/midas735`
     }

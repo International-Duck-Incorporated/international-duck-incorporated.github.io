@@ -24,14 +24,14 @@
 
   <link
     rel="icon"
-    href="assets/championscode-icon.png"
+    href="/assets/championscode-icon.png"
     type="image/png"
   >
-  <link rel="stylesheet" href="styles.css">
-  <link rel="stylesheet" href="layout-fixes.css">
+  <link rel="stylesheet" href="/styles.css">
+  <link rel="stylesheet" href="/layout-fixes.css">
 
-  <script src="script.js" defer></script>
-  <script src="pixel-canvas.js" defer></script>
+  <script src="/script.js" defer></script>
+  <script src="/pixel-canvas.js" defer></script>
 </head>
 
 <body data-page="project" data-project="championscode">
@@ -80,7 +80,7 @@
       >
         <img
           data-org-avatar
-          src="assets/org-avatar.png"
+          src="/assets/org-avatar.png"
           alt=""
           width="40"
           height="40"
@@ -143,13 +143,13 @@
         <article class="profile-intro glass-card reveal">
           <img
             class="project-mark"
-            src="assets/championscode-icon.png"
+            src="/assets/championscode-icon.png"
             alt="ChampionsCode logo"
             width="82"
             height="82"
           >
 
-          <span class="eyebrow">First public launch · 25 Sep 2026</span>
+          <span class="eyebrow">First public launch · <span data-championscode-date>25 Sep 2026</span></span>
 
           <h1>ChampionsCode.</h1>
 
@@ -163,15 +163,16 @@
           <div class="action-row">
             <a
               class="button button-blue"
+              data-championscode-download
               href="https://gitlab.com/international-duck-incorporated/ChampionsCode/-/releases/v0.1.0-beta.1/downloads/champions-mod-0.1.0-beta.1.jar"
               target="_blank"
               rel="noreferrer"
             >
               <pixel-canvas data-gap="6" data-speed="35" data-colors="#f9ecd4, #eec06a, #b98a2e"></pixel-canvas>
               <svg><use href="#i-gitlab"/></svg>
-              Download 0.1.0-beta.1
+              <span data-championscode-download-label>Download 0.1.0-beta.1</span>
             </a>
-            <a class="button button-glass" href="https://gitlab.com/international-duck-incorporated/ChampionsCode/-/releases/v0.1.0-beta.1" target="_blank" rel="noreferrer">Release notes <svg><use href="#i-arrow"/></svg></a>
+            <a class="button button-glass" data-championscode-release-link href="https://gitlab.com/international-duck-incorporated/ChampionsCode/-/releases/v0.1.0-beta.1" target="_blank" rel="noreferrer">Release notes <svg><use href="#i-arrow"/></svg></a>
           </div>
         </article>
 
@@ -182,7 +183,7 @@
             <div class="fact-list">
               <div class="fact">
                 <small>Status</small>
-                <b>First launch · 0.1.0-beta.1</b>
+                <b>First launch · <span data-championscode-version>0.1.0-beta.1</span></b>
               </div>
 
               <div class="fact">
@@ -198,6 +199,11 @@
               <div class="fact">
                 <small>Fabric Loader</small>
                 <b>0.19.5+</b>
+              </div>
+
+              <div class="fact">
+                <small>Released</small>
+                <b data-championscode-date>25 Sep 2026</b>
               </div>
 
               <div class="fact">
@@ -270,9 +276,9 @@
           <h2>Current position.</h2>
 
           <p>
-            The alpha foundation builds, tests, and produces an installable
+            The beta foundation builds, tests, and produces an installable
             Fabric JAR. Runtime Java addons compile real sources with a full
-            JDK 25 behind developer mode and source-hash confirmation. The first public release, 0.1.0-beta.1, is now available on GitLab. Download the mod jar or read the release notes above.
+            JDK 25 behind developer mode and source-hash confirmation. The first public release is now available on GitLab as <b data-championscode-version>0.1.0-beta.1</b>. Download the mod jar or read the release notes above.
           </p>
         </article>
       </section>
@@ -341,7 +347,7 @@
           </div>
 
           <p>
-            The alpha combines a client-side research console with an opt-in
+            The beta combines a client-side research console with an opt-in
             Java addon workflow.
           </p>
         </header>
@@ -414,7 +420,7 @@
   <footer class="site-footer">
     <div class="shell footer-inner">
       <a class="brand" href="/">
-        <img src="assets/org-avatar.png" alt="">
+        <img src="/assets/org-avatar.png" alt="">
 
         <span>
           <b>International Duck</b>

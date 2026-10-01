@@ -10,11 +10,11 @@
   <meta property="og:type" content="website">
   <meta property="og:image" content="https://gitlab.com/international-duck-incorporated/Beacon/-/raw/main/assets/icon.png">
   <title>Beacon - International Duck</title>
-  <link rel="icon" href="assets/beacon-icon.png" type="image/png">
-  <link rel="stylesheet" href="styles.css">
-  <link rel="stylesheet" href="layout-fixes.css">
-  <script src="script.js" defer></script>
-  <script src="pixel-canvas.js" defer></script>
+  <link rel="icon" href="/assets/beacon-icon.png" type="image/png">
+  <link rel="stylesheet" href="/styles.css">
+  <link rel="stylesheet" href="/layout-fixes.css">
+  <script src="/script.js" defer></script>
+  <script src="/pixel-canvas.js" defer></script>
 </head>
 <body data-page="project" data-project="beacon">
   <svg class="svg-sprite" aria-hidden="true">
@@ -29,14 +29,14 @@
   <div class="site-glow site-glow-blue" aria-hidden="true"></div>
   <div class="beacon-video-background" aria-hidden="true">
     <video autoplay muted loop playsinline preload="metadata" tabindex="-1">
-      <source src="assets/beacon-background.mp4" type="video/mp4">
+      <source src="/assets/beacon-background.mp4" type="video/mp4">
     </video>
   </div>
 
   <header class="topbar" data-header>
     <div class="shell topbar-inner">
       <a class="brand" href="/" aria-label="International Duck Incorporated home">
-        <img data-org-avatar src="assets/org-avatar.png" alt="" width="40" height="40">
+        <img data-org-avatar src="/assets/org-avatar.png" alt="" width="40" height="40">
         <span><b>International Duck</b><small>Incorporated</small></span>
       </a>
       <nav class="main-nav" id="main-navigation" data-nav aria-label="Primary navigation">
@@ -57,9 +57,10 @@
 
       <section class="profile-hero">
         <article class="profile-intro glass-card reveal">
-          <img class="project-mark" src="assets/beacon-icon.png" alt="Beacon logo" width="82" height="82">
+          <img class="project-mark" src="/assets/beacon-icon.png" alt="Beacon logo" width="82" height="82">
           <span class="eyebrow">Client-side utility mod</span>
           <span class="status-pill green release-badge"><i></i>Official release · <b data-beacon-version>1.8.16</b></span>
+          <span class="status-pill amber release-badge"><i></i>Listed on CurseForge as <b>Beacon QoL</b> · Under review</span>
           <h1>Beacon.</h1>
           <p class="lead">A modular utility mod for Minecraft 26.2 and Fabric, built around quality-of-life tools, visual improvements, world utilities, persistent configuration, and a strict vanilla-server-safe policy.</p>
           <div class="action-row">
@@ -88,6 +89,7 @@
               <div class="fact"><small>Release catalog</small><b><span data-beacon-release-count>43</span> downloadable builds</b></div>
               <div class="fact"><small>Technology</small><b>Java · Fabric · Minecraft 26.2</b></div>
               <div class="fact"><small>Registered modules</small><b>55 across 5 categories</b></div>
+              <div class="fact"><small>CurseForge</small><b>Beacon QoL · Under review</b></div>
               <div class="fact"><small>License</small><b>GPL-3.0-only</b></div>
             </div>
           </div>
@@ -160,6 +162,7 @@
           <span class="eyebrow">Latest release</span>
           <h2>Beacon <span data-beacon-version>1.8.16</span> is available.</h2>
           <p>The GitLab Releases catalog now contains <b data-beacon-release-count>43</b> downloadable builds with attached JAR files. Version <b data-beacon-version>1.8.16</b> is the newest published release; the repository’s 1.8.17 notes and 2.0 preparation remain newer source work rather than published builds.</p>
+          <p>Beacon has also been submitted to CurseForge under the listing name <b>Beacon QoL</b>. The listing is currently pending moderation review and is not yet publicly live there, so GitLab remains the only place to download a working build for now.</p>
         </div>
         <a class="button button-blue" data-beacon-download href="https://gitlab.com/international-duck-incorporated/Beacon/-/releases/1.8.16/downloads/Beacon-1.8.16.jar" target="_blank" rel="noreferrer"><svg><use href="#i-download"/></svg><span data-beacon-download-label>Download 1.8.16</span></a>
       </section>
@@ -168,8 +171,8 @@
 
   <footer class="site-footer">
     <div class="shell footer-inner">
-      <a class="brand" href="/"><img data-org-avatar src="assets/org-avatar.png" alt="" width="40" height="40"><span><b>International Duck</b><small>Incorporated</small></span></a>
-      <nav><a href="/">Overview</a><a href="/projects">Projects</a><a href="/people">People</a><a href="/activity">Activity</a><a href="/migration">Migration</a><a href="/beacon">Beacon</a><a href="https://gitlab.com/international-duck-incorporated" target="_blank" rel="noreferrer">GitLab</a></nav>
+      <a class="brand" href="/"><img data-org-avatar src="/assets/org-avatar.png" alt="" width="40" height="40"><span><b>International Duck</b><small>Incorporated</small></span></a>
+      <nav><a href="/">Overview</a><a href="/projects">Projects</a><a href="/people">People</a><a href="/activity">Activity</a><a href="/migration">Migration</a><a href="/projects/beacon">Beacon</a><a href="https://gitlab.com/international-duck-incorporated" target="_blank" rel="noreferrer">GitLab</a></nav>
       <span class="sync-state"><i></i><span data-sync-text>GitLab data synced live</span></span>
     </div>
   </footer>

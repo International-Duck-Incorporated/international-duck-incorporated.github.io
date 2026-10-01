@@ -6,18 +6,18 @@
   <meta name="theme-color" content="#07090d">
   <meta name="description" content="midas735, an International Duck public member.">
   <title>midas735 - International Duck</title>
-  <link rel="icon" href="assets/org-avatar.png" type="image/png">
-  <link rel="stylesheet" href="styles.css">
-  <link rel="stylesheet" href="layout-fixes.css">
-  <script src="script.js" defer></script>
-  <script src="commit-feed.js" defer></script>
-  <script src="pixel-canvas.js" defer></script>
+  <link rel="icon" href="/assets/org-avatar.png" type="image/png">
+  <link rel="stylesheet" href="/styles.css">
+  <link rel="stylesheet" href="/layout-fixes.css">
+  <script src="/script.js" defer></script>
+  <script src="/commit-feed.js" defer></script>
+  <script src="/pixel-canvas.js" defer></script>
   <style>
     /* Goofy ahh gif: THE background. Not an accent. THE background. */
     /* isolation makes body its own stacking context, so the z-index:-2 layer
        paints ABOVE body's opaque gradient instead of being buried under it. */
     body[data-member="midas735"]{isolation:isolate;}
-    .goofy-bg{position:fixed;inset:0;z-index:-2;background:url("assets/goofy-ahh.gif") center / cover no-repeat;pointer-events:none;}
+    .goofy-bg{position:fixed;inset:0;z-index:-2;background:url("/assets/goofy-ahh.gif") center / cover no-repeat;pointer-events:none;}
     .goofy-bg::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg, rgba(7,9,13,.66), rgba(7,9,13,.52) 45%, rgba(7,9,13,.78));}
     .commit-log{display:flex;flex-direction:column;gap:.9rem;margin-top:1rem;}
     .commit-log .commit{display:grid;grid-template-columns:auto 1fr;gap:.35rem .8rem;padding:.85rem 1rem;border:1px solid rgba(140,180,255,.18);border-radius:12px;background:rgba(10,16,28,.45);}
@@ -40,7 +40,7 @@
 
   <header class="topbar" data-header>
     <div class="shell topbar-inner">
-      <a class="brand" href="/" aria-label="International Duck Incorporated home"><img data-org-avatar src="assets/org-avatar.png" alt="" width="40" height="40"><span><b>International Duck</b><small>Incorporated</small></span></a>
+      <a class="brand" href="/" aria-label="International Duck Incorporated home"><img data-org-avatar src="/assets/org-avatar.png" alt="" width="40" height="40"><span><b>International Duck</b><small>Incorporated</small></span></a>
       <nav class="main-nav" id="main-navigation" data-nav aria-label="Primary navigation">
         <a href="/">Overview</a><a href="/projects">Projects</a><a class="active" href="/people" aria-current="page">People</a><a href="/activity">Activity</a><a href="/migration">Migration</a><a class="icon-link" href="https://gitlab.com/international-duck-incorporated" target="_blank" rel="noreferrer" aria-label="International Duck Incorporated on GitLab"><svg><use href="#i-gitlab"/></svg></a>
       </nav>
@@ -53,7 +53,7 @@
       <div class="breadcrumbs"><a href="/">International Duck</a><span>/</span><a href="/people">People</a><span>/</span><b>midas735</b></div>
       <section class="profile-hero">
         <article class="profile-intro glass-card reveal">
-          <img class="avatar" src="assets/member-midas735.png" alt="midas735's GitHub avatar: a person in a Snorlax costume">
+          <img class="avatar" src="/assets/member-midas735.png" alt="midas735's GitHub avatar: a person in a Snorlax costume">
           <span class="eyebrow">Member profile / cryptid sighting</span>
           <h1>Midas735.</h1>
           <p class="lead">Everything he touches turns to gold. Everything he commits turns to a branch named <code>patch-1</code> that nobody ever merges. Midas is International Duck's most elusive member: officially classified as a goofy ahh developer, spotted in the wild about twice a month, and always mid-fumble when it happens.</p>
@@ -79,6 +79,6 @@
     </div>
   </main>
 
-  <footer class="site-footer"><div class="shell footer-inner"><a class="brand" href="/"><img src="assets/org-avatar.png" alt=""><span><b>International Duck</b><small>Incorporated</small></span></a><nav><a href="/projects">Projects</a><a href="/people">People</a><a href="/activity">Activity</a><a href="/migration">Migration</a><a href="https://gitlab.com/international-duck-incorporated">GitLab</a></nav><span class="sync-state"><i></i><span data-sync-text>GitLab data synced live</span></span></div></footer>
+  <footer class="site-footer"><div class="shell footer-inner"><a class="brand" href="/"><img src="/assets/org-avatar.png" alt=""><span><b>International Duck</b><small>Incorporated</small></span></a><nav><a href="/projects">Projects</a><a href="/people">People</a><a href="/activity">Activity</a><a href="/migration">Migration</a><a href="https://gitlab.com/international-duck-incorporated">GitLab</a></nav><span class="sync-state"><i></i><span data-sync-text>GitLab data synced live</span></span></div></footer>
 </body>
 </html>

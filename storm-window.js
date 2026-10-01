@@ -11,7 +11,7 @@
  * itself is left untouched, and prefers-reduced-motion renders one static
  * frame instead of animating.
  *
- * Usage: <script src="storm-window.js" defer></script> on a page whose
+ * Usage: <script src="/storm-window.js" defer></script> on a page whose
  * <body> has the class "storm-window-page".
  */
 (function () {

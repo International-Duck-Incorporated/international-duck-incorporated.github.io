@@ -9,7 +9,7 @@
  * prefers-reduced-motion - the explicit route does not.
  */
 (() => {
-  const VIDEO_SRC = "assets/easteregg-video.webm";
+  const VIDEO_SRC = "/assets/easteregg-video.webm";
   const ROLL_ODDS = 1000;
 
   const path = (location.pathname || "/")

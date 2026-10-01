@@ -331,3 +331,9 @@ body.egg-bg[data-page="organization"]::before {
   .repo-list code { display: none; }
 }
 /* ---- /Activity page ---- */
+
+/* Amber status-pill variant, used for pending/under-review states
+   (e.g. a storefront listing that has not cleared moderation yet). */
+.status-pill.amber i { background: #f2c45a; }
+.status-pill.amber { color: #d8b368; border-color: rgba(242, 196, 90, .35); }
+
