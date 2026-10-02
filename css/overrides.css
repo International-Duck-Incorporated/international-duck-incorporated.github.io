@@ -1,14 +1,8 @@
 /* Shared layout hardening and homepage background treatment.
  *
- * IMPORTANT: this file must be linked AFTER styles.css in every page
- * (<link rel="stylesheet" href="styles.css">
- *  <link rel="stylesheet" href="layout-fixes.css">).
- * It used to be pulled in with @import at the top of styles.css, which placed
- * every rule below *before* the page-specific rules it is meant to override.
- * Because the selectors here have the same specificity as the ones in
- * styles.css, the later declarations won, the overrides never applied, and the
- * absolutely positioned / translated hero cards collided with the cards
- * underneath them on the Beacon, 0xFFshell, Superivar and E-VDV-HU pages.
+ * IMPORTANT: link this file last, after the ordered stylesheet modules in
+ * /css/. These declarations intentionally override page styles; moving this
+ * file earlier can reintroduce overlapping hero cards on profile pages.
  */
 
 /* Prevent grid children from forcing their tracks wider than the viewport. */
@@ -163,7 +157,7 @@ body[data-page="organization"]::before {
   pointer-events: none;
   background:
     linear-gradient(180deg, rgba(4,8,11,.42), rgba(4,8,11,.7) 58%, #05090b 100%),
-    url("assets/homepage-community-background-v4.jpg") center top / cover no-repeat;
+    url("../assets/homepage-community-background-v4.jpg") center top / cover no-repeat;
   filter: blur(6px);
   transform: scale(1.04);
 }
@@ -336,4 +330,3 @@ body.egg-bg[data-page="organization"]::before {
    (e.g. a storefront listing that has not cleared moderation yet). */
 .status-pill.amber i { background: #f2c45a; }
 .status-pill.amber { color: #d8b368; border-color: rgba(242, 196, 90, .35); }
-

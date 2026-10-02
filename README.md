@@ -36,6 +36,21 @@ GitLab does not expose group membership through its public API, so the people di
 
 Open `http://localhost:8080`. No build step or external front-end dependency is required.
 
+## Stylesheets
+
+Styles are split into focused files under `css/`. Pages using the shared site theme link them in this order to preserve the original cascade:
+
+1. `site.css` — shared theme, navigation, homepage, directories, and Venomous
+2. `profiles.css` — glass-card treatment and shared project/member profile styles
+3. `project-atmospheres.css` — project backgrounds and Beacon styling
+4. `migration.css` — migration timeline and status page
+5. `profile-themes.css` — Starry Night and Matrix member themes
+6. `page-layouts.css` — extended project content and bespoke page layouts
+7. `bagley.css` — Bagley theme and animated background
+8. `overrides.css` — shared layout fixes; keep this last
+
+Image URLs inside these stylesheets are relative to the `css/` directory and point back to `assets/`.
+
 ## Deploy
 
 GitLab Pages deploys from `main` via `.gitlab-ci.yml`.

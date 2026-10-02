@@ -1,0 +1,146 @@
+/* Bagley project palette and animated background.
+   Modules load in this order; see the root README for the stylesheet map. */
+
+/* Bagley project */
+.project-icon.bagley { overflow: hidden; background: linear-gradient(145deg, rgba(90,155,242,.25), rgba(167,139,250,.15)); border: 1px solid rgba(138,184,246,.22); }
+.project-icon.bagley img { width: 59px; height: 59px; object-fit: contain; }
+body[data-project="bagley"]::before { background: radial-gradient(ellipse at 80% 16%, rgba(95,143,236,.17), transparent 38%), #07090d; }
+body[data-project="bagley"] .project-mark { background: linear-gradient(145deg, rgba(90,155,242,.28), rgba(167,139,250,.16)); box-shadow: 0 16px 38px rgba(0,0,0,.28), 0 0 42px rgba(90,155,242,.1); }
+
+/* Bagley: warm, fluid red-to-yellow background waves. */
+body[data-project="bagley"] {
+  background: #210603;
+}
+body[data-project="bagley"]::before,
+body[data-project="bagley"]::after,
+body[data-project="bagley"] .site-glow { opacity: 0; }
+.bagley-wave-background {
+  position: fixed;
+  inset: -18vmax;
+  z-index: -1;
+  overflow: hidden;
+  pointer-events: none;
+  background:
+    radial-gradient(ellipse at 18% 30%, #ff1f0f 0%, rgba(255, 36, 12, .82) 20%, transparent 52%),
+    radial-gradient(ellipse at 78% 26%, #ffcf21 0%, rgba(255, 139, 0, .78) 24%, transparent 55%),
+    radial-gradient(ellipse at 52% 86%, #e51608 0%, rgba(255, 65, 5, .72) 28%, transparent 60%),
+    #4a0902;
+  filter: blur(58px) saturate(1.35);
+  transform: translateZ(0) scale(1.08);
+  animation: bagley-wave-field 7s ease-in-out infinite alternate;
+}
+.bagley-wave-background span {
+  position: absolute;
+  width: 72vmax;
+  aspect-ratio: 1.8;
+  border-radius: 50%;
+  filter: blur(72px);
+  mix-blend-mode: screen;
+  will-change: transform;
+}
+.bagley-wave-background span:nth-child(1) {
+  top: 4%;
+  left: -8%;
+  background: rgba(255, 32, 10, .84);
+  animation: bagley-wave-red 5s ease-in-out infinite alternate;
+}
+.bagley-wave-background span:nth-child(2) {
+  top: 28%;
+  right: -10%;
+  background: rgba(255, 202, 20, .82);
+  animation: bagley-wave-yellow 6s ease-in-out infinite alternate;
+}
+.bagley-wave-background span:nth-child(3) {
+  bottom: -8%;
+  left: 18%;
+  background: rgba(255, 91, 4, .78);
+  animation: bagley-wave-orange 8s ease-in-out infinite alternate;
+}
+@keyframes bagley-wave-field {
+  0% { transform: translate3d(-3%, -2%, 0) scale(1.08) rotate(-3deg); }
+  50% { transform: translate3d(3%, 1%, 0) scale(1.15) rotate(2deg); }
+  100% { transform: translate3d(-1%, 4%, 0) scale(1.1) rotate(5deg); }
+}
+@keyframes bagley-wave-red {
+  from { transform: translate3d(-12%, -8%, 0) rotate(-12deg) scale(1); }
+  to { transform: translate3d(38%, 30%, 0) rotate(16deg) scale(1.3); }
+}
+@keyframes bagley-wave-yellow {
+  from { transform: translate3d(15%, -15%, 0) rotate(10deg) scale(1.15); }
+  to { transform: translate3d(-42%, 36%, 0) rotate(-18deg) scale(.92); }
+}
+@keyframes bagley-wave-orange {
+  from { transform: translate3d(-18%, 24%, 0) rotate(-8deg) scale(.9); }
+  to { transform: translate3d(32%, -32%, 0) rotate(20deg) scale(1.25); }
+}
+
+/* Keep Bagley's animated field above the body's paint layer, but below page content. */
+body[data-project="bagley"] { isolation: isolate; }
+body[data-project="bagley"] .bagley-wave-background { z-index: 0; }
+body[data-project="bagley"] main,
+body[data-project="bagley"] footer { position: relative; z-index: 1; }
+
+/* Bagley motion override: fast, visible waves with a dimmer treatment. */
+body[data-project="bagley"] .bagley-wave-background {
+  opacity: .58;
+  animation: bagley-wave-field 2.8s ease-in-out infinite alternate !important;
+}
+body[data-project="bagley"] .bagley-wave-background span:nth-child(1) {
+  animation: bagley-wave-red 1.9s ease-in-out infinite alternate !important;
+}
+body[data-project="bagley"] .bagley-wave-background span:nth-child(2) {
+  animation: bagley-wave-yellow 2.3s ease-in-out infinite alternate-reverse !important;
+}
+body[data-project="bagley"] .bagley-wave-background span:nth-child(3) {
+  animation: bagley-wave-orange 3.1s ease-in-out infinite alternate !important;
+}
+@media (prefers-reduced-motion: reduce) {
+  body[data-project="bagley"] .bagley-wave-background,
+  body[data-project="bagley"] .bagley-wave-background span {
+    animation-iteration-count: infinite !important;
+  }
+}
+
+/* Bagley palette and motion: deep red/dark yellow, wide flowing sweeps. */
+body[data-project="bagley"] .bagley-wave-background {
+  opacity: .72;
+  background:
+    radial-gradient(ellipse at 12% 24%, rgba(105, 7, 12, .92) 0%, rgba(72, 4, 8, .76) 25%, transparent 58%),
+    radial-gradient(ellipse at 84% 20%, rgba(112, 88, 3, .82) 0%, rgba(79, 58, 0, .68) 28%, transparent 60%),
+    radial-gradient(ellipse at 48% 88%, rgba(91, 20, 3, .88) 0%, rgba(59, 8, 3, .7) 30%, transparent 64%),
+    #160202;
+  filter: blur(64px) saturate(1.08) brightness(.72);
+  animation: bagley-dark-field 2.5s ease-in-out infinite alternate !important;
+}
+body[data-project="bagley"] .bagley-wave-background span {
+  mix-blend-mode: normal;
+  filter: blur(76px);
+}
+body[data-project="bagley"] .bagley-wave-background span:nth-child(1) {
+  background: rgba(112, 5, 12, .8);
+  animation: bagley-dark-red 1.7s ease-in-out infinite alternate !important;
+}
+body[data-project="bagley"] .bagley-wave-background span:nth-child(2) {
+  background: rgba(126, 98, 2, .72);
+  animation: bagley-dark-yellow 2.1s ease-in-out infinite alternate-reverse !important;
+}
+body[data-project="bagley"] .bagley-wave-background span:nth-child(3) {
+  background: rgba(96, 31, 1, .75);
+  animation: bagley-dark-orange 2.8s ease-in-out infinite alternate !important;
+}
+@keyframes bagley-dark-field {
+  from { transform: translate3d(-12%, -9%, 0) scale(1.12) rotate(-8deg); }
+  to { transform: translate3d(12%, 10%, 0) scale(1.32) rotate(9deg); }
+}
+@keyframes bagley-dark-red {
+  from { transform: translate3d(-42%, -28%, 0) rotate(-22deg) scale(.72, 1.15); }
+  to { transform: translate3d(72%, 58%, 0) rotate(25deg) scale(1.48, .82); }
+}
+@keyframes bagley-dark-yellow {
+  from { transform: translate3d(48%, -38%, 0) rotate(24deg) scale(1.35, .68); }
+  to { transform: translate3d(-78%, 64%, 0) rotate(-28deg) scale(.74, 1.5); }
+}
+@keyframes bagley-dark-orange {
+  from { transform: translate3d(-55%, 58%, 0) rotate(-18deg) scale(.7, 1.4); }
+  to { transform: translate3d(66%, -62%, 0) rotate(30deg) scale(1.52, .72); }
+}
