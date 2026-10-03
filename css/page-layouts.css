@@ -66,6 +66,9 @@ body[data-page="projects"] .project-card[data-project-card="beacon"] { backgroun
 body[data-page="projects"] .project-card[data-project-card="championscode"] { background: linear-gradient(145deg, rgba(181,130,47,.16), rgba(14,16,22,.76)); }
 body[data-page="projects"] .project-card[data-project-card="nulltrace"] { background: linear-gradient(145deg, rgba(46,164,187,.14), rgba(9,19,25,.76)); }
 body[data-page="projects"] .project-card[data-project-card="home"] { background: linear-gradient(145deg, rgba(104,117,139,.14), rgba(14,17,23,.76)); }
+body[data-page="projects"] .project-card[data-project-card="zonedout"] { background: linear-gradient(145deg, rgba(224,194,40,.16), rgba(14,16,22,.78)); }
+.project-icon.zonedout { overflow: hidden; background: #080808; border: 1px solid rgba(255,220,40,.25); }
+.project-icon.zonedout img { width: 59px; height: 59px; object-fit: cover; }
 
 body[data-page="people"] .people-grid { grid-template-columns: repeat(12,1fr); align-items: stretch; }
 body[data-page="people"] .person-card { grid-column: span 4; }

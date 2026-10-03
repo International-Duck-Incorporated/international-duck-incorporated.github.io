@@ -144,7 +144,8 @@ async function syncProjects() {
     { name: "Beacon", html_url: `${GITLAB}/${GL_GROUP_PATH}/Beacon`, description: "A vanilla-server-safe, modular client-side utility mod for Minecraft 26.2 with quality-of-life, rendering, world, utility, and fun features.", language: "Java" },
     { name: "NullTrace", html_url: `${GITLAB}/${GL_GROUP_PATH}/NullTrace`, description: "A client-side Fabric privacy mod for Minecraft 1.21.11, 26.1, 26.2, and 26.3 covering client brand spoofing, fingerprint protection, tracking defenses, and safer server connections.", language: "Java" },
     { name: "ChampionsCode", html_url: `${GITLAB}/${GL_GROUP_PATH}/ChampionsCode`, description: "A client-side Fabric mod for Minecraft 26.3 for authorized, defensive server and plugin research and controlled runtime Java addon development.", language: "Java" },
-    { name: "beacon-bagley", html_url: `${GITLAB}/${GL_GROUP_PATH}/beacon-bagley`, description: "An opt-in, client-side AI chat assistant addon for Beacon with local provider configuration and optional memory.", language: "Java" }
+    { name: "beacon-bagley", html_url: `${GITLAB}/${GL_GROUP_PATH}/beacon-bagley`, description: "An opt-in, client-side AI chat assistant addon for Beacon with local provider configuration and optional memory.", language: "Java" },
+    { name: "zonedout", html_url: `${GITLAB}/${GL_GROUP_PATH}/zonedout`, description: "A client-side Fabric mod for Minecraft 26.3 with modular utilities and seed/world-generation analysis.", language: "Java" }
   ];
   knownProjects.forEach((project) => {
     const existing = repos.find((repo) => repo.name === project.name);
@@ -168,6 +169,7 @@ async function syncProjects() {
     "beacon-bagley": { title: "Bagley", label: "Beacon addon", icon: "bagley", logo: "/assets/bagley-icon.png", status: "New", action: "Open project" },
     NullTrace: { label: "Privacy project", icon: "privacy", logo: "/assets/nulltrace-icon.png", status: "Official release", action: "Open project" },
     ChampionsCode: { label: "Research project", icon: "champion", logo: "/assets/championscode-icon.png", status: championscodeVersion ? `First launch · ${championscodeVersion}` : "First launch", action: "Open project" },
+    zonedout: { title: "ZonedOut", label: "Client-side mod", icon: "zonedout", logo: "/assets/zonedout-icon.png", status: "In development", statusMuted: true, action: "View repository" },
     home: { title: "Website source", label: "Website project", icon: "web", status: "Live", action: "Open page" },
     "International-Duck-Incorporated.github.io": { title: "Website source", label: "Website project", icon: "web", status: "Live", action: "Open page" }
   };
@@ -212,7 +214,7 @@ async function syncProjects() {
     const action = document.createElement("span"); action.append(document.createTextNode(`${(meta && meta.action) || "View repository"} `)); action.insertAdjacentHTML("beforeend", icon("i-arrow"));
     footer.append(language, action);
     link.append(top, copy, footer);
-    const palette = repo.name === REPO ? pixelPalettes.green : repo.name === NULLTRACE || repo.name === BEACON || repo.name === "beacon-bagley" ? pixelPalettes.blue : repo.name === "ChampionsCode" ? pixelPalettes.amber : pixelPalettes.slate;
+    const palette = repo.name === REPO ? pixelPalettes.green : repo.name === NULLTRACE || repo.name === BEACON || repo.name === "beacon-bagley" ? pixelPalettes.blue : repo.name === "ChampionsCode" || repo.name === "zonedout" ? pixelPalettes.amber : pixelPalettes.slate;
     link.append(pixelEffect(palette));
     return link;
   }));
