@@ -8,6 +8,7 @@ Static GitLab Pages site for [International Duck Incorporated](https://gitlab.co
 
 - `index.html` - organization overview and live GitLab group metrics
 - `projects/index.html` - public project directory, including the in-development ZonedOut project
+- `projects/zonedout.html` - ZonedOut project overview, features, development status, and GitLab links
 - `Website` - a small page about the source repository for this website (`website.html`)
 - `people.html` - member directory
 - `activity.html` - cross-platform live commit feed: every project on both organizations, per-member attribution, and a merged timeline, marking GitLab as **main** and GitHub as legacy
@@ -32,7 +33,7 @@ Client-side synchronization uses the public **GitLab API** (main) and, since Sep
 
 GitHub's anonymous API is rate-limited (60 requests/hour per visitor IP) and after the September 2026 account actions it intermittently returns 404 for individual repository endpoints. The activity page therefore fetches each platform independently and degrades panel-by-panel: if GitHub commits are unreachable, the GitHub panel falls back to mirrored `pushed_at` metadata; if a platform is entirely unavailable, the other still renders, and the footer sync state reports which sources answered.
 
-GitLab does not expose group membership through its public API, so the people directory renders the checked-in member roster. All seven public project repositories are in the GitLab group (main): Beacon, Venomous, NullTrace, ChampionsCode, Beacon-Bagley, ZonedOut, and `home` (this website). The project directory links ZonedOut to its source repository while it is in development. Beacon and NullTrace release data is pulled from the GitLab releases API. 0xFF remains an active member and now links to his GitLab profile because his GitHub account is unavailable. Other personal profiles keep their original destinations where available. Checked-in content and authentic local images keep the pages useful if the API is unavailable or rate-limited.
+GitLab does not expose group membership through its public API, so the people directory renders the checked-in member roster. All seven public project repositories are in the GitLab group (main): Beacon, Venomous, NullTrace, ChampionsCode, Beacon-Bagley, ZonedOut, and `home` (this website). The project directory links to ZonedOut's overview page, which links to its GitLab source repository. Beacon and NullTrace release data is pulled from the GitLab releases API. 0xFF remains an active member and now links to his GitLab profile because his GitHub account is unavailable. Other personal profiles keep their original destinations where available. Checked-in content and authentic local images keep the pages useful if the API is unavailable or rate-limited.
 
 Open `http://localhost:8080`. No build step or external front-end dependency is required.
 

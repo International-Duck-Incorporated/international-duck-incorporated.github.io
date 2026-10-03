@@ -70,6 +70,22 @@ body[data-page="projects"] .project-card[data-project-card="zonedout"] { backgro
 .project-icon.zonedout { overflow: hidden; background: #080808; border: 1px solid rgba(255,220,40,.25); }
 .project-icon.zonedout img { width: 59px; height: 59px; object-fit: cover; }
 
+/* ZonedOut: hazard-yellow accents for a work-in-progress client mod. */
+body[data-project="zonedout"]::before { background: radial-gradient(ellipse at 14% 8%, rgba(239,199,48,.16), transparent 39%), radial-gradient(ellipse at 88% 34%, rgba(239,199,48,.07), transparent 36%), #07090d; }
+body[data-project="zonedout"] .profile-intro { background: linear-gradient(140deg, rgba(40,33,12,.86), rgba(11,14,19,.88) 68%); border-color: rgba(244,211,68,.2); }
+body[data-project="zonedout"] .profile-intro::after { content: "ZONEDOUT / CLIENT MOD"; position: absolute; top: 2rem; right: 2rem; color: rgba(244,211,68,.58); font: 600 .52rem var(--mono); letter-spacing: .14em; }
+body[data-project="zonedout"] .project-mark { border-radius: 22px; box-shadow: 0 0 0 9px rgba(244,211,68,.035), 0 18px 45px rgba(0,0,0,.38); }
+body[data-project="zonedout"] .zonedout-status { color: #e4d78b; background: rgba(239,199,48,.07); border-color: rgba(239,199,48,.2); }
+body[data-project="zonedout"] .zonedout-status i { background: #f0cf3d; box-shadow: 0 0 12px rgba(240,207,61,.6); }
+body[data-project="zonedout"] .profile-sidebar .fact { background: rgba(239,199,48,.035); border-color: rgba(239,199,48,.09); }
+body[data-project="zonedout"] .detail-panel { border-top: 2px solid rgba(239,199,48,.25); }
+body[data-project="zonedout"] .detail-panel .eyebrow,
+body[data-project="zonedout"] .section-heading .eyebrow { color: #e7cb52; }
+body[data-project="zonedout"] .project-feature > span { color: #f1d95f; background: rgba(239,199,48,.1); }
+.button-zonedout { color: #171306; background: linear-gradient(135deg, #ffe36a, #d3ad20); border-color: rgba(255,227,106,.75); box-shadow: 0 10px 30px rgba(211,173,32,.16); }
+.button-zonedout:hover { color: #100d03; background: linear-gradient(135deg, #ffed91, #e0bd36); box-shadow: 0 14px 34px rgba(211,173,32,.23); }
+body[data-project="zonedout"] .zonedout-callout { background: linear-gradient(145deg, rgba(42,34,12,.65), rgba(12,15,20,.72)); border-color: rgba(239,199,48,.17); }
+
 body[data-page="people"] .people-grid { grid-template-columns: repeat(12,1fr); align-items: stretch; }
 body[data-page="people"] .person-card { grid-column: span 4; }
 body[data-page="people"] .person-card[data-member-card="0xffshell"] { grid-column: span 7; min-height: 230px; background: linear-gradient(145deg, rgba(28,120,53,.16), rgba(7,17,10,.78)); }
