@@ -52,18 +52,26 @@ Styles are split into focused files under `css/`. Pages using the shared site th
 
 Image URLs inside these stylesheets are relative to the `css/` directory and point back to `assets/`.
 
-## Easter egg
+## Homepage background and the easter egg
 
-`/easteregg` always plays the hidden video; any other homepage visit rolls a
-1/1000 chance for it (`easteregg.js`). The clips are **not** stored in this
-repository - they stream from the public asset bundle
+Every homepage visit shows one of four backgrounds, picked at random by
+`easteregg.js`: either of the two short clips, or one of this repository's two
+stills (`homepage-community-background-v4.jpg`, `idi-member-collage.png`). The
+pick is remembered in `localStorage`, so nobody gets the same one twice in a
+row; `prefers-reduced-motion` reduces the rotation to the stills, and a clip
+that fails to load is replaced by a still rather than a blank page.
+
+The easter egg is unchanged: a 1/1000 homepage visit (or `/easteregg` at any
+time) plays the hidden original clip, which is deliberately kept out of the
+normal rotation because of its size. Both the clips and the egg stream from the
+public asset bundle
 ([`idi-assets`](https://gitlab.com/international-duck-incorporated/idi-assets),
-`assets/website/easteregg-video*.webm`) because the original file predates the
-Cloudflare Pages per-file size limit. The script picks one clip at random per
-visit, never the same one twice in a row, falls through to the next clip if one
-is unreachable, and finally falls back to the original clip pinned to its
-snapshot commit. Once a bundle revision is final, pin `ASSET_REF` in
-`easteregg.js` to that commit or tag so the egg stops tracking `main`.
+`assets/website/easteregg-video*.webm`) - they are not stored in this
+repository because the original file predates the Cloudflare Pages per-file
+size limit. If the bundle's layout changes again, the egg falls back to the
+copy pinned at commit `e8e147d`. Once a bundle revision is final, pin
+`ASSET_REF` in `easteregg.js` to that commit or tag so the rotation stops
+tracking `main`.
 
 ## Deploy
 

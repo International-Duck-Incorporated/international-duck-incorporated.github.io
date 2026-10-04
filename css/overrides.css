@@ -174,8 +174,9 @@ body[data-page="organization"]::after {
   gap: 0 1.5rem;
 }
 
-/* ---- Easter egg: hidden background video ---- */
-.egg-video {
+/* ---- Easter egg + rotating homepage background ---- */
+.egg-video,
+.egg-photo {
   position: fixed;
   inset: 0;
   z-index: -2;
@@ -188,11 +189,12 @@ body[data-page="organization"]::after {
   transition: opacity .9s ease;
 }
 
-body.egg-ready .egg-video {
+body.egg-ready .egg-video,
+body.egg-ready .egg-photo {
   opacity: 1;
 }
 
-/* When the egg is live, retire the homepage photo-collage layer. */
+/* When a media background is live, retire the stylesheet background layers. */
 body.egg-bg[data-page="organization"]::before {
   display: none;
 }
@@ -231,7 +233,8 @@ body.egg-bg[data-page="organization"]::before {
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .egg-video {
+  .egg-video,
+  .egg-photo {
     transition: none;
   }
 }
