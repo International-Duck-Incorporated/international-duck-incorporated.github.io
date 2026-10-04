@@ -61,6 +61,13 @@ pick is remembered in `localStorage`, so nobody gets the same one twice in a
 row; `prefers-reduced-motion` reduces the rotation to the stills, and a clip
 that fails to load is replaced by a still rather than a blank page.
 
+The rotation clips do not loop. Each one plays out in full - 5.4 s and
+14.0 s - and then holds its last frame as a still, so the background settles
+and costs nothing more after that one pass. The corner sound toggle goes away
+with the motion. To end on a chosen moment of a clip instead of its final
+frame, give it a `holdAt` (seconds) in `BACKGROUNDS`. The original clip keeps
+looping: it is the easter egg, not a background.
+
 The easter egg is unchanged: a 1/1000 homepage visit (or `/easteregg` at any
 time) plays the hidden original clip, which is deliberately kept out of the
 normal rotation because of its size. Both the clips and the egg stream from the

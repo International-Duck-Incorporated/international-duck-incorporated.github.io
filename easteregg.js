@@ -6,6 +6,11 @@
  * The pick is remembered, so nobody gets the same media twice in a row, and
  * prefers-reduced-motion turns the rotation into images only.
  *
+ * A rotation clip plays out in full, then holds its last frame as a still:
+ * the background settles instead of looping forever, and there is no further
+ * network cost. Set holdAt on a clip to end on a chosen moment of it (for
+ * example the brand lockup it builds to) rather than on the final frame.
+ *
  * Easter egg: a 1/1000 homepage visit, or /easteregg at any time, plays the
  * hidden 74 MB clip - deliberately not part of the normal rotation, because
  * of its size - fallback included for how the bundle may look later.
@@ -27,13 +32,15 @@
     {
       name: "easteregg-video-2.webm",
       kind: "video",
-      label: "clip, 5.4 s",
+      label: "clip, plays out in full",
+      // holdAt: 3.0, // end on the red IDI / GITLAB.ORG lockup instead
       src: `${ASSET_REPO}/-/raw/${ASSET_REF}${ASSET_DIR}easteregg-video-2.webm`,
     },
     {
       name: "easteregg-video-3.webm",
       kind: "video",
-      label: "clip, 14.0 s",
+      label: "clip, plays out in full",
+      // holdAt: 4.6, // end on the blue IDI / INTERNATIONAL DUCK lockup instead
       src: `${ASSET_REPO}/-/raw/${ASSET_REF}${ASSET_DIR}easteregg-video-3.webm`,
     },
     {
@@ -118,12 +125,12 @@
   };
 
   // ---------------------------------------------------------------- videos
-  const mountVideo = (sources, { name, log, onGiveUp }) => {
+  const mountVideo = (sources, { name, playOut, holdAt, log, onGiveUp }) => {
     const video = document.createElement("video");
     video.className = "egg-video";
     video.preload = "auto";
     video.autoplay = true;
-    video.loop = true;
+    video.loop = !playOut; // rotation clips run once and settle
     video.muted = true;
     video.setAttribute("muted", "");
     video.setAttribute("playsinline", "");
@@ -144,17 +151,35 @@
       video.play().catch(() => {});
     };
 
+    const soundButton = makeSoundButton(video);
+
     video.addEventListener(
       "canplay",
       () => {
         writeLast(name);
         reveal(video, () => {
-          body.append(makeSoundButton(video));
+          body.append(soundButton);
           console.log(log ? log() : `\u{1F95A} background: ${name}`);
         });
       },
       { once: true }
     );
+
+    if (playOut) {
+      video.addEventListener("ended", () => {
+        if (holdAt) {
+          // End on a chosen moment of the clip instead of its last frame.
+          video.currentTime = holdAt;
+          video.pause();
+        }
+        soundButton.remove(); // a still has nothing to unmute
+        console.log(
+          `\u{1F95A} background: played out in full - holding the ` +
+            (holdAt ? `frame at ${holdAt}s` : "last frame") +
+            " as a still."
+        );
+      });
+    }
 
     video.addEventListener("error", load);
     load();
@@ -228,6 +253,8 @@
     const stills = BACKGROUNDS.filter((item) => item.kind === "image");
     mountVideo([pick.src], {
       name: pick.name,
+      playOut: true,
+      holdAt: pick.holdAt,
       log: () => `\u{1F95A} background: ${pick.label} (this visit's pick)`,
       onGiveUp: () => mountImage(stills[Math.floor(Math.random() * stills.length)]),
     });
