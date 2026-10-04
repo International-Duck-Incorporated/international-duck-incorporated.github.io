@@ -9,7 +9,7 @@
  * prefers-reduced-motion - the explicit route does not.
  */
 (() => {
-  const VIDEO_SRC = "/assets/easteregg-video.webm";
+  const VIDEO_SRC = "https://gitlab.com/international-duck-incorporated/idi-assets/-/raw/e8e147d6aed5f32291ea05dc4cd64541fa1b973a/gitlab/home/assets/easteregg-video.webm";
   const ROLL_ODDS = 1000;
 
   const path = (location.pathname || "/")
