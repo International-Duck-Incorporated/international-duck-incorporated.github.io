@@ -52,6 +52,19 @@ Styles are split into focused files under `css/`. Pages using the shared site th
 
 Image URLs inside these stylesheets are relative to the `css/` directory and point back to `assets/`.
 
+## Easter egg
+
+`/easteregg` always plays the hidden video; any other homepage visit rolls a
+1/1000 chance for it (`easteregg.js`). The clips are **not** stored in this
+repository - they stream from the public asset bundle
+([`idi-assets`](https://gitlab.com/international-duck-incorporated/idi-assets),
+`assets/website/easteregg-video*.webm`) because the original file predates the
+Cloudflare Pages per-file size limit. The script picks one clip at random per
+visit, never the same one twice in a row, falls through to the next clip if one
+is unreachable, and finally falls back to the original clip pinned to its
+snapshot commit. Once a bundle revision is final, pin `ASSET_REF` in
+`easteregg.js` to that commit or tag so the egg stops tracking `main`.
+
 ## Deploy
 
 GitLab Pages deploys from `main` via `.gitlab-ci.yml`.
