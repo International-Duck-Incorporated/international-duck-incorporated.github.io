@@ -121,6 +121,39 @@
     return div;
   }
 
+  function loadMemberActivity(member, cols) {
+    cols.replaceChildren();
+    if (member.github) {
+      var gh = column(cols, "GitHub · @" + member.github);
+      fetchGitHubCommits(member.github).then(function (commits) {
+        gh.innerHTML = "<h3>GitHub · @" + esc(member.github) + "</h3>";
+        var box = document.createElement("div");
+        gh.appendChild(box);
+        renderList(box, commits, "No public commits indexed. (Commits hiding on unmerged branches don't count.)");
+      }).catch(function (err) {
+        gh.innerHTML = "<h3>GitHub · @" + esc(member.github) + "</h3>" +
+          '<p class="cf-note">Could not load GitHub activity (' + esc(err.message) + "). API rate limits or a hidden profile can cause this.</p>";
+      });
+    } else {
+      column(cols, "GitHub").innerHTML = "<h3>GitHub</h3><p class=\"cf-note\">No public GitHub account on record for " + esc(member.label) + ".</p>";
+    }
+
+    if (member.gitlab) {
+      var gl = column(cols, "GitLab · @" + member.gitlab);
+      fetchGitLabCommits(member.gitlab).then(function (commits) {
+        gl.innerHTML = "<h3>GitLab · @" + esc(member.gitlab) + "</h3>";
+        var box = document.createElement("div");
+        gl.appendChild(box);
+        renderList(box, commits, "No pushed commits in the recent event feed.");
+      }).catch(function (err) {
+        gl.innerHTML = "<h3>GitLab · @" + esc(member.gitlab) + "</h3>" +
+          '<p class="cf-note">Could not load GitLab activity (' + esc(err.message) + ").</p>";
+      });
+    } else if (member.gitlab !== false) {
+      column(cols, "GitLab").innerHTML = "<h3>GitLab</h3><p class=\"cf-note\">No public GitLab account on record for " + esc(member.label) + ".</p>";
+    }
+  }
+
   function init() {
     var key = document.body.getAttribute("data-member");
     var member = key && MEMBERS[key];
@@ -147,40 +180,29 @@
     if (member.gitlab) sources.push("GitLab");
     panel.innerHTML = '<span class="eyebrow">Live public activity</span>' +
       "<h2>Recent commits by " + esc(member.label) + ".</h2>" +
-      '<p>Loaded from the public ' + esc(sources.join(" and ")) + " API" + (sources.length > 1 ? "s" : "") + ' when you opened this page.</p>';
+      '<p>Recent history from the public ' + esc(sources.join(" and ")) + " API" + (sources.length > 1 ? "s" : "") + '.</p>';
     var cols = document.createElement("div");
     cols.className = "cf-cols";
     panel.appendChild(cols);
     grid.appendChild(panel);
 
-    if (member.github) {
-      var gh = column(cols, "GitHub \u00b7 @" + member.github);
-      fetchGitHubCommits(member.github).then(function (commits) {
-        gh.innerHTML = "<h3>GitHub \u00b7 @" + esc(member.github) + "</h3>";
-        var box = document.createElement("div");
-        gh.appendChild(box);
-        renderList(box, commits, "No public commits indexed. (Commits hiding on unmerged branches don't count.)");
-      }).catch(function (err) {
-        gh.innerHTML = "<h3>GitHub \u00b7 @" + esc(member.github) + "</h3>" +
-          '<p class="cf-note">Could not load GitHub activity (' + esc(err.message) + "). API rate limits or a hidden profile can cause this.</p>";
-      });
+    if (window.IDI_LOW_END) {
+      var notice = document.createElement("div");
+      notice.className = "cf-col cf-low-power";
+      notice.innerHTML = "<h3>Live history paused</h3><p class=\"cf-note\">Fetch recent public commits only when you choose to load them.</p>";
+      var loadButton = document.createElement("button");
+      loadButton.type = "button";
+      loadButton.className = "button button-glass";
+      loadButton.textContent = "Load recent commits";
+      loadButton.addEventListener("click", function () {
+        loadButton.disabled = true;
+        loadButton.textContent = "Loading commits…";
+        loadMemberActivity(member, cols);
+      }, { once: true });
+      notice.appendChild(loadButton);
+      cols.appendChild(notice);
     } else {
-      column(cols, "GitHub").innerHTML = "<h3>GitHub</h3><p class=\"cf-note\">No public GitHub account on record for " + esc(member.label) + ".</p>";
-    }
-
-    if (member.gitlab) {
-      var gl = column(cols, "GitLab \u00b7 @" + member.gitlab);
-      fetchGitLabCommits(member.gitlab).then(function (commits) {
-        gl.innerHTML = "<h3>GitLab \u00b7 @" + esc(member.gitlab) + "</h3>";
-        var box = document.createElement("div");
-        gl.appendChild(box);
-        renderList(box, commits, "No pushed commits in the recent event feed.");
-      }).catch(function (err) {
-        gl.innerHTML = "<h3>GitLab \u00b7 @" + esc(member.gitlab) + "</h3>" +
-          '<p class="cf-note">Could not load GitLab activity (' + esc(err.message) + ").</p>";
-      });
-    } else if (member.gitlab !== false) {
-      column(cols, "GitLab").innerHTML = "<h3>GitLab</h3><p class=\"cf-note\">No public GitLab account on record for " + esc(member.label) + ".</p>";
+      loadMemberActivity(member, cols);
     }
   }
 

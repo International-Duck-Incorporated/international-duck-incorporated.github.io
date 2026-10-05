@@ -151,6 +151,7 @@ class PixelCanvas extends HTMLElement {
   }
 
   connectedCallback() {
+    if (window.IDI_LOW_END) return;
     const canvas = document.createElement("canvas");
     const sheet = new CSSStyleSheet();
 
@@ -183,6 +184,7 @@ class PixelCanvas extends HTMLElement {
   }
 
   disconnectedCallback() {
+    if (!this.resizeObserver) return;
     this.resizeObserver.disconnect();
     this._parent.removeEventListener("mouseenter", this);
     this._parent.removeEventListener("mouseleave", this);

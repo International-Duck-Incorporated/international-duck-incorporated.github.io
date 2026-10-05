@@ -6,6 +6,10 @@
 (() => {
   const canvas = document.getElementById("matrix-rain");
   if (!canvas) return;
+  if (window.IDI_LOW_END) {
+    canvas.hidden = true;
+    return;
+  }
 
   const ctx = canvas.getContext("2d");
   const reduceMotion = matchMedia("(prefers-reduced-motion: reduce)").matches;

@@ -17,6 +17,9 @@
 (function () {
 'use strict';
 
+// The page keeps its CSS sky/scrim fallback without allocating five full-screen canvases.
+if (window.IDI_LOW_END) return;
+
 /*
 
 Stormy Window ⛈️ by Frank Force

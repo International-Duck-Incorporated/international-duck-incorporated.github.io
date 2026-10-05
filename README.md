@@ -35,6 +35,8 @@ GitHub's anonymous API is rate-limited (60 requests/hour per visitor IP) and aft
 
 GitLab does not expose group membership through its public API, so the people directory renders the checked-in member roster. All seven public project repositories are in the GitLab group (main): Beacon, Venomous, NullTrace, ChampionsCode, Beacon-Bagley, ZonedOut, and `home` (this website). The project directory links to ZonedOut's overview page, which links to its GitLab source repository. Beacon and NullTrace release data is pulled from the GitLab releases API. 0xFF remains an active member and now links to his GitLab profile because his GitHub account is unavailable. Jojo-8002 is listed as a public member and links to his public GitHub profile; no project or role details are inferred. Other personal profiles keep their original destinations where available. Checked-in content and authentic local images keep the pages useful if the API is unavailable or rate-limited.
 
+A tiny synchronous capability hint selects a low-power mode for Save-Data/2G connections, devices reporting 4 GB of memory or less, or four or fewer logical CPU cores. It keeps the site’s glass treatment as a solid tinted surface while removing backdrop blur and decorative video, canvas, and WebGL motion. Heavy live feeds stay paused until requested on these devices; reduced-motion preferences are still handled separately.
+
 Open `http://localhost:8080`. No build step or external front-end dependency is required.
 
 ## Stylesheets
@@ -54,12 +56,13 @@ Image URLs inside these stylesheets are relative to the `css/` directory and poi
 
 ## Homepage background and the easter egg
 
-Every homepage visit shows one of four backgrounds, picked at random by
-`easteregg.js`: either of the two short clips, or one of this repository's two
-stills (`homepage-community-background-v4.jpg`, `idi-member-collage.png`). The
-pick is remembered in `localStorage`, so nobody gets the same one twice in a
-row; `prefers-reduced-motion` reduces the rotation to the stills, and a clip
-that fails to load is replaced by a still rather than a blank page.
+On capable devices the homepage shows one of four backgrounds, picked at
+random by `easteregg.js`: either of the two short clips, or one of this
+repository's two stills (`homepage-community-background-v4.jpg`,
+`idi-member-collage.png`). The pick is remembered in `localStorage`, so nobody
+gets the same one twice in a row; `prefers-reduced-motion` reduces the rotation
+to the stills, and a clip that fails to load is replaced by a still rather than
+a blank page. Low-power devices use only the smaller community still.
 
 The rotation clips do not loop. Each one plays out in full - 5.4 s and
 14.0 s - and then holds its last frame as a still, so the background settles
@@ -68,10 +71,11 @@ with the motion. To end on a chosen moment of a clip instead of its final
 frame, give it a `holdAt` (seconds) in `BACKGROUNDS`. The original clip keeps
 looping: it is the easter egg, not a background.
 
-The easter egg is unchanged: a 1/1000 homepage visit (or `/easteregg` at any
-time) plays the hidden original clip, which is deliberately kept out of the
-normal rotation because of its size. Both the clips and the egg stream from the
-public asset bundle
+The easter egg remains a 1/1000 homepage visit (or a direct `/easteregg`
+visit) on capable devices; it is deliberately kept out of the normal rotation
+because of its size. Low-power mode suppresses the random roll and shows a
+small still on `/easteregg` until the visitor explicitly requests the 74 MB
+clip. Both the clips and the egg stream from the public asset bundle
 ([`idi-assets`](https://gitlab.com/international-duck-incorporated/idi-assets),
 `assets/website/easteregg-video*.webm`) - they are not stored in this
 repository because the original file predates the Cloudflare Pages per-file

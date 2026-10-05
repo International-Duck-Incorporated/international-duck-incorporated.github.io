@@ -1,10 +1,11 @@
 /* The duck easter egg, and the rotating homepage background.
  *
- * Background: every homepage visit picks one of four media at random - the
- * two short easter-egg clips streamed from the idi-assets bundle, or one of
- * the two site backgrounds (the community backdrop and the member collage).
+ * Background: capable devices pick one of four media at random - the two
+ * short clips streamed from the idi-assets bundle or one of two local stills.
+ * Low-power devices use only the smaller community backdrop.
  * The pick is remembered, so nobody gets the same media twice in a row, and
- * prefers-reduced-motion turns the rotation into images only.
+ * prefers-reduced-motion turns the rotation into images only. Low-power
+ * devices use the smaller local still and never auto-download a clip.
  *
  * A rotation clip plays out in full, then holds its last frame as a still:
  * the background settles instead of looping forever, and there is no further
@@ -13,7 +14,7 @@
  *
  * Easter egg: a 1/1000 homepage visit, or /easteregg at any time, plays the
  * hidden 74 MB clip - deliberately not part of the normal rotation, because
- * of its size - fallback included for how the bundle may look later.
+ * of its size. Low-power devices require an explicit button click first.
  *
  * Videos start muted so autoplay is allowed everywhere; a small toggle in
  * the corner enables sound while one is on screen. If nothing can be shown,
@@ -107,7 +108,8 @@
   if (!isEggRoute && !isHome) return;
 
   const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-  const lucky = isHome && !reducedMotion && Math.floor(Math.random() * ROLL_ODDS) === 0;
+  const lowEnd = Boolean(window.IDI_LOW_END);
+  const lucky = isHome && !lowEnd && !reducedMotion && Math.floor(Math.random() * ROLL_ODDS) === 0;
   const egg = isEggRoute || lucky;
 
   const readLast = () => {
@@ -157,7 +159,7 @@
   const mountVideo = (sources, { name, playOut, holdAt, log, onGiveUp }) => {
     const video = document.createElement("video");
     video.className = "egg-video";
-    video.preload = "auto";
+    video.preload = "metadata";
     video.autoplay = true;
     video.loop = !playOut; // rotation clips run once and settle
     video.muted = true;
@@ -246,6 +248,31 @@
     body.append(photo);
   };
 
+  // On constrained devices, keep the dedicated egg route useful without
+  // silently starting its 74 MB download. The button is an explicit opt-in.
+  if (isEggRoute && lowEnd) {
+    const still = BACKGROUNDS.find((item) => item.name === "homepage-community-background-v4.jpg");
+    body.dataset.frame = "image";
+    body.dataset.wordmark = still.wordmark ? "yes" : "no";
+    body.style.setProperty("--focus", still.focus);
+    mountImage(still);
+
+    const playButton = document.createElement("button");
+    playButton.type = "button";
+    playButton.className = "button button-glass egg-play-original";
+    playButton.textContent = "Play the original 74 MB clip";
+    playButton.addEventListener("click", () => {
+      playButton.remove();
+      mountVideo(EGG_SOURCES, {
+        name: "easteregg-video.webm",
+        log: () => "🦆 /easteregg - the original clip was requested.",
+        onGiveUp: () => giveUp("easter egg clip"),
+      });
+    }, { once: true });
+    body.append(playButton);
+    return;
+  }
+
   // ------------------------------------------------------------------ egg
   if (egg) {
     mountVideo(EGG_SOURCES, {
@@ -263,10 +290,12 @@
 
   // --------------------------------------------------- background rotation
   // Random per visit, never the same media twice in a row. Reduced motion
-  // gets the still images only - no autoplaying video.
-  const pool = reducedMotion
-    ? BACKGROUNDS.filter((item) => item.kind === "image")
-    : BACKGROUNDS;
+  // gets stills; low-power devices use the smallest local still only.
+  const pool = lowEnd
+    ? [BACKGROUNDS.find((item) => item.name === "homepage-community-background-v4.jpg")]
+    : reducedMotion
+      ? BACKGROUNDS.filter((item) => item.kind === "image")
+      : BACKGROUNDS;
 
   let index = Math.floor(Math.random() * pool.length);
   if (pool.length > 1 && pool[index].name === readLast()) {

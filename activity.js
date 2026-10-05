@@ -259,7 +259,12 @@
     return { names, commits };
   }
 
-  (async () => {
+  async function loadActivity() {
+    const loadButton = $("[data-activity-load]");
+    if (loadButton) {
+      loadButton.disabled = true;
+      loadButton.textContent = "Loading live activity…";
+    }
     try {
       const [glRes, ghRes] = await Promise.allSettled([loadGitLab(), loadGitHub()]);
       const gl = glRes.status === "fulfilled" ? glRes.value : null;
@@ -288,5 +293,49 @@
       const src = $("[data-sync-text]");
       if (src) src.textContent = "Live sync unavailable";
     }
-  })();
+  }
+
+  function pauseActivityForLowPower() {
+    const total = $("[data-activity-total]");
+    if (total) total.textContent = "—";
+
+    for (const kind of ["gitlab", "github"]) {
+      const list = $(`[data-activity-${kind}]`);
+      if (!list) continue;
+      const note = document.createElement("p");
+      note.className = "activity-paused-note";
+      note.textContent = "Live repository scan paused to save data and battery.";
+      list.replaceChildren(note);
+    }
+
+    const feed = $("[data-activity-feed]");
+    if (feed) {
+      const note = document.createElement("p");
+      note.className = "activity-paused-note";
+      note.textContent = "The cross-platform feed is available on request in low-power mode.";
+      feed.replaceChildren(note);
+    }
+
+    const grid = $("[data-activity-members]");
+    if (grid) {
+      const notice = document.createElement("div");
+      notice.className = "activity-low-power-card";
+      const copy = document.createElement("p");
+      copy.textContent = "This page can scan up to 100 recent commits per repository on both platforms. The live scan is paused by default on this device.";
+      const button = document.createElement("button");
+      button.type = "button";
+      button.className = "button button-glass";
+      button.dataset.activityLoad = "";
+      button.textContent = "Load live activity anyway";
+      button.addEventListener("click", loadActivity, { once: true });
+      notice.append(copy, button);
+      grid.replaceChildren(notice);
+    }
+
+    const src = $("[data-sync-text]");
+    if (src) src.textContent = "Low-power mode · live activity paused";
+  }
+
+  if (window.IDI_LOW_END) pauseActivityForLowPower();
+  else loadActivity();
 })();

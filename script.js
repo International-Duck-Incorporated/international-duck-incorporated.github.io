@@ -278,6 +278,10 @@ async function syncPeople() {
 }
 
 function initAtmosphere(canvas) {
+  if (window.IDI_LOW_END) {
+    canvas.hidden = true;
+    return;
+  }
   const context = canvas.getContext("2d");
   const mode = canvas.dataset.background || "dust";
   const reduceMotion = matchMedia("(prefers-reduced-motion: reduce)").matches;
@@ -605,17 +609,63 @@ async function syncContributors() {
 }
 
 $$('[data-background]').forEach(initAtmosphere);
-const tasks = [syncOrganization()];
-if (page === "organization") tasks.push(syncPeople());
-if (page === "projects") tasks.push(syncProjects());
-if (page === "people") tasks.push(syncPeople());
-if (page === "project" && document.body.dataset.project === "nulltrace") tasks.push(syncNullTraceRelease());
-if (page === "project" && document.body.dataset.project === "beacon") tasks.push(syncBeaconRelease());
-if (page === "project" && document.body.dataset.project === "championscode") tasks.push(syncChampionsCodeRelease());
-if (page === "member" && document.body.dataset.member === MEMBER_LOGIN) tasks.push(syncMemberContributions());
-if (page === "venomous") {
-  setupModules();
-  tasks.push(syncRepository(),syncReleases(),syncCommits(),syncContributors(),syncModules());
+const lowPowerMode = Boolean(window.IDI_LOW_END);
+if (page === "project" && document.body.dataset.project === "beacon" && !lowPowerMode && !window.IDI_REDUCED_MOTION) {
+  const backgroundVideo = $("[data-beacon-background]");
+  if (backgroundVideo) {
+    backgroundVideo.autoplay = true;
+    backgroundVideo.preload = "metadata";
+    backgroundVideo.load();
+    backgroundVideo.play().catch(() => {});
+  }
 }
-const syncProvider = "GitLab";
-Promise.allSettled(tasks).then((results)=>{const done=results.filter((result)=>result.status==="fulfilled").length;setText("[data-sync-text]",done===results.length?`${syncProvider} data synced live`:`${syncProvider} data synced (${done}/${results.length})`);});
+const tasks = [];
+const liveTasks = [];
+const addLiveTask = (task) => { tasks.push(task); liveTasks.push(task); };
+
+// The public roster is checked in; only the overview needs the live group metrics.
+if (page === "organization") {
+  tasks.push(syncPeople());
+  if (!lowPowerMode) addLiveTask(syncOrganization());
+}
+if (page === "people") tasks.push(syncPeople());
+if (page === "projects" && !lowPowerMode) addLiveTask(syncProjects());
+if (page === "projects" && lowPowerMode) {
+  const source = $(".directory-status .source-chip");
+  if (source) {
+    const indicator = source.querySelector("i");
+    source.replaceChildren(...(indicator ? [indicator] : []), document.createTextNode(" Checked-in directory"));
+  }
+}
+if (!lowPowerMode && page === "project" && document.body.dataset.project === "nulltrace") addLiveTask(syncNullTraceRelease());
+if (!lowPowerMode && page === "project" && document.body.dataset.project === "beacon") addLiveTask(syncBeaconRelease());
+if (!lowPowerMode && page === "project" && document.body.dataset.project === "championscode") addLiveTask(syncChampionsCodeRelease());
+if (!lowPowerMode && page === "member" && document.body.dataset.member === MEMBER_LOGIN) addLiveTask(syncMemberContributions());
+if (page === "venomous") {
+  setupModules(); // renders the checked-in module index when live data is paused
+  if (lowPowerMode) setText("[data-module-source]", "Checked-in module index");
+  if (!lowPowerMode) {
+    addLiveTask(syncRepository());
+    addLiveTask(syncReleases());
+    addLiveTask(syncCommits());
+    addLiveTask(syncContributors());
+    addLiveTask(syncModules());
+  }
+}
+
+if (lowPowerMode) {
+  setText("[data-sync-text]", "Low-power mode · live updates paused");
+} else if (liveTasks.length) {
+  Promise.allSettled(liveTasks).then((results) => {
+    const done = results.filter((result) => result.status === "fulfilled").length;
+    setText("[data-sync-text]", done === results.length
+      ? "GitLab data synced live"
+      : `GitLab data synced (${done}/${results.length})`);
+  });
+} else if (tasks.length) {
+  Promise.allSettled(tasks).then(() => setText("[data-sync-text]", "Checked-in public content"));
+} else if (page === "member") {
+  setText("[data-sync-text]", "Profile activity loads separately");
+} else {
+  setText("[data-sync-text]", "Static content · no live sync needed");
+}

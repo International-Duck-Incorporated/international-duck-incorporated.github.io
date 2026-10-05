@@ -431,3 +431,89 @@ body.egg-bg[data-page="organization"]::before {
 .home-directory .action-row { margin-top: 1.5rem; }
 .home-directory > p { max-width: 68ch; margin-top: 1rem; }
 .home-directory > p + p { margin-top: .75rem; }
+
+
+/* Low-power feed controls */
+.activity-paused-note {
+  margin: .5rem 0;
+  padding: .7rem .1rem;
+  color: #929b96;
+  font-size: .65rem;
+  line-height: 1.55;
+}
+.activity-low-power-card {
+  grid-column: 1 / -1;
+  padding: 1.15rem;
+  background: rgba(20, 25, 35, .78);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-md);
+}
+.activity-low-power-card p { max-width: 62ch; margin: 0 0 1rem; color: #929b96; font-size: .72rem; line-height: 1.6; }
+.activity-low-power-card .button,
+.cf-low-power .button { width: auto; min-height: 42px; }
+.cf-low-power .button { margin-top: .8rem; }
+.egg-play-original { position: fixed; left: 1rem; bottom: 1rem; z-index: 110; }
+
+/* Adaptive low-power mode: retain the tinted glass surfaces without the costly blur. */
+html.low-end { scroll-behavior: auto; }
+html.low-end .glass-card,
+html.low-end .below-fold,
+html.low-end .main-nav,
+html.low-end .topbar.scrolled,
+html.low-end .visual-metrics,
+html.low-end .egg-sound {
+  -webkit-backdrop-filter: none !important;
+  backdrop-filter: none !important;
+}
+html.low-end .glass-card {
+  background: linear-gradient(145deg, rgba(34, 42, 55, .94), rgba(13, 17, 24, .92));
+  box-shadow: 0 12px 30px rgba(0, 0, 0, .24), inset 0 1px 0 rgba(255, 255, 255, .06);
+}
+html.low-end .glass-card::before,
+html.low-end .below-fold::before { display: none !important; }
+html.low-end .below-fold {
+  background: linear-gradient(145deg, rgba(26, 34, 47, .97), rgba(8, 12, 19, .96));
+  box-shadow: 0 14px 40px rgba(0, 0, 0, .3), inset 0 1px 0 rgba(255, 255, 255, .08);
+}
+html.low-end .site-glow { display: none !important; }
+html.low-end .atmosphere-canvas,
+html.low-end .effect-background,
+html.low-end #plus-rain,
+html.low-end .beacon-video-background,
+html.low-end .starrynight-bg-container,
+html.low-end pixel-canvas { display: none !important; }
+html.low-end body[data-page="organization"]::before {
+  inset: 0;
+  filter: none;
+  transform: none;
+}
+html.low-end .egg-photo { filter: none; }
+html.low-end body.plus-rain-page.plus-rain-fallback {
+  background: radial-gradient(ellipse at 70% 20%, rgba(55, 114, 91, .22), transparent 46%), #07090d !important;
+}
+html.low-end body.storm-window-page {
+  background: radial-gradient(ellipse at 72% 18%, rgba(86, 107, 142, .2), transparent 42%), #07090d !important;
+}
+html.low-end body[data-project="bagley"] .bagley-wave-background {
+  inset: 0;
+  filter: none !important;
+  transform: none;
+  opacity: 1;
+  animation: none !important;
+  background:
+    radial-gradient(ellipse at 16% 24%, rgba(105, 7, 12, .9), transparent 52%),
+    radial-gradient(ellipse at 84% 20%, rgba(112, 88, 3, .75), transparent 54%),
+    radial-gradient(ellipse at 48% 88%, rgba(91, 20, 3, .82), transparent 58%),
+    #160202;
+}
+html.low-end body[data-project="bagley"] .bagley-wave-background span { display: none; }
+html.low-end body[data-project="bagley"] .bagley-wave-background,
+html.low-end body[data-project="bagley"] .bagley-wave-background span { animation: none !important; }
+html.low-end *,
+html.low-end *::before,
+html.low-end *::after {
+  animation: none !important;
+  transition: none !important;
+  scroll-behavior: auto !important;
+}
+html.low-end .reveal { opacity: 1 !important; transform: none !important; }

@@ -3,6 +3,23 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+  <script>
+    (() => {
+      const nav = navigator;
+      const connection = nav.connection || nav.mozConnection || nav.webkitConnection;
+      const lowEnd = Boolean(
+        (connection && connection.saveData) ||
+        (connection && /^(slow-2g|2g)$/.test(connection.effectiveType || "")) ||
+        (typeof nav.deviceMemory === "number" && nav.deviceMemory <= 4) ||
+        (typeof nav.hardwareConcurrency === "number" && nav.hardwareConcurrency <= 4)
+      );
+      window.IDI_LOW_END = lowEnd;
+      window.IDI_REDUCED_MOTION = Boolean(
+        window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches
+      );
+      if (lowEnd) document.documentElement.classList.add("low-end");
+    })();
+  </script>
   <link rel="preconnect" href="https://gitlab.com" crossorigin>
   <link rel="dns-prefetch" href="https://gitlab.com">
   <link rel="preconnect" href="https://api.github.com" crossorigin>
@@ -24,7 +41,7 @@
     <link rel="stylesheet" href="/css/profile-themes.css?v=e02900f1">
     <link rel="stylesheet" href="/css/page-layouts.css?v=d2d32b22">
     <link rel="stylesheet" href="/css/bagley.css?v=a3368c17">
-    <link rel="stylesheet" href="/css/overrides.css?v=18b01aa6">
+    <link rel="stylesheet" href="/css/overrides.css?v=dfec3851">
 
     <style>
         /* plus rain background effect */
@@ -48,9 +65,9 @@
         }
     </style>
 
-    <script src="/plus-rain.js?v=6103a320" defer></script>
-    <script src="/script.js?v=f0050692" defer></script>
-  <script src="/commit-feed.js?v=1cfe5022" defer></script>
+    <script src="/plus-rain.js?v=4b7085b1" defer></script>
+    <script src="/script.js?v=49c281be" defer></script>
+  <script src="/commit-feed.js?v=7580dcb8" defer></script>
   <link rel="canonical" href="https://idi-official.pages.dev/people/e-vdv-hu">
   <meta property="og:url" content="https://idi-official.pages.dev/people/e-vdv-hu">
   <meta property="og:site_name" content="International Duck Incorporated">

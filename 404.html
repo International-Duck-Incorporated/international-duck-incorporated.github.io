@@ -3,6 +3,23 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
+  <script>
+    (() => {
+      const nav = navigator;
+      const connection = nav.connection || nav.mozConnection || nav.webkitConnection;
+      const lowEnd = Boolean(
+        (connection && connection.saveData) ||
+        (connection && /^(slow-2g|2g)$/.test(connection.effectiveType || "")) ||
+        (typeof nav.deviceMemory === "number" && nav.deviceMemory <= 4) ||
+        (typeof nav.hardwareConcurrency === "number" && nav.hardwareConcurrency <= 4)
+      );
+      window.IDI_LOW_END = lowEnd;
+      window.IDI_REDUCED_MOTION = Boolean(
+        window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches
+      );
+      if (lowEnd) document.documentElement.classList.add("low-end");
+    })();
+  </script>
   <meta name="theme-color" content="#070a08">
   <meta name="robots" content="noindex">
   <title>Not found - International Duck</title>

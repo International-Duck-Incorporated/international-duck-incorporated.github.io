@@ -12,6 +12,7 @@
 
   function init() {
     if (!document.body.classList.contains('starry-night-page')) return;
+    if (window.IDI_LOW_END) return; // the CSS gradient remains as a static fallback
 
     const layer = document.createElement('div');
     layer.className = 'starrynight-bg-container';

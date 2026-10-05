@@ -1112,6 +1112,10 @@ function init() {
   if (!canvas) return;
 
   plusRain.canvas = canvas;
+  if (window.IDI_LOW_END || window.IDI_REDUCED_MOTION) {
+    fallback();
+    return;
+  }
   plusRain.maxPixels = parseFloat(canvas.dataset.rainMaxPixels || '3500000');
   background.dim = parseFloat(canvas.dataset.rainDim || '0.45');
 
