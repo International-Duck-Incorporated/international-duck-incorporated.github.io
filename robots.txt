@@ -1,2 +1,45 @@
+# International Duck Incorporated - https://idi-official.pages.dev
+# All crawlers are welcome. The site has no private areas.
+
 User-agent: *
 Allow: /
+
+# --- AI / LLM crawlers, explicitly allowed (see also /llms.txt) ---
+User-agent: GPTBot
+Allow: /
+
+User-agent: OAI-SearchBot
+Allow: /
+
+User-agent: ChatGPT-User
+Allow: /
+
+User-agent: ClaudeBot
+Allow: /
+
+User-agent: Claude-Web
+Allow: /
+
+User-agent: PerplexityBot
+Allow: /
+
+User-agent: Google-Extended
+Allow: /
+
+User-agent: CCBot
+Allow: /
+
+User-agent: Applebot-Extended
+Allow: /
+
+# --- Search engine crawlers, named for clarity ---
+User-agent: Googlebot
+Allow: /
+
+User-agent: Bingbot
+Allow: /
+
+User-agent: DuckDuckBot
+Allow: /
+
+Sitemap: https://idi-official.pages.dev/sitemap.xml

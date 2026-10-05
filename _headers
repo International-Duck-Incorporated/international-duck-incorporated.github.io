@@ -1,0 +1,43 @@
+# Cloudflare Pages response headers.
+# https://developers.cloudflare.com/pages/configuration/headers/
+#
+# Assets and hashed references below are cache-busted at build time via a
+# ?v=<content-hash> query string (see tools/bust_cache.py), so they can be
+# cached immutably: when a file changes its URL changes too.
+
+/assets/*
+  Cache-Control: public, max-age=31536000, immutable
+
+/css/*
+  Cache-Control: public, max-age=31536000, immutable
+
+/activity.js
+  Cache-Control: public, max-age=31536000, immutable
+/bagley-network.js
+  Cache-Control: public, max-age=31536000, immutable
+/commit-feed.js
+  Cache-Control: public, max-age=31536000, immutable
+/easteregg.js
+  Cache-Control: public, max-age=31536000, immutable
+/matrix-rain.js
+  Cache-Control: public, max-age=31536000, immutable
+/pixel-canvas.js
+  Cache-Control: public, max-age=31536000, immutable
+/plus-rain.js
+  Cache-Control: public, max-age=31536000, immutable
+/script.js
+  Cache-Control: public, max-age=31536000, immutable
+/starry-night.js
+  Cache-Control: public, max-age=31536000, immutable
+/storm-window.js
+  Cache-Control: public, max-age=31536000, immutable
+/venom-hex.js
+  Cache-Control: public, max-age=31536000, immutable
+
+# Discovery files must stay fresh so crawlers always see the latest index.
+/sitemap.xml
+  Cache-Control: public, max-age=3600, must-revalidate
+/robots.txt
+  Cache-Control: public, max-age=3600, must-revalidate
+/llms.txt
+  Cache-Control: public, max-age=3600, must-revalidate

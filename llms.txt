@@ -1,0 +1,49 @@
+# International Duck Incorporated
+
+> International Duck Incorporated (IDI) is an open-source collective that builds Minecraft
+> mods, tools, and experiments in public. Source of truth is GitLab:
+> https://gitlab.com/international-duck-incorporated (GitHub is a legacy mirror).
+> All projects are client-side Java/Fabric. Everything is free and open source.
+
+This website documents the organization's public projects, members, and cross-platform
+commit activity. Content is synchronized live from the GitLab API.
+
+## Organization
+
+- [Overview](https://idi-official.pages.dev/): organization summary, live repository, member, and star counts from GitLab.
+- [Projects](https://idi-official.pages.dev/projects/): directory of all public repositories with status, language, and descriptions.
+- [People](https://idi-official.pages.dev/people/): the public member roster with per-member profile pages.
+- [Activity](https://idi-official.pages.dev/activity): live cross-platform commit feed for every project, from GitLab (main) and GitHub (legacy mirror).
+- [Migration](https://idi-official.pages.dev/migration): a sourced timeline of IDI's September 2026 move from GitHub to GitLab.
+
+## Projects
+
+- [Beacon](https://idi-official.pages.dev/projects/beacon): modular, client-side utility mod for Minecraft; vanilla-server-safe, 55 registered modules, persistent configuration, addon API. Latest release 1.8.16.
+- [Venomous](https://idi-official.pages.dev/projects/venomous): optimized and refined Meteor Client addon for Minecraft 26.2; 124 modules. Stable v7.0.0.
+- [NullTrace](https://idi-official.pages.dev/projects/nulltrace): client-side Fabric privacy and anti-fingerprinting mod; client brand spoofing, fingerprint protection, tracking defenses. Official release v2.0.0 on GitLab and CurseForge.
+- [ChampionsCode](https://idi-official.pages.dev/projects/championscode): client-side Fabric mod for authorized, defensive server and plugin research and controlled runtime Java addon development. 0.1.0-beta.1.
+- [Bagley](https://idi-official.pages.dev/projects/bagley): opt-in, client-side AI chat assistant addon for Beacon with local provider configuration and optional memory.
+- [ZonedOut](https://idi-official.pages.dev/projects/zonedout): in-development client-side Minecraft 26.3 Fabric mod with combat/utility features, Metro-style UI, and seed/world-generation analysis.
+- [This website](https://idi-official.pages.dev/projects/website): the source repository and notes for this static site.
+
+## Members
+
+- [0xFFshell](https://idi-official.pages.dev/people/0xffshell): Venomous writer; GitLab operations. GitHub account banned.
+- [espress0](https://idi-official.pages.dev/people/3spress0): security tooling and Minecraft development. GitHub account banned.
+- [E-VDV-HU](https://idi-official.pages.dev/people/e-vdv-hu): applied software and Python projects; Utrecht / Hogeschool Utrecht.
+- [Xx-superIvar-xX](https://idi-official.pages.dev/people/superivar): public member.
+- [midas735](https://idi-official.pages.dev/people/midas735): public member.
+
+## Source repositories
+
+- Organization: https://gitlab.com/international-duck-incorporated
+- Website source: https://gitlab.com/international-duck-incorporated/home
+- GitHub (legacy mirror): https://github.com/International-Duck-Incorporated
+
+## Notes for automated readers
+
+- Every page carries `rel="canonical"`, Open Graph, Twitter Card, and JSON-LD (schema.org)
+  structured data, so machine readers can parse identity, versions, and release links without
+  executing JavaScript.
+- Live counts (repository, member, star, commit activity) are fetched client-side from
+  `https://gitlab.com/api/v4`; static checked-in values are the fallback.
