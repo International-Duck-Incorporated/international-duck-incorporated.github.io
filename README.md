@@ -6,9 +6,10 @@ Static GitLab Pages site for [International Duck Incorporated](https://gitlab.co
 
 Change notes live in `LIGHTHOUSE-FIXES.md` (round 1: performance and
 accessibility) and `SEO-FIXES.md` (round 2: crawlability, page heads, the module
-directory and the changelog). `SEO-FIXES.md` also lists the one known gap - the
-Beacon CurseForge listing is still under review, so the generated Download links
-point at GitLab releases.
+directory and the changelog). The module page's Download links, its hero button
+and the two CurseForge references on the Beacon page point at the public
+listing (Beacon QoL, project 1720579); the URL and name live in
+`tools/gen_module_page.py` as `CURSEFORGE_URL` / `CURSEFORGE_NAME`.
 
 ## Build steps
 

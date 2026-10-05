@@ -45,6 +45,7 @@ WEB = {
 
 PROJECTS = {
     "projects/beacon/index.html": {
+        "curseforge": "https://www.curseforge.com/minecraft/mc-mods/beacon-qol",
         "url": "/projects/beacon", "name": "Beacon",
         "desc": ("Modular, client-side utility mod for Minecraft 26.2 with 55 registered "
                  "modules, persistent configuration and an addon API. Vanilla-server-safe."),
@@ -200,6 +201,8 @@ def software_application(p: dict):
         app["datePublished"] = p["date"]
     if p["download"]:
         app["downloadUrl"] = p["download"]
+    if p.get("curseforge"):
+        app["installUrl"] = p["curseforge"]
     if p["license"]:
         app["license"] = p["license"]
     return app

@@ -75,18 +75,20 @@ count is whatever the code says: Utility 21 · Render 16 · World 6 · Misc 10 �
   so it can be re-verified.
 * `ItemList` + `BreadcrumbList` JSON-LD.
 
-**Two honest gaps, both deliberate:**
+**One gap, deliberate:**
 
-1. **The download links go to GitLab releases, not CurseForge.** Beacon's
-   CurseForge listing is still "Under review", so no public CurseForge URL exists
-   yet. The page says so in the footer panel rather than linking a dead listing.
-   The URL and button label are two constants at the top of
-   `tools/gen_module_page.py` (`DOWNLOAD_URL`, `DOWNLOAD_LABEL`) - change those,
-   rebuild, and every Download link moves at once.
-2. **The module screenshots are placeholder tiles** - initials on a grid, with a
-   line of copy above them saying so. The real ones are a drop-in:
-   `assets/modules/<module-id>.png` (or `.webp`) plus a small
-   `tools/apply_module_shots.py`, which is not written yet.
+* **The module screenshots are placeholder tiles** - initials on a grid, with a
+  line of copy above them saying so. The real ones are a drop-in:
+  `assets/modules/<module-id>.png` (or `.webp`) plus a small
+  `tools/apply_module_shots.py`, which is not written yet.
+
+Every Download link on the page, and the hero button, now go to the **Beacon QoL
+CurseForge listing** (`https://www.curseforge.com/minecraft/mc-mods/beacon-qol`,
+project 1720579), with GitLab releases kept as the second button for tagged
+stable builds. `CURSEFORGE_URL`, `CURSEFORGE_NAME` and `RELEASES_URL` at the top
+of `tools/gen_module_page.py` are the only place those URLs live. The Beacon page
+links the same listing from its status pill, its facts row and its release
+callout, and its JSON-LD carries `installUrl`.
 
 ## 4. `/changelog`
 

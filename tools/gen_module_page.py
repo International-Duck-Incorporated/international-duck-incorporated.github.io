@@ -28,14 +28,14 @@ import sitegen  # noqa: E402
 SITE = "https://idi-official.pages.dev"
 URL_PATH = "/projects/beacon/modules"
 
-# Where "Download" points for every module. Beacon's JARs live on its GitLab
-# releases page; the CurseForge listing ("Beacon QoL") was still pending
-# moderation review when this page was written, so it is not linked yet. When
-# that listing goes live, change this one line (and the note in the hero) to
-# https://www.curseforge.com/minecraft/mc-mods/<slug>/files and re-run the
-# generator.
-DOWNLOAD_URL = "https://gitlab.com/international-duck-incorporated/Beacon/-/releases"
-DOWNLOAD_LABEL = "Downloads"
+# Where "Download" points for every module, and the two facts the page states
+# about it. The CurseForge listing ("Beacon QoL", project 1720579) is public, so
+# it is the primary download for the whole page; GitLab keeps the tagged stable
+# releases. Change these constants in one place and re-run the generator.
+CURSEFORGE_URL = "https://www.curseforge.com/minecraft/mc-mods/beacon-qol"
+CURSEFORGE_NAME = "Beacon QoL"
+RELEASES_URL = "https://gitlab.com/international-duck-incorporated/Beacon/-/releases"
+DOWNLOAD_URL = CURSEFORGE_URL
 
 CATEGORY_BLURB = {
     "Utility": "Tools that speed up the things you do every session: eating, sorting, "
@@ -116,7 +116,8 @@ def main() -> int:
         <h1>Beacon modules.</h1>
         <p class="lead">Every module Beacon registers, with the description it ships with, grouped by category. {total} modules across {len(counts)} categories, all client-side and vanilla-server-safe: no combat automation, no movement automation, no ESP, no exploits.</p>
         <div class="action-row">
-          <a class="button button-blue" href="{DOWNLOAD_URL}" target="_blank" rel="noreferrer"><svg><use href="#i-download"/></svg>Download Beacon</a>
+          <a class="button button-blue" href="{CURSEFORGE_URL}" target="_blank" rel="noreferrer"><svg><use href="#i-curseforge"/></svg>Get {CURSEFORGE_NAME} on CurseForge</a>
+          <a class="button button-glass" href="{RELEASES_URL}" target="_blank" rel="noreferrer"><svg><use href="#i-download"/></svg>All GitLab releases</a>
           <a class="button button-glass" href="/projects/beacon">Project overview <svg><use href="#i-arrow"/></svg></a>
           <a class="button button-glass" href="https://gitlab.com/international-duck-incorporated/Beacon" target="_blank" rel="noreferrer"><svg><use href="#i-gitlab"/></svg>Source repository</a>
         </div>
@@ -129,7 +130,7 @@ def main() -> int:
       <section class="directory-foot glass-card reveal">
         <h2>Where this list comes from</h2>
         <p>{verification}</p>
-        <p>Beacon's CurseForge listing is <b>Beacon QoL</b> and is still pending moderation review, so GitLab releases are the only place a working build is downloadable today. Once the listing is live, every Download link on this page points there.</p>
+        <p>Every Download link on this page goes to <b><a href="{CURSEFORGE_URL}" target="_blank" rel="noreferrer">{CURSEFORGE_NAME}</a></b>, the project's CurseForge listing. The tagged stable releases and the full artifact history stay on GitLab.</p>
       </section>
     </div>
   </main>"""
