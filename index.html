@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en">
+<html lang="en" data-frame="video" data-wordmark="yes">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -21,7 +21,52 @@
       if (lowEnd) document.documentElement.classList.add("low-end");
     })();
   </script>
+  <script>
+    // This visit's backdrop, picked before the stylesheet is applied - the hero
+    // copy follows the backdrop (clips park it top-left, stills bottom-right),
+    // so deciding it in easteregg.js after the first layout moved a visible copy
+    // and cost the homepage CLS 0.21. Deciding here means the copy is laid out
+    // once, in its final place, and paints with the first frame.
+    //
+    // Layout fields only: kind, whether the media already carries the wordmark,
+    // and the object-position it wants. easteregg.js holds the payload (source,
+    // label, holdAt) for the same index and mounts whatever is picked here; keep
+    // the two lists index-aligned. The static data-frame/data-wordmark on <html>
+    // above are the no-JS default and match entry 0.
+    (() => {
+      const BACKDROPS = [
+        ["video", "yes", "50% 47%"],   // easteregg-video-2.webm
+        ["video", "yes", "100% 42%"],  // easteregg-video-3.webm
+        ["video", "yes", "50% 50%"],   // video3.webm
+        ["video", "yes", "50% 50%"],   // video4.webm
+        ["image", "yes", "50% 42%"],   // homepage-community-background-v4.webp
+        ["image", "no", "46% 54%"],    // idi-member-collage.webp
+      ];
+      const STILLS = [4, 5];
+      const pool = window.IDI_LOW_END ? [4] : window.IDI_REDUCED_MOTION ? STILLS : BACKDROPS.map((_, index) => index);
+
+      let index = pool[Math.floor(Math.random() * pool.length)];
+      try {
+        // Same rotation rule as easteregg.js: never the same backdrop twice in a
+        // row. Index-keyed, because this list is what the head deals in;
+        // easteregg.js keeps its own name-keyed value for its fallback roll.
+        const stored = localStorage.getItem("idi-bg-last-index");
+        const last = stored === null ? -1 : Number(stored);
+        if (pool.length > 1 && index === last) index = pool[(pool.indexOf(index) + 1) % pool.length];
+        localStorage.setItem("idi-bg-last-index", String(index));
+      } catch {}
+
+      const [kind, wordmark, focus] = BACKDROPS[index];
+      const root = document.documentElement;
+      root.dataset.frame = kind;
+      root.dataset.wordmark = wordmark;
+      root.style.setProperty("--focus", focus);
+      // easteregg.js mounts this index; it only rolls for itself if this is absent.
+      window.IDI_BACKDROP = index;
+    })();
+  </script>
   <link rel="preconnect" href="https://gitlab.com" crossorigin>
+  <link rel="preconnect" href="https://gitlab.com">
   <link rel="dns-prefetch" href="https://gitlab.com">
   <meta name="theme-color" content="#07090d">
   <meta name="description" content="International Duck Incorporated - public projects and members, synchronized with GitLab.">
@@ -31,17 +76,10 @@
   <meta property="og:image" content="https://idi-official.pages.dev/assets/og-default.png">
   <title>International Duck Incorporated</title>
   <link rel="icon" href="/assets/org-avatar.png" type="image/png">
-  <link rel="stylesheet" href="/css/site.css?v=8fcda15b">
-  <link rel="stylesheet" href="/css/profiles.css?v=99126f63">
-  <link rel="stylesheet" href="/css/project-atmospheres.css?v=6e6fec91">
-  <link rel="stylesheet" href="/css/migration.css?v=9729fe4e">
-  <link rel="stylesheet" href="/css/profile-themes.css?v=e02900f1">
-  <link rel="stylesheet" href="/css/page-layouts.css?v=d2d32b22">
-  <link rel="stylesheet" href="/css/bagley.css?v=a3368c17">
-  <link rel="stylesheet" href="/css/overrides.css?v=dfec3851">
-  <script src="/script.js?v=49c281be" defer></script>
+  <link rel="stylesheet" href="/css/bundle.css?v=5cef9fa4">
+  <script src="/script.js?v=c07123d9" defer></script>
   <script src="/pixel-canvas.js?v=5cf6bf45" defer></script>
-  <script src="/easteregg.js?v=d48b8860" defer></script>
+  <script src="/easteregg.js?v=b216ebc6" defer></script>
   <link rel="canonical" href="https://idi-official.pages.dev/">
   <meta property="og:url" content="https://idi-official.pages.dev/">
   <meta property="og:site_name" content="International Duck Incorporated">
@@ -126,7 +164,7 @@
 }
   </script>
 </head>
-<body data-page="organization" data-frame="video" data-wordmark="yes">
+<body data-page="organization">
   <svg class="svg-sprite" aria-hidden="true">
     <symbol id="i-arrow" viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></symbol>
     <symbol id="i-external" viewBox="0 0 24 24"><path d="M14 5h5v5M19 5l-9 9M18 13v6H5V6h6"/></symbol><symbol id="i-gitlab" viewBox="0 0 24 24"><path fill="currentColor" stroke="none" d="m23.6004 9.5927-.0337-.0862L20.3.9814a.851.851 0 0 0-.3362-.405.8748.8748 0 0 0-.9997.0539.8748.8748 0 0 0-.29.4399l-2.2055 6.748H7.5375l-2.2057-6.748a.8573.8573 0 0 0-.29-.4412.8748.8748 0 0 0-.9997-.0537.8585.8585 0 0 0-.3362.4049L.4332 9.5015l-.0325.0862a6.0657 6.0657 0 0 0 2.0119 7.0105l.0113.0087.03.0213 4.976 3.7264 2.462 1.8633 1.4995 1.1321a1.0085 1.0085 0 0 0 1.2197 0l1.4995-1.1321 2.4619-1.8633 5.006-3.7489.0125-.01a6.0682 6.0682 0 0 0 2.0094-7.003z"/></symbol>
@@ -146,7 +184,7 @@
   <header class="topbar" data-header>
     <div class="shell topbar-inner">
       <a class="brand" href="/" aria-label="International Duck Incorporated home">
-        <img data-org-avatar src="/assets/org-avatar.png" alt="" width="40" height="40" decoding="async">
+        <img data-org-avatar src="/assets/org-avatar.webp" alt="" width="40" height="40" decoding="async">
         <span><b>International Duck</b><small>Incorporated</small></span>
       </a>
       <nav class="main-nav" id="main-navigation" data-nav aria-label="Primary navigation">
@@ -183,7 +221,7 @@
         <aside class="org-profile glass-card reveal" aria-label="Live organization profile">
           <div class="profile-topline"><span>ORGANIZATION PROFILE</span><span class="live-label"><i></i> LIVE</span></div>
           <div class="profile-identity">
-            <img data-org-avatar src="/assets/org-avatar.png" alt="International Duck Incorporated logo" width="154" height="154" loading="lazy" decoding="async">
+            <img data-org-avatar src="/assets/org-avatar.webp" alt="International Duck Incorporated logo" width="154" height="154" loading="lazy" decoding="async">
             <div><small>gitlab.com</small><h2 data-org-name>International Duck Incorporated</h2><a href="https://gitlab.com/international-duck-incorporated" target="_blank" rel="noreferrer">@international-duck-incorporated <svg><use href="#i-external"/></svg></a></div>
           </div>
           <div class="profile-stats">
@@ -206,32 +244,32 @@
         </header>
         <div class="project-grid directory-grid">
           <a class="project-card glass-card reveal" href="/projects/beacon">
-            <div class="project-card-top"><span class="project-icon beacon"><img src="/assets/beacon-icon.png" alt="" width="64" height="64" loading="lazy" decoding="async"></span><span class="project-status"><i></i> Release</span></div>
+            <div class="project-card-top"><span class="project-icon beacon"><picture><source srcset="/assets/beacon-icon.webp" type="image/webp"><img src="/assets/beacon-icon.png" alt="" width="64" height="64" loading="lazy" decoding="async"></picture></span><span class="project-status"><i></i> Release</span></div>
             <div><span class="card-label">Utility project</span><h3>Beacon</h3><p>A vanilla-server-safe, modular client-side utility mod for Minecraft 26.2 with 55 registered modules, persistent configuration, and an addon API.</p></div>
             <footer><span><i class="language-dot java"></i>Java</span><span>Open project <svg><use href="#i-arrow"/></svg></span></footer>
           </a>
           <a class="project-card featured glass-card reveal" href="/projects/venomous">
-            <div class="project-card-top"><span class="project-icon venom"><img src="/assets/venomous-icon.png" alt="" width="64" height="64" loading="lazy" decoding="async"></span><span class="project-status"><i></i> Active</span></div>
+            <div class="project-card-top"><span class="project-icon venom"><picture><source srcset="/assets/venomous-icon.webp" type="image/webp"><img src="/assets/venomous-icon.png" alt="" width="64" height="64" loading="lazy" decoding="async"></picture></span><span class="project-status"><i></i> Active</span></div>
             <div><span class="card-label">Featured project</span><h3>Venomous</h3><p>Optimized &amp; refined Meteor Client addon for Minecraft 26.2.</p></div>
             <footer><span><i class="language-dot java"></i>Java</span><span>Open project <svg><use href="#i-arrow"/></svg></span></footer>
           </a>
           <a class="project-card glass-card reveal" href="/projects/nulltrace">
-            <div class="project-card-top"><span class="project-icon privacy"><img src="/assets/nulltrace-icon.png" alt="" width="64" height="64" loading="lazy" decoding="async"></span><span class="project-status"><i></i> Official release</span></div>
+            <div class="project-card-top"><span class="project-icon privacy"><picture><source srcset="/assets/nulltrace-icon.webp" type="image/webp"><img src="/assets/nulltrace-icon.png" alt="" width="64" height="64" loading="lazy" decoding="async"></picture></span><span class="project-status"><i></i> Official release</span></div>
             <div><span class="card-label">Privacy project</span><h3>NullTrace</h3><p>A client-side Fabric privacy mod for Minecraft 1.21.11, 26.1, 26.2, and 26.3 covering client brand spoofing, fingerprint protection, tracking defenses, and safer server connections.</p></div>
             <footer><span><i class="language-dot java"></i>Java</span><span>Open project <svg><use href="#i-arrow"/></svg></span></footer>
           </a>
           <a class="project-card glass-card reveal" href="/projects/championscode">
-            <div class="project-card-top"><span class="project-icon champion"><img src="/assets/championscode-icon.png" alt="" width="64" height="64" loading="lazy" decoding="async"></span><span class="project-status"><i></i> First launch</span></div>
+            <div class="project-card-top"><span class="project-icon champion"><picture><source srcset="/assets/championscode-icon.webp" type="image/webp"><img src="/assets/championscode-icon.png" alt="" width="64" height="64" loading="lazy" decoding="async"></picture></span><span class="project-status"><i></i> First launch</span></div>
             <div><span class="card-label">Research project</span><h3>ChampionsCode</h3><p>A client-side Fabric mod for Minecraft 26.3 for authorized, defensive server and plugin research and controlled runtime Java addon development.</p></div>
             <footer><span><i class="language-dot java"></i>Java</span><span>Open project <svg><use href="#i-arrow"/></svg></span></footer>
           </a>
           <a class="project-card glass-card reveal" href="/projects/bagley">
-            <div class="project-card-top"><span class="project-icon bagley"><img src="/assets/bagley-icon.png" alt="" width="64" height="64" loading="lazy" decoding="async"></span><span class="project-status"><i></i> New</span></div>
+            <div class="project-card-top"><span class="project-icon bagley"><picture><source srcset="/assets/bagley-icon.webp" type="image/webp"><img src="/assets/bagley-icon.png" alt="" width="64" height="64" loading="lazy" decoding="async"></picture></span><span class="project-status"><i></i> New</span></div>
             <div><span class="card-label">Beacon addon</span><h3>Bagley</h3><p>An opt-in, client-side AI chat assistant addon for Beacon with local provider configuration and optional memory.</p></div>
             <footer><span><i class="language-dot java"></i>Java</span><span>Open project <svg><use href="#i-arrow"/></svg></span></footer>
           </a>
           <a class="project-card glass-card reveal" href="/projects/zonedout">
-            <div class="project-card-top"><span class="project-icon zonedout"><img src="/assets/zonedout-icon.png" alt="" width="64" height="64" loading="lazy" decoding="async"></span><span class="project-status muted">In development</span></div>
+            <div class="project-card-top"><span class="project-icon zonedout"><picture><source srcset="/assets/zonedout-icon.webp" type="image/webp"><img src="/assets/zonedout-icon.png" alt="" width="64" height="64" loading="lazy" decoding="async"></picture></span><span class="project-status muted">In development</span></div>
             <div><span class="card-label">Client-side mod</span><h3>ZonedOut</h3><p>A client-side Minecraft 26.3 Fabric mod with combat/utility features, a Metro-style UI, and 36-module seed/world-generation analysis.</p></div>
             <footer><span><i class="language-dot java"></i>Java</span><span>Open project <svg><use href="#i-arrow"/></svg></span></footer>
           </a>
@@ -255,7 +293,7 @@
 
   <footer class="site-footer">
     <div class="shell footer-inner">
-      <a class="brand" href="/"><img data-org-avatar src="/assets/org-avatar.png" alt="" width="40" height="40" decoding="async"><span><b>International Duck</b><small>Incorporated</small></span></a>
+      <a class="brand" href="/"><img data-org-avatar src="/assets/org-avatar.webp" alt="" width="40" height="40" decoding="async"><span><b>International Duck</b><small>Incorporated</small></span></a>
       <nav><a href="/">Overview</a><a href="/projects">Projects</a><a href="/members">Members</a><a href="/activity">Activity</a><a href="/migration">Migration</a><a href="https://gitlab.com/international-duck-incorporated" target="_blank" rel="noreferrer">GitLab</a></nav>
       <span class="sync-state"><i></i><span data-sync-text>GitLab data synced live</span></span>
     </div>

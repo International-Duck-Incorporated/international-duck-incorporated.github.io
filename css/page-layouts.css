@@ -49,6 +49,13 @@ body[data-member="0xffshell"] { background: transparent; }
 /* Directories use an editorial grid instead of identical tiles. */
 body[data-page="organization"] {
   background: #05090b url("../assets/homepage-community-background-v4.jpg") center top / cover fixed no-repeat;
+  /* The stylesheet backdrop is what holds the page until the rotating media can
+     paint; it was the one place still shipping the full-size JPEG to every
+     browser. Same layer, compressed sibling first. */
+  background-image: image-set(
+    url("../assets/homepage-community-background-v4.webp") type("image/webp"),
+    url("../assets/homepage-community-background-v4.jpg") type("image/jpeg")
+  );
 }
 body[data-page="organization"]::before {
   content: ""; position: fixed; inset: 0; z-index: -1; pointer-events: none;
@@ -219,6 +226,13 @@ body[data-member="midas735"] .detail-panel:last-child { margin-left: auto; }
 @media (max-width: 900px) {
   body[data-page="organization"] {
   background: #05090b url("../assets/homepage-community-background-v4.jpg") center top / cover fixed no-repeat;
+  /* The stylesheet backdrop is what holds the page until the rotating media can
+     paint; it was the one place still shipping the full-size JPEG to every
+     browser. Same layer, compressed sibling first. */
+  background-image: image-set(
+    url("../assets/homepage-community-background-v4.webp") type("image/webp"),
+    url("../assets/homepage-community-background-v4.jpg") type("image/jpeg")
+  );
 }
 body[data-page="organization"]::before {
   content: ""; position: fixed; inset: 0; z-index: -1; pointer-events: none;

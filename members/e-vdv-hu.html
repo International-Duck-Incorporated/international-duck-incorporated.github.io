@@ -21,6 +21,7 @@
     })();
   </script>
   <link rel="preconnect" href="https://gitlab.com" crossorigin>
+  <link rel="preconnect" href="https://gitlab.com">
   <link rel="dns-prefetch" href="https://gitlab.com">
     <meta name="theme-color" content="#07090d">
     <meta
@@ -32,14 +33,7 @@
   <title>E-VDV-HU - International Duck</title>
 
     <link rel="icon" href="/assets/org-avatar.png">
-    <link rel="stylesheet" href="/css/site.css?v=8fcda15b">
-    <link rel="stylesheet" href="/css/profiles.css?v=99126f63">
-    <link rel="stylesheet" href="/css/project-atmospheres.css?v=6e6fec91">
-    <link rel="stylesheet" href="/css/migration.css?v=9729fe4e">
-    <link rel="stylesheet" href="/css/profile-themes.css?v=e02900f1">
-    <link rel="stylesheet" href="/css/page-layouts.css?v=d2d32b22">
-    <link rel="stylesheet" href="/css/bagley.css?v=a3368c17">
-    <link rel="stylesheet" href="/css/overrides.css?v=dfec3851">
+    <link rel="stylesheet" href="/css/bundle.css?v=5cef9fa4">
 
     <style>
         /* plus rain background effect */
@@ -60,12 +54,19 @@
         body.plus-rain-fallback {
             background: linear-gradient(rgba(7, 9, 13, .6), rgba(7, 9, 13, .6)),
                 url("/assets/member-e-vdv-hu-bg.jpg") center / cover fixed no-repeat, #07090d;
+            /* Same layering and positions as above; the bitmap layer is served as
+               WebP where it is supported and falls back to the JPEG. */
+            background-image: linear-gradient(rgba(7, 9, 13, .6), rgba(7, 9, 13, .6)),
+                image-set(
+                    url("/assets/member-e-vdv-hu-bg.webp") type("image/webp"),
+                    url("/assets/member-e-vdv-hu-bg.jpg") type("image/jpeg")
+                );
         }
     </style>
 
     <script src="/plus-rain.js?v=4b7085b1" defer></script>
-    <script src="/script.js?v=49c281be" defer></script>
-  <script src="/commit-feed.js?v=7580dcb8" defer></script>
+    <script src="/script.js?v=c07123d9" defer></script>
+  <script src="/commit-feed.js?v=a37229bc" defer></script>
   <link rel="canonical" href="https://idi-official.pages.dev/members/e-vdv-hu">
   <meta property="og:url" content="https://idi-official.pages.dev/members/e-vdv-hu">
   <meta property="og:site_name" content="International Duck Incorporated">
@@ -182,7 +183,7 @@
         id="plus-rain"
         data-plus-rain
         data-rain-sprite="/assets/plus-sprite.png"
-        data-rain-background="/assets/member-e-vdv-hu-bg.jpg"
+        data-rain-background="/assets/member-e-vdv-hu-bg.webp"
         data-rain-dim="0.45"
         aria-hidden="true"
     ></canvas>
@@ -210,7 +211,7 @@
             <a class="brand" href="/">
                 <img
                     data-org-avatar
-                    src="/assets/org-avatar.png"
+                    src="/assets/org-avatar.webp"
                     alt=""
                     width="40"
                     height="40" decoding="async">
@@ -280,10 +281,10 @@
             <section class="profile-hero">
 
                 <article class="profile-intro glass-card reveal">
-                    <img
+                    <picture><source srcset="/assets/member-e-vdv-hu.webp" type="image/webp"><img
                         class="avatar"
                         src="/assets/member-e-vdv-hu.png"
-                        alt="E-VDV-HU" loading="lazy" decoding="async">
+                        alt="E-VDV-HU" loading="lazy" decoding="async"></picture>
 
                     <span class="eyebrow">Member profile</span>
 
@@ -371,7 +372,7 @@
         <div class="shell footer-inner">
 
             <a class="brand" href="/">
-                <img src="/assets/org-avatar.png" alt="" decoding="async">
+                <picture><source srcset="/assets/org-avatar.webp" type="image/webp"><img src="/assets/org-avatar.png" alt="" decoding="async"></picture>
 
                 <span>
                     <b>International Duck</b>

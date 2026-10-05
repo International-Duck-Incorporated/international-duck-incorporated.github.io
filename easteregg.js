@@ -1,7 +1,12 @@
 /* The duck easter egg, and the rotating homepage background.
  *
- * Background: capable devices pick one of four media at random - the two
- * short clips streamed from the idi-assets bundle or one of two local stills.
+ * Background: the pick itself happens in index.html's head (BACKDROPS +
+ * window.IDI_BACKDROP), before the first style calculation, so the hero copy -
+ * whose position follows the backdrop - never moves. This script mounts what was
+ * picked; it only rolls for itself on a page that has no head pick, and it keeps
+ * its payload table (source, label, holdAt) index-aligned with that head list.
+ * Capable devices pick one of four media at random - the two short clips
+ * streamed from the idi-assets bundle or one of two local stills.
  * Low-power devices use only the smaller community backdrop.
  * The pick is remembered, so nobody gets the same media twice in a row, and
  * prefers-reduced-motion turns the rotation into images only. Low-power
@@ -68,20 +73,20 @@
     // stills: copy sits bottom-right; only the collage has no name in it, so it
     // is the one state that shows the <h1>
     {
-      name: "homepage-community-background-v4.jpg",
+      name: "homepage-community-background-v4.webp",
       kind: "image",
       wordmark: true,
       focus: "50% 42%",
       label: "community backdrop",
-      src: "/assets/homepage-community-background-v4.jpg",
+      src: "/assets/homepage-community-background-v4.webp",
     },
     {
-      name: "idi-member-collage.png",
+      name: "idi-member-collage.webp",
       kind: "image",
       wordmark: false,
       focus: "46% 54%",
       label: "member collage",
-      src: "/assets/idi-member-collage.png",
+      src: "/assets/idi-member-collage.webp",
     },
   ];
 
@@ -142,7 +147,7 @@
     soundButton.type = "button";
     soundButton.className = "egg-sound";
     soundButton.setAttribute("aria-pressed", "false");
-    soundButton.setAttribute("aria-label", "Toggle background sound");
+    soundButton.setAttribute("aria-label", "Background sound");
     soundButton.textContent = "\u{1F507}";
 
     soundButton.addEventListener("click", () => {
@@ -153,6 +158,22 @@
     });
 
     return soundButton;
+  };
+
+  // ------------------------------------------------------------- scheduling
+  // The rotation's local stills are ~50 KB; the remote clips are megabytes. A
+  // clip is therefore requested only after the document has finished loading and
+  // the browser has nothing better to do, so it never competes with the hero's
+  // first paint. The stylesheet background (and the hero copy above it) stays
+  // visible in the meantime, which is the same state a slow clip already left on
+  // screen. Returns immediately if the page is already idle.
+  const whenIdle = (run) => {
+    const schedule = () => {
+      if ("requestIdleCallback" in window) window.requestIdleCallback(run, { timeout: 2500 });
+      else window.setTimeout(run, 1200);
+    };
+    if (document.readyState === "complete") schedule();
+    else window.addEventListener("load", schedule, { once: true });
   };
 
   // ---------------------------------------------------------------- videos
@@ -251,10 +272,10 @@
   // On constrained devices, keep the dedicated egg route useful without
   // silently starting its 74 MB download. The button is an explicit opt-in.
   if (isEggRoute && lowEnd) {
-    const still = BACKGROUNDS.find((item) => item.name === "homepage-community-background-v4.jpg");
-    body.dataset.frame = "image";
-    body.dataset.wordmark = still.wordmark ? "yes" : "no";
-    body.style.setProperty("--focus", still.focus);
+    const still = BACKGROUNDS.find((item) => item.name === "homepage-community-background-v4.webp");
+    document.documentElement.dataset.frame = "image";
+    document.documentElement.dataset.wordmark = still.wordmark ? "yes" : "no";
+    document.documentElement.style.setProperty("--focus", still.focus);
     mountImage(still);
 
     const playButton = document.createElement("button");
@@ -289,29 +310,41 @@
   }
 
   // --------------------------------------------------- background rotation
-  // Random per visit, never the same media twice in a row. Reduced motion
-  // gets stills; low-power devices use the smallest local still only.
-  const pool = lowEnd
-    ? [BACKGROUNDS.find((item) => item.name === "homepage-community-background-v4.jpg")]
-    : reducedMotion
-      ? BACKGROUNDS.filter((item) => item.kind === "image")
-      : BACKGROUNDS;
-
-  let index = Math.floor(Math.random() * pool.length);
-  if (pool.length > 1 && pool[index].name === readLast()) {
-    index = (index + 1) % pool.length;
-  }
-  const pick = pool[index];
-
-  // The hero adapts to what is behind it: videos park the copy top-left, stills
-  // bottom-right, and the <h1> only shows for a backdrop with no name in it.
+  // Normally the backdrop was already chosen by the head script (index.html),
+  // before the first layout - this script mounts that pick, so nothing moves once
+  // the page is visible. Reduced motion gets stills; low-power devices use the
+  // smallest local still only. The roll below is the fallback for a page that
+  // has no head pick: random per visit, never the same media twice in a row.
   const applyFrameState = (item) => {
-    body.dataset.frame = item.kind; // video | image
-    body.dataset.wordmark = item.wordmark ? "yes" : "no";
-    body.style.setProperty("--focus", item.focus || "50% 50%");
+    // The frame state lives on <html> so the head pick and this fallback agree.
+    const root = document.documentElement;
+    root.dataset.frame = item.kind; // video | image
+    root.dataset.wordmark = item.wordmark ? "yes" : "no";
+    root.style.setProperty("--focus", item.focus || "50% 50%");
   };
 
-  applyFrameState(pick);
+  const headPick = Number(window.IDI_BACKDROP);
+  let pick;
+  if (Number.isInteger(headPick) && BACKGROUNDS[headPick]) {
+    pick = BACKGROUNDS[headPick];
+    applyFrameState(pick);
+  } else {
+    const pool = lowEnd
+      ? [BACKGROUNDS.find((item) => item.name === "homepage-community-background-v4.webp")]
+      : reducedMotion
+        ? BACKGROUNDS.filter((item) => item.kind === "image")
+        : BACKGROUNDS;
+
+    let index = Math.floor(Math.random() * pool.length);
+    if (pool.length > 1 && pool[index].name === readLast()) {
+      index = (index + 1) % pool.length;
+    }
+    pick = pool[index];
+
+    // The hero adapts to what is behind it: videos park the copy top-left, stills
+    // bottom-right, and the <h1> only shows for a backdrop with no name in it.
+    applyFrameState(pick);
+  }
 
   if (pick.kind === "image") {
     mountImage(pick);
@@ -319,18 +352,22 @@
     // A clip that will not load (cold URL, network blip) is replaced by one of
     // the local stills rather than a blank page.
     const stills = BACKGROUNDS.filter((item) => item.kind === "image");
-    mountVideo([pick.src], {
-      name: pick.name,
-      playOut: true,
-      holdAt: pick.holdAt,
-      log: () => `\u{1F95A} background: ${pick.label} (this visit's pick)`,
-      onGiveUp: () => {
-        // A clip that never arrives is replaced by a still - and the layout
-        // follows that still, not the clip that failed.
-        const still = stills[Math.floor(Math.random() * stills.length)];
-        applyFrameState(still);
-        mountImage(still);
-      },
-    });
+    // data-frame is already applied above, so the hero copy is in its final
+    // place; only the clip itself waits for the browser to go idle.
+    whenIdle(() =>
+      mountVideo([pick.src], {
+        name: pick.name,
+        playOut: true,
+        holdAt: pick.holdAt,
+        log: () => `\u{1F95A} background: ${pick.label} (this visit's pick)`,
+        onGiveUp: () => {
+          // A clip that never arrives is replaced by a still - and the layout
+          // follows that still, not the clip that failed.
+          const still = stills[Math.floor(Math.random() * stills.length)];
+          applyFrameState(still);
+          mountImage(still);
+        },
+      })
+    );
   }
 })();

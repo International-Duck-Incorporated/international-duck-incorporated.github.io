@@ -21,6 +21,7 @@
     })();
   </script>
   <link rel="preconnect" href="https://gitlab.com" crossorigin>
+  <link rel="preconnect" href="https://gitlab.com">
   <link rel="dns-prefetch" href="https://gitlab.com">
   <meta name="theme-color" content="#07090d">
   <meta
@@ -47,16 +48,9 @@
     href="/assets/championscode-icon.png"
     type="image/png"
   >
-  <link rel="stylesheet" href="/css/site.css?v=8fcda15b">
-  <link rel="stylesheet" href="/css/profiles.css?v=99126f63">
-  <link rel="stylesheet" href="/css/project-atmospheres.css?v=6e6fec91">
-  <link rel="stylesheet" href="/css/migration.css?v=9729fe4e">
-  <link rel="stylesheet" href="/css/profile-themes.css?v=e02900f1">
-  <link rel="stylesheet" href="/css/page-layouts.css?v=d2d32b22">
-  <link rel="stylesheet" href="/css/bagley.css?v=a3368c17">
-  <link rel="stylesheet" href="/css/overrides.css?v=dfec3851">
+  <link rel="stylesheet" href="/css/bundle.css?v=5cef9fa4">
 
-  <script src="/script.js?v=49c281be" defer></script>
+  <script src="/script.js?v=c07123d9" defer></script>
   <script src="/pixel-canvas.js?v=5cf6bf45" defer></script>
   <link rel="canonical" href="https://idi-official.pages.dev/projects/championscode">
   <meta property="og:url" content="https://idi-official.pages.dev/projects/championscode">
@@ -224,7 +218,7 @@
       >
         <img
           data-org-avatar
-          src="/assets/org-avatar.png"
+          src="/assets/org-avatar.webp"
           alt=""
           width="40"
           height="40" decoding="async">
@@ -284,12 +278,12 @@
 
       <section class="profile-hero">
         <article class="profile-intro glass-card reveal">
-          <img
+          <picture><source srcset="/assets/championscode-icon.webp" type="image/webp"><img
             class="project-mark"
             src="/assets/championscode-icon.png"
             alt="ChampionsCode logo"
             width="82"
-            height="82" loading="lazy" decoding="async">
+            height="82" loading="lazy" decoding="async"></picture>
 
           <span class="eyebrow">First public launch · <span data-championscode-date>25 Sep 2026</span></span>
 
@@ -562,7 +556,7 @@
   <footer class="site-footer">
     <div class="shell footer-inner">
       <a class="brand" href="/">
-        <img src="/assets/org-avatar.png" alt="" decoding="async">
+        <picture><source srcset="/assets/org-avatar.webp" type="image/webp"><img src="/assets/org-avatar.png" alt="" decoding="async"></picture>
 
         <span>
           <b>International Duck</b>

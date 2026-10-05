@@ -32,6 +32,12 @@ body { margin: 0; min-width: 320px; overflow-x: hidden; color: var(--text); back
 body.menu-open { overflow: hidden; }
 a { color: inherit; text-decoration: none; }
 img { display: block; max-width: 100%; height: auto; }
+/* <picture> is a wrapper, never a box: the inner <img> keeps the layout box it
+   had before the WebP/fallback pair was introduced, in flex and grid contexts
+   alike. The <source> child must not be laid out either - otherwise it leaks
+   into the parent's flex/grid layout as a zero-size item and eats a gap slot. */
+picture { display: contents; }
+picture > source { display: none; }
 button, input { font: inherit; }
 button { color: inherit; }
 svg { display: block; width: 1.1rem; height: 1.1rem; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
@@ -51,7 +57,7 @@ svg { display: block; width: 1.1rem; height: 1.1rem; fill: none; stroke: current
 .topbar.scrolled { height: 68px; background: rgba(7, 9, 13, .74); border-color: var(--line); backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px); }
 .topbar-inner { display: flex; height: 100%; align-items: center; justify-content: space-between; }
 .brand { display: inline-flex; min-width: 0; gap: .75rem; align-items: center; }
-.brand > img { width: 40px; height: 40px; flex: 0 0 auto; object-fit: cover; border: 1px solid rgba(255,255,255,.14); border-radius: 50%; box-shadow: 0 6px 18px rgba(0,0,0,.25); }
+.brand > img, .brand > picture > img { width: 40px; height: 40px; flex: 0 0 auto; object-fit: cover; border: 1px solid rgba(255,255,255,.14); border-radius: 50%; box-shadow: 0 6px 18px rgba(0,0,0,.25); }
 .brand > span { display: flex; min-width: 0; flex-direction: column; gap: .25rem; }
 .brand b { overflow: hidden; font-size: .78rem; letter-spacing: -.01em; text-overflow: ellipsis; white-space: nowrap; }
 .brand small { color: #747d78; font-family: var(--mono); font-size: .5rem; letter-spacing: .1em; text-transform: uppercase; }
@@ -89,7 +95,7 @@ svg { display: block; width: 1.1rem; height: 1.1rem; fill: none; stroke: current
 .profile-topline, .visual-topline { display: flex; padding: .2rem .25rem 1rem; align-items: center; justify-content: space-between; color: #69716c; font-family: var(--mono); font-size: .5rem; letter-spacing: .1em; }
 .live-label { display: inline-flex; gap: .4rem; align-items: center; }
 .profile-identity { display: grid; min-height: 260px; padding: 1.5rem; grid-template-columns: 136px 1fr; gap: 1.5rem; align-items: center; background: linear-gradient(145deg, rgba(59,112,188,.14), rgba(255,255,255,.025)); border: 1px solid rgba(255,255,255,.06); border-radius: 20px; }
-.profile-identity > img { width: 136px; height: 136px; object-fit: cover; border: 1px solid rgba(255,255,255,.15); border-radius: 50%; box-shadow: 0 18px 50px rgba(0,0,0,.36); }
+.profile-identity > img, .profile-identity > picture > img { width: 136px; height: 136px; object-fit: cover; border: 1px solid rgba(255,255,255,.15); border-radius: 50%; box-shadow: 0 18px 50px rgba(0,0,0,.36); }
 .profile-identity small { color: #6f7872; font-family: var(--mono); font-size: .54rem; }
 .profile-identity h2 { margin: .55rem 0 .8rem; font-size: clamp(1.4rem,2.2vw,2rem); line-height: 1.05; letter-spacing: -.04em; }
 .profile-identity a { display: inline-flex; gap: .4rem; align-items: center; color: #8f9993; font-size: .6rem; }
@@ -157,7 +163,7 @@ svg { display: block; width: 1.1rem; height: 1.1rem; fill: none; stroke: current
 .members-grid { display: grid; grid-template-columns: repeat(2,1fr); gap: 1rem; }
 .person-card { display: grid; min-height: 190px; padding: 1.5rem; grid-template-columns: auto 1fr auto; gap: 1.25rem; align-items: center; border-radius: var(--radius-lg); transition: transform .18s ease, border-color .18s ease; }
 .person-card:hover { transform: translateY(-3px); border-color: rgba(90,155,242,.26); }
-.person-card > img { width: 84px; height: 84px; object-fit: cover; border: 3px solid rgba(255,255,255,.09); border-radius: 50%; box-shadow: 0 12px 30px rgba(0,0,0,.28); }
+.person-card > img, .person-card > picture > img { width: 84px; height: 84px; object-fit: cover; border: 3px solid rgba(255,255,255,.09); border-radius: 50%; box-shadow: 0 12px 30px rgba(0,0,0,.28); }
 .person-card > div > span { color: var(--blue); font-family: var(--mono); font-size: .5rem; letter-spacing: .09em; text-transform: uppercase; }
 .person-card h3 { margin: .5rem 0 .35rem; font-size: 1.3rem; letter-spacing: -.03em; }
 .person-card p { margin: 0; color: #727b76; font-size: .68rem; }
@@ -179,7 +185,8 @@ svg { display: block; width: 1.1rem; height: 1.1rem; fill: none; stroke: current
 .venom-visual { position: relative; isolation: isolate; min-height: 590px; overflow: hidden; border-radius: var(--radius-xl); }
 .visual-topline { position: absolute; inset: 1.25rem 1.3rem auto; z-index: 3; padding: 0; }
 .venom-logo-stage { position: absolute; top: 47%; left: 50%; z-index: 2; display: grid; width: min(72%,390px); aspect-ratio: 1; place-items: center; transform: translate(-50%,-50%); }
-.venom-logo-stage::before { content: ""; position: absolute; inset: 11%; z-index: -1; background: url("../assets/venomous-icon.png") center/contain no-repeat; opacity: .42; filter: brightness(0) saturate(100%) invert(78%) sepia(52%) saturate(600%) hue-rotate(57deg) brightness(105%); transform: translate(15px,18px); }
+.venom-logo-stage::before { content: ""; position: absolute; inset: 11%; z-index: -1; background: url("../assets/venomous-icon.png") center/contain no-repeat;
+  background-image: image-set(url("../assets/venomous-icon.webp") type("image/webp"), url("../assets/venomous-icon.png") type("image/png")); opacity: .42; filter: brightness(0) saturate(100%) invert(78%) sepia(52%) saturate(600%) hue-rotate(57deg) brightness(105%); transform: translate(15px,18px); }
 .venom-logo-stage img { width: 78%; filter: invert(1) grayscale(1) brightness(.96) contrast(.92) drop-shadow(0 24px 34px rgba(0,0,0,.48)); }
 .visual-metrics { position: absolute; inset: auto 1rem 1rem; z-index: 3; display: grid; overflow: hidden; grid-template-columns: repeat(3,1fr); background: rgba(7,10,9,.7); border: 1px solid rgba(255,255,255,.08); border-radius: 18px; backdrop-filter: blur(18px); }
 .visual-metrics > div { display: flex; min-height: 82px; padding: .9rem 1.05rem; flex-direction: column; gap: .45rem; justify-content: center; border-right: 1px solid rgba(255,255,255,.07); }
@@ -266,7 +273,7 @@ svg { display: block; width: 1.1rem; height: 1.1rem; fill: none; stroke: current
 .footer-inner nav { display: flex; gap: 1.4rem; }
 .footer-inner nav a { color: #77817a; font-size: .62rem; font-weight: 600; }
 .footer-inner nav a:hover { color: var(--text); }
-.sync-state { display: inline-flex; gap: .5rem; align-items: center; justify-self: end; color: #59635c; font-family: var(--mono); font-size: .5rem; }
+.sync-state { display: inline-flex; gap: .5rem; align-items: center; justify-self: end; color: #7d8780; font-family: var(--mono); font-size: .5rem; }
 
 .reveal { opacity: 0; transform: translateY(14px); transition: opacity .65s cubic-bezier(.2,.7,.2,1), transform .65s cubic-bezier(.2,.7,.2,1); }
 .reveal.visible { opacity: 1; transform: none; }
@@ -304,7 +311,7 @@ body[data-page="venomous"] :focus-visible { outline-color: var(--green); }
   .venom-copy h1 { font-size: clamp(4.2rem,19vw,6rem); }
   .org-profile, .venom-visual { min-height: 500px; }
   .profile-identity { min-height: 245px; padding: 1.15rem; grid-template-columns: 105px 1fr; gap: 1rem; }
-  .profile-identity > img { width: 105px; height: 105px; }
+  .profile-identity > img, .profile-identity > picture > img { width: 105px; height: 105px; }
   .profile-identity h2 { font-size: 1.35rem; }
   .profile-identity a { overflow: hidden; max-width: 180px; text-overflow: ellipsis; white-space: nowrap; }
   .metric-dock { grid-template-columns: 1fr; gap: .6rem; }
@@ -333,7 +340,7 @@ body[data-page="venomous"] :focus-visible { outline-color: var(--green); }
   .button { width: 100%; }
   .org-profile, .venom-visual { min-height: 445px; }
   .profile-identity { grid-template-columns: 82px 1fr; }
-  .profile-identity > img { width: 82px; height: 82px; }
+  .profile-identity > img, .profile-identity > picture > img { width: 82px; height: 82px; }
   .profile-identity h2 { font-size: 1.05rem; }
   .profile-stats > div { min-height: 80px; padding: .6rem; }
   .profile-stats svg { display: none; }
@@ -344,7 +351,7 @@ body[data-page="venomous"] :focus-visible { outline-color: var(--green); }
   .visual-metrics small { font-size: .42rem; }
   .module-grid { grid-template-columns: 1fr; }
   .person-card { grid-template-columns: auto 1fr; }
-  .person-card > img { width: 68px; height: 68px; }
+  .person-card > img, .person-card > picture > img { width: 68px; height: 68px; }
   .person-card > svg, .commit-list code, .contributor-list strong { display: none; }
 }
 

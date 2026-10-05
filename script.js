@@ -97,8 +97,8 @@ async function syncOrganization() {
     getJSON(`${GL_GROUP_API}/projects?per_page=100&include_subgroups=true`, "application/json")
   ]);
   $$('[data-org-avatar]').forEach((image) => {
-    image.onerror = () => { image.onerror = null; image.src = "/assets/org-avatar.png"; };
-    image.src = group.avatar_url || "/assets/org-avatar.png";
+    image.onerror = () => { image.onerror = null; image.src = "/assets/org-avatar.webp"; };
+    image.src = group.avatar_url || "/assets/org-avatar.webp";
   });
   setText("[data-org-name]", group.name || "International Duck Incorporated");
   setText("[data-org-repos]", projects.length);
@@ -165,12 +165,12 @@ async function syncProjects() {
     "International-Duck-Incorporated.github.io": SITE_ROUTES.website
   };
   const projectMeta = {
-    Venomous: { label: "Featured project", icon: "venom", logo: "/assets/venomous-icon.png", status: "Active", action: "Open project" },
-    Beacon: { label: "Utility project", icon: "beacon", logo: "/assets/beacon-icon.png", status: beaconVersion ? `Release ${beaconVersion}` : "Release", action: "Open project" },
-    "beacon-bagley": { title: "Bagley", label: "Beacon addon", icon: "bagley", logo: "/assets/bagley-icon.png", status: "New", action: "Open project" },
-    NullTrace: { label: "Privacy project", icon: "privacy", logo: "/assets/nulltrace-icon.png", status: "Official release", action: "Open project" },
-    ChampionsCode: { label: "Research project", icon: "champion", logo: "/assets/championscode-icon.png", status: championscodeVersion ? `First launch · ${championscodeVersion}` : "First launch", action: "Open project" },
-    zonedout: { title: "ZonedOut", label: "Client-side mod", icon: "zonedout", logo: "/assets/zonedout-icon.png", status: "In development", statusMuted: true, action: "Open project" },
+    Venomous: { label: "Featured project", icon: "venom", logo: "/assets/venomous-icon.webp", status: "Active", action: "Open project" },
+    Beacon: { label: "Utility project", icon: "beacon", logo: "/assets/beacon-icon.webp", status: beaconVersion ? `Release ${beaconVersion}` : "Release", action: "Open project" },
+    "beacon-bagley": { title: "Bagley", label: "Beacon addon", icon: "bagley", logo: "/assets/bagley-icon.webp", status: "New", action: "Open project" },
+    NullTrace: { label: "Privacy project", icon: "privacy", logo: "/assets/nulltrace-icon.webp", status: "Official release", action: "Open project" },
+    ChampionsCode: { label: "Research project", icon: "champion", logo: "/assets/championscode-icon.webp", status: championscodeVersion ? `First launch · ${championscodeVersion}` : "First launch", action: "Open project" },
+    zonedout: { title: "ZonedOut", label: "Client-side mod", icon: "zonedout", logo: "/assets/zonedout-icon.webp", status: "In development", statusMuted: true, action: "Open project" },
     home: { title: "Website source", label: "Website project", icon: "web", status: "Live", action: "Open page" },
     "International-Duck-Incorporated.github.io": { title: "Website source", label: "Website project", icon: "web", status: "Live", action: "Open page" }
   };
@@ -190,6 +190,7 @@ async function syncProjects() {
     if (meta && meta.logo) {
       const image = document.createElement("img");
       image.src = meta.logo; image.alt = ""; image.width = 64; image.height = 64;
+      image.loading = "lazy"; image.decoding = "async";
       projectIcon.append(image);
     } else projectIcon.innerHTML = icon("i-code");
     if (meta && meta.status) {
@@ -247,9 +248,10 @@ async function syncMembers() {
     link.href = memberPages[person.login] || person.html_url;
     if (!memberPages[person.login]) { link.target = "_blank"; link.rel = "noreferrer"; }
     const image = document.createElement("img");
-    const localMemberImages = { "3spress0": "/assets/contributor-3spress0.png", "0xFFshell": "/assets/member-0xffshell.png", "E-VDV-HU": "/assets/member-e-vdv-hu.png", "Xx-superIvar-xX": "/assets/member-xx-superivar-xx.png", "midas735": "/assets/member-midas735.png", "Jojo-8002": "/assets/member-jojo-8002.png" };
-    image.src = localMemberImages[person.login] || (person.avatar_url ? person.avatar_url : "/assets/org-avatar.png");
+    const localMemberImages = { "3spress0": "/assets/contributor-3spress0.webp", "0xFFshell": "/assets/member-0xffshell.webp", "E-VDV-HU": "/assets/member-e-vdv-hu.webp", "Xx-superIvar-xX": "/assets/member-xx-superivar-xx.webp", "midas735": "/assets/member-midas735.webp", "Jojo-8002": "/assets/member-jojo-8002.webp" };
+    image.src = localMemberImages[person.login] || (person.avatar_url ? person.avatar_url : "/assets/org-avatar.webp");
     image.alt = person.display; image.width = 96; image.height = 96;
+    image.loading = "lazy"; image.decoding = "async";
     const copy = document.createElement("div");
     const label = document.createElement("span");
     const hasGithubRestriction = isShadowbannedLogin(person.login) || isGithubBannedLogin(person.login);
@@ -602,7 +604,7 @@ async function syncContributors() {
   for(const person of members){
     const profile=known.find((entry)=>entry.test(person));
     const key=profile?profile.label:(person.name||"Contributor");
-    const entry=merged.get(key)||{label:key,role:profile?.role||"Contributor",url:profile?.url||`${GITLAB}/${GL_PROJECT_PATH}/-/graphs/main`,avatar:profile?.avatar||"/assets/org-avatar.png",commits:0};
+    const entry=merged.get(key)||{label:key,role:profile?.role||"Contributor",url:profile?.url||`${GITLAB}/${GL_PROJECT_PATH}/-/graphs/main`,avatar:profile?.avatar||"/assets/org-avatar.webp",commits:0};
     entry.commits+=person.commits||0;merged.set(key,entry);
   }
   list.replaceChildren(...[...merged.values()].sort((a,b)=>b.commits-a.commits).map((entry)=>{const link=document.createElement("a"),image=document.createElement("img"),copy=document.createElement("span"),name=document.createElement("b"),role=document.createElement("small"),total=document.createElement("strong");link.href=entry.url;link.target="_blank";link.rel="noreferrer";image.src=entry.avatar;image.alt=entry.label;name.textContent=entry.label;role.textContent=entry.role;total.textContent=`${entry.commits} ${entry.commits===1?"contribution":"contributions"}`;copy.append(name,role);link.append(image,copy,total);return link;}));

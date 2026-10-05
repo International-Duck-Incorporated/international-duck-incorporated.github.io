@@ -158,6 +158,13 @@ body[data-page="organization"]::before {
   background:
     linear-gradient(180deg, rgba(4,8,11,.42), rgba(4,8,11,.7) 58%, #05090b 100%),
     url("../assets/homepage-community-background-v4.jpg") center top / cover no-repeat;
+  /* Same two layers, with the compressed sibling in the bitmap slot. */
+  background-image:
+    linear-gradient(180deg, rgba(4,8,11,.42), rgba(4,8,11,.7) 58%, #05090b 100%),
+    image-set(
+      url("../assets/homepage-community-background-v4.webp") type("image/webp"),
+      url("../assets/homepage-community-background-v4.jpg") type("image/jpeg")
+    );
   filter: blur(6px);
   transform: scale(1.04);
 }
@@ -177,17 +184,20 @@ body[data-page="organization"]::after {
 /* ---- Adaptive hero: the copy follows the backdrop ----
    Videos park the copy top-left (the clip carries the wordmark, so the <h1>
    stands down). Stills park it bottom-right; the collage has no name in it, so
-   that one state shows the <h1>. State comes from easteregg.js as data-frame /
-   data-wordmark on <body>. */
+   that one state shows the <h1>. The state lives as data-frame / data-wordmark
+   on <html>: index.html's head script picks this visit's backdrop before the
+   first style calculation, so the copy is laid out once, in its final place.
+   (It used to be decided in easteregg.js after first layout, which moved a
+   now-visible hero copy - CLS 0.21 on the homepage.) */
 .hero-scrim { position: fixed; inset: 0; z-index: -1; pointer-events: none; }
 
-body.egg-bg[data-frame="video"] .hero-scrim {
+html[data-frame="video"] body.egg-bg .hero-scrim {
   background:
     linear-gradient(112deg, rgba(4,6,10,.74) 0%, rgba(4,6,10,.34) 26%, rgba(4,6,10,.06) 44%, rgba(4,6,10,0) 54%),
     linear-gradient(180deg, rgba(4,6,10,.44) 0%, rgba(4,6,10,.06) 8%, rgba(4,6,10,0) 14%);
 }
 
-body.egg-bg[data-frame="image"] .hero-scrim {
+html[data-frame="image"] body.egg-bg .hero-scrim {
   background:
     linear-gradient(292deg, rgba(4,6,10,.76) 0%, rgba(4,6,10,.36) 26%, rgba(4,6,10,.06) 44%, rgba(4,6,10,0) 54%),
     linear-gradient(0deg, rgba(4,6,10,.5) 0%, rgba(4,6,10,.08) 10%, rgba(4,6,10,0) 16%);
@@ -195,25 +205,36 @@ body.egg-bg[data-frame="image"] .hero-scrim {
 
 /* the hero is just the copy block now; the profile and metrics moved below */
 .org-hero { display: flex; min-height: 100vh; padding-bottom: 0; }
-body[data-frame="video"] .org-hero { align-items: flex-start; }
-body[data-frame="image"] .org-hero { align-items: flex-end; justify-content: flex-end; }
+html[data-frame="video"] .org-hero { align-items: flex-start; }
+html[data-frame="image"] .org-hero { align-items: flex-end; justify-content: flex-end; }
 .org-hero-copy { position: relative; z-index: 2; width: min(100%, 44ch); }
-body[data-frame="video"] .org-hero-copy { margin-top: 14vh; }
-body[data-frame="image"] .org-hero-copy { margin-bottom: 8vh; text-align: right; }
-body[data-frame="image"] .org-hero-copy .action-row { justify-content: flex-end; }
+html[data-frame="video"] .org-hero-copy { margin-top: 14vh; }
+html[data-frame="image"] .org-hero-copy { margin-bottom: 8vh; text-align: right; }
+html[data-frame="image"] .org-hero-copy .action-row { justify-content: flex-end; }
 
 /* the <h1> steps aside whenever the backdrop is already showing the name */
-body[data-wordmark="yes"] .org-hero-copy h1 {
+html[data-wordmark="yes"] .org-hero-copy h1 {
   position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0;
   overflow: hidden; clip-path: inset(50%); white-space: nowrap; border: 0;
 }
-body[data-wordmark="yes"] .org-hero-copy > p { margin-top: 0; }
-body[data-wordmark="no"] .org-hero-copy h1 {
+html[data-wordmark="yes"] .org-hero-copy > p { margin-top: 0; }
+html[data-wordmark="no"] .org-hero-copy h1 {
   margin: 0 0 .8rem; font-size: clamp(2.1rem, 4.2vw, 3.3rem); line-height: .98;
   letter-spacing: -.045em; color: #fff; text-shadow: 0 3px 30px rgba(0,0,0,.6);
 }
-body[data-wordmark="no"] .org-hero-copy h1 span { color: #b3cbff; }
+html[data-wordmark="no"] .org-hero-copy h1 span { color: #b3cbff; }
 .org-hero-copy > p { text-shadow: 0 2px 18px rgba(0,0,0,.55); }
+
+/* The hero copy is the homepage's LCP element. It used to inherit .reveal, so it
+   stayed at opacity 0 until the IntersectionObserver ran (and, with a media
+   backdrop picked, until the clip could paint) - Lighthouse measured ~1.3 s of
+   element render delay on a <p> that was in the first HTML response. The copy now
+   paints with the first frame; only the backdrop fades in behind it. */
+body[data-page="organization"] .org-hero-copy.reveal {
+  opacity: 1;
+  transform: none;
+  transition: none;
+}
 
 /* The organization surface is a real, tinted liquid-glass panel over the fixed
    video/still backdrop. Keep the strong dark tint so the long dashboard stays
