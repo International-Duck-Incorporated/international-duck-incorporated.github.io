@@ -35,7 +35,7 @@
   }
 
   /* Public members with cross-platform alias lists (checked-in roster;
-   * gitlab.com/Name links come from the people directory). */
+   * gitlab.com/Name links come from the member directory). */
   const MEMBERS = [
     {
       key: "0xffshell", display: "0xFFshell", page: "/people/0xffshell",
@@ -65,7 +65,7 @@
       key: "midas735", display: "midas735", page: "/people/midas735",
       avatar: "/assets/member-midas735.png",
       aliases: [/midas735/i],
-      gitlab: null, github: `${GH}/midas735`
+      gitlab: `${GITLAB}/midas735`, github: `${GH}/midas735`
     },
     {
       key: "jojo-8002", display: "Jojo-8002", page: "/people/jojo-8002",

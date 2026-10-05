@@ -11,7 +11,7 @@
     "0xffshell":  { label: "0xFFshell",       github: null,              gitlab: "0xFFshell" },
     "3spress0":   { label: "3spress0",        github: null,              gitlab: "espress0" },
     "e-vdv-hu":   { label: "E-VDV-HU",        github: "E-VDV-HU",        gitlab: null },
-    "midas735":   { label: "midas735",        github: "midas735",        gitlab: null },
+    "midas735":   { label: "midas735",        github: "midas735",        gitlab: "midas735" },
     "jojo-8002":  { label: "Jojo-8002",       github: "Jojo-8002",       gitlab: false }
   };
 

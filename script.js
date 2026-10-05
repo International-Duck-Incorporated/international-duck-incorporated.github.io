@@ -262,12 +262,12 @@ async function syncPeople() {
     const name = document.createElement("h3"); name.textContent = person.display || person.login;
     const handle = document.createElement("p");
     const summaries = {
-      "0xFFshell": "Venomous writer · GitLab operations",
-      "3spress0": "Security tooling · Minecraft development",
-      "E-VDV-HU": "Applied software · Python projects",
-      "Xx-superIvar-xX": "New member · GitHub profile",
-      "midas735": "New member · GitHub profile",
-      "Jojo-8002": "New member · GitHub profile"
+      "0xFFshell": "Main writer",
+      "3spress0": "Backend developer · project backbone",
+      "E-VDV-HU": "Backend & hosting manager",
+      "Xx-superIvar-xX": "Product tester",
+      "midas735": "Just happy to be here",
+      "Jojo-8002": "Here for shit n giggles"
     };
     handle.textContent = summaries[person.login] || `@${person.login}`;
     copy.append(label, name, handle);
@@ -595,8 +595,8 @@ async function syncContributors() {
   const people=await getJSON(`${GL_PROJECT}/repository/contributors`,"application/json");
   const list=$("[data-contributors]");if(!list || !people.length)return;
   const known=[
-    {test:(person)=>person.name==="0xFF"||person.email==="pieterr.games@gmail.com",label:"0xFFshell",role:"Writer",url:`${GITLAB}/0xFFshell`,avatar:"/assets/member-0xffshell.png"},
-    {test:(person)=>/espress0|3spress0|espervanderven|166116795/i.test(`${person.name||""} ${person.email||""}`),label:"espress0",role:"Writer",url:"https://gitlab.com/espress0",avatar:"/assets/contributor-3spress0.png"}
+    {test:(person)=>person.name==="0xFF"||person.email==="pieterr.games@gmail.com",label:"0xFFshell",role:"Main writer",url:`${GITLAB}/0xFFshell`,avatar:"/assets/member-0xffshell.png"},
+    {test:(person)=>/espress0|3spress0|espervanderven|166116795/i.test(`${person.name||""} ${person.email||""}`),label:"espress0",role:"Backend developer",url:"https://gitlab.com/espress0",avatar:"/assets/contributor-3spress0.png"}
   ];
   const merged=new Map();
   for(const person of people){

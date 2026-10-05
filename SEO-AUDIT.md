@@ -135,7 +135,7 @@ Add JSON-LD to each page:
   `SoftwareApplication` → `applicationCategory: "GameMod"`, `operatingSystem: "Minecraft"`,
   `offers.price: 0`, `softwareVersion`, `dateModified`, `downloadUrl`, `codeRepository`.
   This is what makes download counts and versions eligible for rich display.
-- **People pages:** `ProfilePage` + `Person` (`name`, `url`, `sameAs`).
+- **Member pages:** `ProfilePage` + `Person` (`name`, `url`, `sameAs`).
 - **Directory pages** (`/projects/`, `/people/`): `ItemList` + `BreadcrumbList`.
 - Validate with Google's Rich Results Test before shipping.
 
@@ -220,7 +220,7 @@ All generators are idempotent, so re-running them after future edits is safe.
 | `og:image` normalised away from fragile `gitlab.com/.../-/raw/` and preview-host URLs onto one self-hosted 1200x630 card | `assets/og-default.png` | `python3 tools/make_og_image.py` |
 | JSON-LD on all 17 pages: `Organization`, `WebSite`, `WebPage`/`ProfilePage`/`CollectionPage`, `BreadcrumbList`, `SoftwareApplication` (6 mods + website, with versions/licences/repo/download URLs), `Person` (5), `ItemList` (2 directories) | 17 HTML files | `python3 tools/apply_jsonld.py` |
 | `preconnect` + `dns-prefetch` to `gitlab.com` everywhere and `api.github.com` where used | 17 HTML files | `python3 tools/apply_seo_head.py` |
-| Homepage pre-rendered content: projects grid, people grid and about prose, giving 6 project + 5 member internal links; `/people/` and `/activity/` explanatory sections | `index.html`, `people/index.html`, `activity.html` | `python3 tools/enrich_content.py` |
+| Homepage pre-rendered content: projects grid and about prose; `/people/` and `/activity/` explanatory sections | `index.html`, `people/index.html`, `activity.html` | `python3 tools/enrich_content.py` |
 | `loading="lazy"` + `decoding="async"` on below-the-fold grid and member images; `fetchpriority="high"` on the homepage profile avatar (LCP) | 19 HTML files | one-off script |
 | Vertical rhythm for the new sections | `css/overrides.css` (`.home-directory`) | hand |
 

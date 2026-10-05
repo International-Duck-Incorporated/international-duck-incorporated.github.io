@@ -45,13 +45,6 @@ PROJECT_CARDS = """        <a class="project-card glass-card reveal" href="/proj
           <footer><span><i class="language-dot java"></i>Java</span><span>Open project <svg><use href="#i-arrow"/></svg></span></footer>
         </a>""".replace("%LAZY%", LAZY)
 
-PEOPLE_CARDS = """        <a class="person-card glass-card reveal" href="/people/0xffshell"><img src="/assets/member-0xffshell.png" alt="0xFFshell" width="96" height="96"%LAZY%><div><span class="shadowban-label">Active member · GitHub banned</span><h3>0xFFshell</h3><p>Venomous writer · GitLab operations</p></div><svg><use href="#i-external"/></svg></a>
-        <a class="person-card glass-card reveal" href="/people/3spress0"><img src="/assets/contributor-3spress0.png" alt="espress0" width="96" height="96"%LAZY%><div><span class="shadowban-label">Active member · GitHub banned</span><h3>espress0</h3><p>Security tooling · Minecraft development</p></div><svg><use href="#i-external"/></svg></a>
-        <a class="person-card glass-card reveal" href="/people/e-vdv-hu"><img src="/assets/member-e-vdv-hu.png" alt="E-VDV-HU" width="96" height="96"%LAZY%><div><span>Public member</span><h3>E-VDV-HU</h3><p>Applied software · Python projects</p></div><svg><use href="#i-external"/></svg></a>
-        <a class="person-card glass-card reveal" href="/people/superivar"><img src="/assets/member-xx-superivar-xx.png" alt="Xx-superIvar-xX" width="96" height="96"%LAZY%><div><span>Public member</span><h3>Xx-superIvar-xX</h3><p>New member · GitHub profile</p></div><svg><use href="#i-external"/></svg></a>
-        <a class="person-card glass-card reveal" href="/people/midas735"><img src="/assets/member-midas735.png" alt="midas735" width="96" height="96"%LAZY%><div><span>Public member</span><h3>midas735</h3><p>New member · GitHub profile</p></div><svg><use href="#i-external"/></svg></a>
-        <a class="person-card glass-card reveal" href="/people/jojo-8002"><img src="/assets/member-jojo-8002.png" alt="Jojo-8002" width="96" height="96"%LAZY%><div><span>Public member</span><h3>Jojo-8002</h3><p>New member · GitHub profile</p></div><svg><use href="#i-external"/></svg></a>""".replace("%LAZY%", LAZY)
-
 HOME_BLOCK = f"""
     <section class="shell home-directory reveal" aria-labelledby="home-projects-heading" data-seo-enriched>
       <header class="section-heading">
@@ -63,20 +56,6 @@ HOME_BLOCK = f"""
       </div>
       <div class="action-row">
         <a class="button button-glass" href="/projects">All projects and release destinations <svg><use href="#i-arrow"/></svg></a>
-      </div>
-    </section>
-
-    <section class="shell home-directory reveal" aria-labelledby="home-people-heading">
-      <header class="section-heading">
-        <div><span class="eyebrow">Members</span><h2 id="home-people-heading">People.</h2></div>
-        <p>Six public members make up the International Duck roster. Each profile links to the member's public account, with project and activity details where available.</p>
-      </header>
-      <div class="people-grid directory-grid">
-{PEOPLE_CARDS}
-      </div>
-      <div class="action-row">
-        <a class="button button-glass" href="/people">Member directory <svg><use href="#i-arrow"/></svg></a>
-        <a class="button button-glass" href="/activity">Who shipped what <svg><use href="#i-arrow"/></svg></a>
       </div>
     </section>
 

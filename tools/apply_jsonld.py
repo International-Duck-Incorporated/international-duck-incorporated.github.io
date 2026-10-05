@@ -116,22 +116,22 @@ PROJECTS["projects/website.html"] = {
 
 PEOPLE = {
     "people/0xffshell.html": {"url": "/people/0xffshell", "name": "0xFFshell",
-        "desc": "Active International Duck member; Venomous writer and GitLab operations.",
+        "desc": "International Duck's main writer.",
         "sameAs": ["https://gitlab.com/0xFFshell"]},
     "people/3spress0.html": {"url": "/people/3spress0", "name": "espress0",
-        "desc": "International Duck member working on security tooling and Minecraft development.",
+        "desc": "Backend developer and backbone of most International Duck projects.",
         "sameAs": ["https://gitlab.com/espress0"]},
     "people/e-vdv-hu.html": {"url": "/people/e-vdv-hu", "name": "E-VDV-HU",
-        "desc": "Utrecht-based developer associated with Hogeschool Utrecht; applied Python projects.",
+        "desc": "Backend and hosting manager for International Duck.",
         "sameAs": ["https://github.com/E-VDV-HU"]},
     "people/midas735.html": {"url": "/people/midas735", "name": "midas735",
-        "desc": "Public member of International Duck Incorporated.",
-        "sameAs": ["https://github.com/midas735"]},
+        "desc": "Just happy to be here at International Duck Incorporated.",
+        "sameAs": ["https://github.com/midas735", "https://gitlab.com/midas735"]},
     "people/superivar.html": {"url": "/people/superivar", "name": "Xx-superIvar-xX",
-        "desc": "Public member of International Duck Incorporated.",
+        "desc": "Product tester for International Duck Incorporated.",
         "sameAs": ["https://github.com/Xx-superIvar-xX", "https://gitlab.com/Xx-superIvar-xX"]},
     "people/jojo-8002.html": {"url": "/people/jojo-8002", "name": "Jojo-8002",
-        "desc": "Public member of International Duck Incorporated.",
+        "desc": "Here for shit n giggles at International Duck Incorporated.",
         "sameAs": ["https://github.com/Jojo-8002"]},
 }
 
@@ -140,13 +140,13 @@ CRUMBS = {
     "/activity": [("International Duck Incorporated", "/"), ("Activity", "/activity")],
     "/migration": [("International Duck Incorporated", "/"), ("Migration", "/migration")],
     "/projects/": [("International Duck Incorporated", "/"), ("Projects", "/projects/")],
-    "/people/": [("International Duck Incorporated", "/"), ("People", "/people/")],
+    "/people/": [("International Duck Incorporated", "/"), ("Members", "/people/")],
 }
 for _rel, _p in PROJECTS.items():
     CRUMBS[_p["url"]] = [("International Duck Incorporated", "/"), ("Projects", "/projects/"),
                          (_p["name"], _p["url"])]
 for _rel, _m in PEOPLE.items():
-    CRUMBS[_m["url"]] = [("International Duck Incorporated", "/"), ("People", "/people/"),
+    CRUMBS[_m["url"]] = [("International Duck Incorporated", "/"), ("Members", "/people/"),
                          (_m["name"], _m["url"])]
 
 
