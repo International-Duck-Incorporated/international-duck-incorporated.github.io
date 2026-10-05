@@ -21,6 +21,11 @@
 /people/jojo-8002 /members/jojo-8002 301
 /people/jojo-8002.html /members/jojo-8002 301
 
+# The Beacon project page became a directory (its module directory lives
+# inside it), so the flat .html URL redirects to the directory route.
+/projects/beacon.html /projects/beacon 301
+/projects/beacon/index.html /projects/beacon 301
+
 /beacon /projects/beacon 301
 /bagley /projects/bagley 301
 /venomous /projects/venomous 301

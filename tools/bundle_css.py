@@ -33,6 +33,8 @@ MODULE_ORDER = [
     "profile-themes.css",
     "page-layouts.css",
     "bagley.css",
+    "module-directory.css",
+    "changelog.css",
     "overrides.css",
 ]
 

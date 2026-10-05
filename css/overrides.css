@@ -490,6 +490,17 @@ body.egg-bg[data-page="organization"]::before {
   border-radius: var(--radius-md);
 }
 .activity-low-power-card p { max-width: 62ch; margin: 0 0 1rem; color: #929b96; font-size: .72rem; line-height: 1.6; }
+/* Accessibility: breadcrumb text was #657069, 3.8:1 on --bg. Bumped to the
+   site's own muted token (~7:1) - it is 8.6px type, so it needs the contrast. */
+.breadcrumbs { color: var(--muted); }
+
+/* Accessibility: white on the site blue (--blue, #5a9bf2) is 2.84:1, under the
+   4.5:1 WCAG AA floor for button text. Deepen the filled blue button only - the
+   --blue token itself is untouched, so links, borders and focus rings keep the
+   brand colour. Base 4.70:1, hover 5.27:1, both with white text. */
+.button-blue { background: #3f74c0; border-color: #3f74c0; }
+.button-blue:hover { background: #3a6cb4; border-color: #3a6cb4; }
+
 .activity-low-power-card .button,
 .cf-low-power .button { width: auto; min-height: 42px; }
 .cf-low-power .button { margin-top: .8rem; }

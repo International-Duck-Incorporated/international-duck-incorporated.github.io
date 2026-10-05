@@ -44,7 +44,7 @@ WEB = {
 }
 
 PROJECTS = {
-    "projects/beacon.html": {
+    "projects/beacon/index.html": {
         "url": "/projects/beacon", "name": "Beacon",
         "desc": ("Modular, client-side utility mod for Minecraft 26.2 with 55 registered "
                  "modules, persistent configuration and an addon API. Vanilla-server-safe."),

@@ -16,10 +16,12 @@ activity. Content is synchronized live from the GitLab API.
 - [Members](https://idi-official.pages.dev/members/): the public member roster with per-member profile pages.
 - [Activity](https://idi-official.pages.dev/activity): live GitLab commit feed for every project, with a warning that the private GitHub organization is unavailable.
 - [Migration](https://idi-official.pages.dev/migration): a sourced timeline of IDI's September–October 2026 move from GitHub to GitLab.
+- [Changelog](https://idi-official.pages.dev/changelog): every release from every project, transcribed from each repository's CHANGELOG.md and linked to the matching GitLab release.
 
 ## Projects
 
-- [Beacon](https://idi-official.pages.dev/projects/beacon): modular, client-side utility mod for Minecraft; vanilla-server-safe, 55 registered modules, persistent configuration, addon API. Latest release 1.8.16.
+- [Beacon](https://idi-official.pages.dev/projects/beacon): modular, client-side utility mod for Minecraft; vanilla-server-safe, 56 registered modules, persistent configuration, addon API. Latest release 1.8.16.
+- [Beacon modules](https://idi-official.pages.dev/projects/beacon/modules): the full module directory - every registered module's name, one-line description, category and source file, generated from Beacon's own ModuleManager list.
 - [Venomous](https://idi-official.pages.dev/projects/venomous): optimized and refined Meteor Client addon for Minecraft 26.2; 124 modules. Stable v7.0.0.
 - [NullTrace](https://idi-official.pages.dev/projects/nulltrace): client-side Fabric privacy and anti-fingerprinting mod; client brand spoofing, fingerprint protection, tracking defenses. Official release v2.0.0 on GitLab and CurseForge.
 - [ChampionsCode](https://idi-official.pages.dev/projects/championscode): client-side Fabric mod for authorized, defensive server and plugin research and controlled runtime Java addon development. 0.1.0-beta.1.

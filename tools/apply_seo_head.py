@@ -32,7 +32,7 @@ PAGES = {
     "members/jojo-8002.html": "/members/jojo-8002",
     "projects/index.html": "/projects/",
     "projects/bagley.html": "/projects/bagley",
-    "projects/beacon.html": "/projects/beacon",
+    "projects/beacon/index.html": "/projects/beacon",
     "projects/championscode.html": "/projects/championscode",
     "projects/nulltrace.html": "/projects/nulltrace",
     "projects/venomous.html": "/projects/venomous",

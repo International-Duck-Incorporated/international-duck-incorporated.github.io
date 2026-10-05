@@ -3,7 +3,9 @@
 
 Run from the repo root:  python3 tools/gen_sitemap.py
 Skips pages that declare <meta name="robots" content="noindex">.
-<lastmod> is taken from the most recent commit that touched each file.
+<lastmod> is taken from the most recent commit that touched each file. The URL for
+each entry is read from that page's own <link rel="canonical"> (owned by
+tools/apply_page_seo.py), so the sitemap cannot disagree with the canonicals.
 """
 import datetime
 import re
@@ -19,6 +21,8 @@ PRIORITY = {
     "/": ("weekly", "1.0"),
     "/projects/": ("weekly", "0.9"),
     "/projects/beacon": ("weekly", "0.9"),
+    "/projects/beacon/modules": ("weekly", "0.8"),
+    "/changelog": ("weekly", "0.7"),
     "/projects/venomous": ("weekly", "0.9"),
     "/projects/nulltrace": ("weekly", "0.9"),
     "/projects/championscode": ("weekly", "0.8"),
@@ -37,6 +41,13 @@ PRIORITY = {
 }
 
 ORDER = list(PRIORITY)
+
+
+def canonical_for(text: str, path: Path) -> str | None:
+    match = re.search(r'<link rel="canonical" href="https://idi-official\.pages\.dev(?P<url>[^"]*)"', text)
+    if match:
+        return match.group("url")
+    return None
 
 
 def url_for(path: Path) -> str:
@@ -68,7 +79,11 @@ def main() -> int:
         text = html.read_text(encoding="utf-8", errors="replace")
         if re.search(r'<meta\s+name="robots"\s+content="[^"]*noindex', text, re.I):
             continue
-        entries.append((url_for(html.relative_to(root)), html))
+        canonical = canonical_for(text, html)
+        if canonical is None:
+            print(f"warning: {html.relative_to(root)} has no canonical; falling back to its path",
+                  file=sys.stderr)
+        entries.append((canonical or url_for(html.relative_to(root)), html))
 
     unknown = [u for u, _ in entries if u not in PRIORITY]
     if unknown:

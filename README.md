@@ -4,6 +4,12 @@ Static GitLab Pages site for [International Duck Incorporated](https://gitlab.co
 
 **Platform policy:** GitLab is IDI's active platform and source of truth for development, releases, issues, and live activity. The former GitHub organization is currently hidden/private from public view, so this site does not call its APIs or link to its mirror. GitHub references are retained only where they explain the migration history or unavailable-data status.
 
+Change notes live in `LIGHTHOUSE-FIXES.md` (round 1: performance and
+accessibility) and `SEO-FIXES.md` (round 2: crawlability, page heads, the module
+directory and the changelog). `SEO-FIXES.md` also lists the one known gap - the
+Beacon CurseForge listing is still under review, so the generated Download links
+point at GitLab releases.
+
 ## Build steps
 
 Handwritten sources are the page HTML, the `css/*.css` modules (in cascade
@@ -22,3 +28,30 @@ Pillow), `tools/apply_image_sources.py` (rewrites `<img>` to `<picture>` pairs),
 `tools/bust_cache.py` (`?v=<content hash>` on every CSS/JS reference). Do not
 hand-edit `css/bundle.css`, the `.webp` files or the hashes; edit the sources and
 re-run the build.
+
+### Generated pages and snapshots
+
+Two pages are generated from committed data rather than hand-written:
+
+| Page | Generator | Data |
+|---|---|---|
+| `/projects/beacon/modules` | `tools/gen_module_page.py` | `data/beacon-modules.json` |
+| `/changelog` | `tools/gen_changelog_page.py` | `data/changelogs.json` |
+
+The snapshots come from the projects themselves and are refreshed on demand (they
+need network access to the public GitLab API):
+
+```sh
+python3 tools/fetch_beacon_modules.py   # registered modules + their descriptions, from ModuleManager.java
+python3 tools/fetch_changelogs.py       # every CHANGELOG.md, matched to GitLab releases
+python3 tools/build.py                  # regenerate the pages from the snapshots
+```
+
+Snapshots are committed so the build itself never depends on GitLab being
+reachable. The module count and the "N registered modules" copy on the site are
+derived from `data/beacon-modules.json` by `tools/apply_module_count.py`, so the
+number cannot go stale in the copy without the snapshot changing first.
+
+Search and share metadata (title, description, canonical, Open Graph, Twitter) is
+owned by `tools/apply_page_seo.py` for every page, including the generated ones -
+edit the table there, not the tags in the HTML.

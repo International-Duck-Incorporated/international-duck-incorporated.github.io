@@ -1,0 +1,525 @@
+{
+  "project": "international-duck-incorporated/Beacon",
+  "project_url": "https://gitlab.com/international-duck-incorporated/Beacon",
+  "ref": "main",
+  "commit": "62d569a23c37cd9c90cd6d338e5409ad9d4bedfc",
+  "commit_short": "62d569a2",
+  "commit_date": "2026-10-05",
+  "fetched": "2026-10-05",
+  "registration_source": "src/main/java/net/beacon/module/ModuleManager.java",
+  "registration_url": "https://gitlab.com/international-duck-incorporated/Beacon/-/blob/main/src/main/java/net/beacon/module/ModuleManager.java",
+  "count": 56,
+  "categories": {
+    "Utility": 21,
+    "Render": 16,
+    "World": 6,
+    "Misc": 10,
+    "Fun": 3
+  },
+  "modules": [
+    {
+      "id": "afk-fisher",
+      "name": "AFK Fisher",
+      "class": "AFKFisher",
+      "description": "Casts, waits and reels in automatically",
+      "category": "Utility",
+      "source_path": "src/main/java/net/beacon/modules/utility/AFKFisher.java",
+      "source_url": "https://gitlab.com/international-duck-incorporated/Beacon/-/blob/main/src/main/java/net/beacon/modules/utility/AFKFisher.java"
+    },
+    {
+      "id": "autoeat",
+      "name": "AutoEat",
+      "class": "AutoEat",
+      "description": "Automatically eats food using Meteor-style held-use state",
+      "category": "Utility",
+      "source_path": "src/main/java/net/beacon/modules/utility/AutoEat.java",
+      "source_url": "https://gitlab.com/international-duck-incorporated/Beacon/-/blob/main/src/main/java/net/beacon/modules/utility/AutoEat.java"
+    },
+    {
+      "id": "autoreconnect",
+      "name": "AutoReconnect",
+      "class": "AutoReconnect",
+      "description": "Automatically reconnects after disconnecting from a server",
+      "category": "Utility",
+      "source_path": "src/main/java/net/beacon/modules/utility/AutoReconnect.java",
+      "source_url": "https://gitlab.com/international-duck-incorporated/Beacon/-/blob/main/src/main/java/net/beacon/modules/utility/AutoReconnect.java"
+    },
+    {
+      "id": "autotool",
+      "name": "AutoTool",
+      "class": "AutoTool",
+      "description": "Selects the best safe tool using Meteor-style scoring",
+      "category": "Utility",
+      "source_path": "src/main/java/net/beacon/modules/utility/AutoTool.java",
+      "source_url": "https://gitlab.com/international-duck-incorporated/Beacon/-/blob/main/src/main/java/net/beacon/modules/utility/AutoTool.java"
+    },
+    {
+      "id": "betterchat",
+      "name": "BetterChat",
+      "class": "BetterChat",
+      "description": "Improves outgoing safety, timestamps, spam handling and history",
+      "category": "Utility",
+      "source_path": "src/main/java/net/beacon/modules/utility/BetterChat.java",
+      "source_url": "https://gitlab.com/international-duck-incorporated/Beacon/-/blob/main/src/main/java/net/beacon/modules/utility/BetterChat.java"
+    },
+    {
+      "id": "bettersigns",
+      "name": "BetterSigns",
+      "class": "BetterSigns",
+      "description": "Enhanced sign editing with wrap preview",
+      "category": "Utility",
+      "source_path": "src/main/java/net/beacon/modules/utility/BetterSigns.java",
+      "source_url": "https://gitlab.com/international-duck-incorporated/Beacon/-/blob/main/src/main/java/net/beacon/modules/utility/BetterSigns.java"
+    },
+    {
+      "id": "booktools",
+      "name": "BookTools",
+      "class": "BookTools",
+      "description": "Copy any book's pages to clipboard/file, then paste them back into a Book & Quill",
+      "category": "Utility",
+      "source_path": "src/main/java/net/beacon/modules/utility/BookTools.java",
+      "source_url": "https://gitlab.com/international-duck-incorporated/Beacon/-/blob/main/src/main/java/net/beacon/modules/utility/BookTools.java"
+    },
+    {
+      "id": "chatcopy",
+      "name": "ChatCopy",
+      "class": "ChatCopy",
+      "description": "Click chat to copy message text",
+      "category": "Utility",
+      "source_path": "src/main/java/net/beacon/modules/utility/ChatCopy.java",
+      "source_url": "https://gitlab.com/international-duck-incorporated/Beacon/-/blob/main/src/main/java/net/beacon/modules/utility/ChatCopy.java"
+    },
+    {
+      "id": "chesthistory",
+      "name": "ChestHistory",
+      "class": "ChestHistory",
+      "description": "Container memory log",
+      "category": "Utility",
+      "source_path": "src/main/java/net/beacon/modules/utility/ChestHistory.java",
+      "source_url": "https://gitlab.com/international-duck-incorporated/Beacon/-/blob/main/src/main/java/net/beacon/modules/utility/ChestHistory.java"
+    },
+    {
+      "id": "deathposition",
+      "name": "DeathPosition",
+      "class": "DeathPosition",
+      "description": "Never lose your death location again",
+      "category": "Utility",
+      "source_path": "src/main/java/net/beacon/modules/utility/DeathPosition.java",
+      "source_url": "https://gitlab.com/international-duck-incorporated/Beacon/-/blob/main/src/main/java/net/beacon/modules/utility/DeathPosition.java"
+    },
+    {
+      "id": "durabilitytooltip",
+      "name": "DurabilityTooltip",
+      "class": "DurabilityTooltip",
+      "description": "Exact durability in tooltips",
+      "category": "Utility",
+      "source_path": "src/main/java/net/beacon/modules/utility/DurabilityTooltip.java",
+      "source_url": "https://gitlab.com/international-duck-incorporated/Beacon/-/blob/main/src/main/java/net/beacon/modules/utility/DurabilityTooltip.java"
+    },
+    {
+      "id": "enderchestquickkey",
+      "name": "EnderChestQuickKey",
+      "class": "EnderChestQuickKey",
+      "description": "Ender chest memory HUD",
+      "category": "Utility",
+      "source_path": "src/main/java/net/beacon/modules/utility/EnderChestQuickKey.java",
+      "source_url": "https://gitlab.com/international-duck-incorporated/Beacon/-/blob/main/src/main/java/net/beacon/modules/utility/EnderChestQuickKey.java"
+    },
+    {
+      "id": "hotbarrefill",
+      "name": "HotbarRefill",
+      "class": "HotbarRefill",
+      "description": "Replenishes the selected hotbar stack using synced clicks",
+      "category": "Utility",
+      "source_path": "src/main/java/net/beacon/modules/utility/HotbarRefill.java",
+      "source_url": "https://gitlab.com/international-duck-incorporated/Beacon/-/blob/main/src/main/java/net/beacon/modules/utility/HotbarRefill.java"
+    },
+    {
+      "id": "inventorytidy",
+      "name": "InventoryTidy",
+      "class": "InventoryTidy",
+      "description": "Consolidates inventory stacks with server-synchronised clicks",
+      "category": "Utility",
+      "source_path": "src/main/java/net/beacon/modules/utility/InventoryTidy.java",
+      "source_url": "https://gitlab.com/international-duck-incorporated/Beacon/-/blob/main/src/main/java/net/beacon/modules/utility/InventoryTidy.java"
+    },
+    {
+      "id": "macros",
+      "name": "Macros",
+      "class": "CommandMacros",
+      "description": "Persistent named keybinds that run one or more commands/messages",
+      "category": "Utility",
+      "source_path": "src/main/java/net/beacon/modules/utility/CommandMacros.java",
+      "source_url": "https://gitlab.com/international-duck-incorporated/Beacon/-/blob/main/src/main/java/net/beacon/modules/utility/CommandMacros.java"
+    },
+    {
+      "id": "memorycleaner",
+      "name": "MemoryCleaner",
+      "class": "MemoryCleaner",
+      "description": "Prevents memory-leak stutter during long sessions",
+      "category": "Utility",
+      "source_path": "src/main/java/net/beacon/modules/utility/MemoryCleaner.java",
+      "source_url": "https://gitlab.com/international-duck-incorporated/Beacon/-/blob/main/src/main/java/net/beacon/modules/utility/MemoryCleaner.java"
+    },
+    {
+      "id": "musiccontrol",
+      "name": "MusicControl",
+      "class": "MusicControl",
+      "description": "In-game background music manager",
+      "category": "Utility",
+      "source_path": "src/main/java/net/beacon/modules/utility/MusicControl.java",
+      "source_url": "https://gitlab.com/international-duck-incorporated/Beacon/-/blob/main/src/main/java/net/beacon/modules/utility/MusicControl.java"
+    },
+    {
+      "id": "pinghud",
+      "name": "PingHUD",
+      "class": "PingHUD",
+      "description": "Real-time ping to the current server",
+      "category": "Utility",
+      "source_path": "src/main/java/net/beacon/modules/utility/PingHUD.java",
+      "source_url": "https://gitlab.com/international-duck-incorporated/Beacon/-/blob/main/src/main/java/net/beacon/modules/utility/PingHUD.java"
+    },
+    {
+      "id": "recipebook",
+      "name": "RecipeBook+",
+      "class": "RecipeBookPlus",
+      "description": "Enhanced recipe book with search/filter",
+      "category": "Utility",
+      "source_path": "src/main/java/net/beacon/modules/utility/RecipeBookPlus.java",
+      "source_url": "https://gitlab.com/international-duck-incorporated/Beacon/-/blob/main/src/main/java/net/beacon/modules/utility/RecipeBookPlus.java"
+    },
+    {
+      "id": "sessiontimer",
+      "name": "SessionTimer",
+      "class": "SessionTimer",
+      "description": "Tracks play session with break reminders",
+      "category": "Utility",
+      "source_path": "src/main/java/net/beacon/modules/utility/SessionTimer.java",
+      "source_url": "https://gitlab.com/international-duck-incorporated/Beacon/-/blob/main/src/main/java/net/beacon/modules/utility/SessionTimer.java"
+    },
+    {
+      "id": "soundmuter",
+      "name": "SoundMuter",
+      "class": "SoundMuter",
+      "description": "Mutes or lowers annoying background sounds",
+      "category": "Utility",
+      "source_path": "src/main/java/net/beacon/modules/utility/SoundMuter.java",
+      "source_url": "https://gitlab.com/international-duck-incorporated/Beacon/-/blob/main/src/main/java/net/beacon/modules/utility/SoundMuter.java"
+    },
+    {
+      "id": "antiblind",
+      "name": "AntiBlind",
+      "class": "AntiBlind",
+      "description": "Removes visual obstruction effects",
+      "category": "Render",
+      "source_path": "src/main/java/net/beacon/modules/render/AntiBlind.java",
+      "source_url": "https://gitlab.com/international-duck-incorporated/Beacon/-/blob/main/src/main/java/net/beacon/modules/render/AntiBlind.java"
+    },
+    {
+      "id": "armorhud",
+      "name": "ArmorHUD",
+      "class": "ArmorHUD",
+      "description": "Displays armor durability at a glance",
+      "category": "Render",
+      "source_path": "src/main/java/net/beacon/modules/render/ArmorHUD.java",
+      "source_url": "https://gitlab.com/international-duck-incorporated/Beacon/-/blob/main/src/main/java/net/beacon/modules/render/ArmorHUD.java"
+    },
+    {
+      "id": "betterlocator",
+      "name": "BetterLocator",
+      "class": "BetterLocatorBar",
+      "description": "Enhances the vanilla locator bar with directions, heads and player data",
+      "category": "Render",
+      "source_path": "src/main/java/net/beacon/modules/render/BetterLocatorBar.java",
+      "source_url": "https://gitlab.com/international-duck-incorporated/Beacon/-/blob/main/src/main/java/net/beacon/modules/render/BetterLocatorBar.java"
+    },
+    {
+      "id": "blockoutline",
+      "name": "BlockOutline",
+      "class": "BlockOutline",
+      "description": "Custom targeted-block selection outline",
+      "category": "Render",
+      "source_path": "src/main/java/net/beacon/modules/render/BlockOutline.java",
+      "source_url": "https://gitlab.com/international-duck-incorporated/Beacon/-/blob/main/src/main/java/net/beacon/modules/render/BlockOutline.java"
+    },
+    {
+      "id": "confetti-on-advancement",
+      "name": "Confetti on Advancement",
+      "class": "ConfettiOnAdvancement",
+      "description": "Cosmetic confetti when you earn an advancement",
+      "category": "Render",
+      "source_path": "src/main/java/net/beacon/modules/render/ConfettiOnAdvancement.java",
+      "source_url": "https://gitlab.com/international-duck-incorporated/Beacon/-/blob/main/src/main/java/net/beacon/modules/render/ConfettiOnAdvancement.java"
+    },
+    {
+      "id": "containerpreview",
+      "name": "ContainerPreview",
+      "class": "ContainerPreview",
+      "description": "Inspect container contents without opening them",
+      "category": "Render",
+      "source_path": "src/main/java/net/beacon/modules/render/ContainerPreview.java",
+      "source_url": "https://gitlab.com/international-duck-incorporated/Beacon/-/blob/main/src/main/java/net/beacon/modules/render/ContainerPreview.java"
+    },
+    {
+      "id": "crosshairtweaks",
+      "name": "CrosshairTweaks",
+      "class": "CrosshairTweaks",
+      "description": "Custom crosshair styles, exact center alignment",
+      "category": "Render",
+      "source_path": "src/main/java/net/beacon/modules/render/CrosshairTweaks.java",
+      "source_url": "https://gitlab.com/international-duck-incorporated/Beacon/-/blob/main/src/main/java/net/beacon/modules/render/CrosshairTweaks.java"
+    },
+    {
+      "id": "customf3",
+      "name": "CustomF3",
+      "class": "CustomF3",
+      "description": "Clean glass debug HUD with coordinates, FPS, biome, ping",
+      "category": "Render",
+      "source_path": "src/main/java/net/beacon/modules/render/CustomF3.java",
+      "source_url": "https://gitlab.com/international-duck-incorporated/Beacon/-/blob/main/src/main/java/net/beacon/modules/render/CustomF3.java"
+    },
+    {
+      "id": "damagetilt",
+      "name": "DamageTilt",
+      "class": "DamageTilt",
+      "description": "Customize camera tilt when taking damage",
+      "category": "Render",
+      "source_path": "src/main/java/net/beacon/modules/render/DamageTilt.java",
+      "source_url": "https://gitlab.com/international-duck-incorporated/Beacon/-/blob/main/src/main/java/net/beacon/modules/render/DamageTilt.java"
+    },
+    {
+      "id": "fireworks-on-level-up",
+      "name": "Fireworks on Level Up",
+      "class": "FireworksOnLevelUp",
+      "description": "Real firework bursts when you gain an XP level",
+      "category": "Render",
+      "source_path": "src/main/java/net/beacon/modules/render/FireworksOnLevelUp.java",
+      "source_url": "https://gitlab.com/international-duck-incorporated/Beacon/-/blob/main/src/main/java/net/beacon/modules/render/FireworksOnLevelUp.java"
+    },
+    {
+      "id": "freecam",
+      "name": "Freecam",
+      "class": "Freecam",
+      "description": "Detaches the camera so you can fly around without moving your player",
+      "category": "Render",
+      "source_path": "src/main/java/net/beacon/modules/render/Freecam.java",
+      "source_url": "https://gitlab.com/international-duck-incorporated/Beacon/-/blob/main/src/main/java/net/beacon/modules/render/Freecam.java"
+    },
+    {
+      "id": "fullbright",
+      "name": "Fullbright",
+      "class": "Fullbright",
+      "description": "Lights up the world using Meteor-style gamma, potion or luminance modes",
+      "category": "Render",
+      "source_path": "src/main/java/net/beacon/modules/render/Fullbright.java",
+      "source_url": "https://gitlab.com/international-duck-incorporated/Beacon/-/blob/main/src/main/java/net/beacon/modules/render/Fullbright.java"
+    },
+    {
+      "id": "hidepumpkinoverlay",
+      "name": "HidePumpkinOverlay",
+      "class": "HidePumpkinOverlay",
+      "description": "Hides the carved pumpkin view overlay",
+      "category": "Render",
+      "source_path": "src/main/java/net/beacon/modules/render/HidePumpkinOverlay.java",
+      "source_url": "https://gitlab.com/international-duck-incorporated/Beacon/-/blob/main/src/main/java/net/beacon/modules/render/HidePumpkinOverlay.java"
+    },
+    {
+      "id": "mounthud",
+      "name": "MountHUD",
+      "class": "MountHUD",
+      "description": "Shows mount stats while riding",
+      "category": "Render",
+      "source_path": "src/main/java/net/beacon/modules/render/MountHUD.java",
+      "source_url": "https://gitlab.com/international-duck-incorporated/Beacon/-/blob/main/src/main/java/net/beacon/modules/render/MountHUD.java"
+    },
+    {
+      "id": "particlefilter",
+      "name": "ParticleFilter",
+      "class": "ParticleFilter",
+      "description": "Clean up heavy particle clutter",
+      "category": "Render",
+      "source_path": "src/main/java/net/beacon/modules/render/ParticleFilter.java",
+      "source_url": "https://gitlab.com/international-duck-incorporated/Beacon/-/blob/main/src/main/java/net/beacon/modules/render/ParticleFilter.java"
+    },
+    {
+      "id": "viewmodeltweaks",
+      "name": "ViewmodelTweaks",
+      "class": "ViewmodelTweaks",
+      "description": "Adjusts first-person item position and scale",
+      "category": "Render",
+      "source_path": "src/main/java/net/beacon/modules/render/ViewmodelTweaks.java",
+      "source_url": "https://gitlab.com/international-duck-incorporated/Beacon/-/blob/main/src/main/java/net/beacon/modules/render/ViewmodelTweaks.java"
+    },
+    {
+      "id": "cropprogress",
+      "name": "CropProgress",
+      "class": "CropProgress",
+      "description": "Instant crop readiness indicator",
+      "category": "World",
+      "source_path": "src/main/java/net/beacon/modules/world/CropProgress.java",
+      "source_url": "https://gitlab.com/international-duck-incorporated/Beacon/-/blob/main/src/main/java/net/beacon/modules/world/CropProgress.java"
+    },
+    {
+      "id": "itemsearch",
+      "name": "ItemSearch",
+      "class": "ItemSearch",
+      "description": "Find items in your inventory",
+      "category": "World",
+      "source_path": "src/main/java/net/beacon/modules/world/ItemSearch.java",
+      "source_url": "https://gitlab.com/international-duck-incorporated/Beacon/-/blob/main/src/main/java/net/beacon/modules/world/ItemSearch.java"
+    },
+    {
+      "id": "lightoverlay",
+      "name": "LightOverlay",
+      "class": "LightLevel",
+      "description": "Shows nearby blocks where hostile mobs can spawn",
+      "category": "World",
+      "source_path": "src/main/java/net/beacon/modules/world/LightLevel.java",
+      "source_url": "https://gitlab.com/international-duck-incorporated/Beacon/-/blob/main/src/main/java/net/beacon/modules/world/LightLevel.java"
+    },
+    {
+      "id": "mobstats",
+      "name": "MobStats",
+      "class": "MobStats",
+      "description": "Inspect entity health, stats and inventories",
+      "category": "World",
+      "source_path": "src/main/java/net/beacon/modules/world/MobStats.java",
+      "source_url": "https://gitlab.com/international-duck-incorporated/Beacon/-/blob/main/src/main/java/net/beacon/modules/world/MobStats.java"
+    },
+    {
+      "id": "notebot",
+      "name": "NoteBot",
+      "class": "NoteBot",
+      "description": "Plays melodies on nearby note blocks",
+      "category": "World",
+      "source_path": "src/main/java/net/beacon/modules/world/NoteBot.java",
+      "source_url": "https://gitlab.com/international-duck-incorporated/Beacon/-/blob/main/src/main/java/net/beacon/modules/world/NoteBot.java"
+    },
+    {
+      "id": "structurenotifier",
+      "name": "StructureNotifier",
+      "class": "StructureNotifier",
+      "description": "Notifies when you enter a generated structure",
+      "category": "World",
+      "source_path": "src/main/java/net/beacon/modules/world/StructureNotifier.java",
+      "source_url": "https://gitlab.com/international-duck-incorporated/Beacon/-/blob/main/src/main/java/net/beacon/modules/world/StructureNotifier.java"
+    },
+    {
+      "id": "afknotifier",
+      "name": "AFKNotifier",
+      "class": "AFKNotifier",
+      "description": "Username mention chime while AFK",
+      "category": "Misc",
+      "source_path": "src/main/java/net/beacon/modules/misc/AFKNotifier.java",
+      "source_url": "https://gitlab.com/international-duck-incorporated/Beacon/-/blob/main/src/main/java/net/beacon/modules/misc/AFKNotifier.java"
+    },
+    {
+      "id": "armorwarning",
+      "name": "ArmorWarning",
+      "class": "ArmorWarning",
+      "description": "Alerts when armor durability is critically low",
+      "category": "Misc",
+      "source_path": "src/main/java/net/beacon/modules/misc/ArmorWarning.java",
+      "source_url": "https://gitlab.com/international-duck-incorporated/Beacon/-/blob/main/src/main/java/net/beacon/modules/misc/ArmorWarning.java"
+    },
+    {
+      "id": "bettertab",
+      "name": "BetterTab",
+      "class": "TabListPlus",
+      "description": "Larger tab list with numeric latency, player highlighting and gamemodes",
+      "category": "Misc",
+      "source_path": "src/main/java/net/beacon/modules/misc/TabListPlus.java",
+      "source_url": "https://gitlab.com/international-duck-incorporated/Beacon/-/blob/main/src/main/java/net/beacon/modules/misc/TabListPlus.java"
+    },
+    {
+      "id": "compactmessages",
+      "name": "CompactMessages",
+      "class": "CompactMessages",
+      "description": "Chat spam consolidation",
+      "category": "Misc",
+      "source_path": "src/main/java/net/beacon/modules/misc/CompactMessages.java",
+      "source_url": "https://gitlab.com/international-duck-incorporated/Beacon/-/blob/main/src/main/java/net/beacon/modules/misc/CompactMessages.java"
+    },
+    {
+      "id": "hidescoreboard",
+      "name": "HideScoreboard",
+      "class": "HideScoreboard",
+      "description": "Hides the sidebar scoreboard and/or on-screen chat feed",
+      "category": "Misc",
+      "source_path": "src/main/java/net/beacon/modules/misc/HideScoreboard.java",
+      "source_url": "https://gitlab.com/international-duck-incorporated/Beacon/-/blob/main/src/main/java/net/beacon/modules/misc/HideScoreboard.java"
+    },
+    {
+      "id": "itemorganizer",
+      "name": "ItemOrganizer",
+      "class": "ItemOrganizer",
+      "description": "Consolidates one inventory stack using synced container clicks",
+      "category": "Misc",
+      "source_path": "src/main/java/net/beacon/modules/misc/ItemOrganizer.java",
+      "source_url": "https://gitlab.com/international-duck-incorporated/Beacon/-/blob/main/src/main/java/net/beacon/modules/misc/ItemOrganizer.java"
+    },
+    {
+      "id": "lagnotifier",
+      "name": "LagNotifier",
+      "class": "LagNotifier",
+      "description": "Alerts you when the server is lagging",
+      "category": "Misc",
+      "source_path": "src/main/java/net/beacon/modules/misc/LagNotifier.java",
+      "source_url": "https://gitlab.com/international-duck-incorporated/Beacon/-/blob/main/src/main/java/net/beacon/modules/misc/LagNotifier.java"
+    },
+    {
+      "id": "teams",
+      "name": "Teams",
+      "class": "Teams",
+      "description": "Color-codes players by scoreboard team",
+      "category": "Misc",
+      "source_path": "src/main/java/net/beacon/modules/misc/Teams.java",
+      "source_url": "https://gitlab.com/international-duck-incorporated/Beacon/-/blob/main/src/main/java/net/beacon/modules/misc/Teams.java"
+    },
+    {
+      "id": "textfieldprotect",
+      "name": "TextFieldProtect",
+      "class": "TextFieldProtect",
+      "description": "Prevents accidental pasting of sensitive text",
+      "category": "Misc",
+      "source_path": "src/main/java/net/beacon/modules/misc/TextFieldProtect.java",
+      "source_url": "https://gitlab.com/international-duck-incorporated/Beacon/-/blob/main/src/main/java/net/beacon/modules/misc/TextFieldProtect.java"
+    },
+    {
+      "id": "tnttimer",
+      "name": "TNTTimer",
+      "class": "TNTTimer",
+      "description": "Shows countdown for active TNT fuse duration",
+      "category": "Misc",
+      "source_path": "src/main/java/net/beacon/modules/misc/TNTTimer.java",
+      "source_url": "https://gitlab.com/international-duck-incorporated/Beacon/-/blob/main/src/main/java/net/beacon/modules/misc/TNTTimer.java"
+    },
+    {
+      "id": "chatemotes",
+      "name": "ChatEmotes",
+      "class": "ChatEmotes",
+      "description": "Emoji replacement in chat",
+      "category": "Fun",
+      "source_path": "src/main/java/net/beacon/modules/fun/ChatEmotes.java",
+      "source_url": "https://gitlab.com/international-duck-incorporated/Beacon/-/blob/main/src/main/java/net/beacon/modules/fun/ChatEmotes.java"
+    },
+    {
+      "id": "twerk",
+      "name": "Twerk",
+      "class": "Twerk",
+      "description": "Rapidly toggles sneaking for fun",
+      "category": "Fun",
+      "source_path": "src/main/java/net/beacon/modules/fun/Twerk.java",
+      "source_url": "https://gitlab.com/international-duck-incorporated/Beacon/-/blob/main/src/main/java/net/beacon/modules/fun/Twerk.java"
+    },
+    {
+      "id": "vomit",
+      "name": "Vomit",
+      "class": "Vomit",
+      "description": "Throws ALL items out of your inventory",
+      "category": "Fun",
+      "source_path": "src/main/java/net/beacon/modules/fun/Vomit.java",
+      "source_url": "https://gitlab.com/international-duck-incorporated/Beacon/-/blob/main/src/main/java/net/beacon/modules/fun/Vomit.java"
+    }
+  ]
+}
