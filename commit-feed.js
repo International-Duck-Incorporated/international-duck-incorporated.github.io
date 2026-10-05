@@ -11,7 +11,8 @@
     "0xffshell":  { label: "0xFFshell",       github: null,              gitlab: "0xFFshell" },
     "3spress0":   { label: "3spress0",        github: null,              gitlab: "espress0" },
     "e-vdv-hu":   { label: "E-VDV-HU",        github: "E-VDV-HU",        gitlab: null },
-    "midas735":   { label: "midas735",        github: "midas735",        gitlab: null }
+    "midas735":   { label: "midas735",        github: "midas735",        gitlab: null },
+    "jojo-8002":  { label: "Jojo-8002",       github: "Jojo-8002",       gitlab: false }
   };
 
   var GH_API = "https://api.github.com";
@@ -141,9 +142,12 @@
 
     var panel = document.createElement("article");
     panel.className = "detail-panel glass-card reveal visible cf-panel";
-    panel.innerHTML = '<span class="eyebrow">Live from the APIs</span>' +
+    var sources = [];
+    if (member.github) sources.push("GitHub");
+    if (member.gitlab) sources.push("GitLab");
+    panel.innerHTML = '<span class="eyebrow">Live public activity</span>' +
       "<h2>Recent commits by " + esc(member.label) + ".</h2>" +
-      '<p>Pulled straight from the public GitHub and GitLab APIs when you loaded this page.</p>';
+      '<p>Loaded from the public ' + esc(sources.join(" and ")) + " API" + (sources.length > 1 ? "s" : "") + ' when you opened this page.</p>';
     var cols = document.createElement("div");
     cols.className = "cf-cols";
     panel.appendChild(cols);
@@ -175,7 +179,7 @@
         gl.innerHTML = "<h3>GitLab \u00b7 @" + esc(member.gitlab) + "</h3>" +
           '<p class="cf-note">Could not load GitLab activity (' + esc(err.message) + ").</p>";
       });
-    } else {
+    } else if (member.gitlab !== false) {
       column(cols, "GitLab").innerHTML = "<h3>GitLab</h3><p class=\"cf-note\">No public GitLab account on record for " + esc(member.label) + ".</p>";
     }
   }
