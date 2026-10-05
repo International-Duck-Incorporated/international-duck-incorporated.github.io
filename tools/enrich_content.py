@@ -2,7 +2,7 @@
 """Add crawler-visible static content to the three thinnest indexable pages.
 
 The homepage previously had no links to any project or member page and almost no
-text; /people/ and /activity were similarly thin. This injects static, JS-free
+text; /members/ and /activity were similarly thin. This injects static, JS-free
 sections that reuse existing CSS classes and card markup (copied from the pages
 that already render them), so the design language is unchanged and script.js
 hydration is unaffected (the new markup deliberately carries no data-org-* hooks).
@@ -63,18 +63,18 @@ HOME_BLOCK = f"""
       <header class="section-heading">
         <div><span class="eyebrow">About</span><h2 id="home-about-heading">What International Duck builds.</h2></div>
       </header>
-      <p>International Duck Incorporated is an open-source collective publishing Minecraft mods, client utilities and developer tools. The work is client-side Java on Fabric and Meteor Client, released for free under GPL licences, with sources, releases and issue trackers on GitLab and mirrored on GitHub. NullTrace and Beacon are additionally listed on CurseForge.</p>
-      <p>Everything is built in public: commit history, release notes and module registries are open, and this website mirrors the organization's live GitLab data so project status never goes stale. Read <a href="/migration">why the organization moved from GitHub to GitLab</a> in September 2026, or follow the <a href="/activity">cross-platform commit activity feed</a>.</p>
+      <p>International Duck Incorporated is an open-source collective publishing Minecraft mods, client utilities and developer tools. The work is client-side Java on Fabric and Meteor Client, released for free under GPL licences, with sources, releases and issue trackers on GitLab. The former GitHub organization is currently hidden from public view, so GitLab is the active source of truth. NullTrace and Beacon are additionally listed on CurseForge.</p>
+      <p>Everything is built in public: commit history, release notes and module registries are open, and this website mirrors the organization's live GitLab data so project status never goes stale. Read <a href="/migration">why the organization moved from GitHub to GitLab</a> in September 2026, or follow the <a href="/activity">GitLab commit activity feed</a>.</p>
     </section>
 """
 
-PEOPLE_BLOCK = """
-    <section class="shell home-directory reveal" aria-labelledby="people-about-heading" data-seo-enriched>
+MEMBERS_BLOCK = """
+    <section class="shell home-directory reveal" aria-labelledby="members-about-heading" data-seo-enriched>
       <header class="section-heading">
-        <div><span class="eyebrow">About the roster</span><h2 id="people-about-heading">Who we are.</h2></div>
+        <div><span class="eyebrow">About the roster</span><h2 id="members-about-heading">Who we are.</h2></div>
       </header>
       <p>International Duck Incorporated has six public members. GitLab does not expose group membership through its public API, so this directory is a checked-in roster. Each card links to a profile page with the member's public account and, where available, project or activity details.</p>
-      <p>Commit attribution across both platforms lives on the <a href="/activity">activity page</a>, which splits every member's work between GitLab (main) and the legacy GitHub mirror. Upstream contributors to forked projects and automation accounts are listed separately and are not counted as members.</p>
+      <p>Commit attribution from the active GitLab source lives on the <a href="/activity">activity page</a>. The former GitHub organization is currently hidden/private, so its API and mirror data are not used. Upstream contributors to forked projects and automation accounts are listed separately and are not counted as members.</p>
     </section>
 """
 
@@ -82,11 +82,11 @@ ACTIVITY_BLOCK = """
     <section class="shell activity-section-block reveal" aria-labelledby="activity-about-heading" data-seo-enriched>
       <header class="section-heading">
         <div><span class="eyebrow">Scope</span><h2 id="activity-about-heading">What this page tracks.</h2></div>
-        <p>Every public repository in both organizations, and the newest 100 commits per repository per platform.</p>
+        <p>Every public repository in the GitLab group, and the newest 100 commits per repository.</p>
       </header>
       <div class="activity-note reveal">
-        <p>On the GitLab side (main) the feed covers <a href="/projects/beacon">Beacon</a>, <a href="/projects/venomous">Venomous</a>, <a href="/projects/nulltrace">NullTrace</a>, <a href="/projects/championscode">ChampionsCode</a>, <a href="/projects/bagley">Bagley</a>, <a href="/projects/zonedout">ZonedOut</a> and <a href="/projects/website">this website</a>. On the GitHub side (legacy mirror) the same projects are mirrored under the older organization. Commits are attributed to the six public members where the author identity matches a checked-in alias table; upstream OpSec contributors and automation accounts are bucketed separately.</p>
-        <p>If a platform's API is rate-limited or unreachable, the panels degrade independently and the footer sync state reports which sources answered, so the page keeps its checked-in content.</p>
+        <p>The GitLab feed covers <a href="/projects/beacon">Beacon</a>, <a href="/projects/venomous">Venomous</a>, <a href="/projects/nulltrace">NullTrace</a>, <a href="/projects/championscode">ChampionsCode</a>, <a href="/projects/bagley">Bagley</a>, <a href="/projects/zonedout">ZonedOut</a> and <a href="/projects/website">this website</a>. Commits are attributed to the six public members where the author identity matches a checked-in alias table; upstream OpSec contributors and automation accounts are bucketed separately.</p>
+        <p>The former GitHub organization is currently hidden/private, so GitHub API and mirror data are intentionally excluded. If GitLab's API is unavailable, the page keeps its checked-in member roster and explanatory content while showing a source-status notice.</p>
       </div>
     </section>
 """
@@ -119,7 +119,7 @@ def insert(path: Path, block: str) -> bool:
 def main() -> None:
     root = Path(__file__).resolve().parent.parent
     for rel, block in [("index.html", HOME_BLOCK),
-                       ("people/index.html", PEOPLE_BLOCK),
+                       ("members/index.html", MEMBERS_BLOCK),
                        ("activity.html", ACTIVITY_BLOCK)]:
         print(f"{rel}: {'updated' if insert(root / rel, block) else 'already enriched'}")
 

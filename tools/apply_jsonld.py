@@ -28,8 +28,9 @@ ORG = {
     "logo": {"@type": "ImageObject", "url": SITE + "/assets/org-avatar.png"},
     "image": OG_IMAGE,
     "description": ("Open-source collective building Minecraft mods, tools and experiments "
-                    "in public. Source of truth is GitLab; GitHub is a legacy mirror."),
-    "sameAs": [GITLAB, "https://github.com/International-Duck-Incorporated"],
+                    "in public. GitLab is the active source of truth; the former GitHub "
+                    "organization is currently hidden from public view."),
+    "sameAs": [GITLAB],
     "knowsAbout": ["Minecraft mods", "Fabric modding", "Minecraft client utilities",
                    "open source"],
 }
@@ -114,25 +115,25 @@ PROJECTS["projects/website.html"] = {
     "lang": "HTML",
 }
 
-PEOPLE = {
-    "people/0xffshell.html": {"url": "/people/0xffshell", "name": "0xFFshell",
+MEMBERS = {
+    "members/0xffshell.html": {"url": "/members/0xffshell", "name": "0xFFshell",
         "desc": "International Duck's main writer.",
         "sameAs": ["https://gitlab.com/0xFFshell"]},
-    "people/3spress0.html": {"url": "/people/3spress0", "name": "espress0",
+    "members/3spress0.html": {"url": "/members/3spress0", "name": "espress0",
         "desc": "Backend developer and backbone of most International Duck projects.",
         "sameAs": ["https://gitlab.com/espress0"]},
-    "people/e-vdv-hu.html": {"url": "/people/e-vdv-hu", "name": "E-VDV-HU",
+    "members/e-vdv-hu.html": {"url": "/members/e-vdv-hu", "name": "E-VDV-HU",
         "desc": "Backend and hosting manager for International Duck.",
-        "sameAs": ["https://github.com/E-VDV-HU"]},
-    "people/midas735.html": {"url": "/people/midas735", "name": "midas735",
+        "sameAs": []},
+    "members/midas735.html": {"url": "/members/midas735", "name": "midas735",
         "desc": "Just happy to be here at International Duck Incorporated.",
-        "sameAs": ["https://github.com/midas735", "https://gitlab.com/midas735"]},
-    "people/superivar.html": {"url": "/people/superivar", "name": "Xx-superIvar-xX",
+        "sameAs": ["https://gitlab.com/midas735"]},
+    "members/superivar.html": {"url": "/members/superivar", "name": "Xx-superIvar-xX",
         "desc": "Product tester for International Duck Incorporated.",
-        "sameAs": ["https://github.com/Xx-superIvar-xX", "https://gitlab.com/Xx-superIvar-xX"]},
-    "people/jojo-8002.html": {"url": "/people/jojo-8002", "name": "Jojo-8002",
+        "sameAs": ["https://gitlab.com/Xx-superIvar-xX"]},
+    "members/jojo-8002.html": {"url": "/members/jojo-8002", "name": "Jojo-8002",
         "desc": "Here for shit n giggles at International Duck Incorporated.",
-        "sameAs": ["https://github.com/Jojo-8002"]},
+        "sameAs": []},
 }
 
 CRUMBS = {
@@ -140,13 +141,13 @@ CRUMBS = {
     "/activity": [("International Duck Incorporated", "/"), ("Activity", "/activity")],
     "/migration": [("International Duck Incorporated", "/"), ("Migration", "/migration")],
     "/projects/": [("International Duck Incorporated", "/"), ("Projects", "/projects/")],
-    "/people/": [("International Duck Incorporated", "/"), ("Members", "/people/")],
+    "/members/": [("International Duck Incorporated", "/"), ("Members", "/members/")],
 }
 for _rel, _p in PROJECTS.items():
     CRUMBS[_p["url"]] = [("International Duck Incorporated", "/"), ("Projects", "/projects/"),
                          (_p["name"], _p["url"])]
-for _rel, _m in PEOPLE.items():
-    CRUMBS[_m["url"]] = [("International Duck Incorporated", "/"), ("Members", "/people/"),
+for _rel, _m in MEMBERS.items():
+    CRUMBS[_m["url"]] = [("International Duck Incorporated", "/"), ("Members", "/members/"),
                          (_m["name"], _m["url"])]
 
 
@@ -209,8 +210,8 @@ def build(rel: str, url: str, title: str, desc: str):
     if rel in PROJECTS:
         graph[2] = webpage(url, title, desc, "WebPage")
         graph.append(software_application(PROJECTS[rel]))
-    elif rel in PEOPLE:
-        m = PEOPLE[rel]
+    elif rel in MEMBERS:
+        m = MEMBERS[rel]
         person = {
             "@type": "Person",
             "@id": SITE + url + "#person",
@@ -218,8 +219,9 @@ def build(rel: str, url: str, title: str, desc: str):
             "description": m["desc"],
             "url": SITE + url,
             "memberOf": {"@id": ORG_ID},
-            "sameAs": m["sameAs"],
         }
+        if m["sameAs"]:
+            person["sameAs"] = m["sameAs"]
         graph[2] = webpage(url, title, desc, "ProfilePage")
         graph[2]["mainEntity"] = {"@id": SITE + url + "#person"}
         graph.append(person)
@@ -232,24 +234,24 @@ def build(rel: str, url: str, title: str, desc: str):
                           {"@type": "ListItem", "position": i + 1,
                            "name": p["name"], "url": SITE + p["url"]}
                           for i, p in enumerate(PROJECTS.values())]})
-    elif url == "/people/":
+    elif url == "/members/":
         graph[2] = webpage(url, title, desc, "CollectionPage")
         graph.append({"@type": "ItemList", "@id": SITE + url + "#list",
                       "name": "Public members",
-                      "numberOfItems": len(PEOPLE),
+                      "numberOfItems": len(MEMBERS),
                       "itemListElement": [
                           {"@type": "ListItem", "position": i + 1,
                            "name": m["name"], "url": SITE + m["url"]}
-                          for i, m in enumerate(PEOPLE.values())]})
+                          for i, m in enumerate(MEMBERS.values())]})
     return {"@context": "https://schema.org", "@graph": graph}
 
 
 def main() -> None:
     root = Path(__file__).resolve().parent.parent
     pages = {**{r: PROJECTS[r]["url"] for r in PROJECTS},
-             **{r: PEOPLE[r]["url"] for r in PEOPLE},
+             **{r: MEMBERS[r]["url"] for r in MEMBERS},
              "index.html": "/", "activity.html": "/activity", "migration.html": "/migration",
-             "projects/index.html": "/projects/", "people/index.html": "/people/"}
+             "projects/index.html": "/projects/", "members/index.html": "/members/"}
     done = 0
     for rel, url in pages.items():
         path = root / rel

@@ -9,7 +9,7 @@
 .profile-hero > *,
 .detail-grid > *,
 .project-grid > *,
-.people-grid > *,
+.members-grid > *,
 .capability-grid > *,
 .module-grid > *,
 .release-grid > *,
@@ -343,16 +343,12 @@ body.egg-bg[data-page="organization"]::before {
 }
 
 .platform-badge.gitlab { color: #ffb38a; background: rgba(252, 109, 38, .13); border: 1px solid rgba(252, 109, 38, .28); }
-.platform-badge.github { color: #c9ccd8; background: rgba(140, 148, 165, .12); border: 1px solid rgba(160, 170, 190, .22); }
-
 .platform-inline { font-weight: 700; }
 .platform-inline.gitlab { color: #ffb38a; }
-.platform-inline.github { color: #c9ccd8; }
 
 .platform-chip { gap: .45rem; }
 .platform-chip svg { width: .75rem; height: .75rem; }
 .platform-chip.gitlab svg { color: #fc6d26; }
-.platform-chip.github svg { color: #c9ccd8; }
 .platform-chip i { background: var(--green); }
 
 .activity-card > header em.platform-badge { margin-left: .15rem; }
@@ -411,6 +407,30 @@ body.egg-bg[data-page="organization"]::before {
 
 .activity-section-block { margin-top: 2.6rem; }
 .activity-orgs { margin-top: 1.4rem; }
+.platform-warning {
+  display: flex;
+  margin-top: 1.4rem;
+  padding: 1rem 1.2rem;
+  gap: .9rem;
+  align-items: flex-start;
+  border-color: rgba(242, 189, 93, .22);
+  background: linear-gradient(145deg, rgba(75, 57, 26, .28), rgba(20, 23, 28, .72));
+}
+.platform-warning-mark {
+  width: 10px;
+  height: 10px;
+  flex: 0 0 auto;
+  margin-top: .35rem;
+  background: #f2bd5d;
+  border-radius: 50%;
+  box-shadow: 0 0 18px rgba(242, 189, 93, .5);
+}
+.platform-warning strong { display: block; margin-bottom: .3rem; font-size: .77rem; }
+.platform-warning p { max-width: 76ch; margin: 0; color: #c7b58e; font-size: .66rem; line-height: 1.65; }
+
+@media (max-width: 460px) {
+  .platform-warning { padding: .9rem; }
+}
 
 @media (max-width: 460px) {
   .feed-list em.platform-badge { display: none; }
@@ -423,7 +443,7 @@ body.egg-bg[data-page="organization"]::before {
 .status-pill.amber i { background: #f2c45a; }
 .status-pill.amber { color: #d8b368; border-color: rgba(242, 196, 90, .35); }
 /* ---- SEO-enriched homepage / directory sections (tools/enrich_content.py) ----
-   Static, JS-free sections injected into /, /people and /activity reuse the
+   Static, JS-free sections injected into /, /members and /activity reuse the
    existing grid and heading styles; this block only supplies vertical rhythm so
    consecutive sections do not stack flush. */
 .home-directory { margin-top: clamp(3rem, 7vw, 5.5rem); }

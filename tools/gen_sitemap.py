@@ -21,19 +21,19 @@ PRIORITY = {
     "/projects/beacon": ("weekly", "0.9"),
     "/projects/venomous": ("weekly", "0.9"),
     "/projects/nulltrace": ("weekly", "0.9"),
-    "/projects/championscode": ("monthly", "0.8"),
-    "/people/": ("monthly", "0.8"),
-    "/projects/bagley": ("monthly", "0.7"),
-    "/projects/zonedout": ("monthly", "0.7"),
+    "/projects/championscode": ("weekly", "0.8"),
+    "/members/": ("weekly", "0.8"),
+    "/projects/bagley": ("weekly", "0.7"),
+    "/projects/zonedout": ("weekly", "0.7"),
     "/activity": ("weekly", "0.6"),
-    "/migration": ("yearly", "0.6"),
-    "/people/0xffshell": ("monthly", "0.6"),
-    "/people/3spress0": ("monthly", "0.6"),
-    "/people/e-vdv-hu": ("monthly", "0.6"),
-    "/people/midas735": ("monthly", "0.6"),
-    "/people/superivar": ("monthly", "0.6"),
-    "/people/jojo-8002": ("monthly", "0.6"),
-    "/projects/website": ("monthly", "0.5"),
+    "/migration": ("weekly", "0.6"),
+    "/members/0xffshell": ("weekly", "0.6"),
+    "/members/3spress0": ("weekly", "0.6"),
+    "/members/e-vdv-hu": ("weekly", "0.6"),
+    "/members/midas735": ("weekly", "0.6"),
+    "/members/superivar": ("weekly", "0.6"),
+    "/members/jojo-8002": ("weekly", "0.6"),
+    "/projects/website": ("weekly", "0.5"),
 }
 
 ORDER = list(PRIORITY)
@@ -77,7 +77,7 @@ def main() -> int:
     lines = ['<?xml version="1.0" encoding="UTF-8"?>',
              '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">']
     for url, path in sorted(entries, key=lambda e: ORDER.index(e[0]) if e[0] in ORDER else 99):
-        changefreq, prio = PRIORITY.get(url, ("monthly", "0.5"))
+        changefreq, prio = PRIORITY.get(url, ("weekly", "0.5"))
         lines += ["  <url>",
                   f"    <loc>{SITE}{url}</loc>",
                   f"    <lastmod>{lastmod(path)}</lastmod>",

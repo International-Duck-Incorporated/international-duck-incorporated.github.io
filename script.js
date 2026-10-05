@@ -18,7 +18,7 @@ const GL_NULLTRACE_PROJECT = `${GITLAB_API}/projects/${encodeURIComponent(`${GL_
 const GL_BEACON_PROJECT = `${GITLAB_API}/projects/${encodeURIComponent(`${GL_GROUP_PATH}/${BEACON}`)}`;
 const GL_CHAMPIONSCODE_PROJECT = `${GITLAB_API}/projects/${encodeURIComponent(`${GL_GROUP_PATH}/ChampionsCode`)}`;
 const SITE_ROUTES = Object.freeze({
-  home: "/", projects: "/projects", people: "/people", venomous: "/projects/venomous",
+  home: "/", projects: "/projects", members: "/members", venomous: "/projects/venomous",
   nulltrace: "/projects/nulltrace", championscode: "/projects/championscode", zonedout: "/projects/zonedout", beacon: "/projects/beacon", bagley: "/projects/bagley",
   website: "/projects/website", migration: "/migration"
 });
@@ -221,9 +221,9 @@ async function syncProjects() {
   }));
 }
 
-async function syncPeople() {
+async function syncMembers() {
   // GitLab does not expose group membership through its public API, so the directory renders the checked-in member roster.
-  const people = [
+  const members = [
     { login: "0xFFshell", display: "0xFFshell", type: "User" },
     { login: "3spress0", display: "espress0", type: "User" },
     { login: "E-VDV-HU", display: "E-VDV-HU", type: "User" },
@@ -232,17 +232,17 @@ async function syncPeople() {
     { login: "Jojo-8002", display: "Jojo-8002", type: "User" }
   ];
   const role = "Public member";
-  setText("[data-org-people-count]", people.length);
-  const grid = $("[data-org-people]");
-  if (!grid || !people.length) return;
-  grid.replaceChildren(...people.map((person) => {
+  setText("[data-org-members-count]", members.length);
+  const grid = $("[data-org-members]");
+  if (!grid || !members.length) return;
+  grid.replaceChildren(...members.map((person) => {
     const link = document.createElement("a");
     link.className = "person-card glass-card reveal visible";
     link.dataset.memberCard = normalizeLogin(person.login);
     const memberPages = {
-      "3spress0": "/people/3spress0", "E-VDV-HU": "/people/e-vdv-hu", "0xFFshell": "/people/0xffshell",
-      "Xx-superIvar-xX": "/people/superivar", "midas735": "/people/midas735",
-      "Jojo-8002": "/people/jojo-8002"
+      "3spress0": "/members/3spress0", "E-VDV-HU": "/members/e-vdv-hu", "0xFFshell": "/members/0xffshell",
+      "Xx-superIvar-xX": "/members/superivar", "midas735": "/members/midas735",
+      "Jojo-8002": "/members/jojo-8002"
     };
     link.href = memberPages[person.login] || person.html_url;
     if (!memberPages[person.login]) { link.target = "_blank"; link.rel = "noreferrer"; }
@@ -592,14 +592,14 @@ async function syncCommits() {
   list.replaceChildren(...commits.map((item)=>{const link=document.createElement("a"),dot=document.createElement("i"),copy=document.createElement("span"),title=document.createElement("b"),meta=document.createElement("small"),hash=document.createElement("code");link.href=item.web_url;link.target="_blank";link.rel="noreferrer";title.textContent=item.title||item.message?.split("\n")[0]||"Commit";meta.textContent=`${item.author_name} · ${relativeDate(item.authored_date||item.committed_date)}`;hash.textContent=(item.short_id||item.id).slice(0,7);copy.append(title,meta);link.append(dot,copy,hash);return link;}));
 }
 async function syncContributors() {
-  const people=await getJSON(`${GL_PROJECT}/repository/contributors`,"application/json");
-  const list=$("[data-contributors]");if(!list || !people.length)return;
+  const members=await getJSON(`${GL_PROJECT}/repository/contributors`,"application/json");
+  const list=$("[data-contributors]");if(!list || !members.length)return;
   const known=[
     {test:(person)=>person.name==="0xFF"||person.email==="pieterr.games@gmail.com",label:"0xFFshell",role:"Main writer",url:`${GITLAB}/0xFFshell`,avatar:"/assets/member-0xffshell.png"},
     {test:(person)=>/espress0|3spress0|espervanderven|166116795/i.test(`${person.name||""} ${person.email||""}`),label:"espress0",role:"Backend developer",url:"https://gitlab.com/espress0",avatar:"/assets/contributor-3spress0.png"}
   ];
   const merged=new Map();
-  for(const person of people){
+  for(const person of members){
     const profile=known.find((entry)=>entry.test(person));
     const key=profile?profile.label:(person.name||"Contributor");
     const entry=merged.get(key)||{label:key,role:profile?.role||"Contributor",url:profile?.url||`${GITLAB}/${GL_PROJECT_PATH}/-/graphs/main`,avatar:profile?.avatar||"/assets/org-avatar.png",commits:0};
@@ -625,10 +625,10 @@ const addLiveTask = (task) => { tasks.push(task); liveTasks.push(task); };
 
 // The public roster is checked in; only the overview needs the live group metrics.
 if (page === "organization") {
-  tasks.push(syncPeople());
+  tasks.push(syncMembers());
   if (!lowPowerMode) addLiveTask(syncOrganization());
 }
-if (page === "people") tasks.push(syncPeople());
+if (page === "members") tasks.push(syncMembers());
 if (page === "projects" && !lowPowerMode) addLiveTask(syncProjects());
 if (page === "projects" && lowPowerMode) {
   const source = $(".directory-status .source-chip");

@@ -145,7 +145,7 @@ svg { display: block; width: 1.1rem; height: 1.1rem; fill: none; stroke: current
 .language-dot.css { background: #563d7c; }
 .language-dot.html { background: #e34c26; }
 .project-icon.privacy img, .project-icon.champion img { width: 59px; height: 59px; object-fit: contain; }
-.people-section, .activity-section, .module-section { background: rgba(12,15,21,.54); border-block: 1px solid rgba(255,255,255,.045); }
+.members-section, .activity-section, .module-section { background: rgba(12,15,21,.54); border-block: 1px solid rgba(255,255,255,.045); }
 .subpage-main { min-height: calc(100svh - 155px); padding: 150px 0 clamp(6rem,10vw,9rem); }
 .subpage-heading { max-width: 790px; margin-bottom: clamp(3rem,6vw,5rem); }
 .subpage-heading .breadcrumbs { margin-bottom: 2rem; }
@@ -154,7 +154,7 @@ svg { display: block; width: 1.1rem; height: 1.1rem; fill: none; stroke: current
 .directory-status { display: flex; margin-top: 2rem; flex-wrap: wrap; gap: .65rem; align-items: center; }
 .directory-status .status-pill i { background: var(--blue); }
 .directory-grid { min-height: 340px; }
-.people-grid { display: grid; grid-template-columns: repeat(2,1fr); gap: 1rem; }
+.members-grid { display: grid; grid-template-columns: repeat(2,1fr); gap: 1rem; }
 .person-card { display: grid; min-height: 190px; padding: 1.5rem; grid-template-columns: auto 1fr auto; gap: 1.25rem; align-items: center; border-radius: var(--radius-lg); transition: transform .18s ease, border-color .18s ease; }
 .person-card:hover { transform: translateY(-3px); border-color: rgba(90,155,242,.26); }
 .person-card > img { width: 84px; height: 84px; object-fit: cover; border: 3px solid rgba(255,255,255,.09); border-radius: 50%; box-shadow: 0 12px 30px rgba(0,0,0,.28); }
@@ -311,7 +311,7 @@ body[data-page="venomous"] :focus-visible { outline-color: var(--green); }
   .metric-dock > div { min-height: 82px; }
   .section-heading { align-items: flex-start; flex-direction: column; gap: 1rem; }
   .section-heading > p { max-width: 100%; }
-  .people-grid, .release-grid, .activity-grid { grid-template-columns: 1fr; }
+  .members-grid, .release-grid, .activity-grid { grid-template-columns: 1fr; }
   .capability-grid { grid-template-columns: 1fr; }
   .capability-card { min-height: 190px; }
   .module-filters { flex-wrap: nowrap; margin-inline: -.1rem; padding-bottom: .3rem; overflow-x: auto; scrollbar-width: none; }

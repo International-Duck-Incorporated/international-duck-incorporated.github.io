@@ -1,8 +1,25 @@
-# Keep old flat URLs working after projects/people pages were reorganized
-# into /projects/* and /people/* folders (see commit "Reorganize project and
+# Keep old flat URLs working after projects/members pages were reorganized
+# into /projects/* and /members/* folders (see commit "Reorganize project and
 # member pages into folders"). 301 = permanent redirect, so browsers,
 # bookmarks, and search engines update to the new URL.
 # https://docs.gitlab.com/user/project/pages/redirects/
+
+# Preserve the former directory route, but make /members the only canonical route.
+/people /members 301
+/people/ /members/ 301
+/people/index.html /members/ 301
+/people/0xffshell /members/0xffshell 301
+/people/0xffshell.html /members/0xffshell 301
+/people/3spress0 /members/3spress0 301
+/people/3spress0.html /members/3spress0 301
+/people/e-vdv-hu /members/e-vdv-hu 301
+/people/e-vdv-hu.html /members/e-vdv-hu 301
+/people/superivar /members/superivar 301
+/people/superivar.html /members/superivar 301
+/people/midas735 /members/midas735 301
+/people/midas735.html /members/midas735 301
+/people/jojo-8002 /members/jojo-8002 301
+/people/jojo-8002.html /members/jojo-8002 301
 
 /beacon /projects/beacon 301
 /bagley /projects/bagley 301
@@ -12,9 +29,9 @@
 /zonedout /projects/zonedout 301
 /website /projects/website 301
 
-/0xffshell /people/0xffshell 301
-/3spress0 /people/3spress0 301
-/e-vdv-hu /people/e-vdv-hu 301
-/superivar /people/superivar 301
-/midas735 /people/midas735 301
-/jojo-8002 /people/jojo-8002 301
+/0xffshell /members/0xffshell 301
+/3spress0 /members/3spress0 301
+/e-vdv-hu /members/e-vdv-hu 301
+/superivar /members/superivar 301
+/midas735 /members/midas735 301
+/jojo-8002 /members/jojo-8002 301

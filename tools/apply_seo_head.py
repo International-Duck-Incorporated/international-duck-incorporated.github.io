@@ -2,7 +2,7 @@
 """Inject crawlability / sharing metadata into the <head> of every indexable page.
 
 Adds, per page:
-  * <link rel="preconnect"> / dns-prefetch for the API origins used by that page
+  * <link rel="preconnect"> / dns-prefetch for the active GitLab API origin
   * <link rel="canonical"> pointing at the canonical production host
   * og:url, og:site_name, og:locale, og:image (+ width/height/alt) on the site default card
   * twitter:card / twitter:title / twitter:description / twitter:image
@@ -23,13 +23,13 @@ PAGES = {
     "index.html": "/",
     "activity.html": "/activity",
     "migration.html": "/migration",
-    "people/index.html": "/people/",
-    "people/0xffshell.html": "/people/0xffshell",
-    "people/3spress0.html": "/people/3spress0",
-    "people/e-vdv-hu.html": "/people/e-vdv-hu",
-    "people/midas735.html": "/people/midas735",
-    "people/superivar.html": "/people/superivar",
-    "people/jojo-8002.html": "/people/jojo-8002",
+    "members/index.html": "/members/",
+    "members/0xffshell.html": "/members/0xffshell",
+    "members/3spress0.html": "/members/3spress0",
+    "members/e-vdv-hu.html": "/members/e-vdv-hu",
+    "members/midas735.html": "/members/midas735",
+    "members/superivar.html": "/members/superivar",
+    "members/jojo-8002.html": "/members/jojo-8002",
     "projects/index.html": "/projects/",
     "projects/bagley.html": "/projects/bagley",
     "projects/beacon.html": "/projects/beacon",
@@ -50,9 +50,6 @@ def apply(path: Path, url: str) -> bool:
     if 'rel="canonical"' in src:
         return False
 
-    scripts = set(re.findall(r'<script src="/([\w.-]+)\.js', src))
-    uses_github = bool(scripts & {"commit-feed", "activity"})
-
     title = (re.search(r"<title>(.*?)</title>", src, re.S) or [None, ""])[1].strip()
     desc = (re.search(r'<meta name="description" content="(.*?)"', src) or [None, ""])[1]
     desc = desc.replace("&amp;", "&")
@@ -60,9 +57,6 @@ def apply(path: Path, url: str) -> bool:
     # 1) preconnect early, right after the viewport meta
     pre = ['  <link rel="preconnect" href="https://gitlab.com" crossorigin>',
            '  <link rel="dns-prefetch" href="https://gitlab.com">']
-    if uses_github:
-        pre += ['  <link rel="preconnect" href="https://api.github.com" crossorigin>',
-                '  <link rel="dns-prefetch" href="https://api.github.com">']
     src = src.replace('  <meta name="viewport" content="width=device-width, initial-scale=1">',
                       '  <meta name="viewport" content="width=device-width, initial-scale=1">\n' + "\n".join(pre), 1)
 

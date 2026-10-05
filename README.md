@@ -2,7 +2,7 @@
 
 Static GitLab Pages site for [International Duck Incorporated](https://gitlab.com/international-duck-incorporated), designed as a responsive premium-glass product dashboard.
 
-**Platform policy:** wherever this site or this organization references both GitLab and GitHub, **GitLab is IDI's main platform** and GitHub the legacy mirror. The GitHub organization remains publicly visible as a backup, but active development, releases, and all source-of-truth links point to GitLab.
+**Platform policy:** GitLab is IDI's active platform and source of truth for development, releases, issues, and live activity. The former GitHub organization is currently hidden/private from public view, so this site does not call its APIs or link to its mirror. GitHub references are retained only where they explain the migration history or unavailable-data status.
 
 ## Pages
 
@@ -10,8 +10,8 @@ Static GitLab Pages site for [International Duck Incorporated](https://gitlab.co
 - `projects/index.html` - public project directory, including the in-development ZonedOut project
 - `projects/zonedout.html` - ZonedOut project overview, features, development status, and GitLab links
 - `Website` - a small page about the source repository for this website (`website.html`)
-- `people/index.html` and `people/*.html` - member directory and profile pages
-- `activity.html` - cross-platform live commit feed: every project on both organizations, per-member attribution, and a merged timeline, marking GitLab as **main** and GitHub as legacy
+- `members/index.html` and `members/*.html` - member directory and profile pages
+- `activity.html` - GitLab-only live commit feed for every project, per-member attribution, and a merged timeline; it visibly warns that GitHub is currently unavailable
 - `migration.html` - sourced GitHub-to-GitLab migration timeline
 - `venomous.html` - complete Venomous experience with features, module browser, releases, installation, activity, and contributors
 - `beacon.html` - Beacon project page with module categories, safety policy, configuration, addon API, engineering notes, and current release status
@@ -19,21 +19,21 @@ Static GitLab Pages site for [International Duck Incorporated](https://gitlab.co
 - `championscode.html` - ChampionsCode project page with research console, modules, safety model, and development status
 - `404.html` - matching not-found page
 
-## Live GitLab + GitHub data
+## Live GitLab data
 
-Client-side synchronization uses the public **GitLab API** (main) and, since September 2026, the public **GitHub API** (legacy mirror) to keep these areas current automatically:
+Client-side synchronization uses the public **GitLab API** (main) to keep these areas current automatically:
 
-- Group identity, avatar, and project directory from the GitLab group (main)
-- Cross-platform commit activity on `/activity`: per-project repositories from both organizations (`GET /groups/:id/projects` on GitLab, `GET /orgs/:org/repos` on GitHub) and the newest 100 commits per repository per platform, attributed to members with a checked-in alias table (`activity.js`)
-- Per-member commit cards with GitLab (main) and GitHub (legacy) splits; upstream OpSec contributors (aurickk, KaPlayz) and automation accounts are bucketed separately instead of counted as members
+- Group identity, avatar, and project directory from the GitLab group
+- GitLab commit activity on `/activity`: the newest 100 commits per repository, attributed to members with a checked-in alias table (`activity.js`)
+- Per-member GitLab activity cards; upstream OpSec contributors (aurickk, KaPlayz) and automation accounts are bucketed separately instead of counted as members
 - Venomous stars, forks, language, and latest activity
 - Beacon and NullTrace release versions, dates, counts, and download destinations
 - Recent commits and project contributors with GitLab profile links
 - Registered modules parsed from `ModuleRegistry.java`
 
-GitHub's anonymous API is rate-limited (60 requests/hour per visitor IP) and after the September 2026 account actions it intermittently returns 404 for individual repository endpoints. The activity page therefore fetches each platform independently and degrades panel-by-panel: if GitHub commits are unreachable, the GitHub panel falls back to mirrored `pushed_at` metadata; if a platform is entirely unavailable, the other still renders, and the footer sync state reports which sources answered.
+The GitHub organization is currently hidden/private, so GitHub API and mirror data are intentionally not fetched. The activity page shows a user-facing warning and falls back to checked-in content if GitLab is unavailable.
 
-GitLab does not expose group membership through its public API, so the member directory renders the checked-in member roster. All seven public project repositories are in the GitLab group (main): Beacon, Venomous, NullTrace, ChampionsCode, Beacon-Bagley, ZonedOut, and `home` (this website). The project directory links to ZonedOut's overview page, which links to its GitLab source repository. Beacon and NullTrace release data is pulled from the GitLab releases API. 0xFF remains an active member and now links to his GitLab profile because his GitHub account is unavailable. Jojo-8002 is listed as a public member and links to his public GitHub profile; no project details are inferred. The current role roster is: 0xFF as main writer, espress0 as backend developer and project backbone, E-VDV-HU as backend and hosting manager, Xx-superIvar-xX as product tester, Jojo-8002 here for shit n giggles, and midas735 just happy to be here. Other personal profiles keep their original destinations where available. Checked-in content and authentic local images keep the pages useful if the API is unavailable or rate-limited.
+GitLab does not expose group membership through its public API, so the member directory renders the checked-in member roster. All seven public project repositories are in the GitLab group: Beacon, Venomous, NullTrace, ChampionsCode, Beacon-Bagley, ZonedOut, and `home` (this website). The project directory links to ZonedOut's overview page, which links to its GitLab source repository. Beacon and NullTrace release data is pulled from the GitLab releases API. 0xFF remains an active member and links to his GitLab profile because his former GitHub account is unavailable. The current role roster is: 0xFF as main writer, espress0 as backend developer and project backbone, E-VDV-HU as backend and hosting manager, Xx-superIvar-xX as product tester, Jojo-8002 here for shit n giggles, and midas735 just happy to be here. Checked-in content and authentic local images keep the pages useful if the API is unavailable or rate-limited.
 
 A tiny synchronous capability hint selects a low-power mode for Save-Data/2G connections, devices reporting 4 GB of memory or less, or four or fewer logical CPU cores. It keeps the site’s glass treatment as a solid tinted surface while removing backdrop blur and decorative video, canvas, and WebGL motion. Heavy live feeds stay paused until requested on these devices; reduced-motion preferences are still handled separately.
 
