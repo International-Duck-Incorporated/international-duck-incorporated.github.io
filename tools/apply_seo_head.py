@@ -29,6 +29,7 @@ PAGES = {
     "people/e-vdv-hu.html": "/people/e-vdv-hu",
     "people/midas735.html": "/people/midas735",
     "people/superivar.html": "/people/superivar",
+    "people/jojo-8002.html": "/people/jojo-8002",
     "projects/index.html": "/projects/",
     "projects/bagley.html": "/projects/bagley",
     "projects/beacon.html": "/projects/beacon",

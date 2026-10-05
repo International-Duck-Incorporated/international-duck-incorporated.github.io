@@ -66,6 +66,12 @@
       avatar: "/assets/member-midas735.png",
       aliases: [/midas735/i],
       gitlab: null, github: `${GH}/midas735`
+    },
+    {
+      key: "jojo-8002", display: "Jojo-8002", page: "/people/jojo-8002",
+      avatar: "/assets/member-jojo-8002.png",
+      aliases: [/jojo[-_ ]?8002/i],
+      gitlab: null, github: `${GH}/Jojo-8002`
     }
   ];
   const UPSTREAMS = [/aurick/i, /kaplayz/i];

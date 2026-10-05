@@ -33,6 +33,7 @@ commit activity. Content is synchronized live from the GitLab API.
 - [E-VDV-HU](https://idi-official.pages.dev/people/e-vdv-hu): applied software and Python projects; Utrecht / Hogeschool Utrecht.
 - [Xx-superIvar-xX](https://idi-official.pages.dev/people/superivar): public member.
 - [midas735](https://idi-official.pages.dev/people/midas735): public member.
+- [Jojo-8002](https://idi-official.pages.dev/people/jojo-8002): public member; GitHub profile.
 
 ## Source repositories
 

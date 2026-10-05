@@ -32,6 +32,7 @@ PRIORITY = {
     "/people/e-vdv-hu": ("monthly", "0.6"),
     "/people/midas735": ("monthly", "0.6"),
     "/people/superivar": ("monthly", "0.6"),
+    "/people/jojo-8002": ("monthly", "0.6"),
     "/projects/website": ("monthly", "0.5"),
 }
 

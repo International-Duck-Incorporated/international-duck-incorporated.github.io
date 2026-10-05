@@ -130,6 +130,9 @@ PEOPLE = {
     "people/superivar.html": {"url": "/people/superivar", "name": "Xx-superIvar-xX",
         "desc": "Public member of International Duck Incorporated.",
         "sameAs": ["https://github.com/Xx-superIvar-xX", "https://gitlab.com/Xx-superIvar-xX"]},
+    "people/jojo-8002.html": {"url": "/people/jojo-8002", "name": "Jojo-8002",
+        "desc": "Public member of International Duck Incorporated.",
+        "sameAs": ["https://github.com/Jojo-8002"]},
 }
 
 CRUMBS = {

@@ -49,7 +49,8 @@ PEOPLE_CARDS = """        <a class="person-card glass-card reveal" href="/people
         <a class="person-card glass-card reveal" href="/people/3spress0"><img src="/assets/contributor-3spress0.png" alt="espress0" width="96" height="96"%LAZY%><div><span class="shadowban-label">Active member · GitHub banned</span><h3>espress0</h3><p>Security tooling · Minecraft development</p></div><svg><use href="#i-external"/></svg></a>
         <a class="person-card glass-card reveal" href="/people/e-vdv-hu"><img src="/assets/member-e-vdv-hu.png" alt="E-VDV-HU" width="96" height="96"%LAZY%><div><span>Public member</span><h3>E-VDV-HU</h3><p>Applied software · Python projects</p></div><svg><use href="#i-external"/></svg></a>
         <a class="person-card glass-card reveal" href="/people/superivar"><img src="/assets/member-xx-superivar-xx.png" alt="Xx-superIvar-xX" width="96" height="96"%LAZY%><div><span>Public member</span><h3>Xx-superIvar-xX</h3><p>New member · GitHub profile</p></div><svg><use href="#i-external"/></svg></a>
-        <a class="person-card glass-card reveal" href="/people/midas735"><img src="/assets/member-midas735.png" alt="midas735" width="96" height="96"%LAZY%><div><span>Public member</span><h3>midas735</h3><p>New member · GitHub profile</p></div><svg><use href="#i-external"/></svg></a>""".replace("%LAZY%", LAZY)
+        <a class="person-card glass-card reveal" href="/people/midas735"><img src="/assets/member-midas735.png" alt="midas735" width="96" height="96"%LAZY%><div><span>Public member</span><h3>midas735</h3><p>New member · GitHub profile</p></div><svg><use href="#i-external"/></svg></a>
+        <a class="person-card glass-card reveal" href="/people/jojo-8002"><img src="/assets/member-jojo-8002.png" alt="Jojo-8002" width="96" height="96"%LAZY%><div><span>Public member</span><h3>Jojo-8002</h3><p>New member · GitHub profile</p></div><svg><use href="#i-external"/></svg></a>""".replace("%LAZY%", LAZY)
 
 HOME_BLOCK = f"""
     <section class="shell home-directory reveal" aria-labelledby="home-projects-heading" data-seo-enriched>
@@ -68,7 +69,7 @@ HOME_BLOCK = f"""
     <section class="shell home-directory reveal" aria-labelledby="home-people-heading">
       <header class="section-heading">
         <div><span class="eyebrow">Members</span><h2 id="home-people-heading">People.</h2></div>
-        <p>Five public members write, review and ship everything International Duck publishes. Each profile lists their projects, commit history and public accounts.</p>
+        <p>Six public members make up the International Duck roster. Each profile links to the member's public account, with project and activity details where available.</p>
       </header>
       <div class="people-grid directory-grid">
 {PEOPLE_CARDS}
@@ -93,7 +94,7 @@ PEOPLE_BLOCK = """
       <header class="section-heading">
         <div><span class="eyebrow">About the roster</span><h2 id="people-about-heading">Who we are.</h2></div>
       </header>
-      <p>International Duck Incorporated has five public members. GitLab does not expose group membership through its public API, so this directory is a checked-in roster: each card links to a profile page with that member's projects, their GitLab or GitHub account, and their recent commits.</p>
+      <p>International Duck Incorporated has six public members. GitLab does not expose group membership through its public API, so this directory is a checked-in roster. Each card links to a profile page with the member's public account and, where available, project or activity details.</p>
       <p>Commit attribution across both platforms lives on the <a href="/activity">activity page</a>, which splits every member's work between GitLab (main) and the legacy GitHub mirror. Upstream contributors to forked projects and automation accounts are listed separately and are not counted as members.</p>
     </section>
 """
@@ -105,7 +106,7 @@ ACTIVITY_BLOCK = """
         <p>Every public repository in both organizations, and the newest 100 commits per repository per platform.</p>
       </header>
       <div class="activity-note reveal">
-        <p>On the GitLab side (main) the feed covers <a href="/projects/beacon">Beacon</a>, <a href="/projects/venomous">Venomous</a>, <a href="/projects/nulltrace">NullTrace</a>, <a href="/projects/championscode">ChampionsCode</a>, <a href="/projects/bagley">Bagley</a>, <a href="/projects/zonedout">ZonedOut</a> and <a href="/projects/website">this website</a>. On the GitHub side (legacy mirror) the same projects are mirrored under the older organization. Commits are attributed to the five public members where the author identity matches a checked-in alias table; upstream OpSec contributors and automation accounts are bucketed separately.</p>
+        <p>On the GitLab side (main) the feed covers <a href="/projects/beacon">Beacon</a>, <a href="/projects/venomous">Venomous</a>, <a href="/projects/nulltrace">NullTrace</a>, <a href="/projects/championscode">ChampionsCode</a>, <a href="/projects/bagley">Bagley</a>, <a href="/projects/zonedout">ZonedOut</a> and <a href="/projects/website">this website</a>. On the GitHub side (legacy mirror) the same projects are mirrored under the older organization. Commits are attributed to the six public members where the author identity matches a checked-in alias table; upstream OpSec contributors and automation accounts are bucketed separately.</p>
         <p>If a platform's API is rate-limited or unreachable, the panels degrade independently and the footer sync state reports which sources answered, so the page keeps its checked-in content.</p>
       </div>
     </section>

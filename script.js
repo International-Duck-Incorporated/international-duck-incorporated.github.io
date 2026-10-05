@@ -228,7 +228,8 @@ async function syncPeople() {
     { login: "3spress0", display: "espress0", type: "User" },
     { login: "E-VDV-HU", display: "E-VDV-HU", type: "User" },
     { login: "Xx-superIvar-xX", display: "Xx-superIvar-xX", type: "User" },
-    { login: "midas735", display: "midas735", type: "User" }
+    { login: "midas735", display: "midas735", type: "User" },
+    { login: "Jojo-8002", display: "Jojo-8002", type: "User" }
   ];
   const role = "Public member";
   setText("[data-org-people-count]", people.length);
@@ -240,12 +241,13 @@ async function syncPeople() {
     link.dataset.memberCard = normalizeLogin(person.login);
     const memberPages = {
       "3spress0": "/people/3spress0", "E-VDV-HU": "/people/e-vdv-hu", "0xFFshell": "/people/0xffshell",
-      "Xx-superIvar-xX": "/people/superivar", "midas735": "/people/midas735"
+      "Xx-superIvar-xX": "/people/superivar", "midas735": "/people/midas735",
+      "Jojo-8002": "/people/jojo-8002"
     };
     link.href = memberPages[person.login] || person.html_url;
     if (!memberPages[person.login]) { link.target = "_blank"; link.rel = "noreferrer"; }
     const image = document.createElement("img");
-    const localMemberImages = { "3spress0": "/assets/contributor-3spress0.png", "0xFFshell": "/assets/member-0xffshell.png", "E-VDV-HU": "/assets/member-e-vdv-hu.png", "Xx-superIvar-xX": "/assets/member-xx-superivar-xx.png", "midas735": "/assets/member-midas735.png" };
+    const localMemberImages = { "3spress0": "/assets/contributor-3spress0.png", "0xFFshell": "/assets/member-0xffshell.png", "E-VDV-HU": "/assets/member-e-vdv-hu.png", "Xx-superIvar-xX": "/assets/member-xx-superivar-xx.png", "midas735": "/assets/member-midas735.png", "Jojo-8002": "/assets/member-jojo-8002.png" };
     image.src = localMemberImages[person.login] || (person.avatar_url ? person.avatar_url : "/assets/org-avatar.png");
     image.alt = person.display; image.width = 96; image.height = 96;
     const copy = document.createElement("div");
@@ -264,7 +266,8 @@ async function syncPeople() {
       "3spress0": "Security tooling · Minecraft development",
       "E-VDV-HU": "Applied software · Python projects",
       "Xx-superIvar-xX": "New member · GitHub profile",
-      "midas735": "New member · GitHub profile"
+      "midas735": "New member · GitHub profile",
+      "Jojo-8002": "New member · GitHub profile"
     };
     handle.textContent = summaries[person.login] || `@${person.login}`;
     copy.append(label, name, handle);
