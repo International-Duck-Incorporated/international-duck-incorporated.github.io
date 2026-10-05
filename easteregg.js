@@ -29,33 +29,62 @@
   // by this repository. The 74 MB original is intentionally absent: it is the
   // easter egg's payload, not rotation material.
   const BACKGROUNDS = [
+    // videos: the clip ends on the wordmark, so the copy sits top-left and the
+    // <h1> hides - the backdrop is already saying the name
     {
       name: "easteregg-video-2.webm",
       kind: "video",
-      label: "clip, plays out in full",
+      wordmark: true,
+      focus: "50% 47%",
       // holdAt: 3.0, // end on the red IDI / GITLAB.ORG lockup instead
+      label: "clip, plays out in full",
       src: `${ASSET_REPO}/-/raw/${ASSET_REF}${ASSET_DIR}easteregg-video-2.webm`,
     },
     {
       name: "easteregg-video-3.webm",
       kind: "video",
+      wordmark: true,
+      focus: "100% 42%", // its lockup hugs the right edge of the frame
       label: "clip, plays out in full",
-      // holdAt: 4.6, // end on the blue IDI / INTERNATIONAL DUCK lockup instead
       src: `${ASSET_REPO}/-/raw/${ASSET_REF}${ASSET_DIR}easteregg-video-3.webm`,
     },
     {
+      name: "video3.webm",
+      kind: "video",
+      wordmark: true,
+      focus: "50% 50%", // crest + IDI, centred on black
+      label: "clip, plays out in full",
+      src: `${ASSET_REPO}/-/raw/${ASSET_REF}${ASSET_DIR}video3.webm`,
+    },
+    {
+      name: "video4.webm",
+      kind: "video",
+      wordmark: true,
+      focus: "50% 50%", // cube burst, then a faint IDI on near-black
+      label: "clip, plays out in full",
+      src: `${ASSET_REPO}/-/raw/${ASSET_REF}${ASSET_DIR}video4.webm`,
+    },
+    // stills: copy sits bottom-right; only the collage has no name in it, so it
+    // is the one state that shows the <h1>
+    {
       name: "homepage-community-background-v4.jpg",
       kind: "image",
+      wordmark: true,
+      focus: "50% 42%",
       label: "community backdrop",
       src: "/assets/homepage-community-background-v4.jpg",
     },
     {
       name: "idi-member-collage.png",
       kind: "image",
+      wordmark: false,
+      focus: "46% 54%",
       label: "member collage",
       src: "/assets/idi-member-collage.png",
     },
   ];
+
+
 
   // The egg's sources, in order: the bundle's current layout, then the same
   // file pinned to the commit it was audited in, which resolves no matter how
@@ -245,6 +274,16 @@
   }
   const pick = pool[index];
 
+  // The hero adapts to what is behind it: videos park the copy top-left, stills
+  // bottom-right, and the <h1> only shows for a backdrop with no name in it.
+  const applyFrameState = (item) => {
+    body.dataset.frame = item.kind; // video | image
+    body.dataset.wordmark = item.wordmark ? "yes" : "no";
+    body.style.setProperty("--focus", item.focus || "50% 50%");
+  };
+
+  applyFrameState(pick);
+
   if (pick.kind === "image") {
     mountImage(pick);
   } else {
@@ -256,7 +295,13 @@
       playOut: true,
       holdAt: pick.holdAt,
       log: () => `\u{1F95A} background: ${pick.label} (this visit's pick)`,
-      onGiveUp: () => mountImage(stills[Math.floor(Math.random() * stills.length)]),
+      onGiveUp: () => {
+        // A clip that never arrives is replaced by a still - and the layout
+        // follows that still, not the clip that failed.
+        const still = stills[Math.floor(Math.random() * stills.length)];
+        applyFrameState(still);
+        mountImage(still);
+      },
     });
   }
 })();

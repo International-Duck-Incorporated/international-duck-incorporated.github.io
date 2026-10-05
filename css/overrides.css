@@ -174,6 +174,60 @@ body[data-page="organization"]::after {
   gap: 0 1.5rem;
 }
 
+/* ---- Adaptive hero: the copy follows the backdrop ----
+   Videos park the copy top-left (the clip carries the wordmark, so the <h1>
+   stands down). Stills park it bottom-right; the collage has no name in it, so
+   that one state shows the <h1>. State comes from easteregg.js as data-frame /
+   data-wordmark on <body>. */
+.hero-scrim { position: fixed; inset: 0; z-index: -1; pointer-events: none; }
+
+body.egg-bg[data-frame="video"] .hero-scrim {
+  background:
+    linear-gradient(112deg, rgba(4,6,10,.74) 0%, rgba(4,6,10,.34) 26%, rgba(4,6,10,.06) 44%, rgba(4,6,10,0) 54%),
+    linear-gradient(180deg, rgba(4,6,10,.44) 0%, rgba(4,6,10,.06) 8%, rgba(4,6,10,0) 14%);
+}
+
+body.egg-bg[data-frame="image"] .hero-scrim {
+  background:
+    linear-gradient(292deg, rgba(4,6,10,.76) 0%, rgba(4,6,10,.36) 26%, rgba(4,6,10,.06) 44%, rgba(4,6,10,0) 54%),
+    linear-gradient(0deg, rgba(4,6,10,.5) 0%, rgba(4,6,10,.08) 10%, rgba(4,6,10,0) 16%);
+}
+
+/* the hero is just the copy block now; the profile and metrics moved below */
+.org-hero { display: flex; min-height: 100vh; padding-bottom: 0; }
+body[data-frame="video"] .org-hero { align-items: flex-start; }
+body[data-frame="image"] .org-hero { align-items: flex-end; justify-content: flex-end; }
+.org-hero-copy { position: relative; z-index: 2; width: min(100%, 44ch); }
+body[data-frame="video"] .org-hero-copy { margin-top: 14vh; }
+body[data-frame="image"] .org-hero-copy { margin-bottom: 8vh; text-align: right; }
+body[data-frame="image"] .org-hero-copy .action-row { justify-content: flex-end; }
+
+/* the <h1> steps aside whenever the backdrop is already showing the name */
+body[data-wordmark="yes"] .org-hero-copy h1 {
+  position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0;
+  overflow: hidden; clip-path: inset(50%); white-space: nowrap; border: 0;
+}
+body[data-wordmark="yes"] .org-hero-copy > p { margin-top: 0; }
+body[data-wordmark="no"] .org-hero-copy h1 {
+  margin: 0 0 .8rem; font-size: clamp(2.1rem, 4.2vw, 3.3rem); line-height: .98;
+  letter-spacing: -.045em; color: #fff; text-shadow: 0 3px 30px rgba(0,0,0,.6);
+}
+body[data-wordmark="no"] .org-hero-copy h1 span { color: #b3cbff; }
+.org-hero-copy > p { text-shadow: 0 2px 18px rgba(0,0,0,.55); }
+
+/* below the fold, on solid ground */
+.below-fold { position: relative; padding: 3.4rem 0 5rem; background: #07090d;
+  border-top: 1px solid rgba(255,255,255,.07); }
+.below-head { display: flex; margin-bottom: 1.5rem; gap: 2rem; align-items: baseline;
+  justify-content: space-between; }
+.below-head h2 { margin: 0; color: #fff; font-size: 1.15rem; letter-spacing: -.015em; }
+.below-head p { margin: 0; color: rgba(190,205,225,.55); font-family: var(--mono);
+  font-size: .49rem; font-weight: 600; letter-spacing: .15em; text-transform: uppercase; }
+.below-fold .metric-dock { padding-bottom: 0; margin-top: 1rem; }
+
+/* Keep the rotation on-brand: the clips keep their own colour, not the site grid. */
+body.egg-bg[data-page="organization"]::after { display: none; }
+
 /* ---- Easter egg + rotating homepage background ---- */
 .egg-video,
 .egg-photo {
@@ -185,7 +239,8 @@ body[data-page="organization"]::after {
   object-fit: cover;
   pointer-events: none;
   opacity: 0;
-  filter: brightness(.5) saturate(.9);
+  object-position: var(--focus, 50% 50%);
+  filter: brightness(1.02) saturate(1.05);
   transition: opacity .9s ease;
 }
 

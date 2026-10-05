@@ -23,7 +23,7 @@
   <script src="/pixel-canvas.js" defer></script>
   <script src="/easteregg.js" defer></script>
 </head>
-<body data-page="organization">
+<body data-page="organization" data-frame="video" data-wordmark="yes">
   <svg class="svg-sprite" aria-hidden="true">
     <symbol id="i-arrow" viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></symbol>
     <symbol id="i-external" viewBox="0 0 24 24"><path d="M14 5h5v5M19 5l-9 9M18 13v6H5V6h6"/></symbol>
@@ -39,6 +39,7 @@
 
   <a class="skip-link" href="#main">Skip to content</a>
   <div class="site-glow site-glow-blue" aria-hidden="true"></div>
+  <div class="hero-scrim" aria-hidden="true"></div>
 
   <header class="topbar" data-header>
     <div class="shell topbar-inner">
@@ -59,36 +60,43 @@
   </header>
 
   <main id="main">
+    <!-- Hero copy. Its position is set by the backdrop: videos park it top-left,
+         stills bottom-right (see the adaptive block in css/overrides.css).
+         The <h1> hides when the backdrop already shows the name. -->
     <section class="org-hero shell">
       <div class="org-hero-copy reveal">
-        <div class="status-pill"><i></i> Public GitLab group</div>
         <h1>International Duck <span>Incorporated.</span></h1>
         <p>Public projects, releases, and members, synchronized directly with GitLab.</p>
         <div class="action-row">
           <a class="button button-blue" href="/projects"><pixel-canvas data-gap="6" data-speed="35" data-colors="#dcecff, #8ab8f6, #4a7fc0"></pixel-canvas>Explore projects <svg><use href="#i-arrow"/></svg></a>
           <a class="button button-glass" href="https://gitlab.com/international-duck-incorporated" target="_blank" rel="noreferrer"><pixel-canvas data-gap="6" data-speed="35" data-colors="#dcecff, #8ab8f6, #4a7fc0"></pixel-canvas><svg><use href="#i-gitlab"/></svg>Open GitLab</a>
-          <a class="button button-glass" href="/migration"><pixel-canvas data-gap="6" data-speed="35" data-colors="#dcecff, #8ab8f6, #4a7fc0"></pixel-canvas>Why we migrated <svg><use href="#i-arrow"/></svg></a>
         </div>
       </div>
-
-      <aside class="org-profile glass-card reveal" aria-label="Live organization profile">
-        <div class="profile-topline"><span>ORGANIZATION PROFILE</span><span class="live-label"><i></i> LIVE</span></div>
-        <div class="profile-identity">
-          <img data-org-avatar src="/assets/org-avatar.png" alt="International Duck Incorporated logo" width="154" height="154">
-          <div><small>gitlab.com</small><h2 data-org-name>International Duck Incorporated</h2><a href="https://gitlab.com/international-duck-incorporated" target="_blank" rel="noreferrer">@international-duck-incorporated <svg><use href="#i-external"/></svg></a></div>
-        </div>
-        <div class="profile-stats">
-          <div><svg><use href="#i-repo"/></svg><span>Repositories</span><b data-org-repos>6</b></div>
-          <div><svg><use href="#i-users"/></svg><span>People</span><b data-org-people-count>5</b></div>
-          <div><svg><use href="#i-star"/></svg><span>Stars</span><b data-org-stars>0</b></div>
-        </div>
-      </aside>
     </section>
 
-    <section class="metric-dock shell reveal" aria-label="Organization status">
-      <div class="glass-card"><span class="metric-icon blue"><svg><use href="#i-repo"/></svg></span><span><small>PUBLIC REPOSITORIES</small><b data-org-repos>6</b></span></div>
-      <div class="glass-card"><span class="metric-icon violet"><svg><use href="#i-users"/></svg></span><span><small>PUBLIC MEMBERS</small><b data-org-people-count>5</b></span></div>
-      <div class="glass-card"><span class="metric-icon green"><svg><use href="#i-pulse"/></svg></span><span><small>DATA SOURCE</small><b>GitLab API</b></span></div>
+    <!-- Everything that used to crowd the hero lives below the fold, on solid ground. -->
+    <section class="below-fold">
+      <div class="shell">
+        <div class="below-head"><h2>The organization</h2><p>live from the GitLab API</p></div>
+        <aside class="org-profile glass-card reveal" aria-label="Live organization profile">
+          <div class="profile-topline"><span>ORGANIZATION PROFILE</span><span class="live-label"><i></i> LIVE</span></div>
+          <div class="profile-identity">
+            <img data-org-avatar src="/assets/org-avatar.png" alt="International Duck Incorporated logo" width="154" height="154">
+            <div><small>gitlab.com</small><h2 data-org-name>International Duck Incorporated</h2><a href="https://gitlab.com/international-duck-incorporated" target="_blank" rel="noreferrer">@international-duck-incorporated <svg><use href="#i-external"/></svg></a></div>
+          </div>
+          <div class="profile-stats">
+            <div><svg><use href="#i-repo"/></svg><span>Repositories</span><b data-org-repos>6</b></div>
+            <div><svg><use href="#i-users"/></svg><span>People</span><b data-org-people-count>5</b></div>
+            <div><svg><use href="#i-star"/></svg><span>Stars</span><b data-org-stars>0</b></div>
+          </div>
+        </aside>
+
+        <section class="metric-dock reveal" aria-label="Organization status">
+          <div class="glass-card"><span class="metric-icon blue"><svg><use href="#i-repo"/></svg></span><span><small>PUBLIC REPOSITORIES</small><b data-org-repos>6</b></span></div>
+          <div class="glass-card"><span class="metric-icon violet"><svg><use href="#i-users"/></svg></span><span><small>PUBLIC MEMBERS</small><b data-org-people-count>5</b></span></div>
+          <div class="glass-card"><span class="metric-icon green"><svg><use href="#i-pulse"/></svg></span><span><small>DATA SOURCE</small><b>GitLab API</b></span></div>
+        </section>
+      </div>
     </section>
 
   </main>
