@@ -2,18 +2,16 @@
  *
  * Background: index.html chooses the visit's frame before styles are applied,
  * so the hero copy never moves. Keep this payload table index-aligned with that
- * head list. The six existing choices stay first; the local Beacon reel and
- * snowy member landscape are appended. The snowy community image in idi-assets
- * is byte-identical to homepage-community-background-v4, so it is not duplicated.
- * Reduced-motion visitors get stills only; low-power visitors keep the smallest
- * local still and never auto-download a clip. Ordinary backgrounds never repeat
- * on consecutive regular visits.
+ * head list. The six existing rotation choices remain intact; the epic IDI logo
+ * is separate and rare, not a normal cycle entry. Reduced-motion visitors get
+ * stills only; low-power visitors keep the smallest local still and never
+ * auto-download a clip. Ordinary backgrounds never repeat on consecutive visits.
  *
  * The epic IDI logo is a separate 1/1000 static surprise, not an everyday pick.
  * The existing 1/1000 hidden 74 MB video easter egg remains too, and /easteregg
  * still plays it on demand. Low-power devices require an explicit click for that
- * video. Most background clips play once and hold their last frame; the Beacon
- * reel is the exception and loops as a proper ambient background.
+ * video. Normal rotation clips play once and hold their last frame; the hidden
+ * egg clip remains separate.
  *
  * Videos start muted so autoplay is allowed everywhere; a small toggle in the
  * corner enables sound while one is on screen. If nothing can be shown,
@@ -25,9 +23,9 @@
   const ASSET_REF = "main"; // pin to a commit sha or tag for an immutable URL
   const ASSET_DIR = "/assets/website/"; // bundle layout since October 2026
 
-  // Homepage background pool. Clips stream from the bundle, images are served
-  // by this repository. The 74 MB original is intentionally absent: it is the
-  // easter egg's payload, not rotation material.
+  // Homepage background pool. Videos and the rare logo stream from the canonical
+  // asset bundle; the two ordinary stills are local. The 74 MB original is
+  // intentionally absent from rotation and remains the hidden egg payload.
   const BACKGROUNDS = [
     // videos: the clip ends on the wordmark, so the copy sits top-left and the
     // <h1> hides - the backdrop is already saying the name
@@ -81,26 +79,6 @@
       focus: "46% 54%",
       label: "member collage",
       src: "/assets/idi-member-collage.webp",
-    },
-    // Appended homepage backgrounds: the Beacon reel is local and loops; the
-    // member landscape is served in optimized WebP with a JPEG fallback.
-    {
-      name: "beacon-background.mp4",
-      kind: "video",
-      wordmark: false,
-      focus: "50% 50%",
-      playOut: false,
-      label: "Beacon gameplay backdrop, looping",
-      src: "/assets/beacon-background.mp4",
-    },
-    {
-      name: "member-e-vdv-hu-bg.webp",
-      kind: "image",
-      wordmark: false,
-      focus: "50% 52%",
-      label: "snowy Minecraft landscape",
-      src: "/assets/member-e-vdv-hu-bg.webp",
-      fallbackSrc: "/assets/member-e-vdv-hu-bg.jpg",
     },
     // Not part of the regular pool; fetched from the canonical idi-assets repo
     // only when index.html selects the 1/1000 surprise.
@@ -213,7 +191,7 @@
     video.className = "egg-video";
     video.preload = "metadata";
     video.autoplay = true;
-    video.loop = !playOut; // most rotation clips settle; Beacon loops by design
+    video.loop = !playOut; // rotation clips settle; the hidden egg clip loops
     video.muted = true;
     video.setAttribute("muted", "");
     video.setAttribute("playsinline", "");
