@@ -1,8 +1,13 @@
+# The canonical site is served by Cloudflare Pages (https://idi-official.pages.dev).
+# GitLab Pages only serves a catch-all 301 so old gitlab.io links keep working.
+#
+# Files in public/ take priority over _redirects rules, so public/ must contain
+# ONLY _redirects (plus a Search Console verification file, if you add one).
+# Do not copy the site into public/ again, or the redirect will be ignored.
 create-pages:
   script:
-    - mkdir .public
-    - cp -r * .public
-    - mv .public public
+    - mkdir public
+    - printf '/* https://idi-official.pages.dev/:splat 301\n' > public/_redirects
   pages: true
   rules:
     - if: '$CI_COMMIT_BRANCH == "main"'
