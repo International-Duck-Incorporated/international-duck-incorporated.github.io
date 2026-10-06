@@ -2,10 +2,11 @@
  *
  * Background: index.html chooses the visit's frame before styles are applied,
  * so the hero copy never moves. Keep this payload table index-aligned with that
- * head list. The six existing rotation choices remain intact; the epic IDI logo
- * is separate and rare, not a normal cycle entry. Reduced-motion visitors get
- * stills only; low-power visitors keep the smallest local still and never
- * auto-download a clip. Ordinary backgrounds never repeat on consecutive visits.
+ * head list. The six existing rotation choices remain intact; video5 and video6
+ * are appended from idi-assets. The epic IDI logo is separate and rare, not a
+ * normal cycle entry. Reduced-motion visitors get stills only; low-power visitors
+ * keep the smallest local still and never auto-download a clip. Ordinary
+ * backgrounds never repeat on consecutive visits.
  *
  * The epic IDI logo is a separate 1/1000 static surprise, not an everyday pick.
  * The existing 1/1000 hidden 74 MB video easter egg remains too, and /easteregg
@@ -79,6 +80,23 @@
       focus: "46% 54%",
       label: "member collage",
       src: "/assets/idi-member-collage.webp",
+    },
+    // Newly uploaded video backgrounds, appended without disturbing older picks.
+    {
+      name: "video5.webm",
+      kind: "video",
+      wordmark: true,
+      focus: "50% 50%",
+      label: "IDI wordmark clip, plays out in full",
+      src: `${ASSET_REPO}/-/raw/${ASSET_REF}${ASSET_DIR}video5.webm`,
+    },
+    {
+      name: "video6.webm",
+      kind: "video",
+      wordmark: true,
+      focus: "50% 50%",
+      label: "IDI seal clip, plays out in full",
+      src: `${ASSET_REPO}/-/raw/${ASSET_REF}${ASSET_DIR}video6.webm`,
     },
     // Not part of the regular pool; fetched from the canonical idi-assets repo
     // only when index.html selects the 1/1000 surprise.
