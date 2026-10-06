@@ -42,27 +42,46 @@
         ["video", "yes", "50% 50%"],   // video4.webm
         ["image", "yes", "50% 42%"],   // homepage-community-background-v4.webp
         ["image", "no", "46% 54%"],    // idi-member-collage.webp
+        ["video", "no", "50% 50%"],    // beacon-background.mp4 — appended
+        ["image", "no", "50% 52%"],    // member-e-vdv-hu-bg.webp — appended
+        ["image", "yes", "50% 50%"],   // epic_idi_logo.png — rare only
       ];
-      const STILLS = [4, 5];
-      const pool = window.IDI_LOW_END ? [4] : window.IDI_REDUCED_MOTION ? STILLS : BACKDROPS.map((_, index) => index);
+      const RARE_LOGO_INDEX = BACKDROPS.length - 1;
+      const STILLS = [4, 5, 7];
+      const normalIndices = BACKDROPS.slice(0, RARE_LOGO_INDEX).map((_, index) => index);
 
-      let index = pool[Math.floor(Math.random() * pool.length)];
+      // The logo is exactly 1/1000 on every homepage visit. Reserve the next roll
+      // for the original video egg, with its existing low-power/motion safeguards.
+      const rareRoll = Math.floor(Math.random() * 1000);
+      window.IDI_RARE_EVENT = rareRoll === 0
+        ? "epic-logo"
+        : rareRoll === 1 && !window.IDI_LOW_END && !window.IDI_REDUCED_MOTION
+          ? "easteregg-video"
+          : "";
+
+      const pool = window.IDI_LOW_END ? [4] : window.IDI_REDUCED_MOTION ? STILLS : normalIndices;
+      let normalIndex = pool[Math.floor(Math.random() * pool.length)];
       try {
-        // Same rotation rule as easteregg.js: never the same backdrop twice in a
-        // row. Index-keyed, because this list is what the head deals in;
-        // easteregg.js keeps its own name-keyed value for its fallback roll.
+        // Same rotation rule as easteregg.js: never the same ordinary backdrop
+        // twice in a row. Rare one-off backgrounds do not consume the rotation.
         const stored = localStorage.getItem("idi-bg-last-index");
         const last = stored === null ? -1 : Number(stored);
-        if (pool.length > 1 && index === last) index = pool[(pool.indexOf(index) + 1) % pool.length];
-        localStorage.setItem("idi-bg-last-index", String(index));
+        if (pool.length > 1 && normalIndex === last) {
+          normalIndex = pool[(pool.indexOf(normalIndex) + 1) % pool.length];
+        }
+        if (!window.IDI_RARE_EVENT) localStorage.setItem("idi-bg-last-index", String(normalIndex));
       } catch {}
 
-      const [kind, wordmark, focus] = BACKDROPS[index];
+      const index = window.IDI_RARE_EVENT === "epic-logo" ? RARE_LOGO_INDEX : normalIndex;
+      let [kind, wordmark, focus] = BACKDROPS[index];
+      if (window.IDI_RARE_EVENT === "easteregg-video") {
+        [kind, wordmark, focus] = ["video", "yes", "50% 50%"];
+      }
       const root = document.documentElement;
       root.dataset.frame = kind;
       root.dataset.wordmark = wordmark;
       root.style.setProperty("--focus", focus);
-      // easteregg.js mounts this index; it only rolls for itself if this is absent.
+      // easteregg.js mounts this index; rare events are handled before its fallback roll.
       window.IDI_BACKDROP = index;
     })();
   </script>
@@ -87,7 +106,7 @@
   <link rel="stylesheet" href="/css/bundle.css?v=705ba414">
   <script src="/script.js?v=c07123d9" defer></script>
   <script src="/pixel-canvas.js?v=5cf6bf45" defer></script>
-  <script src="/easteregg.js?v=b216ebc6" defer></script>
+  <script src="/easteregg.js?v=d1812925" defer></script>
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
   <meta property="og:image:alt" content="International Duck Incorporated - open-source Minecraft mods, tools and experiments">

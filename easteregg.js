@@ -1,28 +1,22 @@
 /* The duck easter egg, and the rotating homepage background.
  *
- * Background: the pick itself happens in index.html's head (BACKDROPS +
- * window.IDI_BACKDROP), before the first style calculation, so the hero copy -
- * whose position follows the backdrop - never moves. This script mounts what was
- * picked; it only rolls for itself on a page that has no head pick, and it keeps
- * its payload table (source, label, holdAt) index-aligned with that head list.
- * Capable devices pick one of four media at random - the two short clips
- * streamed from the idi-assets bundle or one of two local stills.
- * Low-power devices use only the smaller community backdrop.
- * The pick is remembered, so nobody gets the same media twice in a row, and
- * prefers-reduced-motion turns the rotation into images only. Low-power
- * devices use the smaller local still and never auto-download a clip.
+ * Background: index.html chooses the visit's frame before styles are applied,
+ * so the hero copy never moves. Keep this payload table index-aligned with that
+ * head list. The six existing choices stay first; the local Beacon reel and
+ * snowy member landscape are appended. The snowy community image in idi-assets
+ * is byte-identical to homepage-community-background-v4, so it is not duplicated.
+ * Reduced-motion visitors get stills only; low-power visitors keep the smallest
+ * local still and never auto-download a clip. Ordinary backgrounds never repeat
+ * on consecutive regular visits.
  *
- * A rotation clip plays out in full, then holds its last frame as a still:
- * the background settles instead of looping forever, and there is no further
- * network cost. Set holdAt on a clip to end on a chosen moment of it (for
- * example the brand lockup it builds to) rather than on the final frame.
+ * The epic IDI logo is a separate 1/1000 static surprise, not an everyday pick.
+ * The existing 1/1000 hidden 74 MB video easter egg remains too, and /easteregg
+ * still plays it on demand. Low-power devices require an explicit click for that
+ * video. Most background clips play once and hold their last frame; the Beacon
+ * reel is the exception and loops as a proper ambient background.
  *
- * Easter egg: a 1/1000 homepage visit, or /easteregg at any time, plays the
- * hidden 74 MB clip - deliberately not part of the normal rotation, because
- * of its size. Low-power devices require an explicit button click first.
- *
- * Videos start muted so autoplay is allowed everywhere; a small toggle in
- * the corner enables sound while one is on screen. If nothing can be shown,
+ * Videos start muted so autoplay is allowed everywhere; a small toggle in the
+ * corner enables sound while one is on screen. If nothing can be shown,
  * the script backs out and leaves the stylesheet background in place.
  */
 (() => {
@@ -88,6 +82,37 @@
       label: "member collage",
       src: "/assets/idi-member-collage.webp",
     },
+    // Appended homepage backgrounds: the Beacon reel is local and loops; the
+    // member landscape is served in optimized WebP with a JPEG fallback.
+    {
+      name: "beacon-background.mp4",
+      kind: "video",
+      wordmark: false,
+      focus: "50% 50%",
+      playOut: false,
+      label: "Beacon gameplay backdrop, looping",
+      src: "/assets/beacon-background.mp4",
+    },
+    {
+      name: "member-e-vdv-hu-bg.webp",
+      kind: "image",
+      wordmark: false,
+      focus: "50% 52%",
+      label: "snowy Minecraft landscape",
+      src: "/assets/member-e-vdv-hu-bg.webp",
+      fallbackSrc: "/assets/member-e-vdv-hu-bg.jpg",
+    },
+    // Not part of the regular pool; fetched from the canonical idi-assets repo
+    // only when index.html selects the 1/1000 surprise.
+    {
+      name: "epic_idi_logo.png",
+      kind: "image",
+      wordmark: true,
+      focus: "50% 50%",
+      label: "epic IDI logo",
+      rare: true,
+      src: `${ASSET_REPO}/-/raw/${ASSET_REF}${ASSET_DIR}epic_idi_logo.png`,
+    },
   ];
 
 
@@ -114,8 +139,15 @@
 
   const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
   const lowEnd = Boolean(window.IDI_LOW_END);
-  const lucky = isHome && !lowEnd && !reducedMotion && Math.floor(Math.random() * ROLL_ODDS) === 0;
-  const egg = isEggRoute || lucky;
+  const hasHeadRareEvent = Object.prototype.hasOwnProperty.call(window, "IDI_RARE_EVENT");
+  const rareEvent = isHome
+    ? hasHeadRareEvent
+      ? window.IDI_RARE_EVENT
+      : !lowEnd && !reducedMotion && Math.floor(Math.random() * ROLL_ODDS) === 0
+        ? "easteregg-video"
+        : ""
+    : "";
+  const egg = isEggRoute || rareEvent === "easteregg-video";
 
   const readLast = () => {
     try {
@@ -161,12 +193,11 @@
   };
 
   // ------------------------------------------------------------- scheduling
-  // The rotation's local stills are ~50 KB; the remote clips are megabytes. A
-  // clip is therefore requested only after the document has finished loading and
-  // the browser has nothing better to do, so it never competes with the hero's
-  // first paint. The stylesheet background (and the hero copy above it) stays
-  // visible in the meantime, which is the same state a slow clip already left on
-  // screen. Returns immediately if the page is already idle.
+  // Still images are local, optimized WebP files; video clips range from a few
+  // megabytes to much larger remote media. Request video only after the document
+  // has finished loading and the browser has nothing better to do, so it never
+  // competes with the hero's first paint. The stylesheet background (and hero
+  // copy) stays visible until the selected media can paint.
   const whenIdle = (run) => {
     const schedule = () => {
       if ("requestIdleCallback" in window) window.requestIdleCallback(run, { timeout: 2500 });
@@ -182,7 +213,7 @@
     video.className = "egg-video";
     video.preload = "metadata";
     video.autoplay = true;
-    video.loop = !playOut; // rotation clips run once and settle
+    video.loop = !playOut; // most rotation clips settle; Beacon loops by design
     video.muted = true;
     video.setAttribute("muted", "");
     video.setAttribute("playsinline", "");
@@ -238,12 +269,15 @@
   };
 
   // ---------------------------------------------------------------- images
-  const mountImage = ({ name, src, label }) => {
+  const mountImage = ({ name, src, fallbackSrc, label }) => {
     const photo = document.createElement("img");
     photo.className = "egg-photo";
     photo.alt = "";
     photo.setAttribute("aria-hidden", "true");
     photo.setAttribute("decoding", "async");
+
+    const sources = [src, fallbackSrc].filter(Boolean);
+    let sourceIndex = 0;
 
     photo.addEventListener(
       "load",
@@ -256,16 +290,17 @@
       { once: true }
     );
 
-    photo.addEventListener(
-      "error",
-      () => {
-        photo.remove();
-        giveUp(name);
-      },
-      { once: true }
-    );
+    photo.addEventListener("error", () => {
+      sourceIndex += 1;
+      if (sources[sourceIndex]) {
+        photo.src = sources[sourceIndex];
+        return;
+      }
+      photo.remove();
+      giveUp(name);
+    });
 
-    photo.src = src;
+    photo.src = sources[0];
     body.append(photo);
   };
 
@@ -325,15 +360,19 @@
 
   const headPick = Number(window.IDI_BACKDROP);
   let pick;
-  if (Number.isInteger(headPick) && BACKGROUNDS[headPick]) {
+  if (isHome && rareEvent === "epic-logo") {
+    pick = BACKGROUNDS.find((item) => item.rare);
+    applyFrameState(pick);
+  } else if (Number.isInteger(headPick) && BACKGROUNDS[headPick]) {
     pick = BACKGROUNDS[headPick];
     applyFrameState(pick);
   } else {
+    const ordinary = BACKGROUNDS.filter((item) => !item.rare);
     const pool = lowEnd
-      ? [BACKGROUNDS.find((item) => item.name === "homepage-community-background-v4.webp")]
+      ? [ordinary.find((item) => item.name === "homepage-community-background-v4.webp")]
       : reducedMotion
-        ? BACKGROUNDS.filter((item) => item.kind === "image")
-        : BACKGROUNDS;
+        ? ordinary.filter((item) => item.kind === "image")
+        : ordinary;
 
     let index = Math.floor(Math.random() * pool.length);
     if (pool.length > 1 && pool[index].name === readLast()) {
@@ -351,13 +390,13 @@
   } else {
     // A clip that will not load (cold URL, network blip) is replaced by one of
     // the local stills rather than a blank page.
-    const stills = BACKGROUNDS.filter((item) => item.kind === "image");
+    const stills = BACKGROUNDS.filter((item) => item.kind === "image" && !item.rare);
     // data-frame is already applied above, so the hero copy is in its final
     // place; only the clip itself waits for the browser to go idle.
     whenIdle(() =>
       mountVideo([pick.src], {
         name: pick.name,
-        playOut: true,
+        playOut: pick.playOut !== false,
         holdAt: pick.holdAt,
         log: () => `\u{1F95A} background: ${pick.label} (this visit's pick)`,
         onGiveUp: () => {
