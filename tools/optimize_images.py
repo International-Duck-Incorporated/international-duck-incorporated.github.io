@@ -41,6 +41,7 @@ PROFILES: dict[str, tuple[int, int]] = {
     "beacon-icon.png": (128, 82),
     "bagley-icon.png": (256, 82),
     "zonedout-icon.png": (128, 82),
+    "idi-assets-icon.png": (128, 82),
     # Organization avatar, rendered at 40 CSS px (footer) and 154 CSS px (panel).
     "org-avatar.png": (192, 85),
     # Member avatars, rendered at 84-108 CSS px.

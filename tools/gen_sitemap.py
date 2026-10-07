@@ -38,6 +38,8 @@ PRIORITY = {
     "/members/superivar": ("weekly", "0.6"),
     "/members/jojo-8002": ("weekly", "0.6"),
     "/projects/website": ("weekly", "0.5"),
+    "/projects/baritone": ("weekly", "0.7"),
+    "/projects/idi-assets": ("weekly", "0.6"),
 }
 
 ORDER = list(PRIORITY)

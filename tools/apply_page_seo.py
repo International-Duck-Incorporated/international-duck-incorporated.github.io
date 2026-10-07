@@ -99,6 +99,18 @@ PAGES: dict[str, tuple[str, str, str, str]] = {
         "features, a Metro-style UI and a 36-module world-generation analysis suite.",
         "Fabric client mod for Minecraft 26.3 with a 36-module seed and world analysis suite.",
     ),
+    "projects/baritone.html": (
+        "/projects/baritone",
+        "Baritone, Minecraft pathfinder fork for Minecraft 26.x | IDI",
+        "IDI's GitLab fork of the Baritone Minecraft pathfinder: branches for Minecraft 26.1, 26.2 and 26.3, look-and-aim behaviour work, and Bagley's navigation layer.",
+        "IDI's fork of the Baritone pathfinder, kept current for Minecraft 26.x and wired into Bagley.",
+    ),
+    "projects/idi-assets.html": (
+        "/projects/idi-assets",
+        "IDI Assets, the organization's pictures and videos | IDI",
+        "idi-assets is International Duck's public media bundle: icons, logos, banners, screenshots, UI icons, member art and 4K video clips, one copy per asset.",
+        "The organization's public media tree: 69 unique files in 11 directories, catalogued and deduplicated.",
+    ),
     "projects/website.html": (
         "/projects/website",
         "This website: how idi-official.pages.dev works | IDI",

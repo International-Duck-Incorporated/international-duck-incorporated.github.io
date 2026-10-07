@@ -1,6 +1,7 @@
 /* Live GitLab commit feed for member pages.
  * GitLab is the active source of truth. GitHub is intentionally not queried
- * while the organization and its API data are unavailable.
+ * while the organization and its API data are unavailable; GitHub handles are
+ * shown as plain profile links only.
  */
 (function () {
   "use strict";
@@ -8,10 +9,12 @@
   var MEMBERS = {
     "superivar": { label: "Xx-superIvar-xX", gitlab: "Xx-superIvar-xX" },
     "0xffshell": { label: "0xFFshell", gitlab: "0xFFshell" },
-    "3spress0": { label: "3spress0", gitlab: "espress0" },
+    // espress0 has no GitLab account: commits land in IDI repositories under
+    // the author name only. The gitlab.com/espress0 profile is someone else's.
+    "3spress0": { label: "espress0", gitlab: null, github: "espress0", githubNote: "Profile currently returns 404 while the account is blocked; a reinstatement request is open with GitHub Support." },
     "e-vdv-hu": { label: "E-VDV-HU", gitlab: null },
     "midas735": { label: "midas735", gitlab: "midas735" },
-    "jojo-8002": { label: "Jojo-8002", gitlab: null }
+    "jojo-8002": { label: "Jojo-8002", gitlab: null, github: "Jojo-8002", githubNote: "GitHub is Jojo-8002's only public account." }
   };
 
   var GL_API = "https://gitlab.com/api/v4";
@@ -102,6 +105,13 @@
 
   function loadMemberActivity(member, cols) {
     cols.replaceChildren();
+    if (member.github) {
+      var github = column(cols, "GitHub · @" + member.github);
+      github.innerHTML = "<h3>GitHub · @" + esc(member.github) + "</h3>" +
+        '<p class="cf-note"><a href="https://github.com/' + encodeURIComponent(member.github) +
+        '" target="_blank" rel="noreferrer">@' + esc(member.github) + " ↗</a>" +
+        (member.githubNote ? " — " + esc(member.githubNote) : "") + "</p>";
+    }
     if (!member.gitlab) {
       column(cols, "GitLab").innerHTML = "<h3>GitLab</h3><p class=\"cf-note\">No public GitLab account on record for " + esc(member.label) + ".</p>";
       return;
@@ -141,8 +151,8 @@
     var panel = document.createElement("article");
     panel.className = "detail-panel glass-card reveal visible cf-panel";
     panel.innerHTML = '<span class="eyebrow">Live public activity</span>' +
-      "<h2>Recent GitLab commits by " + esc(member.label) + ".</h2>" +
-      '<p>Recent history from the public GitLab API. GitHub data is unavailable while the organization is hidden.</p>';
+      "<h2>Recent public activity by " + esc(member.label) + ".</h2>" +
+      '<p>GitLab history comes from the public GitLab API. GitHub is not queried while the organization is hidden; GitHub handles appear as plain profile links.</p>';
     var cols = document.createElement("div");
     cols.className = "cf-cols";
     panel.appendChild(cols);
