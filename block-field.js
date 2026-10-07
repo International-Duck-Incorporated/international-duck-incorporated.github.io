@@ -265,9 +265,12 @@
   const ATLAS_URL = "/assets/block-atlas.png?v=1a124777";
   const ATLAS_TILE = 16;
   /* One tile per block type, on every face: the team wants each block to
-   * read identically from all six sides. */
+   * read identically from all six sides. A type may instead pass four tiles
+   * [side, front, top, bottom] for the blocks that genuinely have distinct
+   * faces in Minecraft - furnace, crafting table and chest keep their real
+   * front/top faces; everything else stays uniform. */
   const T = (id, tile, flags) =>
-    Object.assign({ id, faces: [tile, tile, tile, tile] }, flags || {});
+    Object.assign({ id, faces: Array.isArray(tile[0]) ? tile : [tile, tile, tile, tile] }, flags || {});
   const TILE_ROSTER = [
     T("grass", [3, 0]),
     T("dirt", [2, 0]),
@@ -297,8 +300,9 @@
     T("planks", [7, 5]),
     T("obsidian", [5, 2]),
     T("bookshelf", [3, 2]),
-    T("crafting_table", [11, 3]),
-    T("furnace", [13, 3]),
+    T("crafting_table", [[11, 3], [11, 3], [11, 2], [7, 5]]),
+    T("chest", [[8, 5], [9, 5], [15, 5], [8, 5]]),
+    T("furnace", [[13, 2], [13, 3], [13, 2], [13, 2]]),
     T("glowstone", [3, 6], { emissive: true }),
     T("netherrack", [1, 6]),
     T("magma", [6, 5]),
@@ -365,8 +369,12 @@
         amp: [spanX * (0.3 + r() * 0.45), spanY * (0.3 + r() * 0.45), 0.4 + r() * 1.0],
         freq: [0.05 + r() * 0.13, 0.05 + r() * 0.13, 0.05 + r() * 0.13],
         phase: [r() * TAU, r() * TAU, r() * TAU],
-        rot: [(r() - 0.5) * 0.45, (r() - 0.5) * 0.45, (r() - 0.5) * 0.45],
-        angle: [0, 0, 0],
+        /* Upright yaw spin only. Tumbling over roll/pitch turned side-oriented
+         * tiles (grass fringe, bark, bookshelf bands) sideways on the faces
+         * that rolled into view, which read as mismatched textures per side.
+         * Standing blocks keep every visible face on the tile's own axes. */
+        rot: [0, (r() - 0.5) * 0.5, 0],
+        angle: [0, r() * TAU, 0],
         pos: [0, 0, 0],
       };
     });
@@ -382,7 +390,7 @@
       m.pos[1] = m.base[1] + Math.sin(t * m.freq[1] + m.phase[1]) * m.amp[1];
       m.pos[2] = m.base[2] + Math.sin(t * m.freq[2] + m.phase[2]) * m.amp[2];
     }
-    for (let iter = 0; iter < 3; iter++) {
+    for (let iter = 0; iter < 4; iter++) {
       for (let i = 0; i < n; i++) {
         const a = entries[i].pos;
         for (let j = i + 1; j < n; j++) {
@@ -418,7 +426,7 @@
   function lookAt(out, eye, target) {
     let zx = eye[0] - target[0], zy = eye[1] - target[1], zz = eye[2] - target[2];
     let l = 1 / Math.hypot(zx, zy, zz); zx *= l; zy *= l; zz *= l;
-    let xx = -zy, xy = 0, xz = zx; // up = (0,1,0) cross z
+    let xx = zz, xy = 0, xz = -zx; // x = cross(up, z) with up = (0,1,0)
     l = 1 / (Math.hypot(xx, xy, xz) || 1); xx *= l; xy *= l; xz *= l;
     const yx = zy * xz - zz * xy, yy = zz * xx - zx * xz, yz = zx * xy - zy * xx;
     out[0] = xx; out[1] = yx; out[2] = zx; out[3] = 0;
@@ -537,21 +545,33 @@
   /* ------------------------------------------------------- cube geometry */
   function cubeBuffers(gl) {
     // face order: +x, -x, +y, -y, +z, -z ; slots: side 0, front 1, top 2, bottom 3
+    /* Per-face UVs from the cube's own axes, as seen from outside the face:
+     * u runs screen-right, v runs screen-down (v=0 at the face's top edge),
+     * so every side face shows the tile upright and top/bottom stay on a
+     * consistent compass. The old winding-order uv table rotated tiles 90
+     * degrees on the z faces and flipped them vertically, which only became
+     * visible once the anisotropic pack tiles replaced the noise painters. */
     const faces = [
-      { n: [1, 0, 0], slot: 0, v: [[1, -1, -1], [1, 1, -1], [1, 1, 1], [1, -1, 1]] },
-      { n: [-1, 0, 0], slot: 0, v: [[-1, -1, 1], [-1, 1, 1], [-1, 1, -1], [-1, -1, -1]] },
-      { n: [0, 1, 0], slot: 2, v: [[-1, 1, 1], [1, 1, 1], [1, 1, -1], [-1, 1, -1]] },
-      { n: [0, -1, 0], slot: 3, v: [[-1, -1, -1], [1, -1, -1], [1, -1, 1], [-1, -1, 1]] },
-      { n: [0, 0, 1], slot: 1, v: [[-1, -1, 1], [1, -1, 1], [1, 1, 1], [-1, 1, 1]] },
-      { n: [0, 0, -1], slot: 0, v: [[1, -1, -1], [-1, -1, -1], [-1, 1, -1], [1, 1, -1]] },
+      { n: [1, 0, 0], slot: 0, uv: (p) => [(p[2] + 1) / 2, (1 - p[1]) / 2],
+        v: [[1, -1, -1], [1, 1, -1], [1, 1, 1], [1, -1, 1]] },
+      { n: [-1, 0, 0], slot: 0, uv: (p) => [(1 - p[2]) / 2, (1 - p[1]) / 2],
+        v: [[-1, -1, 1], [-1, 1, 1], [-1, 1, -1], [-1, -1, -1]] },
+      { n: [0, 1, 0], slot: 2, uv: (p) => [(1 - p[0]) / 2, (p[2] + 1) / 2],
+        v: [[-1, 1, 1], [1, 1, 1], [1, 1, -1], [-1, 1, -1]] },
+      { n: [0, -1, 0], slot: 3, uv: (p) => [(1 - p[0]) / 2, (1 - p[2]) / 2],
+        v: [[-1, -1, -1], [1, -1, -1], [1, -1, 1], [-1, -1, 1]] },
+      { n: [0, 0, 1], slot: 1, uv: (p) => [(1 - p[0]) / 2, (1 - p[1]) / 2],
+        v: [[-1, -1, 1], [1, -1, 1], [1, 1, 1], [-1, 1, 1]] },
+      { n: [0, 0, -1], slot: 0, uv: (p) => [(p[0] + 1) / 2, (1 - p[1]) / 2],
+        v: [[1, -1, -1], [-1, -1, -1], [-1, 1, -1], [1, 1, -1]] },
     ];
-    const uvq = [[0, 1], [0, 0], [1, 0], [1, 1]]; // matches winding below
     const pos = [], uv = [], slot = [], nor = [], idx = [];
     faces.forEach((f, fi) => {
       const base = fi * 4;
-      f.v.forEach((p, vi) => {
+      f.v.forEach((p) => {
         pos.push(p[0] * CUBE / 2, p[1] * CUBE / 2, p[2] * CUBE / 2);
-        uv.push(uvq[vi][0], uvq[vi][1]);
+        const t = f.uv(p);
+        uv.push(t[0], t[1]);
         slot.push(f.slot);
         nor.push(f.n[0], f.n[1], f.n[2]);
       });

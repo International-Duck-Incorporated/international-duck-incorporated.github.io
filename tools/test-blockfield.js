@@ -40,7 +40,7 @@ sandbox.window.window = sandbox.window;
 vm.createContext(sandbox);
 vm.runInContext(body + `
 ;module.exports = { PAINT_ROSTER, TILE_ROSTER, buildAtlas, makeField, simulate, mount,
-  setRoster: (r) => { roster = r; },
+  setRoster: (r) => { roster = r; }, lookAt,
   MIN_DIST, ATLAS_URL, ATLAS_TILE };`, sandbox, { filename: "block-field.js" });
 const M = sandbox.module.exports;
 
@@ -55,8 +55,24 @@ for (const def of M.TILE_ROSTER) for (const f of def.faces) {
   if (f[0] < 0 || f[0] > 15 || f[1] < 0 || f[1] > 31) inBounds = false;
 }
 ok(ints && inBounds, "all tile coords integer and within 16x32 sheet");
-ok(M.TILE_ROSTER.every((d) => d.faces.every((f) => f[0] === d.faces[0][0] && f[1] === d.faces[0][1])),
-  "every block type shows the same tile on all four face slots");
+const FRONTEX = new Set(["furnace", "crafting_table", "chest"]); // Minecraft-authentic exceptions
+ok(M.TILE_ROSTER.filter((d) => !FRONTEX.has(d.id))
+  .every((d) => d.faces.every((f) => f[0] === d.faces[0][0] && f[1] === d.faces[0][1])),
+  "every block type except the furnace shows the same tile on all four face slots");
+const byId = (id) => M.TILE_ROSTER.find((d) => d.id === id);
+const same = (a, b) => a[0] === b[0] && a[1] === b[1];
+const fur = byId("furnace");
+ok(fur && same(fur.faces[0], [13, 2]) && same(fur.faces[1], [13, 3])
+  && same(fur.faces[2], [13, 2]) && same(fur.faces[3], [13, 2]),
+  "furnace keeps a lit front face on plain grey sides/top/bottom");
+const cra = byId("crafting_table");
+ok(cra && same(cra.faces[0], [11, 3]) && same(cra.faces[1], [11, 3])
+  && same(cra.faces[2], [11, 2]) && same(cra.faces[3], [7, 5]),
+  "crafting table keeps tool sides, grid top and plank bottom");
+const che = byId("chest");
+ok(che && same(che.faces[0], [8, 5]) && same(che.faces[1], [9, 5])
+  && same(che.faces[2], [15, 5]) && same(che.faces[3], [8, 5]),
+  "chest keeps lid-seam sides, latched front and plain top");
 ok(M.PAINT_ROSTER.every((d) => d.faces.every((f) => typeof f === "function")), "paint roster faces are painters (fallback intact)");
 ok(typeof M.ATLAS_URL === "string" && M.ATLAS_URL.startsWith("/assets/"), "atlas url is a local asset: " + M.ATLAS_URL);
 ok(fs.existsSync(path.join(ROOT, M.ATLAS_URL.split("?")[0])), "atlas file exists in repo (query string stripped)");
@@ -91,6 +107,13 @@ for (let i = 0; i < field.length; i++) for (let j = i + 1; j < field.length; j++
 ok(Math.sqrt(min2) >= 1.3 * Math.sqrt(3) + 0.04,
   "no intersection after one relaxation pass: " + Math.sqrt(min2).toFixed(4) + " (cube diagonal 2.2517, target " + M.MIN_DIST.toFixed(4) + ")");
 ok(field.every((e) => e.def && e.def.faces.length === 4), "every field block carries 4 face defs");
+ok(field.every((e) => e.rot[0] === 0 && e.rot[2] === 0), "blocks spin upright (yaw only), so face tiles stay on their own axes");
+
+/* camera must not be rolled: view up-axis points up, right-axis right */
+const V = new Float32Array(16);
+M.lookAt(V, [0, 0.9, 15.5], [0, 0.45, 0]);
+ok(V[5] > 0.9, "view up-axis points up (no 180-degree camera roll): " + V[5].toFixed(3));
+ok(V[0] > 0, "view right-axis points +x for a -z view direction: " + V[0].toFixed(3));
 
 /* no WebGL -> false, caller falls back to a still */
 const stub = { getContext: () => null, addEventListener() {}, clientWidth: 800, clientHeight: 600 };
