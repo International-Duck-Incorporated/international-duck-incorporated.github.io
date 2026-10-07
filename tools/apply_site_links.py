@@ -3,8 +3,9 @@
 
 Two kinds of link exist only because a generated page needs to be reachable:
 
-  1. the footer nav gains "Changelog" on every page, so /changelog is one click
-     from anywhere (search engines crawl it from every page as well);
+  1. the footer nav gains "Changelog" and a "Contact" mailto link on every
+     page, so /changelog and the team address are one click from anywhere
+     (search engines crawl them from every page as well);
   2. the Beacon project page gains a link to its module directory, so
      /projects/beacon/modules is not an orphan page.
 
@@ -20,6 +21,8 @@ import re
 from pathlib import Path
 
 FOOTER_LINK = '<a href="/changelog">Changelog</a>'
+CONTACT_LINK = '<a href="mailto:0xffshell@duck.com">Contact</a>'
+FOOTER_LINKS = (FOOTER_LINK, CONTACT_LINK)
 FOOTER = re.compile(r'<footer class="site-footer">.*?</footer>', re.S)
 
 # On the Beacon page, alongside the existing action row.
@@ -45,12 +48,13 @@ def main() -> None:
         source = page.read_text(encoding="utf-8")
         updated = source
 
-        if FOOTER_LINK not in updated:
-            footer = FOOTER.search(updated)
-            if footer:
-                block = footer.group(0)
-                if "<nav>" in block and "</nav>" in block:
-                    patched = block.replace("</nav>", FOOTER_LINK + "</nav>", 1)
+        footer = FOOTER.search(updated)
+        if footer:
+            block = footer.group(0)
+            if "<nav>" in block and "</nav>" in block:
+                missing = [link for link in FOOTER_LINKS if link not in updated]
+                if missing:
+                    patched = block.replace("</nav>", "".join(missing) + "</nav>", 1)
                     updated = updated[: footer.start()] + patched + updated[footer.end():]
                     footers += 1
 
@@ -67,7 +71,7 @@ def main() -> None:
         if updated != source:
             page.write_text(updated, encoding="utf-8")
 
-    print(f"footer changelog link: {footers} page(s); Beacon modules link: {beacon} page(s)")
+    print(f"footer links (changelog, contact): {footers} page(s); Beacon modules link: {beacon} page(s)")
 
 
 if __name__ == "__main__":

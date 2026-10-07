@@ -11,7 +11,7 @@
     "0xffshell": { label: "0xFFshell", gitlab: "0xFFshell" },
     // espress0 has no GitLab account: commits land in IDI repositories under
     // the author name only. The gitlab.com/espress0 profile is someone else's.
-    "3spress0": { label: "espress0", gitlab: null, github: "espress0", githubNote: "Profile currently returns 404 while the account is blocked; a reinstatement request is open with GitHub Support." },
+    "3spress0": { label: "espress0", gitlab: null, github: "3spress0", githubNote: "Profile currently returns 404 while the account is blocked; a reinstatement request is open with GitHub Support." },
     "e-vdv-hu": { label: "E-VDV-HU", gitlab: null },
     "midas735": { label: "midas735", gitlab: "midas735" },
     "jojo-8002": { label: "Jojo-8002", gitlab: null, github: "Jojo-8002", githubNote: "GitHub is Jojo-8002's only public account." }
@@ -110,7 +110,7 @@
       github.innerHTML = "<h3>GitHub · @" + esc(member.github) + "</h3>" +
         '<p class="cf-note"><a href="https://github.com/' + encodeURIComponent(member.github) +
         '" target="_blank" rel="noreferrer">@' + esc(member.github) + " ↗</a>" +
-        (member.githubNote ? " — " + esc(member.githubNote) : "") + "</p>";
+        (member.githubNote ? ". " + esc(member.githubNote) : "") + "</p>";
     }
     if (!member.gitlab) {
       column(cols, "GitLab").innerHTML = "<h3>GitLab</h3><p class=\"cf-note\">No public GitLab account on record for " + esc(member.label) + ".</p>";

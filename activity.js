@@ -238,7 +238,7 @@
 
   function pauseActivityForLowPower() {
     const total = $("[data-activity-total]");
-    if (total) total.textContent = "—";
+    if (total) total.textContent = "…";
     const repositoryList = $("[data-activity-gitlab]");
     if (repositoryList) {
       const note = document.createElement("p");

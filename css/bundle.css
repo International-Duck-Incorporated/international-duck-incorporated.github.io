@@ -1718,7 +1718,7 @@ body[data-member="midas735"] .profile-sidebar {
 
 /* Pinned hero marks (0xFFshell's avatar, Beacon's project mark) are taken out
    of flow with position:absolute, so the bottom-aligned hero copy underneath
-   was free to rise up behind them — on 0xFFshell the eyebrow and the account
+   was free to rise up behind them; on 0xFFshell the eyebrow and the account
    status banner ran straight through the profile picture. Reserve the height
    of the pinned mark as top padding so the copy always starts below it.
    Below 760px both marks return to static flow and need no reservation. */

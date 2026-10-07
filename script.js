@@ -605,7 +605,7 @@ async function syncContributors() {
   const list=$("[data-contributors]");if(!list || !members.length)return;
   const known=[
     {test:(person)=>person.name==="0xFF"||person.email==="pieterr.games@gmail.com",label:"0xFFshell",role:"Main writer",url:`${GITLAB}/0xFFshell`,avatar:"/assets/member-0xffshell.png"},
-    {test:(person)=>/espress0|3spress0|espervanderven|166116795/i.test(`${person.name||""} ${person.email||""}`),label:"espress0",role:"Backend developer",url:"https://github.com/espress0",avatar:"/assets/contributor-3spress0.png"}
+    {test:(person)=>/espress0|3spress0|espervanderven|166116795/i.test(`${person.name||""} ${person.email||""}`),label:"espress0",role:"Backend developer",url:"https://github.com/3spress0",avatar:"/assets/contributor-3spress0.png"}
   ];
   const merged=new Map();
   for(const person of members){
