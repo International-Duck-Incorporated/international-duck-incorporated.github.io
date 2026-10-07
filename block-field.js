@@ -259,52 +259,54 @@
     R("bedrock", noise(["#565656", "#3d3d3d", "#6b6b6b", "#2b2b2b"], 2)),
   ];
 
-  /* Tile roster: faces as [col, row] coordinates into assets/block-atlas.png,
-   * a 16x32 sheet of 16px tiles (the team's texture pack). Same slot order:
-   * side, front, top, bottom. */
+  /* Tile roster: one [col, row] coordinate per type into assets/block-atlas.png,
+   * a 16x32 sheet of 16px tiles (the team's texture pack); the tile is used for
+   * all four face slots (side, front, top, bottom). */
   const ATLAS_URL = "/assets/block-atlas.png?v=1a124777";
   const ATLAS_TILE = 16;
-  const T = (id, side, front, top, bottom, flags) =>
-    Object.assign({ id, faces: [side, front, top, bottom] }, flags || {});
+  /* One tile per block type, on every face: the team wants each block to
+   * read identically from all six sides. */
+  const T = (id, tile, flags) =>
+    Object.assign({ id, faces: [tile, tile, tile, tile] }, flags || {});
   const TILE_ROSTER = [
-    T("grass", [3, 0], [3, 0], [0, 0], [2, 0]),
-    T("dirt", [2, 0], [2, 0], [2, 0], [2, 0]),
-    T("stone", [1, 0], [1, 0], [1, 0], [1, 0]),
-    T("cobblestone", [0, 1], [0, 1], [0, 1], [0, 1]),
-    T("mossy_cobblestone", [1, 1], [1, 1], [1, 1], [1, 1]),
-    T("sand", [2, 1], [2, 1], [2, 1], [2, 1]),
-    T("gravel", [3, 1], [3, 1], [3, 1], [3, 1]),
-    T("log", [4, 1], [4, 1], [5, 1], [5, 1]),
-    T("leaves", [6, 1], [6, 1], [6, 1], [6, 1], { cutout: true }),
-    T("glass", [1, 3], [1, 3], [1, 3], [1, 3], { alpha: true }),
-    T("wool_white", [7, 1], [7, 1], [7, 1], [7, 1]),
-    T("wool_red", [0, 4], [0, 4], [0, 4], [0, 4]),
-    T("wool_orange", [1, 4], [1, 4], [1, 4], [1, 4]),
-    T("wool_yellow", [2, 4], [2, 4], [2, 4], [2, 4]),
-    T("wool_lime", [3, 4], [3, 4], [3, 4], [3, 4]),
-    T("wool_cyan", [5, 4], [5, 4], [5, 4], [5, 4]),
-    T("wool_blue", [7, 4], [7, 4], [7, 4], [7, 4]),
-    T("wool_purple", [8, 4], [8, 4], [8, 4], [8, 4]),
-    T("wool_pink", [11, 4], [11, 4], [11, 4], [11, 4]),
-    T("gold_block", [8, 1], [8, 1], [8, 1], [8, 1]),
-    T("diamond_block", [11, 1], [11, 1], [11, 1], [11, 1]),
-    T("sandstone", [9, 1], [9, 1], [9, 3], [9, 1]),
-    T("smooth_stone", [6, 0], [6, 0], [6, 0], [6, 0]),
-    T("bricks", [7, 0], [7, 0], [7, 0], [7, 0]),
-    T("stone_bricks", [4, 3], [4, 3], [4, 3], [4, 3]),
-    T("planks", [7, 5], [7, 5], [7, 5], [7, 5]),
-    T("obsidian", [5, 2], [5, 2], [5, 2], [5, 2]),
-    T("bookshelf", [3, 2], [3, 2], [7, 5], [7, 5]),
-    T("crafting_table", [11, 3], [11, 3], [11, 2], [7, 5]),
-    T("furnace", [13, 2], [13, 3], [13, 2], [13, 2]),
-    T("glowstone", [3, 6], [3, 6], [3, 6], [3, 6], { emissive: true }),
-    T("netherrack", [1, 6], [1, 6], [1, 6], [1, 6]),
-    T("magma", [6, 5], [6, 5], [6, 5], [6, 5]),
-    T("melon", [12, 6], [12, 6], [9, 6], [9, 6]),
-    T("pumpkin", [0, 7], [1, 7], [0, 7], [0, 7]),
-    T("diamond_ore", [5, 7], [5, 7], [5, 7], [5, 7]),
-    T("redstone_ore", [6, 7], [6, 7], [6, 7], [6, 7]),
-    T("coal_ore", [2, 2], [2, 2], [2, 2], [2, 2]),
+    T("grass", [3, 0]),
+    T("dirt", [2, 0]),
+    T("stone", [1, 0]),
+    T("cobblestone", [0, 1]),
+    T("mossy_cobblestone", [1, 1]),
+    T("sand", [2, 1]),
+    T("gravel", [3, 1]),
+    T("log", [4, 1]),
+    T("leaves", [6, 1], { cutout: true }),
+    T("glass", [1, 3], { alpha: true }),
+    T("wool_white", [7, 1]),
+    T("wool_red", [0, 4]),
+    T("wool_orange", [1, 4]),
+    T("wool_yellow", [2, 4]),
+    T("wool_lime", [3, 4]),
+    T("wool_cyan", [5, 4]),
+    T("wool_blue", [7, 4]),
+    T("wool_purple", [8, 4]),
+    T("wool_pink", [11, 4]),
+    T("gold_block", [8, 1]),
+    T("diamond_block", [11, 1]),
+    T("sandstone", [9, 1]),
+    T("smooth_stone", [6, 0]),
+    T("bricks", [7, 0]),
+    T("stone_bricks", [4, 3]),
+    T("planks", [7, 5]),
+    T("obsidian", [5, 2]),
+    T("bookshelf", [3, 2]),
+    T("crafting_table", [11, 3]),
+    T("furnace", [13, 3]),
+    T("glowstone", [3, 6], { emissive: true }),
+    T("netherrack", [1, 6]),
+    T("magma", [6, 5]),
+    T("melon", [12, 6]),
+    T("pumpkin", [1, 7]),
+    T("diamond_ore", [5, 7]),
+    T("redstone_ore", [6, 7]),
+    T("coal_ore", [2, 2]),
   ];
 
   /* ---------------------------------------------------- atlas + field */

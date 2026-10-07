@@ -55,6 +55,8 @@ for (const def of M.TILE_ROSTER) for (const f of def.faces) {
   if (f[0] < 0 || f[0] > 15 || f[1] < 0 || f[1] > 31) inBounds = false;
 }
 ok(ints && inBounds, "all tile coords integer and within 16x32 sheet");
+ok(M.TILE_ROSTER.every((d) => d.faces.every((f) => f[0] === d.faces[0][0] && f[1] === d.faces[0][1])),
+  "every block type shows the same tile on all four face slots");
 ok(M.PAINT_ROSTER.every((d) => d.faces.every((f) => typeof f === "function")), "paint roster faces are painters (fallback intact)");
 ok(typeof M.ATLAS_URL === "string" && M.ATLAS_URL.startsWith("/assets/"), "atlas url is a local asset: " + M.ATLAS_URL);
 ok(fs.existsSync(path.join(ROOT, M.ATLAS_URL.split("?")[0])), "atlas file exists in repo (query string stripped)");
