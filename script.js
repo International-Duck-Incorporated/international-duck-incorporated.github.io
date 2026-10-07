@@ -98,8 +98,8 @@ async function syncOrganization() {
     getJSON(`${GL_GROUP_API}/projects?per_page=100&include_subgroups=true`, "application/json")
   ]);
   $$('[data-org-avatar]').forEach((image) => {
-    image.onerror = () => { image.onerror = null; image.src = "/assets/org-avatar.webp"; };
-    image.src = group.avatar_url || "/assets/org-avatar.webp";
+    image.onerror = () => { image.onerror = null; image.src = "/assets/org-avatar.webp?v=fff479ce"; };
+    image.src = group.avatar_url || "/assets/org-avatar.webp?v=fff479ce";
   });
   setText("[data-org-name]", group.name || "International Duck Incorporated");
   setText("[data-org-repos]", projects.length);
@@ -170,14 +170,14 @@ async function syncProjects() {
     "International-Duck-Incorporated.github.io": SITE_ROUTES.website
   };
   const projectMeta = {
-    Venomous: { label: "Featured project", icon: "venom", logo: "/assets/venomous-icon.webp", status: "Active", action: "Open project" },
-    Beacon: { label: "Utility project", icon: "beacon", logo: "/assets/beacon-icon.webp", status: beaconVersion ? `Release ${beaconVersion}` : "Release", action: "Open project" },
-    "beacon-bagley": { title: "Bagley", label: "Beacon addon", icon: "bagley", logo: "/assets/bagley-icon.webp", status: "New", action: "Open project" },
-    NullTrace: { label: "Privacy project", icon: "privacy", logo: "/assets/nulltrace-icon.webp", status: "Official release", action: "Open project" },
-    ChampionsCode: { label: "Research project", icon: "champion", logo: "/assets/championscode-icon.webp", status: championscodeVersion ? `First launch · ${championscodeVersion}` : "First launch", action: "Open project" },
-    zonedout: { title: "ZonedOut", label: "Client-side mod", icon: "zonedout", logo: "/assets/zonedout-icon.webp", status: "In development", statusMuted: true, action: "Open project" },
+    Venomous: { label: "Featured project", icon: "venom", logo: "/assets/venomous-icon.webp?v=a2f98ad3", status: "Active", action: "Open project" },
+    Beacon: { label: "Utility project", icon: "beacon", logo: "/assets/beacon-icon.webp?v=0f91708c", status: beaconVersion ? `Release ${beaconVersion}` : "Release", action: "Open project" },
+    "beacon-bagley": { title: "Bagley", label: "Beacon addon", icon: "bagley", logo: "/assets/bagley-icon.webp?v=f22db4e3", status: "New", action: "Open project" },
+    NullTrace: { label: "Privacy project", icon: "privacy", logo: "/assets/nulltrace-icon.webp?v=3359715a", status: "Official release", action: "Open project" },
+    ChampionsCode: { label: "Research project", icon: "champion", logo: "/assets/championscode-icon.webp?v=636bb343", status: championscodeVersion ? `First launch · ${championscodeVersion}` : "First launch", action: "Open project" },
+    zonedout: { title: "ZonedOut", label: "Client-side mod", icon: "zonedout", logo: "/assets/zonedout-icon.webp?v=71a190d8", status: "In development", statusMuted: true, action: "Open project" },
     Baritone: { title: "Baritone", label: "Pathfinding fork", icon: "web", status: "Active", action: "Open project" },
-    "idi-assets": { title: "IDI Assets", label: "Media bundle", icon: "web", logo: "/assets/idi-assets-icon.webp", status: "Media", action: "Open project" },
+    "idi-assets": { title: "IDI Assets", label: "Media bundle", icon: "web", logo: "/assets/idi-assets-icon.webp?v=c18e5e66", status: "Media", action: "Open project" },
     home: { title: "Website source", label: "Website project", icon: "web", status: "Live", action: "Open page" },
     "International-Duck-Incorporated.github.io": { title: "Website source", label: "Website project", icon: "web", status: "Live", action: "Open page" }
   };
@@ -255,8 +255,8 @@ async function syncMembers() {
     link.href = memberPages[person.login] || person.html_url;
     if (!memberPages[person.login]) { link.target = "_blank"; link.rel = "noreferrer"; }
     const image = document.createElement("img");
-    const localMemberImages = { "3spress0": "/assets/contributor-3spress0.webp", "0xFFshell": "/assets/member-0xffshell.webp", "E-VDV-HU": "/assets/member-e-vdv-hu.webp", "Xx-superIvar-xX": "/assets/member-xx-superivar-xx.webp", "midas735": "/assets/member-midas735.webp", "Jojo-8002": "/assets/member-jojo-8002.webp" };
-    image.src = localMemberImages[person.login] || (person.avatar_url ? person.avatar_url : "/assets/org-avatar.webp");
+    const localMemberImages = { "3spress0": "/assets/contributor-3spress0.webp?v=a3c2db19", "0xFFshell": "/assets/member-0xffshell.webp?v=827f401e", "E-VDV-HU": "/assets/member-e-vdv-hu.webp?v=0774275d", "Xx-superIvar-xX": "/assets/member-xx-superivar-xx.webp?v=1c79d93d", "midas735": "/assets/member-midas735.webp?v=3700f4a4", "Jojo-8002": "/assets/member-jojo-8002.webp?v=8c2a077e" };
+    image.src = localMemberImages[person.login] || (person.avatar_url ? person.avatar_url : "/assets/org-avatar.webp?v=fff479ce");
     image.alt = person.display; image.width = 96; image.height = 96;
     image.loading = "lazy"; image.decoding = "async";
     const copy = document.createElement("div");
@@ -604,14 +604,14 @@ async function syncContributors() {
   const members=await getJSON(`${GL_PROJECT}/repository/contributors`,"application/json");
   const list=$("[data-contributors]");if(!list || !members.length)return;
   const known=[
-    {test:(person)=>person.name==="0xFF"||person.email==="pieterr.games@gmail.com",label:"0xFFshell",role:"Main writer",url:`${GITLAB}/0xFFshell`,avatar:"/assets/member-0xffshell.png"},
-    {test:(person)=>/espress0|3spress0|espervanderven|166116795/i.test(`${person.name||""} ${person.email||""}`),label:"espress0",role:"Backend developer",url:"https://github.com/3spress0",avatar:"/assets/contributor-3spress0.png"}
+    {test:(person)=>person.name==="0xFF"||person.email==="pieterr.games@gmail.com",label:"0xFFshell",role:"Main writer",url:`${GITLAB}/0xFFshell`,avatar:"/assets/member-0xffshell.png?v=d8a12bec"},
+    {test:(person)=>/espress0|3spress0|espervanderven|166116795/i.test(`${person.name||""} ${person.email||""}`),label:"espress0",role:"Backend developer",url:"https://github.com/3spress0",avatar:"/assets/contributor-3spress0.png?v=1e7edf44"}
   ];
   const merged=new Map();
   for(const person of members){
     const profile=known.find((entry)=>entry.test(person));
     const key=profile?profile.label:(person.name||"Contributor");
-    const entry=merged.get(key)||{label:key,role:profile?.role||"Contributor",url:profile?.url||`${GITLAB}/${GL_PROJECT_PATH}/-/graphs/main`,avatar:profile?.avatar||"/assets/org-avatar.webp",commits:0};
+    const entry=merged.get(key)||{label:key,role:profile?.role||"Contributor",url:profile?.url||`${GITLAB}/${GL_PROJECT_PATH}/-/graphs/main`,avatar:profile?.avatar||"/assets/org-avatar.webp?v=fff479ce",commits:0};
     entry.commits+=person.commits||0;merged.set(key,entry);
   }
   list.replaceChildren(...[...merged.values()].sort((a,b)=>b.commits-a.commits).map((entry)=>{const link=document.createElement("a"),image=document.createElement("img"),copy=document.createElement("span"),name=document.createElement("b"),role=document.createElement("small"),total=document.createElement("strong");link.href=entry.url;link.target="_blank";link.rel="noreferrer";image.src=entry.avatar;image.alt=entry.label;name.textContent=entry.label;role.textContent=entry.role;total.textContent=`${entry.commits} ${entry.commits===1?"contribution":"contributions"}`;copy.append(name,role);link.append(image,copy,total);return link;}));

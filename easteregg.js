@@ -71,7 +71,7 @@
       wordmark: true,
       focus: "50% 42%",
       label: "community backdrop",
-      src: "/assets/homepage-community-background-v4.webp",
+      src: "/assets/homepage-community-background-v4.webp?v=5bf5c6cf",
     },
     {
       name: "idi-member-collage.webp",
@@ -79,7 +79,7 @@
       wordmark: false,
       focus: "46% 54%",
       label: "member collage",
-      src: "/assets/idi-member-collage.webp",
+      src: "/assets/idi-member-collage.webp?v=05e81b3e",
     },
     // Newly uploaded video backgrounds, appended without disturbing older picks.
     {

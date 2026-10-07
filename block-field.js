@@ -2,8 +2,11 @@
  *
  * Ported from the team's React + three.js demo (Scene.tsx, field.ts and
  * mc/blocks.ts) into this site's dependency-free style: one hand-rolled
- * WebGL context, procedural 16x16 pixel textures painted at boot, no
- * downloads, no CDN, no framework. The look is kept: a seeded field of
+ * WebGL context, no CDN, no framework. Block faces are cut at boot out of
+ * the team's own 16px texture pack (assets/block-atlas.png, a 16x32 tile
+ * sheet) into a private 4-column atlas; the procedural pixel painters
+ * below stay on board as the fallback if that image ever fails to load.
+ * The look is kept: a seeded field of
  * tumbling blocks wandering between fixed depth slots with pairwise
  * separation so they never intersect, dust motes drifting up, a star
  * shell, fog into the dark green void, emissive glowstone, real alpha
@@ -214,10 +217,11 @@
     }
   };
 
-  /* roster: id, painters (side, top, bottom, front), flags */
+  /* roster: id, painters (side, top, bottom, front), flags.
+   * faces are stored in geometry slot order: side, front, top, bottom. */
   const R = (id, side, top, bottom, front, flags) =>
-    Object.assign({ id, side, top: top || side, bottom: bottom || top || side, front: front || side }, flags || {});
-  const ROSTER = [
+    Object.assign({ id, faces: [side, front || side, top || side, bottom || top || side] }, flags || {});
+  const PAINT_ROSTER = [
     R("grass", paintGrassSide, paintGrassTop, paintDirt),
     R("dirt", paintDirt),
     R("stone", noise(STONE_PAL, 4)),
@@ -255,7 +259,58 @@
     R("bedrock", noise(["#565656", "#3d3d3d", "#6b6b6b", "#2b2b2b"], 2)),
   ];
 
+  /* Tile roster: faces as [col, row] coordinates into assets/block-atlas.png,
+   * a 16x32 sheet of 16px tiles (the team's texture pack). Same slot order:
+   * side, front, top, bottom. */
+  const ATLAS_URL = "/assets/block-atlas.png?v=1a124777";
+  const ATLAS_TILE = 16;
+  const T = (id, side, front, top, bottom, flags) =>
+    Object.assign({ id, faces: [side, front, top, bottom] }, flags || {});
+  const TILE_ROSTER = [
+    T("grass", [3, 0], [3, 0], [0, 0], [2, 0]),
+    T("dirt", [2, 0], [2, 0], [2, 0], [2, 0]),
+    T("stone", [1, 0], [1, 0], [1, 0], [1, 0]),
+    T("cobblestone", [0, 1], [0, 1], [0, 1], [0, 1]),
+    T("mossy_cobblestone", [1, 1], [1, 1], [1, 1], [1, 1]),
+    T("sand", [2, 1], [2, 1], [2, 1], [2, 1]),
+    T("gravel", [3, 1], [3, 1], [3, 1], [3, 1]),
+    T("log", [4, 1], [4, 1], [5, 1], [5, 1]),
+    T("leaves", [6, 1], [6, 1], [6, 1], [6, 1], { cutout: true }),
+    T("glass", [1, 3], [1, 3], [1, 3], [1, 3], { alpha: true }),
+    T("wool_white", [7, 1], [7, 1], [7, 1], [7, 1]),
+    T("wool_red", [0, 4], [0, 4], [0, 4], [0, 4]),
+    T("wool_orange", [1, 4], [1, 4], [1, 4], [1, 4]),
+    T("wool_yellow", [2, 4], [2, 4], [2, 4], [2, 4]),
+    T("wool_lime", [3, 4], [3, 4], [3, 4], [3, 4]),
+    T("wool_cyan", [5, 4], [5, 4], [5, 4], [5, 4]),
+    T("wool_blue", [7, 4], [7, 4], [7, 4], [7, 4]),
+    T("wool_purple", [8, 4], [8, 4], [8, 4], [8, 4]),
+    T("wool_pink", [11, 4], [11, 4], [11, 4], [11, 4]),
+    T("gold_block", [8, 1], [8, 1], [8, 1], [8, 1]),
+    T("diamond_block", [11, 1], [11, 1], [11, 1], [11, 1]),
+    T("sandstone", [9, 1], [9, 1], [9, 3], [9, 1]),
+    T("smooth_stone", [6, 0], [6, 0], [6, 0], [6, 0]),
+    T("bricks", [7, 0], [7, 0], [7, 0], [7, 0]),
+    T("stone_bricks", [4, 3], [4, 3], [4, 3], [4, 3]),
+    T("planks", [7, 5], [7, 5], [7, 5], [7, 5]),
+    T("obsidian", [5, 2], [5, 2], [5, 2], [5, 2]),
+    T("bookshelf", [3, 2], [3, 2], [7, 5], [7, 5]),
+    T("crafting_table", [11, 3], [11, 3], [11, 2], [7, 5]),
+    T("furnace", [13, 2], [13, 3], [13, 2], [13, 2]),
+    T("glowstone", [3, 6], [3, 6], [3, 6], [3, 6], { emissive: true }),
+    T("netherrack", [1, 6], [1, 6], [1, 6], [1, 6]),
+    T("magma", [6, 5], [6, 5], [6, 5], [6, 5]),
+    T("melon", [12, 6], [12, 6], [9, 6], [9, 6]),
+    T("pumpkin", [0, 7], [1, 7], [0, 7], [0, 7]),
+    T("diamond_ore", [5, 7], [5, 7], [5, 7], [5, 7]),
+    T("redstone_ore", [6, 7], [6, 7], [6, 7], [6, 7]),
+    T("coal_ore", [2, 2], [2, 2], [2, 2], [2, 2]),
+  ];
+
   /* ---------------------------------------------------- atlas + field */
+  /* Active roster, chosen when the texture pack image resolves (or when it
+   * fails and the procedural painters take over). */
+  let roster = null;
   const BG = [10 / 255, 16 / 255, 11 / 255]; // #0a100b
   const CUBE = 1.3;
   const CAM_POS = [0, 0.9, 15.5];
@@ -263,17 +318,21 @@
   const FOV = 48;
   const NEAR_Z = 9, FAR_Z = -17;
 
-  function buildAtlas() {
+  function buildAtlas(roster, img) {
     const c = document.createElement("canvas");
-    c.width = 64; c.height = 16 * ROSTER.length;
+    c.width = 64; c.height = 16 * roster.length;
     const x = c.getContext("2d");
     x.imageSmoothingEnabled = false;
-    ROSTER.forEach((def, row) => {
+    roster.forEach((def, row) => {
       const r = mulberry(seedOf(def.id));
-      const faces = [def.side, def.front, def.top, def.bottom];
-      faces.forEach((paint, slot) => {
+      def.faces.forEach((face, slot) => {
+        if (img) {
+          x.drawImage(img, face[0] * ATLAS_TILE, face[1] * ATLAS_TILE, ATLAS_TILE, ATLAS_TILE,
+            slot * 16, row * 16, 16, 16);
+          return;
+        }
         const [tc, tx] = tile();
-        paint(tx, r);
+        face(tx, r);
         x.drawImage(tc, slot * 16, row * 16);
       });
     });
@@ -282,7 +341,7 @@
 
   function makeField(aspect) {
     const r = mulberry(0xb10c5);
-    const order = ROSTER.map((_, i) => i);
+    const order = roster.map((_, i) => i);
     for (let i = order.length - 1; i > 0; i--) {
       const j = Math.floor(r() * (i + 1));
       [order[i], order[j]] = [order[j], order[i]];
@@ -291,7 +350,7 @@
     const slotH = (NEAR_Z - FAR_Z) / n;
     const halfTan = Math.tan((FOV * Math.PI / 180) / 2);
     return order.map((bi, slot) => {
-      const def = ROSTER[bi];
+      const def = roster[bi];
       const z = NEAR_Z - (slot + 0.5) * slotH + (r() - 0.5) * slotH * 0.8;
       const dist = CAM_POS[2] - z;
       const halfH = halfTan * dist;
@@ -321,7 +380,7 @@
       m.pos[1] = m.base[1] + Math.sin(t * m.freq[1] + m.phase[1]) * m.amp[1];
       m.pos[2] = m.base[2] + Math.sin(t * m.freq[2] + m.phase[2]) * m.amp[2];
     }
-    for (let iter = 0; iter < 2; iter++) {
+    for (let iter = 0; iter < 3; iter++) {
       for (let i = 0; i < n; i++) {
         const a = entries[i].pos;
         for (let j = i + 1; j < n; j++) {
@@ -399,13 +458,15 @@
   const CUBE_FS = `
     precision mediump float;
     varying vec2 vUV; varying float vSlot; varying vec3 vNormal; varying float vDist;
-    uniform sampler2D uAtlas; uniform float uRow, uRows, uEmissive;
+    uniform sampler2D uAtlas; uniform float uRow, uRows, uEmissive, uCutout;
     uniform vec3 uFogColor; uniform float uFogNear, uFogFar;
     void main() {
       vec2 cell = vec2((vSlot + (0.5 + vUV.x * 15.0) / 16.0) / 4.0,
                        1.0 - (uRow + (0.5 + vUV.y * 15.0) / 16.0) / uRows);
       vec4 tex = texture2D(uAtlas, cell);
-      if (tex.a < 0.06) discard;
+      /* cutout faces (leaves) get a hard alpha test; blended faces (glass)
+       * only drop fully transparent pixels */
+      if (tex.a < mix(0.06, 0.5, uCutout)) discard;
       vec3 n = normalize(vNormal);
       vec3 lit;
       if (uEmissive > 0.5) {
@@ -512,15 +573,19 @@
     const pointProg = program(gl, POINT_VS, POINT_FS);
     if (!cubeProg || !pointProg) return false;
 
-    const atlasCanvas = buildAtlas();
-    const atlas = gl.createTexture();
-    gl.bindTexture(gl.TEXTURE_2D, atlas);
-    gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true);
-    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, atlasCanvas);
-    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST);
-    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
-    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
-    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+    let atlas = null;
+    function uploadAtlas(img) {
+      roster = img ? TILE_ROSTER : PAINT_ROSTER;
+      const atlasCanvas = buildAtlas(roster, img);
+      atlas = gl.createTexture();
+      gl.bindTexture(gl.TEXTURE_2D, atlas);
+      gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true);
+      gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, atlasCanvas);
+      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST);
+      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
+      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+    }
 
     const geo = cubeBuffers(gl);
 
@@ -556,7 +621,7 @@
     const cU = {
       proj: cu("uProj"), view: cu("uView"), model: cu("uModel"), normal: cu("uNormal"),
       cam: cu("uCam"), atlas: cu("uAtlas"), row: cu("uRow"), rows: cu("uRows"),
-      emissive: cu("uEmissive"), fogColor: cu("uFogColor"), fogNear: cu("uFogNear"), fogFar: cu("uFogFar"),
+      emissive: cu("uEmissive"), cutout: cu("uCutout"), fogColor: cu("uFogColor"), fogNear: cu("uFogNear"), fogFar: cu("uFogFar"),
     };
     const cA = {
       pos: gl.getAttribLocation(cubeProg, "aPos"), uv: gl.getAttribLocation(cubeProg, "aUV"),
@@ -620,7 +685,7 @@
       gl.uniformMatrix4fv(cU.proj, false, proj);
       gl.uniformMatrix4fv(cU.view, false, view);
       gl.uniform3fv(cU.cam, CAM_POS);
-      gl.uniform1f(cU.rows, ROSTER.length);
+      gl.uniform1f(cU.rows, roster.length);
       gl.uniform3fv(cU.fogColor, BG);
       gl.uniform1f(cU.fogNear, 18);
       gl.uniform1f(cU.fogFar, 48);
@@ -646,8 +711,9 @@
         nrm[6] = mdl[8]; nrm[7] = mdl[9]; nrm[8] = mdl[10];
         gl.uniformMatrix4fv(cU.model, false, mdl);
         gl.uniformMatrix3fv(cU.normal, false, nrm);
-        gl.uniform1f(cU.row, ROSTER.indexOf(e.def));
+        gl.uniform1f(cU.row, roster.indexOf(e.def));
         gl.uniform1f(cU.emissive, e.def.emissive ? 1 : 0);
+        gl.uniform1f(cU.cutout, e.def.cutout ? 1 : 0);
         gl.drawElements(gl.TRIANGLES, geo.count, gl.UNSIGNED_SHORT, 0);
       };
       for (const e of entries) if (!e.def.alpha) drawCube(e);
@@ -699,6 +765,7 @@
       else start();
     };
     const onResize = () => {
+      if (!roster) return; // texture pack still loading
       resize();
       if (reduced) frame(20, 0);
     };
@@ -710,9 +777,24 @@
       console.log("🦆 block-field: context lost, stylesheet background stays.");
     });
 
-    resize();
-    frame(reduced ? 20 : 0, 0);
-    if (!reduced) start();
+    /* The texture pack is a same-origin static asset, so this resolves in
+     * milliseconds; until it does the canvas simply stays dark. If it ever
+     * fails (missing file, decode error) the procedural painters take over
+     * and the backdrop still runs. */
+    function begin(img) {
+      if (disposed) return;
+      uploadAtlas(img);
+      resize();
+      frame(reduced ? 20 : 0, 0);
+      if (!reduced) start();
+    }
+    const pack = new Image();
+    pack.onload = () => begin(pack);
+    pack.onerror = () => {
+      console.log("🦆 block-field: texture pack unavailable, painting procedural tiles.");
+      begin(null);
+    };
+    pack.src = ATLAS_URL;
     return {
       dispose() {
         disposed = true;

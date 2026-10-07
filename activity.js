@@ -35,32 +35,32 @@
   const MEMBERS = [
     {
       key: "0xffshell", display: "0xFFshell", page: "/members/0xffshell",
-      avatar: "/assets/member-0xffshell.webp",
+      avatar: "/assets/member-0xffshell.webp?v=827f401e",
       aliases: [/0xff/i, /pieterr\.games@gmail\.com/i, /0xffshell/i]
     },
     {
       key: "3spress0", display: "espress0", page: "/members/3spress0",
-      avatar: "/assets/contributor-3spress0.webp",
+      avatar: "/assets/contributor-3spress0.webp?v=a3c2db19",
       aliases: [/espress0/i, /3spress0/i, /vanderven/i, /166116795/]
     },
     {
       key: "e-vdv-hu", display: "E-VDV-HU", page: "/members/e-vdv-hu",
-      avatar: "/assets/member-e-vdv-hu.webp",
+      avatar: "/assets/member-e-vdv-hu.webp?v=0774275d",
       aliases: [/e-?vdv-?hu/i]
     },
     {
       key: "superivar", display: "Xx-superIvar-xX", page: "/members/superivar",
-      avatar: "/assets/member-xx-superivar-xx.webp",
+      avatar: "/assets/member-xx-superivar-xx.webp?v=1c79d93d",
       aliases: [/superivar/i, /ivar\.boot@student\.hu\.nl/i]
     },
     {
       key: "midas735", display: "midas735", page: "/members/midas735",
-      avatar: "/assets/member-midas735.webp",
+      avatar: "/assets/member-midas735.webp?v=3700f4a4",
       aliases: [/midas735/i]
     },
     {
       key: "jojo-8002", display: "Jojo-8002", page: "/members/jojo-8002",
-      avatar: "/assets/member-jojo-8002.webp",
+      avatar: "/assets/member-jojo-8002.webp?v=8c2a077e",
       aliases: [/jojo[-_ ]?8002/i]
     }
   ];
