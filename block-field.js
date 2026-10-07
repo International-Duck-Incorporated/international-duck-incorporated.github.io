@@ -472,17 +472,21 @@
       vec3 n = normalize(vNormal);
       vec3 lit;
       if (uEmissive > 0.5) {
-        lit = tex.rgb * 1.55;
+        lit = tex.rgb * 1.45;
       } else {
-        float face = vSlot > 2.5 ? 0.55 : vSlot > 1.5 ? 1.0 : vSlot > 0.5 ? 0.85 : 0.8;
+        /* Gentle, near-neutral shading: the pack's colours must survive on
+         * every face. The old rig multiplied by up to ~2.5x with warm tints,
+         * clipping channels so one tile read as different textures per face
+         * (bricks washed to salmon, orange wool to yellow). */
+        float face = vSlot > 2.5 ? 0.84 : vSlot > 1.5 ? 0.96 : vSlot > 0.5 ? 0.94 : 0.90;
         vec3 key = normalize(vec3(6.0, 9.0, 4.0));
         vec3 fill = normalize(vec3(-7.0, 3.0, -6.0));
         vec3 under = normalize(vec3(2.0, -6.0, 8.0));
-        float dk = max(dot(n, key), 0.0) * 1.15;
-        float df = max(dot(n, fill), 0.0) * 0.30;
-        float du = max(dot(n, under), 0.0) * 0.12;
-        vec3 amb = mix(vec3(0.10, 0.12, 0.10), vec3(0.30, 0.34, 0.36), 0.5 + 0.5 * n.y);
-        lit = tex.rgb * (amb + vec3(1.0, 0.98, 0.92) * dk + vec3(0.66, 0.81, 0.78) * df + vec3(0.91, 0.83, 0.60) * du) * face * 1.35;
+        float dk = max(dot(n, key), 0.0) * 0.22;
+        float df = max(dot(n, fill), 0.0) * 0.10;
+        float du = max(dot(n, under), 0.0) * 0.05;
+        vec3 amb = mix(vec3(0.42, 0.44, 0.42), vec3(0.46, 0.48, 0.46), 0.5 + 0.5 * n.y);
+        lit = tex.rgb * (amb + vec3(1.0, 0.99, 0.98) * dk + vec3(0.94, 0.97, 0.96) * df + vec3(0.98, 0.95, 0.92) * du) * face * 1.15;
       }
       float f = smoothstep(uFogNear, uFogFar, vDist);
       gl_FragColor = vec4(mix(lit, uFogColor, f), tex.a);
