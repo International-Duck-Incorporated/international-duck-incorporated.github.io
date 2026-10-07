@@ -98,6 +98,16 @@
       label: "IDI seal clip, plays out in full",
       src: `${ASSET_REPO}/-/raw/${ASSET_REF}${ASSET_DIR}video6.webm`,
     },
+    // The live 3D block field, ported from the team's React + three.js demo to
+    // a dependency-free WebGL module (block-field.js). Nothing to download:
+    // every texture is painted at boot. No wordmark in it, so the <h1> shows.
+    {
+      name: "block-field",
+      kind: "blocks",
+      wordmark: false,
+      focus: "50% 50%",
+      label: "3D block field, rendered live",
+    },
     // Not part of the regular pool; fetched from the canonical idi-assets repo
     // only when index.html selects the 1/1000 surprise.
     {
@@ -300,6 +310,37 @@
     body.append(photo);
   };
 
+  // ------------------------------------------------------------ blocks
+  // The live WebGL block field. It paints procedurally, so there is nothing
+  // to wait for: the first rendered frame reveals it. No WebGL (or a lost
+  // context at boot) falls back to a local still, like a clip that never
+  // arrives.
+  const mountBlocks = (pick) => {
+    const canvas = document.createElement("canvas");
+    canvas.className = "egg-canvas";
+    canvas.setAttribute("aria-hidden", "true");
+    body.append(canvas);
+    const handle = window.IDIBlockField && window.IDIBlockField.mount(
+      canvas,
+      { reducedMotion: reducedMotion },
+      () => {
+        writeLast(pick.name);
+        reveal(canvas, () =>
+          console.log(`\u{1F95A} background: ${pick.label} (this visit's pick)`)
+        );
+      }
+    );
+    if (!handle) {
+      canvas.remove();
+      const stills = BACKGROUNDS.filter((item) => item.kind === "image" && !item.rare);
+      const still = stills[Math.floor(Math.random() * stills.length)];
+      applyFrameState(still);
+      mountImage(still);
+      return;
+    }
+    if (reducedMotion) handle.dispose(); // one painted frame, no loop
+  };
+
   // On constrained devices, keep the dedicated egg route useful without
   // silently starting its 74 MB download. The button is an explicit opt-in.
   if (isEggRoute && lowEnd) {
@@ -383,6 +424,8 @@
 
   if (pick.kind === "image") {
     mountImage(pick);
+  } else if (pick.kind === "blocks") {
+    mountBlocks(pick);
   } else {
     // A clip that will not load (cold URL, network blip) is replaced by one of
     // the local stills rather than a blank page.

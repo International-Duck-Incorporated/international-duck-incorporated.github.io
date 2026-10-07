@@ -197,7 +197,8 @@ html[data-frame="video"] body.egg-bg .hero-scrim {
     linear-gradient(180deg, rgba(4,6,10,.44) 0%, rgba(4,6,10,.06) 8%, rgba(4,6,10,0) 14%);
 }
 
-html[data-frame="image"] body.egg-bg .hero-scrim {
+html[data-frame="image"] body.egg-bg .hero-scrim,
+html[data-frame="blocks"] body.egg-bg .hero-scrim {
   background:
     linear-gradient(292deg, rgba(4,6,10,.76) 0%, rgba(4,6,10,.36) 26%, rgba(4,6,10,.06) 44%, rgba(4,6,10,0) 54%),
     linear-gradient(0deg, rgba(4,6,10,.5) 0%, rgba(4,6,10,.08) 10%, rgba(4,6,10,0) 16%);
@@ -206,11 +207,14 @@ html[data-frame="image"] body.egg-bg .hero-scrim {
 /* the hero is just the copy block now; the profile and metrics moved below */
 .org-hero { display: flex; min-height: 100vh; padding-bottom: 0; }
 html[data-frame="video"] .org-hero { align-items: flex-start; }
-html[data-frame="image"] .org-hero { align-items: flex-end; justify-content: flex-end; }
+html[data-frame="image"] .org-hero,
+html[data-frame="blocks"] .org-hero { align-items: flex-end; justify-content: flex-end; }
 .org-hero-copy { position: relative; z-index: 2; width: min(100%, 44ch); }
 html[data-frame="video"] .org-hero-copy { margin-top: 14vh; }
-html[data-frame="image"] .org-hero-copy { margin-bottom: 8vh; text-align: right; }
-html[data-frame="image"] .org-hero-copy .action-row { justify-content: flex-end; }
+html[data-frame="image"] .org-hero-copy,
+html[data-frame="blocks"] .org-hero-copy { margin-bottom: 8vh; text-align: right; }
+html[data-frame="image"] .org-hero-copy .action-row,
+html[data-frame="blocks"] .org-hero-copy .action-row { justify-content: flex-end; }
 
 /* the <h1> steps aside whenever the backdrop is already showing the name */
 html[data-wordmark="yes"] .org-hero-copy h1 {
@@ -285,7 +289,8 @@ body.egg-bg[data-page="organization"]::after { display: none; }
 
 /* ---- Easter egg + rotating homepage background ---- */
 .egg-video,
-.egg-photo {
+.egg-photo,
+.egg-canvas {
   position: fixed;
   inset: 0;
   z-index: -2;
@@ -300,7 +305,8 @@ body.egg-bg[data-page="organization"]::after { display: none; }
 }
 
 body.egg-ready .egg-video,
-body.egg-ready .egg-photo {
+body.egg-ready .egg-photo,
+body.egg-ready .egg-canvas {
   opacity: 1;
 }
 
@@ -344,7 +350,8 @@ body.egg-bg[data-page="organization"]::before {
 
 @media (prefers-reduced-motion: reduce) {
   .egg-video,
-  .egg-photo {
+  .egg-photo,
+  .egg-canvas {
     transition: none;
   }
 }

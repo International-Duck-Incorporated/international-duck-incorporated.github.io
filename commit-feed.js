@@ -7,13 +7,13 @@
   "use strict";
 
   var MEMBERS = {
-    "superivar": { label: "Xx-superIvar-xX", gitlab: "Xx-superIvar-xX" },
+    "superivar": { label: "Xx-superIvar-xX", gitlab: "Xx-superIvar-xX", github: "Xx-superIvar-xX" },
     "0xffshell": { label: "0xFFshell", gitlab: "0xFFshell" },
     // espress0 has no GitLab account: commits land in IDI repositories under
     // the author name only. The gitlab.com/espress0 profile is someone else's.
     "3spress0": { label: "espress0", gitlab: null, github: "3spress0", githubNote: "Profile currently returns 404 while the account is blocked; a reinstatement request is open with GitHub Support." },
     "e-vdv-hu": { label: "E-VDV-HU", gitlab: null },
-    "midas735": { label: "midas735", gitlab: "midas735" },
+    "midas735": { label: "midas735", gitlab: "midas735", github: "midas735" },
     "jojo-8002": { label: "Jojo-8002", gitlab: null, github: "Jojo-8002", githubNote: "GitHub is Jojo-8002's only public account." }
   };
 
