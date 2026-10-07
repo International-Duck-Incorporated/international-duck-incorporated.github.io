@@ -11,8 +11,9 @@
  * separation so they never intersect, dust motes drifting up, a star
  * shell, fog into the dark green void, emissive glowstone, real alpha
  * glass. Shadows, bloom and image-based lighting from the demo are
- * approximated with per-face shading and a three-light lambert, which
- * is what a background can afford.
+ * approximated with per-face shading and a three-light lambert, and the
+ * demo's post stack becomes a small hand-rolled chain: bright pass,
+ * half-res gaussian bloom, vignette and dither in one composite pass.
  *
  * Guards match the rest of the site: the head script never picks this
  * backdrop for low-end or reduced-motion visitors (easteregg.js renders
@@ -267,19 +268,23 @@
   /* One tile per block type, on every face: the team wants each block to
    * read identically from all six sides. A type may instead pass four tiles
    * [side, front, top, bottom] for the blocks that genuinely have distinct
-   * faces in Minecraft - furnace, crafting table and chest keep their real
-   * front/top faces; everything else stays uniform. */
+   * faces in Minecraft - furnace, crafting table, chest and pumpkin keep
+   * their real front faces, and grass, log, bookshelf, sandstone and melon
+   * keep their real top/bottom faces (grass top, log rings, plank cap,
+   * smooth sandstone cap, melon top where the rind stripes converge); the
+   * flecked medium-green tile at (8,6) is the pack's cactus side, not the
+   * melon's; everything else stays uniform. */
   const T = (id, tile, flags) =>
     Object.assign({ id, faces: Array.isArray(tile[0]) ? tile : [tile, tile, tile, tile] }, flags || {});
   const TILE_ROSTER = [
-    T("grass", [3, 0]),
+    T("grass", [[3, 0], [3, 0], [0, 0], [2, 0]]),
     T("dirt", [2, 0]),
     T("stone", [1, 0]),
     T("cobblestone", [0, 1]),
     T("mossy_cobblestone", [1, 1]),
     T("sand", [2, 1]),
     T("gravel", [3, 1]),
-    T("log", [4, 1]),
+    T("log", [[4, 1], [4, 1], [5, 1], [5, 1]]),
     T("leaves", [6, 1], { cutout: true }),
     T("glass", [1, 3], { alpha: true }),
     T("wool_white", [7, 1]),
@@ -293,21 +298,21 @@
     T("wool_pink", [11, 4]),
     T("gold_block", [8, 1]),
     T("diamond_block", [11, 1]),
-    T("sandstone", [9, 1]),
+    T("sandstone", [[9, 1], [9, 1], [10, 1], [10, 1]]),
     T("smooth_stone", [6, 0]),
     T("bricks", [7, 0]),
     T("stone_bricks", [4, 3]),
     T("planks", [7, 5]),
     T("obsidian", [5, 2]),
-    T("bookshelf", [3, 2]),
+    T("bookshelf", [[3, 2], [3, 2], [7, 5], [7, 5]]),
     T("crafting_table", [[11, 3], [11, 3], [11, 2], [7, 5]]),
     T("chest", [[8, 5], [9, 5], [15, 5], [8, 5]]),
     T("furnace", [[13, 2], [13, 3], [13, 2], [13, 2]]),
     T("glowstone", [3, 6], { emissive: true }),
     T("netherrack", [1, 6]),
     T("magma", [6, 5]),
-    T("melon", [12, 6]),
-    T("pumpkin", [1, 7]),
+    T("melon", [[12, 6], [12, 6], [13, 6], [13, 6]]),
+    T("pumpkin", [[0, 7], [2, 7], [0, 7], [0, 7]]),
     T("diamond_ore", [5, 7]),
     T("redstone_ore", [6, 7]),
     T("coal_ore", [2, 2]),
@@ -369,12 +374,12 @@
         amp: [spanX * (0.3 + r() * 0.45), spanY * (0.3 + r() * 0.45), 0.4 + r() * 1.0],
         freq: [0.05 + r() * 0.13, 0.05 + r() * 0.13, 0.05 + r() * 0.13],
         phase: [r() * TAU, r() * TAU, r() * TAU],
-        /* Upright yaw spin only. Tumbling over roll/pitch turned side-oriented
-         * tiles (grass fringe, bark, bookshelf bands) sideways on the faces
-         * that rolled into view, which read as mismatched textures per side.
-         * Standing blocks keep every visible face on the tile's own axes. */
-        rot: [0, (r() - 0.5) * 0.5, 0],
-        angle: [0, r() * TAU, 0],
+        /* Full three-axis tumble, as in the original demo. Now that the
+         * per-face UVs follow the cube axes and the camera basis is
+         * right-handed, every tile stays glued to its own face while the
+         * block rolls, so tumbling reads as solid 3D blocks again. */
+        rot: [(r() - 0.5) * 0.45, (r() - 0.5) * 0.45, (r() - 0.5) * 0.45],
+        angle: [r() * TAU, r() * TAU, r() * TAU],
         pos: [0, 0, 0],
       };
     });
@@ -520,6 +525,44 @@
       gl_FragColor = vec4(uColor * a, a);
     }`;
 
+  /* ------------------------------------------------- post-processing:
+   * scene renders into a full-res target; a soft-threshold bright pass
+   * feeds a half-res separable gaussian (two ping-pong rounds) and the
+   * composite adds the bloom plus a gentle vignette and a 1/255 dither
+   * so the dark void never bands. */
+  const POST_VS = `
+    attribute vec2 aPos; varying vec2 vUv;
+    void main() { vUv = aPos * 0.5 + 0.5; gl_Position = vec4(aPos, 0.0, 1.0); }`;
+  const BRIGHT_FS = `
+    precision mediump float;
+    varying vec2 vUv; uniform sampler2D uTex; uniform float uThreshold;
+    void main() {
+      vec3 c = texture2D(uTex, vUv).rgb;
+      float l = dot(c, vec3(0.2126, 0.7152, 0.0722));
+      gl_FragColor = vec4(c * (max(l - uThreshold, 0.0) / max(l, 1e-4)), 1.0);
+    }`;
+  const BLUR_FS = `
+    precision mediump float;
+    varying vec2 vUv; uniform sampler2D uTex; uniform vec2 uDir;
+    void main() {
+      vec3 s = texture2D(uTex, vUv).rgb * 0.227027;
+      s += (texture2D(uTex, vUv + uDir * 1.3846).rgb + texture2D(uTex, vUv - uDir * 1.3846).rgb) * 0.3162162;
+      s += (texture2D(uTex, vUv + uDir * 3.2308).rgb + texture2D(uTex, vUv - uDir * 3.2308).rgb) * 0.0702706;
+      gl_FragColor = vec4(s, 1.0);
+    }`;
+  const COMP_FS = `
+    precision mediump float;
+    varying vec2 vUv; uniform sampler2D uScene, uBloom;
+    uniform float uStrength, uVignette;
+    void main() {
+      vec3 c = texture2D(uScene, vUv).rgb + texture2D(uBloom, vUv).rgb * uStrength;
+      float d = distance(vUv, vec2(0.5));
+      c *= 1.0 - uVignette * smoothstep(0.45, 0.85, d);
+      float n = fract(sin(dot(vUv, vec2(12.9898, 78.233))) * 43758.5453);
+      c += (n - 0.5) / 255.0;
+      gl_FragColor = vec4(c, 1.0);
+    }`;
+
   function compile(gl, type, src) {
     const s = gl.createShader(type);
     gl.shaderSource(s, src);
@@ -597,7 +640,10 @@
 
     const cubeProg = program(gl, CUBE_VS, CUBE_FS);
     const pointProg = program(gl, POINT_VS, POINT_FS);
-    if (!cubeProg || !pointProg) return false;
+    const brightProg = program(gl, POST_VS, BRIGHT_FS);
+    const blurProg = program(gl, POST_VS, BLUR_FS);
+    const compProg = program(gl, POST_VS, COMP_FS);
+    if (!cubeProg || !pointProg || !brightProg || !blurProg || !compProg) return false;
 
     let atlas = null;
     function uploadAtlas(img) {
@@ -614,6 +660,98 @@
     }
 
     const geo = cubeBuffers(gl);
+
+    /* post targets: full-res scene, half-res bloom ping-pong */
+    const quadBuf = gl.createBuffer();
+    gl.bindBuffer(gl.ARRAY_BUFFER, quadBuf);
+    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1, -1, 3, -1, -1, 3]), gl.STATIC_DRAW);
+    function makeTarget(w, h, withDepth) {
+      const tex = gl.createTexture();
+      gl.bindTexture(gl.TEXTURE_2D, tex);
+      gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, w, h, 0, gl.RGBA, gl.UNSIGNED_BYTE, null);
+      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
+      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+      const fb = gl.createFramebuffer();
+      gl.bindFramebuffer(gl.FRAMEBUFFER, fb);
+      gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, tex, 0);
+      let rb = null;
+      if (withDepth) {
+        /* without a depth attachment the depth test always passes and the
+         * field draws in list order - far blocks painting over near ones */
+        rb = gl.createRenderbuffer();
+        gl.bindRenderbuffer(gl.RENDERBUFFER, rb);
+        gl.renderbufferStorage(gl.RENDERBUFFER, gl.DEPTH_COMPONENT16, w, h);
+        gl.framebufferRenderbuffer(gl.FRAMEBUFFER, gl.DEPTH_ATTACHMENT, gl.RENDERBUFFER, rb);
+      }
+      const ok = gl.checkFramebufferStatus(gl.FRAMEBUFFER) === gl.FRAMEBUFFER_COMPLETE;
+      gl.bindFramebuffer(gl.FRAMEBUFFER, null);
+      return { tex, fb, rb, w, h, ok };
+    }
+    function freeTarget(t) {
+      if (t) { gl.deleteFramebuffer(t.fb); gl.deleteTexture(t.tex); if (t.rb) gl.deleteRenderbuffer(t.rb); }
+    }
+    let sceneT = null, bloomA = null, bloomB = null, postOk = true;
+    function makeTargets() {
+      freeTarget(sceneT); freeTarget(bloomA); freeTarget(bloomB);
+      sceneT = makeTarget(canvas.width, canvas.height, true);
+      const hw = Math.max(1, canvas.width >> 1), hh = Math.max(1, canvas.height >> 1);
+      bloomA = makeTarget(hw, hh, false);
+      bloomB = makeTarget(hw, hh, false);
+      postOk = sceneT.ok && bloomA.ok && bloomB.ok;
+      if (!postOk) console.log("🦆 block-field: framebuffer incomplete, drawing direct without post.");
+    }
+    const bU = { tex: gl.getUniformLocation(brightProg, "uTex"), threshold: gl.getUniformLocation(brightProg, "uThreshold") };
+    const bA = { pos: gl.getAttribLocation(brightProg, "aPos") };
+    const lU = { tex: gl.getUniformLocation(blurProg, "uTex"), dir: gl.getUniformLocation(blurProg, "uDir") };
+    const lA = { pos: gl.getAttribLocation(blurProg, "aPos") };
+    const kU = {
+      scene: gl.getUniformLocation(compProg, "uScene"), bloom: gl.getUniformLocation(compProg, "uBloom"),
+      strength: gl.getUniformLocation(compProg, "uStrength"), vignette: gl.getUniformLocation(compProg, "uVignette"),
+    };
+    const kA = { pos: gl.getAttribLocation(compProg, "aPos") };
+
+    function postPass(prog, posLoc, target) {
+      gl.bindFramebuffer(gl.FRAMEBUFFER, target ? target.fb : null);
+      gl.viewport(0, 0, target ? target.w : canvas.width, target ? target.h : canvas.height);
+      gl.useProgram(prog);
+      gl.disable(gl.DEPTH_TEST);
+      gl.disable(gl.BLEND);
+      gl.bindBuffer(gl.ARRAY_BUFFER, quadBuf);
+      gl.enableVertexAttribArray(posLoc);
+      gl.vertexAttribPointer(posLoc, 2, gl.FLOAT, false, 0, 0);
+      gl.drawArrays(gl.TRIANGLES, 0, 3);
+    }
+    function postProcess() {
+      gl.activeTexture(gl.TEXTURE0);
+      gl.bindTexture(gl.TEXTURE_2D, sceneT.tex);
+      gl.useProgram(brightProg);
+      gl.uniform1i(bU.tex, 0);
+      gl.uniform1f(bU.threshold, 0.82);
+      postPass(brightProg, bA.pos, bloomA);
+      gl.useProgram(blurProg);
+      gl.uniform1i(lU.tex, 0);
+      for (let i = 0; i < 2; i++) {
+        gl.bindTexture(gl.TEXTURE_2D, bloomA.tex);
+        gl.uniform2f(lU.dir, 1 / bloomA.w, 0);
+        postPass(blurProg, lA.pos, bloomB);
+        gl.bindTexture(gl.TEXTURE_2D, bloomB.tex);
+        gl.uniform2f(lU.dir, 0, 1 / bloomB.h);
+        postPass(blurProg, lA.pos, bloomA);
+      }
+      gl.activeTexture(gl.TEXTURE0);
+      gl.bindTexture(gl.TEXTURE_2D, sceneT.tex);
+      gl.activeTexture(gl.TEXTURE1);
+      gl.bindTexture(gl.TEXTURE_2D, bloomA.tex);
+      gl.useProgram(compProg);
+      gl.uniform1i(kU.scene, 0);
+      gl.uniform1i(kU.bloom, 1);
+      gl.uniform1f(kU.strength, 0.55);
+      gl.uniform1f(kU.vignette, 0.32);
+      postPass(compProg, kA.pos, null);
+      gl.activeTexture(gl.TEXTURE0);
+    }
 
     /* stars + dust */
     const STARS = 700, DUST = 220;
@@ -672,6 +810,7 @@
       dpr = Math.min(window.devicePixelRatio || 1, 1.5);
       canvas.width = Math.round(width * dpr);
       canvas.height = Math.round(height * dpr);
+      makeTargets();
       gl.viewport(0, 0, canvas.width, canvas.height);
       perspective(proj, FOV * Math.PI / 180, width / Math.max(1, height), 0.1, 120);
       entries = makeField(width / Math.max(1, height));
@@ -696,6 +835,13 @@
     }
 
     function frame(time, dt) {
+      if (postOk) {
+        gl.bindFramebuffer(gl.FRAMEBUFFER, sceneT.fb);
+        gl.viewport(0, 0, sceneT.w, sceneT.h);
+      } else {
+        gl.bindFramebuffer(gl.FRAMEBUFFER, null);
+        gl.viewport(0, 0, canvas.width, canvas.height);
+      }
       simulate(entries, time, dt);
       gl.clearColor(BG[0], BG[1], BG[2], 1);
       gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
@@ -760,6 +906,8 @@
       drawPoints(dustBuf, dustSeedBuf, DUST, [0.82, 0.89, 0.79], 0.26, 0.55, time * 3.1);
       gl.depthMask(true);
       gl.disable(gl.BLEND);
+
+      if (postOk) postProcess();
 
       if (first) {
         first = false;

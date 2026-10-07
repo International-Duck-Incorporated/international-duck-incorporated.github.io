@@ -55,12 +55,17 @@ for (const def of M.TILE_ROSTER) for (const f of def.faces) {
   if (f[0] < 0 || f[0] > 15 || f[1] < 0 || f[1] > 31) inBounds = false;
 }
 ok(ints && inBounds, "all tile coords integer and within 16x32 sheet");
-const FRONTEX = new Set(["furnace", "crafting_table", "chest"]); // Minecraft-authentic exceptions
-ok(M.TILE_ROSTER.filter((d) => !FRONTEX.has(d.id))
-  .every((d) => d.faces.every((f) => f[0] === d.faces[0][0] && f[1] === d.faces[0][1])),
-  "every block type except the furnace shows the same tile on all four face slots");
+const FRONTEX = new Set(["furnace", "crafting_table", "chest", "pumpkin"]);
+/* Blocks whose top and bottom genuinely differ from their sides in Minecraft. */
+const TOPTEX = new Set(["grass", "log", "bookshelf", "sandstone", "melon"]); // Minecraft-authentic exceptions
 const byId = (id) => M.TILE_ROSTER.find((d) => d.id === id);
 const same = (a, b) => a[0] === b[0] && a[1] === b[1];
+ok(M.TILE_ROSTER.filter((d) => !FRONTEX.has(d.id) && !TOPTEX.has(d.id))
+  .every((d) => d.faces.every((f) => same(f, d.faces[0]))),
+  "every block type outside the authentic sets shows the same tile on all four face slots");
+ok(M.TILE_ROSTER.filter((d) => TOPTEX.has(d.id))
+  .every((d) => same(d.faces[0], d.faces[1]) && !same(d.faces[0], d.faces[2]) && !same(d.faces[0], d.faces[3])),
+  "top-textured blocks keep plain sides and genuine top and bottom faces");
 const fur = byId("furnace");
 ok(fur && same(fur.faces[0], [13, 2]) && same(fur.faces[1], [13, 3])
   && same(fur.faces[2], [13, 2]) && same(fur.faces[3], [13, 2]),
@@ -69,6 +74,26 @@ const cra = byId("crafting_table");
 ok(cra && same(cra.faces[0], [11, 3]) && same(cra.faces[1], [11, 3])
   && same(cra.faces[2], [11, 2]) && same(cra.faces[3], [7, 5]),
   "crafting table keeps tool sides, grid top and plank bottom");
+const mel = byId("melon");
+ok(mel && same(mel.faces[0], [12, 6]) && same(mel.faces[1], [12, 6])
+  && same(mel.faces[2], [13, 6]) && same(mel.faces[3], [13, 6]),
+  "melon keeps bright rind sides and the converging-stripe top, never the cactus tiles");
+const log = byId("log");
+ok(log && same(log.faces[0], [4, 1]) && same(log.faces[2], [5, 1]) && same(log.faces[3], [5, 1]),
+  "log keeps bark sides and ring top/bottom");
+const gra = byId("grass");
+ok(gra && same(gra.faces[0], [3, 0]) && same(gra.faces[2], [0, 0]) && same(gra.faces[3], [2, 0]),
+  "grass keeps fringe sides, green top and dirt bottom");
+const boo = byId("bookshelf");
+ok(boo && same(boo.faces[0], [3, 2]) && same(boo.faces[2], [7, 5]) && same(boo.faces[3], [7, 5]),
+  "bookshelf keeps shelf sides and plank top/bottom");
+const san = byId("sandstone");
+ok(san && same(san.faces[0], [9, 1]) && same(san.faces[2], [10, 1]) && same(san.faces[3], [10, 1]),
+  "sandstone keeps textured sides and smooth top/bottom");
+const pum = byId("pumpkin");
+ok(pum && same(pum.faces[0], [0, 7]) && same(pum.faces[1], [2, 7])
+  && same(pum.faces[2], [0, 7]) && same(pum.faces[3], [0, 7]),
+  "pumpkin keeps ribbed sides with the lit carved face on the front");
 const che = byId("chest");
 ok(che && same(che.faces[0], [8, 5]) && same(che.faces[1], [9, 5])
   && same(che.faces[2], [15, 5]) && same(che.faces[3], [8, 5]),
@@ -107,7 +132,10 @@ for (let i = 0; i < field.length; i++) for (let j = i + 1; j < field.length; j++
 ok(Math.sqrt(min2) >= 1.3 * Math.sqrt(3) + 0.04,
   "no intersection after one relaxation pass: " + Math.sqrt(min2).toFixed(4) + " (cube diagonal 2.2517, target " + M.MIN_DIST.toFixed(4) + ")");
 ok(field.every((e) => e.def && e.def.faces.length === 4), "every field block carries 4 face defs");
-ok(field.every((e) => e.rot[0] === 0 && e.rot[2] === 0), "blocks spin upright (yaw only), so face tiles stay on their own axes");
+ok(field.every((e) => e.rot.every((v) => Math.abs(v) <= 0.225))
+  && field.some((e) => e.rot[0] !== 0) && field.some((e) => e.rot[1] !== 0) && field.some((e) => e.rot[2] !== 0)
+  && field.every((e) => e.angle.every((a) => a >= 0 && a <= Math.PI * 2)),
+  "blocks tumble on all three axes within the demo's rate bounds");
 
 /* camera must not be rolled: view up-axis points up, right-axis right */
 const V = new Float32Array(16);
