@@ -855,26 +855,44 @@ body.matrix-rain-page .button-blue:hover { background: #7cff99; }
 .baritone-agent-roster { display:flex; flex-direction:column; }
 .baritone-console-bar { display:flex; align-items:center; justify-content:space-between; gap:1rem; min-height:36px; padding:0 .15rem .7rem; color:#7d8a86; border-bottom:1px solid rgba(255,255,255,.07); font:600 .55rem var(--mono); letter-spacing:.13em; }
 .baritone-console-bar code { color:#93a09c; font:600 .52rem var(--mono); }
-.baritone-agent-list { display:grid; gap:.55rem; padding-top:.7rem; }
-.baritone-agent { padding:.75rem .8rem; background:rgba(255,255,255,.025); border:1px solid rgba(255,255,255,.065); border-radius:14px; }
-.baritone-agent-head { display:flex; align-items:center; justify-content:space-between; gap:.7rem; }
-.baritone-agent-name { margin:0; color:#e7eeeb; font:700 .7rem var(--mono); letter-spacing:-.01em; }
+.baritone-agent-avatar { display:block; border-radius:50%; background:rgba(255,255,255,.06); box-shadow:0 0 0 1px rgba(255,255,255,.09); }
+.baritone-agent-list { display:grid; gap:.4rem; padding-top:.7rem; }
+.baritone-agent { display:grid; grid-template-columns:auto minmax(0,1fr); gap:.65rem; align-items:start; padding:.6rem .65rem; background:rgba(255,255,255,.025); border:1px solid rgba(255,255,255,.065); border-radius:12px; }
+.baritone-agent-pic { position:relative; width:32px; height:32px; margin-top:.1rem; }
+.baritone-agent-pic .baritone-agent-avatar { width:100%; height:100%; }
+.baritone-agent-pic::after { content:""; position:absolute; right:-2px; bottom:-2px; width:10px; height:10px; border-radius:50%; background:#8b9490; border:2px solid #12171d; }
+.baritone-agent-pic.is-claimed::after, .baritone-agent-pic.is-implementing::after, .baritone-agent-pic.is-testing::after, .baritone-agent-pic.is-review::after { background:#5a9bf2; }
+.baritone-agent-pic.is-done::after, .baritone-agent-pic.is-resting::after { background:#4cba5f; }
+.baritone-agent-pic.is-blocked::after { background:#dc4e4e; }
+.baritone-agent-pic.is-joining::after, .baritone-agent-pic.is-researching::after, .baritone-agent-pic.is-planning::after { background:#d1a145; }
+.baritone-agent-copy { min-width:0; }
+.baritone-agent-head { display:flex; align-items:center; justify-content:space-between; gap:.6rem; }
+.baritone-agent-name { margin:0; color:#e7eeeb; font:700 .68rem var(--mono); letter-spacing:-.01em; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
 .baritone-agent-status { flex:0 0 auto; padding:.25rem .4rem; color:#aeb9b5; background:rgba(151,164,159,.08); border:1px solid rgba(151,164,159,.12); border-radius:7px; font:600 .45rem var(--mono); letter-spacing:.07em; text-transform:uppercase; }
 .baritone-agent-status.claimed, .baritone-agent-status.implementing, .baritone-agent-status.testing, .baritone-agent-status.review { color:#9cc7f7; background:rgba(90,155,242,.08); border-color:rgba(90,155,242,.15); }
 .baritone-agent-status.done, .baritone-agent-status.resting { color:#a8e8b0; background:rgba(72,186,95,.07); border-color:rgba(100,223,122,.16); }
 .baritone-agent-status.blocked { color:#e7a5a5; background:rgba(220,78,78,.07); border-color:rgba(220,100,100,.16); }
 .baritone-agent-status.joining, .baritone-agent-status.researching, .baritone-agent-status.planning { color:#e5c88c; background:rgba(209,161,69,.07); border-color:rgba(209,161,69,.15); }
-.baritone-agent-task { margin:.45rem 0 0; color:#818d88; font-size:.64rem; line-height:1.55; }
+.baritone-agent-task { display:-webkit-box; -webkit-box-orient:vertical; -webkit-line-clamp:3; overflow:hidden; margin:.4rem 0 0; color:#818d88; font-size:.6rem; line-height:1.55; }
 .baritone-agent-chat { display:flex; flex-direction:column; min-height:620px; }
-.baritone-agent-chat-log { flex:1; min-height:0; height:620px; max-height:72vh; overflow:auto; padding:.9rem .35rem .35rem .05rem; scrollbar-width:thin; scrollbar-color:rgba(140,160,154,.3) transparent; }
-.baritone-agent-message { padding:.9rem .95rem 1rem; background:linear-gradient(145deg,rgba(255,255,255,.038),rgba(255,255,255,.018)); border:1px solid rgba(255,255,255,.07); border-radius:14px; }
-.baritone-agent-message + .baritone-agent-message { margin-top:.55rem; }
-.baritone-agent-message.is-human { border-color:rgba(90,155,242,.18); }
-.baritone-agent-message-head { display:flex; align-items:baseline; justify-content:space-between; gap:1rem; margin-bottom:.55rem; }
-.baritone-agent-message-name { color:#e8efec; font:700 .64rem var(--mono); }
-.baritone-agent-message-time { color:#697570; font:500 .48rem var(--mono); white-space:nowrap; }
-.baritone-agent-message-meta { display:flex; align-items:center; gap:.5rem; margin:-.2rem 0 .55rem; color:#66716d; font:500 .47rem var(--mono); letter-spacing:.04em; text-transform:uppercase; }
-.baritone-agent-message-body { margin:0; color:#a7b1ad; white-space:pre-wrap; overflow-wrap:anywhere; font-size:.7rem; line-height:1.72; }
+.baritone-agent-chat-log { flex:1; min-height:0; height:640px; max-height:74vh; overflow:auto; padding:.6rem .25rem .75rem; scrollbar-width:thin; scrollbar-color:rgba(140,160,154,.3) transparent; }
+.baritone-agent-day { display:flex; align-items:center; gap:.7rem; margin:.7rem .55rem .3rem; color:#7d8a86; font:600 .52rem var(--mono); letter-spacing:.12em; text-transform:uppercase; }
+.baritone-agent-day::before, .baritone-agent-day::after { content:""; flex:1; height:1px; background:rgba(255,255,255,.08); }
+.baritone-agent-day > span { padding:.3rem .7rem; border:1px solid rgba(255,255,255,.09); border-radius:999px; background:rgba(255,255,255,.02); white-space:nowrap; }
+.baritone-agent-msg { display:grid; grid-template-columns:38px minmax(0,1fr); gap:.7rem; padding:.55rem .55rem; border-radius:10px; }
+.baritone-agent-msg:hover { background:rgba(255,255,255,.028); }
+.baritone-agent-msg > .baritone-agent-avatar { width:38px; height:38px; }
+.baritone-agent-msg.is-compact { padding-top:.14rem; padding-bottom:.14rem; }
+.baritone-agent-msg-gutter { align-self:start; padding-top:.32rem; color:#697570; font:500 .5rem var(--mono); white-space:nowrap; opacity:0; }
+.baritone-agent-msg.is-compact:hover .baritone-agent-msg-gutter { opacity:1; }
+.baritone-agent-msg-main { min-width:0; }
+.baritone-agent-msg-head { display:flex; align-items:baseline; gap:.6rem; margin-bottom:.15rem; }
+.baritone-agent-msg-name { color:#e8efec; font:700 .72rem var(--mono); }
+.baritone-agent-msg.is-human { background:rgba(90,155,242,.055); box-shadow:inset 2px 0 0 rgba(90,155,242,.55); }
+.baritone-agent-msg.is-human .baritone-agent-msg-name { color:#9cc7f7; }
+.baritone-agent-msg-time { color:#697570; font:500 .5rem var(--mono); white-space:nowrap; }
+.baritone-agent-msg-meta { margin:0 0 .3rem; color:#66716d; font:500 .5rem var(--mono); letter-spacing:.04em; text-transform:uppercase; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.baritone-agent-msg-body { margin:0; color:#bcc5c0; white-space:pre-wrap; overflow-wrap:anywhere; font-size:.76rem; line-height:1.68; }
 .baritone-agent-empty { margin:0; padding:1rem .2rem; color:#68736e; font:500 .6rem var(--mono); line-height:1.7; }
 .baritone-agent-source { display:flex; align-items:center; justify-content:space-between; gap:1rem; margin-top:.65rem; padding:0 .15rem; color:#65716d; font:500 .53rem var(--mono); }
 .baritone-agent-source b { color:#8d9894; }
@@ -891,8 +909,10 @@ body.matrix-rain-page .button-blue:hover { background: #7cff99; }
   .baritone-agent-console { margin-top:3.5rem; }
   .baritone-agent-heading h2 { font-size:clamp(2.3rem,11vw,3.7rem); }
   .baritone-agent-roster, .baritone-agent-chat { padding:.8rem; }
-  .baritone-agent-message-head { align-items:flex-start; flex-direction:column; gap:.25rem; }
-  .baritone-agent-message-time { white-space:normal; }
+  .baritone-agent-msg { grid-template-columns:32px minmax(0,1fr); gap:.6rem; padding:.5rem .35rem; }
+  .baritone-agent-msg > .baritone-agent-avatar { width:32px; height:32px; }
+  .baritone-agent-msg-gutter { opacity:1; }
+  .baritone-agent-msg-meta { white-space:normal; }
   .baritone-agent-source { align-items:flex-start; flex-direction:column; }
   .baritone-agent-chat-log { height:480px; max-height:64vh; }
 }

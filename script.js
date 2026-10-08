@@ -669,6 +669,8 @@ if (page === "venomous") {
 // the /-/raw/ URL sends no CORS headers, so browsers refuse it cross-origin.
 // This block must stay above the footer sync-state resolution below so the
 // initial fetch is counted in liveTasks like every other live sync.
+// Avatars are Gravatar identicons hashed from the agent name, so every
+// agent (and the human operator) gets a stable, recognizable identicon.
 const BARITONE_AGENTS_REF = "26.3";
 const BARITONE_AGENT_SOURCE = `${GL_BARITONE_PROJECT}/repository/files/AGENTS.md/raw?ref=${BARITONE_AGENTS_REF}`;
 const BARITONE_AGENT_MESSAGE_LIMIT = 48;
@@ -757,6 +759,70 @@ function parseBaritoneChat(markdown) {
   return entries;
 }
 
+function md5Hex(text) {
+  const bytes = Array.from(new TextEncoder().encode(String(text)));
+  const bitLength = bytes.length * 8;
+  bytes.push(0x80);
+  while (bytes.length % 64 !== 56) bytes.push(0);
+  for (let i = 0; i < 8; i++) bytes.push((bitLength / 2 ** (8 * i)) & 0xff);
+  const K = Array.from({ length: 64 }, (_, i) => Math.floor(Math.abs(Math.sin(i + 1)) * 0x100000000) >>> 0);
+  const S = [7, 12, 17, 22, 7, 12, 17, 22, 7, 12, 17, 22, 7, 12, 17, 22,
+             5, 9, 14, 20, 5, 9, 14, 20, 5, 9, 14, 20, 5, 9, 14, 20,
+             4, 11, 16, 23, 4, 11, 16, 23, 4, 11, 16, 23, 4, 11, 16, 23,
+             6, 10, 15, 21, 6, 10, 15, 21, 6, 10, 15, 21, 6, 10, 15, 21];
+  const rol = (value, bits) => ((value << bits) | (value >>> (32 - bits))) >>> 0;
+  let a0 = 0x67452301, b0 = 0xefcdab89, c0 = 0x98badcfe, d0 = 0x10325476;
+  for (let offset = 0; offset < bytes.length; offset += 64) {
+    const M = [];
+    for (let i = 0; i < 16; i++) {
+      M.push((bytes[offset + i * 4] | (bytes[offset + i * 4 + 1] << 8) | (bytes[offset + i * 4 + 2] << 16) | (bytes[offset + i * 4 + 3] << 24)) >>> 0);
+    }
+    let A = a0, B = b0, C = c0, D = d0;
+    for (let i = 0; i < 64; i++) {
+      let F, g;
+      if (i < 16) { F = (B & C) | (~B & D); g = i; }
+      else if (i < 32) { F = (D & B) | (~D & C); g = (5 * i + 1) % 16; }
+      else if (i < 48) { F = B ^ C ^ D; g = (3 * i + 5) % 16; }
+      else { F = C ^ (B | ~D); g = (7 * i) % 16; }
+      F = (F + A + K[i] + M[g]) >>> 0;
+      A = D; D = C; C = B;
+      B = (B + rol(F, S[i])) >>> 0;
+    }
+    a0 = (a0 + A) >>> 0; b0 = (b0 + B) >>> 0; c0 = (c0 + C) >>> 0; d0 = (d0 + D) >>> 0;
+  }
+  return [a0, b0, c0, d0].map((word) => [0, 8, 16, 24].map((shift) => ((word >>> shift) & 0xff).toString(16).padStart(2, "0")).join("")).join("");
+}
+
+function baritoneAvatarUrl(name) {
+  const digest = md5Hex(String(name || "agent").trim().toLowerCase());
+  return `https://www.gravatar.com/avatar/${digest}?s=96&d=identicon&f=y`;
+}
+
+function baritoneAvatar(name, displaySize) {
+  const image = document.createElement("img");
+  image.className = "baritone-agent-avatar";
+  image.src = baritoneAvatarUrl(name);
+  image.alt = "";
+  image.width = displaySize;
+  image.height = displaySize;
+  image.loading = "lazy";
+  image.decoding = "async";
+  image.referrerPolicy = "no-referrer";
+  image.draggable = false;
+  return image;
+}
+
+function baritoneChatStamp(time) {
+  const match = String(time || "").match(/^(\d{4}-\d{2}-\d{2})(?:\s+(\d{2}:\d{2}))?/);
+  return { date: match?.[1] || "", clock: match?.[2] || "" };
+}
+
+function baritoneDayLabel(date) {
+  const day = new Date(`${date}T00:00:00Z`);
+  if (Number.isNaN(day.getTime())) return date;
+  return new Intl.DateTimeFormat(undefined, { day: "numeric", month: "long", year: "numeric", timeZone: "UTC" }).format(day);
+}
+
 function baritoneStatusClass(status) {
   const normalized = String(status || "").toLowerCase();
   return normalized.split(/\s+/)[0].replace(/[^a-z-]/g, "") || "unknown";
@@ -779,57 +845,102 @@ function renderBaritoneAgents(agents) {
   }
   roster.replaceChildren(...agents.map((agent) => {
     const card = document.createElement("article");
+    const pic = document.createElement("span");
+    const copy = document.createElement("div");
     const head = document.createElement("div");
     const name = document.createElement("strong");
     const badge = document.createElement("span");
     const task = document.createElement("p");
+    const statusClass = baritoneStatusClass(agent.status);
     card.className = "baritone-agent";
+    pic.className = `baritone-agent-pic is-${statusClass}`;
+    copy.className = "baritone-agent-copy";
     head.className = "baritone-agent-head";
     name.className = "baritone-agent-name";
-    badge.className = `baritone-agent-status ${baritoneStatusClass(agent.status)}`;
+    badge.className = `baritone-agent-status ${statusClass}`;
     task.className = "baritone-agent-task";
     name.textContent = agent.name;
     badge.textContent = agent.status;
     task.textContent = agent.task || "No current task recorded.";
+    task.title = agent.task || "";
+    pic.append(baritoneAvatar(agent.name, 32));
     head.append(name, badge);
-    card.append(head, task);
+    copy.append(head, task);
+    card.append(pic, copy);
     return card;
   }));
 }
-
 function renderBaritoneChat(messages) {
   const log = $("[data-baritone-agent-chat]");
   if (!log) return;
   const wasAtBottom = log.scrollHeight - log.scrollTop - log.clientHeight < 90;
   const visible = messages.slice(-BARITONE_AGENT_MESSAGE_LIMIT);
   setText("[data-baritone-message-total]", messages.length.toLocaleString());
-  log.replaceChildren(...visible.map((entry) => {
-    const card = document.createElement("article");
-    const head = document.createElement("header");
-    const name = document.createElement("span");
-    const time = document.createElement("time");
-    const meta = document.createElement("div");
-    const body = document.createElement("p");
-    card.className = `baritone-agent-message${entry.name.toLowerCase().includes("0xff") ? " is-human" : ""}`;
-    head.className = "baritone-agent-message-head";
-    name.className = "baritone-agent-message-name";
-    time.className = "baritone-agent-message-time";
-    meta.className = "baritone-agent-message-meta";
-    body.className = "baritone-agent-message-body";
-    const metaText = [entry.status, entry.task].filter(Boolean).join(" · ");
-    name.textContent = entry.name;
-    time.textContent = entry.time;
-    meta.textContent = metaText;
-    meta.hidden = !metaText;
-    body.textContent = entry.message;
-    head.append(name, time);
-    card.append(head, meta, body);
-    return card;
-  }));
+  const nodes = [];
+  let previous = null;
+  for (const entry of visible) {
+    const stamp = baritoneChatStamp(entry.time);
+    if (stamp.date && (!previous || previous.date !== stamp.date)) {
+      const day = document.createElement("div");
+      const label = document.createElement("span");
+      day.className = "baritone-agent-day";
+      label.textContent = baritoneDayLabel(stamp.date);
+      day.append(label);
+      nodes.push(day);
+      previous = null; // a new day always opens with a full message
+    }
+    nodes.push(baritoneChatMessage(entry, stamp, Boolean(previous && previous.author === entry.name)));
+    previous = { author: entry.name, date: stamp.date };
+  }
+  if (!nodes.length) nodes.push(baritoneEmptyLine("No timestamped messages found in AGENTS.md."));
+  log.replaceChildren(...nodes);
   if (!baritoneChatPinned || wasAtBottom) log.scrollTop = log.scrollHeight;
   baritoneChatPinned = true;
 }
 
+function baritoneChatMessage(entry, stamp, compact) {
+  const card = document.createElement("article");
+  const main = document.createElement("div");
+  card.className = `baritone-agent-msg${compact ? " is-compact" : ""}${entry.name.toLowerCase().includes("0xff") ? " is-human" : ""}`;
+  main.className = "baritone-agent-msg-main";
+  if (compact) {
+    const gutter = document.createElement("span");
+    gutter.className = "baritone-agent-msg-gutter";
+    gutter.textContent = stamp.clock;
+    gutter.title = entry.time;
+    card.append(gutter);
+  } else {
+    card.append(baritoneAvatar(entry.name, 38));
+    const head = document.createElement("header");
+    const name = document.createElement("span");
+    head.className = "baritone-agent-msg-head";
+    name.className = "baritone-agent-msg-name";
+    name.textContent = entry.name;
+    head.append(name);
+    if (stamp.clock) {
+      const time = document.createElement("time");
+      time.className = "baritone-agent-msg-time";
+      time.textContent = `${stamp.clock} UTC`;
+      time.title = entry.time;
+      head.append(time);
+    }
+    main.append(head);
+  }
+  const metaText = [entry.status, entry.task].filter(Boolean).join(" · ");
+  if (metaText) {
+    const meta = document.createElement("div");
+    meta.className = "baritone-agent-msg-meta";
+    meta.textContent = metaText;
+    meta.title = metaText;
+    main.append(meta);
+  }
+  const body = document.createElement("p");
+  body.className = "baritone-agent-msg-body";
+  body.textContent = entry.message;
+  main.append(body);
+  card.append(main);
+  return card;
+}
 function hashBaritoneSource(source) {
   let hash = 0x811c9dc5;
   for (let i = 0; i < source.length; i++) {
