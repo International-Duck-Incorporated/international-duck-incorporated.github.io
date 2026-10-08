@@ -833,6 +833,7 @@ function baritoneStampLabel(ms) {
 }
 
 const BARITONE_ACTIVE_WINDOW_MS = 60 * 60 * 1000;
+const BARITONE_DONE_HIDE_MS = 2 * 60 * 60 * 1000;
 
 function baritoneChatAuthorKey(author) {
   return String(author || "").replace(/\s*\(.*\)$/, "").trim().toLowerCase();
@@ -875,6 +876,11 @@ function baritoneStateLabel(state, lastMs, nowMs) {
   return `Stalled · quiet ${ago}`;
 }
 
+function baritoneAgentVisible(agent, lastMs, nowMs) {
+  if (baritoneAgentState(agent, lastMs, nowMs) !== "done") return true;
+  return lastMs !== null && nowMs - lastMs <= BARITONE_DONE_HIDE_MS;
+}
+
 function baritoneStatusClass(status) {
   const normalized = String(status || "").toLowerCase();
   return normalized.split(/\s+/)[0].replace(/[^a-z-]/g, "") || "unknown";
@@ -890,19 +896,21 @@ function baritoneEmptyLine(text) {
 function renderBaritoneAgents(agents, lastSeen = new Map(), nowMs = Date.now()) {
   const roster = $("[data-baritone-agent-roster]");
   if (!roster) return;
-  setText("[data-baritone-agent-total]", agents.length);
+  const shown = agents.filter((agent) => baritoneAgentVisible(agent, lastSeen.get(baritoneChatAuthorKey(agent.name)) ?? null, nowMs));
+  setText("[data-baritone-agent-total]", shown.length);
   const faces = $("[data-baritone-agent-faces]");
   if (faces) {
-    faces.replaceChildren(...agents.slice(0, 4).map((agent) => baritoneAvatar(agent.name, 24)));
-    faces.hidden = !agents.length;
+    faces.replaceChildren(...shown.slice(0, 4).map((agent) => baritoneAvatar(agent.name, 24)));
+    faces.hidden = !shown.length;
   }
-  if (!agents.length) {
-    roster.replaceChildren(baritoneEmptyLine("No active-agent table could be parsed from AGENTS.md."));
+  if (!shown.length) {
+    roster.replaceChildren(baritoneEmptyLine(agents.length ? "All agents have finished \u2014 nobody left on the roster." : "No active-agent table could be parsed from AGENTS.md."));
+    renderBaritoneSummary([]);
     return;
   }
-  const states = agents.map((agent) => baritoneAgentState(agent, lastSeen.get(baritoneChatAuthorKey(agent.name)) ?? null, nowMs));
+  const states = shown.map((agent) => baritoneAgentState(agent, lastSeen.get(baritoneChatAuthorKey(agent.name)) ?? null, nowMs));
   renderBaritoneSummary(states);
-  roster.replaceChildren(...agents.map((agent, index) => {
+  roster.replaceChildren(...shown.map((agent, index) => {
     const card = document.createElement("article");
     const pic = document.createElement("span");
     const copy = document.createElement("div");
@@ -942,6 +950,7 @@ function renderBaritoneAgents(agents, lastSeen = new Map(), nowMs = Date.now()) 
 function renderBaritoneSummary(states) {
   const summary = $("[data-baritone-agent-summary]");
   if (!summary) return;
+  if (!states.length) { summary.hidden = true; return; }
   const counts = { working: 0, stalled: 0, done: 0 };
   for (const state of states) counts[state === "blocked" ? "stalled" : state] += 1;
   const nodes = [];

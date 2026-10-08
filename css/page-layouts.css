@@ -92,9 +92,9 @@
 .baritone-chat-meta { max-width:100%; margin:0 0 .3rem .75rem; color:#69757f; font:500 .58rem var(--mono); letter-spacing:.04em; text-transform:uppercase; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
 .baritone-chat-out .baritone-chat-meta { margin:0 0 .3rem; text-align:right; }
 .baritone-chat-bubble { position:relative; isolation:isolate; width:fit-content; max-width:100%; padding:.55rem .8rem; font-size:.78rem; line-height:1.6; white-space:pre-wrap; overflow-wrap:anywhere; }
-.baritone-chat-in .baritone-chat-bubble { background:#1e2632; color:#d7dee5; border-radius:18px; }
+.baritone-chat-in .baritone-chat-bubble { background:linear-gradient(180deg,#1b9df0,#0a84ff); color:#fff; border-radius:18px; }
 .baritone-chat-out .baritone-chat-bubble { background:linear-gradient(180deg,#1b9df0,#0a84ff); color:#fff; border-radius:18px; }
-.baritone-chat-in.is-last .baritone-chat-bubble::before { content:""; position:absolute; z-index:-1; bottom:0; left:-6px; width:16px; height:22px; background:#1e2632; border-bottom-right-radius:14px; }
+.baritone-chat-in.is-last .baritone-chat-bubble::before { content:""; position:absolute; z-index:-1; bottom:0; left:-6px; width:16px; height:22px; background:#0a84ff; border-bottom-right-radius:14px; }
 .baritone-chat-in.is-last .baritone-chat-bubble::after { content:""; position:absolute; z-index:-1; bottom:0; left:-8px; width:8px; height:22px; background:#0B0F15; border-bottom-right-radius:8px; }
 .baritone-chat-out.is-last .baritone-chat-bubble::before { content:""; position:absolute; z-index:-1; bottom:0; right:-6px; width:16px; height:22px; background:#0a84ff; border-bottom-left-radius:14px; }
 .baritone-chat-out.is-last .baritone-chat-bubble::after { content:""; position:absolute; z-index:-1; bottom:0; right:-8px; width:8px; height:22px; background:#0B0F15; border-bottom-left-radius:8px; }
