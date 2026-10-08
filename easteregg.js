@@ -2,17 +2,18 @@
  *
  * Background: index.html chooses the visit's frame before styles are applied,
  * so the hero copy never moves. Keep this payload table index-aligned with that
- * head list. The six existing rotation choices remain intact; video5 and video6
- * are appended from idi-assets. The epic IDI logo is separate and rare, not a
- * normal cycle entry. Reduced-motion visitors get stills only; low-power visitors
+ * head list. The six existing rotation choices remain intact; video5, video6
+ * and video7 are appended from idi-assets, and the original egg clip is a
+ * normal cycle entry too. The epic IDI logo stays separate and rare.
+ * Reduced-motion visitors get stills only; low-power visitors
  * keep the smallest local still and never auto-download a clip. Ordinary
  * backgrounds never repeat on consecutive visits.
  *
  * The epic IDI logo is a separate 1/1000 static surprise, not an everyday pick.
- * The existing 1/1000 hidden 74 MB video easter egg remains too, and /easteregg
- * still plays it on demand. Low-power devices require an explicit click for that
- * video. Normal rotation clips play once and hold their last frame; the hidden
- * egg clip remains separate.
+ * The original 74 MB egg clip used to be the matching 1/1000 video surprise;
+ * it is an ordinary rotation pick now, and /easteregg still plays it on demand.
+ * Low-power devices require an explicit click for it on the egg route. Normal
+ * rotation clips play once and hold their last frame.
  *
  * Videos start muted so autoplay is allowed everywhere; a small toggle in the
  * corner enables sound while one is on screen. If nothing can be shown,
@@ -23,10 +24,13 @@
     "https://gitlab.com/international-duck-incorporated/idi-assets";
   const ASSET_REF = "main"; // pin to a commit sha or tag for an immutable URL
   const ASSET_DIR = "/assets/website/"; // bundle layout since October 2026
+  const EGG_PINNED_FALLBACK =
+    "https://gitlab.com/international-duck-incorporated/idi-assets/-/raw/e8e147d6aed5f32291ea05dc4cd64541fa1b973a/gitlab/home/assets/easteregg-video.webm";
 
   // Homepage background pool. Videos and the rare logo stream from the canonical
-  // asset bundle; the two ordinary stills are local. The 74 MB original is
-  // intentionally absent from rotation and remains the hidden egg payload.
+  // asset bundle; the two ordinary stills are local. The 74 MB original is an
+  // ordinary rotation pick too, with a pinned-URL fallback; /easteregg still
+  // plays it on demand.
   const BACKGROUNDS = [
     // videos: the clip ends on the wordmark, so the copy sits top-left and the
     // <h1> hides - the backdrop is already saying the name
@@ -108,6 +112,25 @@
       focus: "50% 50%",
       label: "3D block field, rendered live",
     },
+    // video7: newest clip, appended without disturbing older picks.
+    {
+      name: "video7.webm",
+      kind: "video",
+      wordmark: true,
+      focus: "50% 50%",
+      label: "clip, plays out in full",
+      src: `${ASSET_REPO}/-/raw/${ASSET_REF}${ASSET_DIR}video7.webm`,
+    },
+    // The original egg clip, promoted to a standard rotation pick.
+    {
+      name: "easteregg-video.webm",
+      kind: "video",
+      wordmark: true,
+      focus: "50% 50%",
+      label: "the original clip, plays out in full",
+      src: `${ASSET_REPO}/-/raw/${ASSET_REF}${ASSET_DIR}easteregg-video.webm`,
+      fallbackSrc: EGG_PINNED_FALLBACK,
+    },
     // Not part of the regular pool; fetched from the canonical idi-assets repo
     // only when index.html selects the 1/1000 surprise.
     {
@@ -128,10 +151,9 @@
   // the bundle is reorganised later.
   const EGG_SOURCES = [
     `${ASSET_REPO}/-/raw/${ASSET_REF}${ASSET_DIR}easteregg-video.webm`,
-    "https://gitlab.com/international-duck-incorporated/idi-assets/-/raw/e8e147d6aed5f32291ea05dc4cd64541fa1b973a/gitlab/home/assets/easteregg-video.webm",
+    EGG_PINNED_FALLBACK,
   ];
 
-  const ROLL_ODDS = 1000;
   const LAST_KEY = "idi-bg-last";
 
   const path = (location.pathname || "/")
@@ -146,14 +168,8 @@
   const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
   const lowEnd = Boolean(window.IDI_LOW_END);
   const hasHeadRareEvent = Object.prototype.hasOwnProperty.call(window, "IDI_RARE_EVENT");
-  const rareEvent = isHome
-    ? hasHeadRareEvent
-      ? window.IDI_RARE_EVENT
-      : !lowEnd && !reducedMotion && Math.floor(Math.random() * ROLL_ODDS) === 0
-        ? "easteregg-video"
-        : ""
-    : "";
-  const egg = isEggRoute || rareEvent === "easteregg-video";
+  const rareEvent = isHome && hasHeadRareEvent ? window.IDI_RARE_EVENT : "";
+  const egg = isEggRoute;
 
   const readLast = () => {
     try {
@@ -219,7 +235,7 @@
     video.className = "egg-video";
     video.preload = "metadata";
     video.autoplay = true;
-    video.loop = !playOut; // rotation clips settle; the hidden egg clip loops
+    video.loop = !playOut; // rotation clips settle; the on-demand egg-route play loops
     video.muted = true;
     video.setAttribute("muted", "");
     video.setAttribute("playsinline", "");
@@ -370,12 +386,7 @@
   if (egg) {
     mountVideo(EGG_SOURCES, {
       name: "easteregg-video.webm",
-      log: () =>
-        `\u{1F95A} ${
-          isEggRoute
-            ? "/easteregg - it was always going to play."
-            : `1/${ROLL_ODDS} - the ducks favor you today. Visit /easteregg anytime.`
-        } Clip: the hidden one.`,
+      log: () => `\u{1F95A} /easteregg - it was always going to play. Clip: the original one.`,
       onGiveUp: () => giveUp("easter egg clip"),
     });
     return;
@@ -433,7 +444,7 @@
     // data-frame is already applied above, so the hero copy is in its final
     // place; only the clip itself waits for the browser to go idle.
     whenIdle(() =>
-      mountVideo([pick.src], {
+      mountVideo([pick.src, pick.fallbackSrc].filter(Boolean), {
         name: pick.name,
         playOut: pick.playOut !== false,
         holdAt: pick.holdAt,

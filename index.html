@@ -45,20 +45,18 @@
         ["video", "yes", "50% 50%"],   // video5.webm (appended)
         ["video", "yes", "50% 50%"],   // video6.webm (appended)
         ["blocks", "no", "50% 50%"],   // block-field.js: live WebGL block field
+        ["video", "yes", "50% 50%"],   // video7.webm (appended)
+        ["video", "yes", "50% 50%"],   // easteregg-video.webm (standard rotation)
         ["image", "yes", "50% 50%"],   // epic_idi_logo.png (rare only)
       ];
       const RARE_LOGO_INDEX = BACKDROPS.length - 1;
       const STILLS = [4, 5];
       const normalIndices = BACKDROPS.slice(0, RARE_LOGO_INDEX).map((_, index) => index);
 
-      // The logo is exactly 1/1000 on every homepage visit. Reserve the next roll
-      // for the original video egg, with its existing low-power/motion safeguards.
+      // The epic logo is exactly 1/1000 on every homepage visit. (The original
+      // video egg used to take the next roll; it is a standard rotation pick now.)
       const rareRoll = Math.floor(Math.random() * 1000);
-      window.IDI_RARE_EVENT = rareRoll === 0
-        ? "epic-logo"
-        : rareRoll === 1 && !window.IDI_LOW_END && !window.IDI_REDUCED_MOTION
-          ? "easteregg-video"
-          : "";
+      window.IDI_RARE_EVENT = rareRoll === 0 ? "epic-logo" : "";
 
       const pool = window.IDI_LOW_END ? [4] : window.IDI_REDUCED_MOTION ? STILLS : normalIndices;
       let normalIndex = pool[Math.floor(Math.random() * pool.length)];
@@ -75,9 +73,6 @@
 
       const index = window.IDI_RARE_EVENT === "epic-logo" ? RARE_LOGO_INDEX : normalIndex;
       let [kind, wordmark, focus] = BACKDROPS[index];
-      if (window.IDI_RARE_EVENT === "easteregg-video") {
-        [kind, wordmark, focus] = ["video", "yes", "50% 50%"];
-      }
       const root = document.documentElement;
       root.dataset.frame = kind;
       root.dataset.wordmark = wordmark;
@@ -108,7 +103,7 @@
   <script src="/script.js?v=e0723e5e" defer></script>
   <script src="/pixel-canvas.js?v=5cf6bf45" defer></script>
   <script src="/block-field.js?v=b6e1c92d" defer></script>
-  <script src="/easteregg.js?v=e3915185" defer></script>
+  <script src="/easteregg.js?v=d27026da" defer></script>
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
   <meta property="og:image:alt" content="International Duck Incorporated - open-source Minecraft mods, tools and experiments">
