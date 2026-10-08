@@ -10,7 +10,7 @@
  * backgrounds never repeat on consecutive visits.
  *
  * The epic IDI logo is a separate 1/1000 static surprise, not an everyday pick.
- * The original 74 MB egg clip used to be the matching 1/1000 video surprise;
+ * The original egg clip used to be the matching 1/1000 video surprise;
  * it is an ordinary rotation pick now, and /easteregg still plays it on demand.
  * Low-power devices require an explicit click for it on the egg route. Normal
  * rotation clips play once and hold their last frame.
@@ -28,7 +28,7 @@
     "https://gitlab.com/international-duck-incorporated/idi-assets/-/raw/e8e147d6aed5f32291ea05dc4cd64541fa1b973a/gitlab/home/assets/easteregg-video.webm";
 
   // Homepage background pool. Videos and the rare logo stream from the canonical
-  // asset bundle; the two ordinary stills are local. The 74 MB original is an
+  // asset bundle; the two ordinary stills are local. The original egg clip is an
   // ordinary rotation pick too, with a pinned-URL fallback; /easteregg still
   // plays it on demand.
   const BACKGROUNDS = [
@@ -112,12 +112,14 @@
       focus: "50% 50%",
       label: "3D block field, rendered live",
     },
-    // video7: newest clip, appended without disturbing older picks.
+    // video7: newest clip, appended without disturbing older picks. It fades to
+    // black, so it holds the bright 12s lockup instead of its last frame.
     {
       name: "video7.webm",
       kind: "video",
       wordmark: true,
       focus: "50% 50%",
+      holdAt: 12.0,
       label: "clip, plays out in full",
       src: `${ASSET_REPO}/-/raw/${ASSET_REF}${ASSET_DIR}video7.webm`,
     },
@@ -358,7 +360,7 @@
   };
 
   // On constrained devices, keep the dedicated egg route useful without
-  // silently starting its 74 MB download. The button is an explicit opt-in.
+  // silently starting the clip download. The button is an explicit opt-in.
   if (isEggRoute && lowEnd) {
     const still = BACKGROUNDS.find((item) => item.name === "homepage-community-background-v4.webp");
     document.documentElement.dataset.frame = "image";
@@ -369,7 +371,7 @@
     const playButton = document.createElement("button");
     playButton.type = "button";
     playButton.className = "button button-glass egg-play-original";
-    playButton.textContent = "Play the original 74 MB clip";
+    playButton.textContent = "Play the original clip";
     playButton.addEventListener("click", () => {
       playButton.remove();
       mountVideo(EGG_SOURCES, {
