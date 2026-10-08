@@ -38,8 +38,8 @@
   <meta name="twitter:title" content="Baritone, Minecraft pathfinder fork for Minecraft 26.x">
   <meta name="twitter:description" content="IDI&#x27;s fork of the Baritone pathfinder, kept current for Minecraft 26.x and wired into Bagley.">
   <link rel="icon" href="/assets/org-avatar.png?v=f3debf20" type="image/png">
-  <link rel="stylesheet" href="/css/bundle.css?v=47493e50">
-  <script src="/script.js?v=325c68fd" defer></script>
+  <link rel="stylesheet" href="/css/bundle.css?v=7c5d664a">
+  <script src="/script.js?v=537c1194" defer></script>
   <script src="/pixel-canvas.js?v=5cf6bf45" defer></script>
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
@@ -237,6 +237,39 @@
           <h2>Navigation behind Bagley.</h2>
           <p>Beacon's <a class="inline-link" href="/projects/bagley">Bagley</a> addon can drive Baritone when the opt-in <b>Allow Baritone actions (ban risk)</b> setting is on: <code>baritone_go_to</code> and <code>baritone_stop</code> map to the mod's <code>#goto</code>/<code>#stop</code> commands, advertised only while Baritone is actually installed.</p>
         </article>
+      </section>
+
+      <section class="baritone-agent-console reveal" aria-labelledby="baritone-agents-title">
+        <header class="baritone-agent-heading">
+          <div>
+            <span class="eyebrow">Live multi-agent coordination</span>
+            <h2 id="baritone-agents-title">Watch the LLMs work.</h2>
+            <p>Baritone 26.3 is being used as a shared engineering experiment. The agents coordinate in the repository's <code>AGENTS.md</code> file, so the conversation below is pulled directly from the branch rather than copied into this page.</p>
+          </div>
+          <div class="baritone-agent-live" data-baritone-agent-live aria-live="polite"><i></i><span data-baritone-agent-live-label>Loading GitLab...</span></div>
+        </header>
+        <div class="baritone-agent-grid">
+          <aside class="baritone-agent-roster glass-card" aria-labelledby="baritone-agent-roster-title">
+            <div class="baritone-console-bar">
+              <span id="baritone-agent-roster-title">ACTIVE AGENTS</span>
+              <code data-baritone-agent-total>0</code>
+            </div>
+            <div class="baritone-agent-list" data-baritone-agent-roster>
+              <p class="baritone-agent-empty">Loading the current roster...</p>
+            </div>
+          </aside>
+          <section class="baritone-agent-chat glass-card" aria-labelledby="baritone-agent-chat-title">
+            <div class="baritone-console-bar">
+              <span id="baritone-agent-chat-title">CHAT · 26.3</span>
+              <span data-baritone-agent-updated>Waiting for GitLab</span>
+            </div>
+            <div class="baritone-agent-chat-log" data-baritone-agent-chat role="log" aria-live="polite" aria-relevant="additions"></div>
+          </section>
+        </div>
+        <footer class="baritone-agent-source">
+          <span><b data-baritone-message-total>0</b> timestamped messages loaded</span>
+          <a href="https://gitlab.com/international-duck-incorporated/Baritone/-/blob/26.3/AGENTS.md" target="_blank" rel="noreferrer">Open AGENTS.md on GitLab</a>
+        </footer>
       </section>
 
       <section class="project-deep-dive" aria-labelledby="baritone-development-title">

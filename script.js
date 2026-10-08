@@ -17,6 +17,7 @@ const GL_PROJECT = `${GITLAB_API}/projects/${encodeURIComponent(GL_PROJECT_PATH)
 const GL_NULLTRACE_PROJECT = `${GITLAB_API}/projects/${encodeURIComponent(`${GL_GROUP_PATH}/${NULLTRACE}`)}`;
 const GL_BEACON_PROJECT = `${GITLAB_API}/projects/${encodeURIComponent(`${GL_GROUP_PATH}/${BEACON}`)}`;
 const GL_CHAMPIONSCODE_PROJECT = `${GITLAB_API}/projects/${encodeURIComponent(`${GL_GROUP_PATH}/ChampionsCode`)}`;
+const GL_BARITONE_PROJECT = `${GITLAB_API}/projects/${encodeURIComponent(`${GL_GROUP_PATH}/Baritone`)}`;
 const SITE_ROUTES = Object.freeze({
   home: "/", projects: "/projects", members: "/members", venomous: "/projects/venomous",
   nulltrace: "/projects/nulltrace", championscode: "/projects/championscode", zonedout: "/projects/zonedout", beacon: "/projects/beacon", bagley: "/projects/bagley",
@@ -659,6 +660,238 @@ if (page === "venomous") {
     addLiveTask(syncCommits());
     addLiveTask(syncContributors());
     addLiveTask(syncModules());
+  }
+}
+
+// Baritone: live multi-agent coordination console (projects/baritone.html).
+// Renders the Active Agents roster and the Chat from the Baritone repo's
+// AGENTS.md on the 26.3 branch. Fetches through the GitLab API raw endpoint:
+// the /-/raw/ URL sends no CORS headers, so browsers refuse it cross-origin.
+// This block must stay above the footer sync-state resolution below so the
+// initial fetch is counted in liveTasks like every other live sync.
+const BARITONE_AGENTS_REF = "26.3";
+const BARITONE_AGENT_SOURCE = `${GL_BARITONE_PROJECT}/repository/files/AGENTS.md/raw?ref=${BARITONE_AGENTS_REF}`;
+const BARITONE_AGENT_MESSAGE_LIMIT = 48;
+const BARITONE_AGENT_POLL_MS = window.IDI_REDUCED_MOTION ? 120000 : 60000;
+const BARITONE_AGENT_EXAMPLE = /^agent [a-z]$/i;
+let baritoneAgentHash = "";
+let baritoneAgentLoaded = false;
+let baritoneChatPinned = false;
+
+function cleanBaritoneAgentText(value) {
+  return String(value || "")
+    .replace(/`([^`]+)`/g, "$1")
+    .replace(/\*\*([^*]+)\*\*/g, "$1")
+    .replace(/\[([^\]]+)\]\([^)]+\)/g, "$1")
+    .trim();
+}
+
+function baritoneSection(markdown, heading) {
+  const open = markdown.match(new RegExp(`^# ${heading}\\s*$`, "m"));
+  if (!open || open.index === undefined) return "";
+  const body = markdown.slice(open.index + open[0].length);
+  const close = body.match(/^# [^\n]*$/m);
+  return close && close.index !== undefined ? body.slice(0, close.index) : body;
+}
+
+function parseBaritoneAgents(markdown) {
+  const section = baritoneSection(markdown, "Active Agents");
+  // First table only: later tables in the section hold stale previous-session
+  // rows (plus their own header/separator, which would parse as phantom agents).
+  const rows = [];
+  let inTable = false;
+  for (const line of section.split(/\r?\n/)) {
+    if (line.trim().startsWith("|")) {
+      inTable = true;
+      rows.push(line);
+    } else if (inTable) {
+      break;
+    }
+  }
+  return rows.slice(2).map((line) => {
+    const cells = line.split("|").slice(1, -1).map((cell) => cell.trim());
+    return {
+      name: cells[0] || "Agent",
+      task: cleanBaritoneAgentText(cells[1] || ""),
+      status: cleanBaritoneAgentText(cells[3] || "Unknown")
+    };
+  }).filter((agent) => agent.name && agent.status && !/^-+$/.test(agent.name));
+}
+
+function parseBaritoneChat(markdown) {
+  const section = baritoneSection(markdown, "Chat");
+  if (!section) return [];
+  // Split on every ### header so untimestamped subsections (the recovered-message
+  // digests) never leak into a neighboring message's body; keep dated ones only.
+  const headers = [...section.matchAll(/^###\s+(.+?)\s*$/gm)];
+  const entries = [];
+  headers.forEach((header, index) => {
+    const stamp = header[1].match(/^(.*?)\s+-\s+(\d{4}-\d{2}-\d{2}(?:\s+\d{2}:\d{2}(?::\d{2})?)?\s+UTC.*)$/);
+    if (!stamp) return;
+    const name = stamp[1].trim();
+    if (BARITONE_AGENT_EXAMPLE.test(name)) return; // "Agent A/B" template examples
+    const blockStart = header.index + header[0].length;
+    const blockEnd = headers[index + 1]?.index ?? section.length;
+    const block = section.slice(blockStart, blockEnd).trim();
+    const status = block.match(/^Status:\s*(.+)$/m)?.[1]?.trim() || "";
+    const taskPattern = /^Current task:\s*([\s\S]*?)(?=\r?\n(?:Message|Response to|Next action|Task|Subsystem|Files):|$)/m;
+    const task = block.match(taskPattern)?.[1] || "";
+    let message = block.match(/^Message:\s*([\s\S]*?)(?=\r?\n(?:Response to|Next action):|$)/m)?.[1] || "";
+    if (!message.trim()) {
+      // Claim-style (Task:/Subsystem:/Files:) and freeform messages carry no
+      // Message: field; show the block minus the lines already in the meta row.
+      message = block
+        .replace(/^Status:\s*.+$/m, "")
+        .replace(taskPattern, "");
+    }
+    message = cleanBaritoneAgentText(message);
+    if (!message) return;
+    entries.push({
+      name,
+      time: stamp[2].trim(),
+      status: cleanBaritoneAgentText(status),
+      task: cleanBaritoneAgentText(task),
+      message
+    });
+  });
+  return entries;
+}
+
+function baritoneStatusClass(status) {
+  const normalized = String(status || "").toLowerCase();
+  return normalized.split(/\s+/)[0].replace(/[^a-z-]/g, "") || "unknown";
+}
+
+function baritoneEmptyLine(text) {
+  const empty = document.createElement("p");
+  empty.className = "baritone-agent-empty";
+  empty.textContent = text;
+  return empty;
+}
+
+function renderBaritoneAgents(agents) {
+  const roster = $("[data-baritone-agent-roster]");
+  if (!roster) return;
+  setText("[data-baritone-agent-total]", agents.length);
+  if (!agents.length) {
+    roster.replaceChildren(baritoneEmptyLine("No active-agent table could be parsed from AGENTS.md."));
+    return;
+  }
+  roster.replaceChildren(...agents.map((agent) => {
+    const card = document.createElement("article");
+    const head = document.createElement("div");
+    const name = document.createElement("strong");
+    const badge = document.createElement("span");
+    const task = document.createElement("p");
+    card.className = "baritone-agent";
+    head.className = "baritone-agent-head";
+    name.className = "baritone-agent-name";
+    badge.className = `baritone-agent-status ${baritoneStatusClass(agent.status)}`;
+    task.className = "baritone-agent-task";
+    name.textContent = agent.name;
+    badge.textContent = agent.status;
+    task.textContent = agent.task || "No current task recorded.";
+    head.append(name, badge);
+    card.append(head, task);
+    return card;
+  }));
+}
+
+function renderBaritoneChat(messages) {
+  const log = $("[data-baritone-agent-chat]");
+  if (!log) return;
+  const wasAtBottom = log.scrollHeight - log.scrollTop - log.clientHeight < 90;
+  const visible = messages.slice(-BARITONE_AGENT_MESSAGE_LIMIT);
+  setText("[data-baritone-message-total]", messages.length.toLocaleString());
+  log.replaceChildren(...visible.map((entry) => {
+    const card = document.createElement("article");
+    const head = document.createElement("header");
+    const name = document.createElement("span");
+    const time = document.createElement("time");
+    const meta = document.createElement("div");
+    const body = document.createElement("p");
+    card.className = `baritone-agent-message${entry.name.toLowerCase().includes("0xff") ? " is-human" : ""}`;
+    head.className = "baritone-agent-message-head";
+    name.className = "baritone-agent-message-name";
+    time.className = "baritone-agent-message-time";
+    meta.className = "baritone-agent-message-meta";
+    body.className = "baritone-agent-message-body";
+    const metaText = [entry.status, entry.task].filter(Boolean).join(" · ");
+    name.textContent = entry.name;
+    time.textContent = entry.time;
+    meta.textContent = metaText;
+    meta.hidden = !metaText;
+    body.textContent = entry.message;
+    head.append(name, time);
+    card.append(head, meta, body);
+    return card;
+  }));
+  if (!baritoneChatPinned || wasAtBottom) log.scrollTop = log.scrollHeight;
+  baritoneChatPinned = true;
+}
+
+function hashBaritoneSource(source) {
+  let hash = 0x811c9dc5;
+  for (let i = 0; i < source.length; i++) {
+    hash ^= source.charCodeAt(i);
+    hash = Math.imul(hash, 0x01000193);
+  }
+  return (hash >>> 0).toString(36);
+}
+
+function baritoneTimestamp() {
+  return new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit", second: "2-digit" });
+}
+
+async function syncBaritoneAgents() {
+  const live = $("[data-baritone-agent-live]");
+  const liveLabel = $("[data-baritone-agent-live-label]");
+  const updated = $("[data-baritone-agent-updated]");
+  if (liveLabel && !baritoneAgentLoaded) liveLabel.textContent = "Fetching branch";
+  try {
+    const response = await fetch(BARITONE_AGENT_SOURCE, { headers: { Accept: "text/plain" } });
+    if (!response.ok) throw new Error(`GitLab returned ${response.status}`);
+    const source = await response.text();
+    if (!source.includes("# Active Agents") || !source.includes("# Chat")) {
+      throw new Error("AGENTS.md structure not recognized");
+    }
+    const hash = hashBaritoneSource(source);
+    if (baritoneAgentLoaded && hash === baritoneAgentHash) {
+      live?.classList.remove("is-error");
+      if (liveLabel) liveLabel.textContent = "Live";
+      return; // Unchanged: leave the DOM (and screen readers) alone.
+    }
+    baritoneAgentHash = hash;
+    renderBaritoneAgents(parseBaritoneAgents(source));
+    renderBaritoneChat(parseBaritoneChat(source));
+    baritoneAgentLoaded = true;
+    live?.classList.remove("is-error");
+    if (liveLabel) liveLabel.textContent = "Live";
+    if (updated) updated.textContent = `Updated ${baritoneTimestamp()}`;
+  } catch (error) {
+    live?.classList.add("is-error");
+    if (liveLabel) liveLabel.textContent = "GitLab unavailable";
+    if (updated) updated.textContent = baritoneAgentLoaded ? "Showing last update · retrying" : "Retrying automatically";
+    if (!baritoneAgentLoaded) {
+      const roster = $("[data-baritone-agent-roster]");
+      if (roster) roster.replaceChildren(baritoneEmptyLine("Could not load AGENTS.md from GitLab. Retrying automatically."));
+      const log = $("[data-baritone-agent-chat]");
+      if (log && !log.hasChildNodes()) log.replaceChildren(baritoneEmptyLine("Chat will appear here once GitLab responds."));
+    }
+  }
+}
+
+if (page === "project" && document.body.dataset.project === "baritone") {
+  if (lowPowerMode) {
+    setText("[data-baritone-agent-live-label]", "Paused");
+    setText("[data-baritone-agent-updated]", "Low-power mode");
+    const roster = $("[data-baritone-agent-roster]");
+    if (roster) {
+      roster.replaceChildren(baritoneEmptyLine("Live updates are paused in low-power mode. Open AGENTS.md on GitLab for the current roster."));
+    }
+  } else {
+    addLiveTask(syncBaritoneAgents());
+    setInterval(() => { if (!document.hidden) syncBaritoneAgents(); }, BARITONE_AGENT_POLL_MS);
   }
 }
 
