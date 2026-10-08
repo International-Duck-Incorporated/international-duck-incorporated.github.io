@@ -46,6 +46,10 @@
   --mono: "SFMono-Regular", Consolas, "Liberation Mono", monospace;
 }
 
+/* Oxanium (idi-assets font/): repository titles + the IDI brand only. */
+@font-face { font-family:"Oxanium"; src:url("/assets/fonts/Oxanium-VariableFont_wght.ttf?v=47c0af85") format("truetype"); font-weight:200 800; font-style:normal; font-display:swap; }
+body[data-page="project"] .profile-hero h1 { font-family:"Oxanium",var(--sans); }
+
 * { box-sizing: border-box; }
 html { scroll-behavior: smooth; background: var(--bg); }
 body { margin: 0; min-width: 320px; overflow-x: hidden; color: var(--text); background: linear-gradient(180deg, #07090d 0%, #080b10 58%, #07090d 100%); font-family: var(--sans); -webkit-font-smoothing: antialiased; }
@@ -79,7 +83,7 @@ svg { display: block; width: 1.1rem; height: 1.1rem; fill: none; stroke: current
 .brand { display: inline-flex; min-width: 0; gap: .75rem; align-items: center; }
 .brand > img, .brand > picture > img { width: 40px; height: 40px; flex: 0 0 auto; object-fit: cover; border: 1px solid rgba(255,255,255,.14); border-radius: 50%; box-shadow: 0 6px 18px rgba(0,0,0,.25); }
 .brand > span { display: flex; min-width: 0; flex-direction: column; gap: .25rem; }
-.brand b { overflow: hidden; font-size: .78rem; letter-spacing: -.01em; text-overflow: ellipsis; white-space: nowrap; }
+.brand b { overflow: hidden; font-family:"Oxanium",var(--sans); font-size: .78rem; letter-spacing: -.01em; text-overflow: ellipsis; white-space: nowrap; }
 .brand small { color: #747d78; font-family: var(--mono); font-size: .5rem; letter-spacing: .1em; text-transform: uppercase; }
 .main-nav { display: flex; gap: .35rem; align-items: center; padding: .3rem; background: rgba(17, 21, 29, .5); border: 1px solid rgba(255,255,255,.055); border-radius: 16px; backdrop-filter: blur(18px); }
 .main-nav > a { display: inline-flex; min-height: 38px; padding: .65rem .8rem; gap: .45rem; align-items: center; justify-content: center; color: #9ba39e; border-radius: 11px; font-size: .7rem; font-weight: 650; transition: color .16s ease, background .16s ease; }
@@ -160,7 +164,7 @@ svg { display: block; width: 1.1rem; height: 1.1rem; fill: none; stroke: current
 .project-status { display: inline-flex; padding: .45rem .6rem; gap: .42rem; align-items: center; color: #9aa49e; background: rgba(255,255,255,.035); border: 1px solid var(--line); border-radius: 999px; font-size: .54rem; }
 .card-label { color: #6d7670; font-family: var(--mono); font-size: .52rem; letter-spacing: .09em; text-transform: uppercase; }
 .project-card > div:nth-child(2) { margin-top: auto; }
-.project-card h3 { margin: .7rem 0 .65rem; overflow-wrap: anywhere; font-size: clamp(1.35rem,2.5vw,2rem); letter-spacing: -.04em; }
+.project-card h3 { margin: .7rem 0 .65rem; overflow-wrap: anywhere; font-family:"Oxanium",var(--sans); font-size: clamp(1.35rem,2.5vw,2rem); letter-spacing: -.04em; }
 .project-card p { max-width: 490px; margin: 0; color: var(--muted); font-size: .8rem; line-height: 1.65; }
 .project-card footer { display: flex; margin-top: 2.2rem; padding-top: 1rem; align-items: center; justify-content: space-between; color: #737c77; border-top: 1px solid rgba(255,255,255,.055); font-size: .58rem; }
 .project-card footer span { display: inline-flex; gap: .45rem; align-items: center; }

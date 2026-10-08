@@ -21,7 +21,7 @@ import hashlib
 import re
 from pathlib import Path
 
-ASSET_EXT = ("png", "webp", "jpg", "jpeg", "gif", "svg", "mp4", "webm")
+ASSET_EXT = ("png", "webp", "jpg", "jpeg", "gif", "svg", "mp4", "webm", "woff2", "woff", "ttf", "otf")
 ASSET_REF = re.compile(
     r"""(["'(])/assets/(?P<name>[\w./-]+\.(?:""" + "|".join(ASSET_EXT) + r"""))(?:\?v=[\w-]+)?"""
 )
