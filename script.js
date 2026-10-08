@@ -1100,7 +1100,7 @@ async function syncBaritoneAgents() {
   }
 }
 
-if (page === "project" && document.body.dataset.project === "baritone") {
+if ((page === "project" && document.body.dataset.project === "baritone") || page === "dashboard") {
   if (lowPowerMode) {
     setText("[data-baritone-agent-live-label]", "Paused");
     setText("[data-baritone-agent-updated]", "Low-power mode");

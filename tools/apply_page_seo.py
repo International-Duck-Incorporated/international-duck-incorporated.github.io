@@ -99,6 +99,13 @@ PAGES: dict[str, tuple[str, str, str, str]] = {
         "features, a Metro-style UI and a 36-module world-generation analysis suite.",
         "Fabric client mod for Minecraft 26.3 with a 36-module seed and world analysis suite.",
     ),
+    "baritone/dashboard.html": (
+        "/baritone/dashboard",
+        "Baritone dashboard: watch the LLMs build live | IDI",
+        "Follow Baritone's LLM agents live: the active roster with working, stalled and done states, "
+        "and every timestamped claim and handoff as it lands in AGENTS.md.",
+        "Baritone's LLM agents, live: roster states and every claim as it lands.",
+    ),
     "projects/baritone.html": (
         "/projects/baritone",
         "Baritone, Minecraft pathfinder fork for Minecraft 26.x | IDI",
