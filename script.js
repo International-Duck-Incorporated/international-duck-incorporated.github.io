@@ -676,6 +676,8 @@ const BARITONE_AGENT_SOURCE = `${GL_BARITONE_PROJECT}/repository/files/AGENTS.md
 const BARITONE_AGENT_MESSAGE_LIMIT = 48;
 const BARITONE_AGENT_POLL_MS = window.IDI_REDUCED_MOTION ? 120000 : 60000;
 const BARITONE_AGENT_EXAMPLE = /^agent [a-z]$/i;
+const BARITONE_ARCHIVE_URL = "https://gitlab.com/international-duck-incorporated/Baritone/-/blob/26.3/AGENTS-archive.md";
+const BARITONE_STAMP_GAP_MS = 30 * 60 * 1000;
 let baritoneAgentHash = "";
 let baritoneAgentLoaded = false;
 let baritoneChatPinned = false;
@@ -812,15 +814,22 @@ function baritoneAvatar(name, displaySize) {
   return image;
 }
 
-function baritoneChatStamp(time) {
-  const match = String(time || "").match(/^(\d{4}-\d{2}-\d{2})(?:\s+(\d{2}:\d{2}))?/);
-  return { date: match?.[1] || "", clock: match?.[2] || "" };
+function baritoneInstantMs(time) {
+  const match = String(time || "").match(/^(\d{4})-(\d{2})-(\d{2})(?:\s+(\d{2}):(\d{2}))?/);
+  if (!match) return null;
+  return Date.UTC(Number(match[1]), Number(match[2]) - 1, Number(match[3]), Number(match[4] || 0), Number(match[5] || 0));
 }
 
-function baritoneDayLabel(date) {
-  const day = new Date(`${date}T00:00:00Z`);
-  if (Number.isNaN(day.getTime())) return date;
-  return new Intl.DateTimeFormat(undefined, { day: "numeric", month: "long", year: "numeric", timeZone: "UTC" }).format(day);
+function baritoneStampLabel(ms) {
+  const at = new Date(ms);
+  const clock = new Intl.DateTimeFormat(undefined, { hour: "numeric", minute: "2-digit" }).format(at);
+  const dayStart = (value) => { const day = new Date(value); day.setHours(0, 0, 0, 0); return day.getTime(); };
+  const daysAgo = Math.round((dayStart(Date.now()) - dayStart(ms)) / 86400000);
+  if (daysAgo <= 0) return clock;
+  if (daysAgo === 1) return `Yesterday ${clock}`;
+  if (daysAgo < 7) return `${new Intl.DateTimeFormat(undefined, { weekday: "long" }).format(at)} ${clock}`;
+  const date = new Intl.DateTimeFormat(undefined, { month: "numeric", day: "numeric", year: "2-digit" }).format(at);
+  return `${date}, ${clock}`;
 }
 
 function baritoneStatusClass(status) {
@@ -839,6 +848,11 @@ function renderBaritoneAgents(agents) {
   const roster = $("[data-baritone-agent-roster]");
   if (!roster) return;
   setText("[data-baritone-agent-total]", agents.length);
+  const faces = $("[data-baritone-agent-faces]");
+  if (faces) {
+    faces.replaceChildren(...agents.slice(0, 4).map((agent) => baritoneAvatar(agent.name, 24)));
+    faces.hidden = !agents.length;
+  }
   if (!agents.length) {
     roster.replaceChildren(baritoneEmptyLine("No active-agent table could be parsed from AGENTS.md."));
     return;
@@ -877,67 +891,78 @@ function renderBaritoneChat(messages) {
   const visible = messages.slice(-BARITONE_AGENT_MESSAGE_LIMIT);
   setText("[data-baritone-message-total]", messages.length.toLocaleString());
   const nodes = [];
-  let previous = null;
-  for (const entry of visible) {
-    const stamp = baritoneChatStamp(entry.time);
-    if (stamp.date && (!previous || previous.date !== stamp.date)) {
-      const day = document.createElement("div");
-      const label = document.createElement("span");
-      day.className = "baritone-agent-day";
-      label.textContent = baritoneDayLabel(stamp.date);
-      day.append(label);
-      nodes.push(day);
-      previous = null; // a new day always opens with a full message
-    }
-    nodes.push(baritoneChatMessage(entry, stamp, Boolean(previous && previous.author === entry.name)));
-    previous = { author: entry.name, date: stamp.date };
+  if (visible.length) {
+    const sys = document.createElement("div");
+    const lead = document.createElement("span");
+    const link = document.createElement("a");
+    sys.className = "baritone-chat-sys";
+    lead.textContent = "Older messages live in ";
+    link.href = BARITONE_ARCHIVE_URL;
+    link.target = "_blank";
+    link.rel = "noreferrer";
+    link.textContent = "AGENTS-archive.md";
+    sys.append(lead, link);
+    nodes.push(sys);
   }
+  const instants = visible.map((entry) => baritoneInstantMs(entry.time));
+  const showStamp = (index) => {
+    if (index === 0) return true;
+    const at = instants[index], before = instants[index - 1];
+    if (at === null || before === null || at < before) return true;
+    if (at - before >= BARITONE_STAMP_GAP_MS) return true;
+    const day = new Date(at), prev = new Date(before);
+    return day.getFullYear() !== prev.getFullYear() || day.getMonth() !== prev.getMonth() || day.getDate() !== prev.getDate();
+  };
+  visible.forEach((entry, index) => {
+    if (showStamp(index)) {
+      const stamp = document.createElement("div");
+      stamp.className = "baritone-chat-stamp";
+      stamp.textContent = instants[index] === null ? entry.time : baritoneStampLabel(instants[index]);
+      stamp.title = entry.time;
+      nodes.push(stamp);
+    }
+    const first = index === 0 || visible[index - 1].name !== entry.name || showStamp(index);
+    const last = index === visible.length - 1 || visible[index + 1].name !== entry.name || showStamp(index + 1);
+    nodes.push(baritoneBubble(entry, first, last));
+  });
   if (!nodes.length) nodes.push(baritoneEmptyLine("No timestamped messages found in AGENTS.md."));
   log.replaceChildren(...nodes);
   if (!baritoneChatPinned || wasAtBottom) log.scrollTop = log.scrollHeight;
   baritoneChatPinned = true;
 }
 
-function baritoneChatMessage(entry, stamp, compact) {
+function baritoneBubble(entry, first, last) {
+  const outgoing = entry.name.toLowerCase().includes("0xff");
   const card = document.createElement("article");
   const main = document.createElement("div");
-  card.className = `baritone-agent-msg${compact ? " is-compact" : ""}${entry.name.toLowerCase().includes("0xff") ? " is-human" : ""}`;
-  main.className = "baritone-agent-msg-main";
-  if (compact) {
-    const gutter = document.createElement("span");
-    gutter.className = "baritone-agent-msg-gutter";
-    gutter.textContent = stamp.clock;
-    gutter.title = entry.time;
-    card.append(gutter);
-  } else {
-    card.append(baritoneAvatar(entry.name, 38));
-    const head = document.createElement("header");
-    const name = document.createElement("span");
-    head.className = "baritone-agent-msg-head";
-    name.className = "baritone-agent-msg-name";
-    name.textContent = entry.name;
-    head.append(name);
-    if (stamp.clock) {
-      const time = document.createElement("time");
-      time.className = "baritone-agent-msg-time";
-      time.textContent = `${stamp.clock} UTC`;
-      time.title = entry.time;
-      head.append(time);
+  card.className = `baritone-chat-${outgoing ? "out" : "in"}${first ? " is-first" : ""}${last ? " is-last" : ""}`;
+  main.className = "baritone-chat-main";
+  if (!outgoing) {
+    const face = document.createElement("span");
+    face.className = "baritone-chat-face";
+    if (last) face.append(baritoneAvatar(entry.name, 30));
+    card.append(face);
+    if (first) {
+      const name = document.createElement("span");
+      name.className = "baritone-chat-name";
+      name.textContent = entry.name;
+      main.append(name);
     }
-    main.append(head);
   }
-  const metaText = [entry.status, entry.task].filter(Boolean).join(" · ");
-  if (metaText) {
-    const meta = document.createElement("div");
-    meta.className = "baritone-agent-msg-meta";
-    meta.textContent = metaText;
-    meta.title = metaText;
-    main.append(meta);
+  if (first) {
+    const metaText = [entry.status, entry.task].filter(Boolean).join(" · ");
+    if (metaText) {
+      const meta = document.createElement("div");
+      meta.className = "baritone-chat-meta";
+      meta.textContent = metaText;
+      meta.title = metaText;
+      main.append(meta);
+    }
   }
-  const body = document.createElement("p");
-  body.className = "baritone-agent-msg-body";
-  body.textContent = entry.message;
-  main.append(body);
+  const bubble = document.createElement("div");
+  bubble.className = "baritone-chat-bubble";
+  bubble.textContent = entry.message;
+  main.append(bubble);
   card.append(main);
   return card;
 }
