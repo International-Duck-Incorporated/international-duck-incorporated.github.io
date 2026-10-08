@@ -832,6 +832,49 @@ function baritoneStampLabel(ms) {
   return `${date}, ${clock}`;
 }
 
+const BARITONE_ACTIVE_WINDOW_MS = 60 * 60 * 1000;
+
+function baritoneChatAuthorKey(author) {
+  return String(author || "").replace(/\s*\(.*\)$/, "").trim().toLowerCase();
+}
+
+function baritoneLastSeen(messages) {
+  const seen = new Map();
+  for (const entry of messages) {
+    const ms = baritoneInstantMs(entry.time);
+    if (ms === null) continue;
+    const key = baritoneChatAuthorKey(entry.name);
+    if (!seen.has(key) || ms > seen.get(key)) seen.set(key, ms);
+  }
+  return seen;
+}
+
+function baritoneAgentState(agent, lastMs, nowMs) {
+  const cls = baritoneStatusClass(agent.status);
+  if (cls === "done" || cls === "resting") return "done";
+  if (cls === "blocked") return "blocked";
+  if (lastMs !== null && nowMs - lastMs <= BARITONE_ACTIVE_WINDOW_MS) return "working";
+  return "stalled";
+}
+
+function baritoneAgoDur(lastMs, nowMs) {
+  const mins = Math.max(0, Math.floor((nowMs - lastMs) / 60000));
+  if (mins < 1) return "just now";
+  if (mins < 60) return `${mins}m`;
+  const hours = Math.floor(mins / 60);
+  if (hours < 24) return `${hours}h`;
+  return `${Math.floor(hours / 24)}d`;
+}
+
+function baritoneStateLabel(state, lastMs, nowMs) {
+  if (state === "done") return "Done";
+  if (state === "blocked") return "Blocked";
+  if (lastMs === null) return "Stalled · no messages yet";
+  const ago = baritoneAgoDur(lastMs, nowMs);
+  if (state === "working") return ago === "just now" ? "Working · just now" : `Working · ${ago} ago`;
+  return `Stalled · quiet ${ago}`;
+}
+
 function baritoneStatusClass(status) {
   const normalized = String(status || "").toLowerCase();
   return normalized.split(/\s+/)[0].replace(/[^a-z-]/g, "") || "unknown";
@@ -844,7 +887,7 @@ function baritoneEmptyLine(text) {
   return empty;
 }
 
-function renderBaritoneAgents(agents) {
+function renderBaritoneAgents(agents, lastSeen = new Map(), nowMs = Date.now()) {
   const roster = $("[data-baritone-agent-roster]");
   if (!roster) return;
   setText("[data-baritone-agent-total]", agents.length);
@@ -857,13 +900,18 @@ function renderBaritoneAgents(agents) {
     roster.replaceChildren(baritoneEmptyLine("No active-agent table could be parsed from AGENTS.md."));
     return;
   }
-  roster.replaceChildren(...agents.map((agent) => {
+  const states = agents.map((agent) => baritoneAgentState(agent, lastSeen.get(baritoneChatAuthorKey(agent.name)) ?? null, nowMs));
+  renderBaritoneSummary(states);
+  roster.replaceChildren(...agents.map((agent, index) => {
     const card = document.createElement("article");
     const pic = document.createElement("span");
     const copy = document.createElement("div");
     const head = document.createElement("div");
     const name = document.createElement("strong");
     const badge = document.createElement("span");
+    const state = document.createElement("div");
+    const dot = document.createElement("i");
+    const label = document.createElement("span");
     const task = document.createElement("p");
     const statusClass = baritoneStatusClass(agent.status);
     const statusWord = agent.status.split(/\s+/)[0] || agent.status;
@@ -873,19 +921,40 @@ function renderBaritoneAgents(agents) {
     head.className = "baritone-agent-head";
     name.className = "baritone-agent-name";
     badge.className = `baritone-agent-status ${statusClass}`;
+    state.className = `baritone-agent-state is-${states[index]}`;
     task.className = "baritone-agent-task";
     name.textContent = agent.name;
     name.title = agent.name;
     badge.textContent = statusWord;
     badge.title = agent.status;
+    label.textContent = baritoneStateLabel(states[index], lastSeen.get(baritoneChatAuthorKey(agent.name)) ?? null, nowMs);
     task.textContent = agent.task || "No current task recorded.";
     task.title = agent.task || "";
     pic.append(baritoneAvatar(agent.name, 32));
     head.append(name, badge);
-    copy.append(head, task);
+    state.append(dot, label);
+    copy.append(head, state, task);
     card.append(pic, copy);
     return card;
   }));
+}
+
+function renderBaritoneSummary(states) {
+  const summary = $("[data-baritone-agent-summary]");
+  if (!summary) return;
+  const counts = { working: 0, stalled: 0, done: 0 };
+  for (const state of states) counts[state === "blocked" ? "stalled" : state] += 1;
+  const nodes = [];
+  ["working", "stalled", "done"].forEach((key, i) => {
+    if (i) nodes.push(" · ");
+    const part = document.createElement("span");
+    const dot = document.createElement("i");
+    part.className = `is-${key}`;
+    part.append(dot, `${counts[key]} ${key}`);
+    nodes.push(part);
+  });
+  summary.replaceChildren(...nodes);
+  summary.hidden = false;
 }
 function renderBaritoneChat(messages) {
   const log = $("[data-baritone-agent-chat]");
@@ -1001,8 +1070,10 @@ async function syncBaritoneAgents() {
       return; // Unchanged: leave the DOM (and screen readers) alone.
     }
     baritoneAgentHash = hash;
-    renderBaritoneAgents(parseBaritoneAgents(source));
-    renderBaritoneChat(parseBaritoneChat(source));
+    const agents = parseBaritoneAgents(source);
+    const messages = parseBaritoneChat(source);
+    renderBaritoneAgents(agents, baritoneLastSeen(messages), Date.now());
+    renderBaritoneChat(messages);
     baritoneAgentLoaded = true;
     live?.classList.remove("is-error");
     if (liveLabel) liveLabel.textContent = "Live";

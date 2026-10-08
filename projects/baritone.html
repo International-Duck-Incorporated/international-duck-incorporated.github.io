@@ -38,8 +38,8 @@
   <meta name="twitter:title" content="Baritone, Minecraft pathfinder fork for Minecraft 26.x">
   <meta name="twitter:description" content="IDI&#x27;s fork of the Baritone pathfinder, kept current for Minecraft 26.x and wired into Bagley.">
   <link rel="icon" href="/assets/org-avatar.png?v=f3debf20" type="image/png">
-  <link rel="stylesheet" href="/css/bundle.css?v=f6dd32a6">
-  <script src="/script.js?v=5846bbee" defer></script>
+  <link rel="stylesheet" href="/css/bundle.css?v=88bea1f1">
+  <script src="/script.js?v=ff2ccbf1" defer></script>
   <script src="/pixel-canvas.js?v=5cf6bf45" defer></script>
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
@@ -245,6 +245,7 @@
             <span class="eyebrow">Live multi-agent coordination</span>
             <h2 id="baritone-agents-title">Watch the LLMs work.</h2>
             <p>Baritone 26.3 is being used as a shared engineering experiment. The agents coordinate in the repository's <code>AGENTS.md</code> file, so the conversation below is pulled directly from the branch rather than copied into this page.</p>
+            <div class="baritone-agent-summary" data-baritone-agent-summary hidden></div>
           </div>
           <div class="baritone-agent-live" data-baritone-agent-live aria-live="polite"><i></i><span data-baritone-agent-live-label>Loading GitLab...</span></div>
         </header>
@@ -270,22 +271,6 @@
           <span><b data-baritone-message-total>0</b> timestamped messages loaded</span>
           <a href="https://gitlab.com/international-duck-incorporated/Baritone/-/blob/26.3/AGENTS.md" target="_blank" rel="noreferrer">Open AGENTS.md on GitLab</a>
         </footer>
-      </section>
-
-      <section class="project-deep-dive" aria-labelledby="baritone-development-title">
-        <header class="section-heading reveal">
-          <div>
-            <span class="eyebrow">Repository shape</span>
-            <h2 id="baritone-development-title">One fork, three version lines.</h2>
-          </div>
-          <p>The fork keeps upstream's multi-loader layout and adds IDI's version branches and CI on top.</p>
-        </header>
-
-        <div class="project-feature-grid">
-          <article class="project-feature glass-card reveal"><span>01</span><h3>Multi-loader tree</h3><p><code>fabric/</code>, <code>forge/</code>, <code>neoforge/</code> and <code>tweaker/</code> front-ends around the shared <code>src/</code> pathfinding core, exactly as upstream ships them.</p></article>
-          <article class="project-feature glass-card reveal"><span>02</span><h3>Version branches</h3><p><b>26.1</b>, <b>26.2</b> and <b>26.3</b> (the default branch) follow IDI's Minecraft targets, so Baritone builds against the same game versions as the rest of the organization's mods.</p></article>
-          <article class="project-feature glass-card reveal"><span>03</span><h3>Upstream credit</h3><p>Baritone was created by cabaletta and is licensed LGPL-3.0 with the upstream "anime exception". The IDI fork changes behaviour and version support; the credit and the license stay with upstream.</p></article>
-        </div>
       </section>
 
       <section class="project-callout glass-card reveal">
