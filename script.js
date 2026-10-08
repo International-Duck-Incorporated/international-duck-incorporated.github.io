@@ -866,6 +866,7 @@ function renderBaritoneAgents(agents) {
     const badge = document.createElement("span");
     const task = document.createElement("p");
     const statusClass = baritoneStatusClass(agent.status);
+    const statusWord = agent.status.split(/\s+/)[0] || agent.status;
     card.className = "baritone-agent";
     pic.className = `baritone-agent-pic is-${statusClass}`;
     copy.className = "baritone-agent-copy";
@@ -874,7 +875,9 @@ function renderBaritoneAgents(agents) {
     badge.className = `baritone-agent-status ${statusClass}`;
     task.className = "baritone-agent-task";
     name.textContent = agent.name;
-    badge.textContent = agent.status;
+    name.title = agent.name;
+    badge.textContent = statusWord;
+    badge.title = agent.status;
     task.textContent = agent.task || "No current task recorded.";
     task.title = agent.task || "";
     pic.append(baritoneAvatar(agent.name, 32));
