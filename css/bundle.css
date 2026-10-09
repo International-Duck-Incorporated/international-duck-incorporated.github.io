@@ -628,6 +628,89 @@ body[data-project="beacon"] footer { position: relative; z-index: 1; }
 .account-status.account-status-neutral strong { color: #a9c8f5; }
 .account-status.account-status-neutral span { color: #c6d6e8; }
 
+/* Gap atmospheres: projects and interior pages that previously had only the
+   base wash. Same shape as the beacon/championscode/nulltrace treatments. */
+body[data-project="baritone"] { position: relative; background: #0a0807; }
+body[data-project="baritone"]::before {
+  background: radial-gradient(ellipse at 74% 16%, rgba(244, 114, 60, .15), transparent 36%), #0a0807;
+  opacity: .96;
+}
+body[data-project="baritone"]::after {
+  opacity: .1;
+  background-image: linear-gradient(rgba(255, 255, 255, .026) 1px, transparent 1px), linear-gradient(90deg, rgba(255, 255, 255, .026) 1px, transparent 1px);
+  background-size: 64px 64px;
+  mask-image: linear-gradient(to bottom, black 0%, transparent 88%);
+}
+body[data-project="baritone"] .eyebrow { color: #f0a35e; }
+body[data-project="idi-assets"] { position: relative; background: #08070d; }
+body[data-project="idi-assets"]::before {
+  background: radial-gradient(ellipse at 72% 15%, rgba(150, 110, 255, .14), transparent 36%), #08070d;
+  opacity: .96;
+}
+body[data-project="idi-assets"]::after {
+  opacity: .1;
+  background-image: linear-gradient(rgba(255, 255, 255, .026) 1px, transparent 1px), linear-gradient(90deg, rgba(255, 255, 255, .026) 1px, transparent 1px);
+  background-size: 64px 64px;
+  mask-image: linear-gradient(to bottom, black 0%, transparent 88%);
+}
+body[data-project="idi-assets"] .eyebrow { color: #bda4ff; }
+body[data-project="website"] { position: relative; background: #070a10; }
+body[data-project="website"]::before {
+  background: radial-gradient(ellipse at 74% 16%, rgba(90, 155, 242, .15), transparent 36%), #070a10;
+  opacity: .96;
+}
+body[data-project="website"]::after {
+  opacity: .1;
+  background-image: linear-gradient(rgba(255, 255, 255, .026) 1px, transparent 1px), linear-gradient(90deg, rgba(255, 255, 255, .026) 1px, transparent 1px);
+  background-size: 64px 64px;
+  mask-image: linear-gradient(to bottom, black 0%, transparent 88%);
+}
+body[data-project="website"] .eyebrow { color: #8fbdf5; }
+body[data-project="zonedout"] { position: relative; background: #0b070c; }
+body[data-project="zonedout"]::before {
+  background: radial-gradient(ellipse at 72% 15%, rgba(226, 110, 195, .13), transparent 36%), #0b070c;
+  opacity: .96;
+}
+body[data-project="zonedout"]::after {
+  opacity: .1;
+  background-image: linear-gradient(rgba(255, 255, 255, .026) 1px, transparent 1px), linear-gradient(90deg, rgba(255, 255, 255, .026) 1px, transparent 1px);
+  background-size: 64px 64px;
+  mask-image: linear-gradient(to bottom, black 0%, transparent 88%);
+}
+body[data-project="zonedout"] .eyebrow { color: #e79ad0; }
+body[data-project="baritone"] main,
+body[data-project="baritone"] footer,
+body[data-project="idi-assets"] main,
+body[data-project="idi-assets"] footer,
+body[data-project="website"] main,
+body[data-project="website"] footer,
+body[data-project="zonedout"] main,
+body[data-project="zonedout"] footer { position: relative; z-index: 1; }
+
+/* Interior fallback: index, plain member, activity, migration and dashboard
+   pages. Richer than the base wash; FX pages keep their own treatments. */
+body[data-page="projects"]::before,
+body[data-page="members"]::before,
+body[data-page="member"]:not(.starry-night-page):not(.plus-rain-page):not(.storm-window-page)::before,
+body[data-page="activity"]::before,
+body[data-page="migration"]::before,
+body[data-page="dashboard"]::before {
+  background: radial-gradient(ellipse at 72% 12%, rgba(96, 140, 220, .16), transparent 40%), radial-gradient(ellipse at 10% 55%, rgba(150, 211, 200, .09), transparent 42%), #07090d;
+  opacity: .96;
+}
+body[data-page="projects"] main,
+body[data-page="projects"] footer,
+body[data-page="members"] main,
+body[data-page="members"] footer,
+body[data-page="member"]:not(.starry-night-page):not(.plus-rain-page):not(.storm-window-page) main,
+body[data-page="member"]:not(.starry-night-page):not(.plus-rain-page):not(.storm-window-page) footer,
+body[data-page="activity"] main,
+body[data-page="activity"] footer,
+body[data-page="migration"] main,
+body[data-page="migration"] footer,
+body[data-page="dashboard"] main,
+body[data-page="dashboard"] footer { position: relative; z-index: 1; }
+
 /* ===== css/migration.css ===== */
 /* Migration page and timeline styles.
    Modules load in this order; see the root README for the stylesheet map. */

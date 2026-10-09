@@ -39,7 +39,7 @@
       kind: "video",
       wordmark: true,
       focus: "50% 47%",
-      // holdAt: 3.0, // end on the red IDI / GITLAB.ORG lockup instead
+      holdAt: 4.0, // red IDI / GITLAB.ORG end card
       label: "clip, plays out in full",
       src: `${ASSET_REPO}/-/raw/${ASSET_REF}${ASSET_DIR}easteregg-video-2.webm`,
     },
@@ -48,6 +48,7 @@
       kind: "video",
       wordmark: true,
       focus: "100% 42%", // its lockup hugs the right edge of the frame
+      holdAt: 2.0, // brief seal + IDI flash; the rest is black
       label: "clip, plays out in full",
       src: `${ASSET_REPO}/-/raw/${ASSET_REF}${ASSET_DIR}easteregg-video-3.webm`,
     },
@@ -55,7 +56,8 @@
       name: "video3.webm",
       kind: "video",
       wordmark: true,
-      focus: "50% 50%", // crest + IDI, centred on black
+      focus: "50% 50%", // crest + IDI, centred on white
+      holdAt: 4.0, // seal end card
       label: "clip, plays out in full",
       src: `${ASSET_REPO}/-/raw/${ASSET_REF}${ASSET_DIR}video3.webm`,
     },
@@ -64,6 +66,7 @@
       kind: "video",
       wordmark: true,
       focus: "50% 50%", // cube burst, then a faint IDI on near-black
+      holdAt: 2.0, // burst + bright org name; the tail fades out
       label: "clip, plays out in full",
       src: `${ASSET_REPO}/-/raw/${ASSET_REF}${ASSET_DIR}video4.webm`,
     },
@@ -91,6 +94,7 @@
       kind: "video",
       wordmark: true,
       focus: "50% 50%",
+      holdAt: 4.0, // bright blue wordmark peak
       label: "IDI wordmark clip, plays out in full",
       src: `${ASSET_REPO}/-/raw/${ASSET_REF}${ASSET_DIR}video5.webm`,
     },
@@ -99,7 +103,8 @@
       kind: "video",
       wordmark: true,
       focus: "50% 50%",
-      label: "IDI seal clip, plays out in full",
+      holdAt: 4.0, // full IDI + lamp; the end card loses an I
+      label: "IDI lamp clip, plays out in full",
       src: `${ASSET_REPO}/-/raw/${ASSET_REF}${ASSET_DIR}video6.webm`,
     },
     // The live 3D block field, ported from the team's React + three.js demo to
@@ -129,6 +134,7 @@
       kind: "video",
       wordmark: true,
       focus: "50% 50%",
+      holdAt: 16.0, // IDI centred on earth; the tail fades to black
       label: "the original clip, plays out in full",
       src: `${ASSET_REPO}/-/raw/${ASSET_REF}${ASSET_DIR}easteregg-video.webm`,
       fallbackSrc: EGG_PINNED_FALLBACK,
