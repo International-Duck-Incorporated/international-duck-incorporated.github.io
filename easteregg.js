@@ -48,7 +48,7 @@
       kind: "video",
       wordmark: true,
       focus: "100% 42%", // its lockup hugs the right edge of the frame
-      holdAt: 2.0, // brief seal + IDI flash; the rest is black
+      holdAt: 4.0, // PS3-style wave; holds the bright blue IDI + org-name peak
       label: "clip, plays out in full",
       src: `${ASSET_REPO}/-/raw/${ASSET_REF}${ASSET_DIR}easteregg-video-3.webm`,
     },
