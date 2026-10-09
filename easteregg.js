@@ -117,14 +117,14 @@
       focus: "50% 50%",
       label: "3D block field, rendered live",
     },
-    // video7: newest clip, appended without disturbing older picks. It fades to
-    // black, so it holds the bright 12s lockup instead of its last frame.
+    // video7: Fox homage; holds the wide 20s lockup + tagline (the very tail
+    // fades out).
     {
       name: "video7.webm",
       kind: "video",
       wordmark: true,
       focus: "50% 50%",
-      holdAt: 12.0,
+      holdAt: 20.0,
       label: "clip, plays out in full",
       src: `${ASSET_REPO}/-/raw/${ASSET_REF}${ASSET_DIR}video7.webm`,
     },
@@ -134,7 +134,7 @@
       kind: "video",
       wordmark: true,
       focus: "50% 50%",
-      holdAt: 16.0, // IDI centred on earth; the tail fades to black
+      holdAt: 22.0, // pulled-back IDI on earth + tagline; the very tail fades to black
       label: "the original clip, plays out in full",
       src: `${ASSET_REPO}/-/raw/${ASSET_REF}${ASSET_DIR}easteregg-video.webm`,
       fallbackSrc: EGG_PINNED_FALLBACK,
@@ -172,13 +172,13 @@
       label: "gitlab organisation card, plays out in full",
       src: `${ASSET_REPO}/-/raw/${ASSET_REF}${ASSET_DIR}video10.webm`,
     },
-    // video11: glowing org seal, black before and after; holds the bright seal.
+    // video11: glowing org seal; holds the late crisp seal (legible, no blowout).
     {
       name: "video11.webm",
       kind: "video",
       wordmark: true,
       focus: "50% 50%",
-      holdAt: 4.0,
+      holdAt: 9.0,
       label: "the glowing seal clip, plays out in full",
       src: `${ASSET_REPO}/-/raw/${ASSET_REF}${ASSET_DIR}video11.webm`,
     },
