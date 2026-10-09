@@ -677,6 +677,9 @@ const BARITONE_AGENT_MESSAGE_LIMIT = 48;
 const BARITONE_AGENT_POLL_MS = window.IDI_REDUCED_MOTION ? 120000 : 60000;
 const BARITONE_AGENT_EXAMPLE = /^agent [a-z]$/i;
 const BARITONE_ARCHIVE_URL = "https://gitlab.com/international-duck-incorporated/Baritone/-/blob/26.3/AGENTS-archive.md";
+const BARITONE_COMMITS_URL = `${GL_BARITONE_PROJECT}/repository/commits?ref_name=${BARITONE_AGENTS_REF}&per_page=100`;
+const BARITONE_COMMIT_PAGES = 3;
+const BARITONE_COMMITS_WEB_URL = "https://gitlab.com/international-duck-incorporated/Baritone/-/commits/26.3";
 const BARITONE_STAMP_GAP_MS = 30 * 60 * 1000;
 let baritoneAgentHash = "";
 let baritoneAgentLoaded = false;
@@ -715,19 +718,35 @@ function parseBaritoneAgents(markdown) {
   return rows.slice(2).map((line) => {
     const cells = line.split("|").slice(1, -1).map((cell) => cell.trim());
     return {
-      name: cells[0] || "Agent",
+      name: cleanBaritoneAgentText(cells[0]) || "Agent",
       task: cleanBaritoneAgentText(cells[1] || ""),
       status: cleanBaritoneAgentText(cells[3] || "Unknown")
     };
   }).filter((agent) => agent.name && agent.status && !/^-+$/.test(agent.name));
 }
 
+function baritoneStripFences(markdown) {
+  const lines = String(markdown).split("\n");
+  const fenceAt = [];
+  lines.forEach((line, index) => { if (/^\s*```/.test(line)) fenceAt.push(index); });
+  // Pair openers with closers; a trailing unclosed opener is treated as text.
+  const inside = new Set();
+  for (let i = 0; i + 1 < fenceAt.length; i += 2) {
+    for (let line = fenceAt[i] + 1; line < fenceAt[i + 1]; line++) inside.add(line);
+  }
+  return lines.filter((_, index) => !inside.has(index)).join("\n");
+}
+
 function parseBaritoneChat(markdown) {
-  const section = baritoneSection(markdown, "Chat");
+  // Whole-file scan: agents append new messages at the tail of other sections
+  // (notably Next Tasks), so the # Chat section alone goes stale within hours.
+  // Dated ### headers are self-identifying; fenced template copies are out.
+  const section = baritoneStripFences(markdown);
   if (!section) return [];
   // Split on every ### header so untimestamped subsections (the recovered-message
   // digests) never leak into a neighboring message's body; keep dated ones only.
   const headers = [...section.matchAll(/^###\s+(.+?)\s*$/gm)];
+  const sectionStarts = [...section.matchAll(/^# [^\n]*$/gm)].map((found) => found.index);
   const entries = [];
   headers.forEach((header, index) => {
     const stamp = header[1].match(/^(.*?)\s+-\s+(\d{4}-\d{2}-\d{2}(?:\s+\d{2}:\d{2}(?::\d{2})?)?\s+UTC.*)$/);
@@ -735,7 +754,8 @@ function parseBaritoneChat(markdown) {
     const name = stamp[1].trim();
     if (BARITONE_AGENT_EXAMPLE.test(name)) return; // "Agent A/B" template examples
     const blockStart = header.index + header[0].length;
-    const blockEnd = headers[index + 1]?.index ?? section.length;
+    const nextSection = sectionStarts.find((start) => start > blockStart) ?? section.length;
+    const blockEnd = Math.min(headers[index + 1]?.index ?? section.length, nextSection);
     const block = section.slice(blockStart, blockEnd).trim();
     const status = block.match(/^Status:\s*(.+)$/m)?.[1]?.trim() || "";
     const taskPattern = /^Current task:\s*([\s\S]*?)(?=\r?\n(?:Message|Response to|Next action|Task|Subsystem|Files):|$)/m;
@@ -749,15 +769,16 @@ function parseBaritoneChat(markdown) {
         .replace(taskPattern, "");
     }
     message = cleanBaritoneAgentText(message);
-    if (!message) return;
     entries.push({
       name,
       time: stamp[2].trim(),
+      ms: baritoneInstantMs(stamp[2].trim()),
       status: cleanBaritoneAgentText(status),
       task: cleanBaritoneAgentText(task),
       message
     });
   });
+  entries.sort((a, b) => (a.ms ?? 0) - (b.ms ?? 0));
   return entries;
 }
 
@@ -850,9 +871,20 @@ function baritoneLastSeen(messages) {
   return seen;
 }
 
+function baritoneStateClass(status) {
+  // The whole status cell, not just its first word: rows accumulate phases
+  // ("CLAIMED ...; CLOSED BY RECOVERY"), and the last word wins.
+  const text = String(status || "").toLowerCase();
+  if (/(^|[^a-z])(done|resting|closed|signed off)([^a-z]|$)/.test(text)) return "done";
+  if (/(^|[^a-z])joining([^a-z]|$)/.test(text)) return "joining";
+  if (/(^|[^a-z])blocked([^a-z]|$)/.test(text)) return "blocked";
+  return "active";
+}
+
 function baritoneAgentState(agent, lastMs, nowMs) {
-  const cls = baritoneStatusClass(agent.status);
-  if (cls === "done" || cls === "resting") return "done";
+  const cls = baritoneStateClass(agent.status);
+  if (cls === "done") return "done";
+  if (cls === "joining") return "joining";
   if (cls === "blocked") return "blocked";
   if (lastMs !== null && nowMs - lastMs <= BARITONE_ACTIVE_WINDOW_MS) return "working";
   return "stalled";
@@ -870,6 +902,11 @@ function baritoneAgoDur(lastMs, nowMs) {
 function baritoneStateLabel(state, lastMs, nowMs) {
   if (state === "done") return "Done";
   if (state === "blocked") return "Blocked";
+  if (state === "joining") {
+    if (lastMs === null) return "Joining";
+    const ago = baritoneAgoDur(lastMs, nowMs);
+    return ago === "just now" ? "Joining · just now" : `Joining · ${ago} ago`;
+  }
   if (lastMs === null) return "Stalled · no messages yet";
   const ago = baritoneAgoDur(lastMs, nowMs);
   if (state === "working") return ago === "just now" ? "Working · just now" : `Working · ${ago} ago`;
@@ -893,7 +930,7 @@ function baritoneEmptyLine(text) {
   return empty;
 }
 
-function renderBaritoneAgents(agents, lastSeen = new Map(), nowMs = Date.now()) {
+function renderBaritoneAgents(agents, lastSeen = new Map(), nowMs = Date.now(), commitCounts = null) {
   const roster = $("[data-baritone-agent-roster]");
   if (!roster) return;
   const shown = agents.filter((agent) => baritoneAgentVisible(agent, lastSeen.get(baritoneChatAuthorKey(agent.name)) ?? null, nowMs));
@@ -921,6 +958,8 @@ function renderBaritoneAgents(agents, lastSeen = new Map(), nowMs = Date.now()) 
     const dot = document.createElement("i");
     const label = document.createElement("span");
     const task = document.createElement("p");
+    const commits = document.createElement("div");
+    const commitsLink = document.createElement("a");
     const statusClass = baritoneStatusClass(agent.status);
     const statusWord = agent.status.split(/\s+/)[0] || agent.status;
     card.className = "baritone-agent";
@@ -942,6 +981,17 @@ function renderBaritoneAgents(agents, lastSeen = new Map(), nowMs = Date.now()) 
     head.append(name, badge);
     state.append(dot, label);
     copy.append(head, state, task);
+    if (commitCounts) {
+      const commitTotal = commitCounts.get(agent.name) || 0;
+      commits.className = "baritone-agent-commits";
+      commitsLink.href = BARITONE_COMMITS_WEB_URL;
+      commitsLink.target = "_blank";
+      commitsLink.rel = "noreferrer";
+      commitsLink.textContent = `${commitTotal} ${commitTotal === 1 ? "commit" : "commits"}`;
+      commitsLink.title = `Commits on ${BARITONE_AGENTS_REF} signed ${agent.name} (newest ${BARITONE_COMMIT_PAGES * 100}) — opens the branch history`;
+      commits.append(commitsLink);
+      copy.append(commits);
+    }
     card.append(pic, copy);
     return card;
   }));
@@ -951,10 +1001,11 @@ function renderBaritoneSummary(states) {
   const summary = $("[data-baritone-agent-summary]");
   if (!summary) return;
   if (!states.length) { summary.hidden = true; return; }
-  const counts = { working: 0, stalled: 0, done: 0 };
+  const counts = { working: 0, stalled: 0, done: 0, joining: 0 };
   for (const state of states) counts[state === "blocked" ? "stalled" : state] += 1;
   const nodes = [];
-  ["working", "stalled", "done"].forEach((key, i) => {
+  ["working", "stalled", "joining", "done"].forEach((key, i) => {
+    if (key === "joining" && !counts.joining) return;
     if (i) nodes.push(" · ");
     const part = document.createElement("span");
     const dot = document.createElement("i");
@@ -969,8 +1020,9 @@ function renderBaritoneChat(messages) {
   const log = $("[data-baritone-agent-chat]");
   if (!log) return;
   const wasAtBottom = log.scrollHeight - log.scrollTop - log.clientHeight < 90;
-  const visible = messages.slice(-BARITONE_AGENT_MESSAGE_LIMIT);
-  setText("[data-baritone-message-total]", messages.length.toLocaleString());
+  const rendered = messages.filter((entry) => entry.message);
+  const visible = rendered.slice(-BARITONE_AGENT_MESSAGE_LIMIT);
+  setText("[data-baritone-message-total]", rendered.length.toLocaleString());
   const nodes = [];
   if (visible.length) {
     const sys = document.createElement("div");
@@ -1047,6 +1099,50 @@ function baritoneBubble(entry, first, last) {
   card.append(main);
   return card;
 }
+async function fetchBaritoneCommits() {
+  const commits = [];
+  for (let page = 1; page <= BARITONE_COMMIT_PAGES; page++) {
+    const response = await fetch(`${BARITONE_COMMITS_URL}&page=${page}`, { headers: { Accept: "application/json" } });
+    if (!response.ok) throw new Error(`GitLab returned ${response.status}`);
+    const batch = await response.json();
+    if (!Array.isArray(batch) || !batch.length) break;
+    commits.push(...batch);
+    if (batch.length < 100) break;
+  }
+  return commits;
+}
+
+function baritoneAttributeCommit(commit, known) {
+  // Every box pushes under the operator's identity, so authorship comes only
+  // from self-declaration: an `Agent:` trailer, a `Name:` title prefix, a
+  // `Name joins` title, or a `Sign Name off` title. The name must be on the
+  // roster; bare mentions ("Curlew's row") stay unattributed.
+  const trailer = String(commit.message || "").match(/^Agent:\s*(.+)$/im)?.[1]?.trim().toLowerCase();
+  if (trailer && known.has(trailer)) return known.get(trailer);
+  const title = String(commit.title || "");
+  const prefixed = title.match(/^([A-Za-z][A-Za-z-]*)\s*:/)?.[1]
+    || title.match(/^([A-Za-z][A-Za-z-]*)\s+joins\b/i)?.[1]
+    || title.match(/^sign\s+(.+?)\s+off\b/i)?.[1];
+  const key = (prefixed || "").trim().toLowerCase();
+  return key && known.has(key) ? known.get(key) : null;
+}
+
+function baritoneCommitStats(commits, agents) {
+  const known = new Map(agents.map((agent) => [baritoneChatAuthorKey(agent.name), agent.name]));
+  const counts = new Map(), seen = new Map();
+  for (const commit of commits) {
+    const author = baritoneAttributeCommit(commit, known);
+    if (!author) continue;
+    counts.set(author, (counts.get(author) || 0) + 1);
+    const ms = Date.parse(commit.created_at || "");
+    if (!Number.isNaN(ms)) {
+      const key = baritoneChatAuthorKey(author);
+      if (!seen.has(key) || ms > seen.get(key)) seen.set(key, ms);
+    }
+  }
+  return { counts, seen };
+}
+
 function hashBaritoneSource(source) {
   let hash = 0x811c9dc5;
   for (let i = 0; i < source.length; i++) {
@@ -1081,7 +1177,19 @@ async function syncBaritoneAgents() {
     baritoneAgentHash = hash;
     const agents = parseBaritoneAgents(source);
     const messages = parseBaritoneChat(source);
-    renderBaritoneAgents(agents, baritoneLastSeen(messages), Date.now());
+    let commitCounts = null;
+    const lastSeen = baritoneLastSeen(messages);
+    try {
+      const stats = baritoneCommitStats(await fetchBaritoneCommits(), agents);
+      commitCounts = stats.counts;
+      for (const [key, ms] of stats.seen) {
+        if (!lastSeen.has(key) || ms > lastSeen.get(key)) lastSeen.set(key, ms);
+      }
+    } catch {
+      // Commits are a bonus signal: a failed fetch leaves the roster and its
+      // chat-derived states intact, and the next poll retries.
+    }
+    renderBaritoneAgents(agents, lastSeen, Date.now(), commitCounts);
     renderBaritoneChat(messages);
     baritoneAgentLoaded = true;
     live?.classList.remove("is-error");

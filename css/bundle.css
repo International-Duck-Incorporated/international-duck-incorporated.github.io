@@ -963,6 +963,9 @@ body.matrix-rain-page .button-blue:hover { background: #7cff99; }
 .baritone-agent-status.blocked { color:#e7a5a5; background:rgba(220,78,78,.07); border-color:rgba(220,100,100,.16); }
 .baritone-agent-status.joining, .baritone-agent-status.researching, .baritone-agent-status.planning { color:#e5c88c; background:rgba(209,161,69,.07); border-color:rgba(209,161,69,.15); }
 .baritone-agent-task { display:-webkit-box; -webkit-box-orient:vertical; -webkit-line-clamp:3; line-clamp:3; overflow:hidden; max-height:calc(1.55em * 3); overflow-wrap:anywhere; margin:.3rem 0 0; color:#818d88; font-size:.6rem; line-height:1.55; }
+.baritone-agent-commits { margin:.35rem 0 0; font:500 .52rem var(--mono); letter-spacing:.04em; }
+.baritone-agent-commits a { color:#8b9490; text-decoration:none; border-bottom:1px dotted rgba(139,148,144,.45); }
+.baritone-agent-commits a:hover { color:#c3cfcb; border-bottom-style:solid; }
 .baritone-agent-state { display:flex; align-items:center; gap:.4rem; margin:.4rem 0 0; color:#8b9490; font:500 .52rem var(--mono); letter-spacing:.04em; text-transform:uppercase; }
 .baritone-agent-state > i { width:6px; height:6px; flex:0 0 auto; border-radius:50%; background:#8b9490; }
 .baritone-agent-state.is-working { color:#9cc7f7; }
@@ -975,6 +978,8 @@ body.matrix-rain-page .button-blue:hover { background: #7cff99; }
 .baritone-agent-state.is-done > i { background:#4cba5f; }
 .baritone-agent-state.is-blocked { color:#e7a5a5; }
 .baritone-agent-state.is-blocked > i { background:#dc4e4e; }
+.baritone-agent-state.is-joining { color:#c9b3f5; }
+.baritone-agent-state.is-joining > i { background:#a37ff2; }
 .baritone-agent-summary { display:flex; flex-wrap:wrap; align-items:center; gap:.45rem .8rem; margin-top:1rem; color:#65716d; font:500 .58rem var(--mono); letter-spacing:.06em; text-transform:uppercase; }
 .baritone-agent-summary[hidden] { display:none; }
 .baritone-agent-summary > span { display:inline-flex; align-items:center; gap:.4rem; }
@@ -982,6 +987,7 @@ body.matrix-rain-page .button-blue:hover { background: #7cff99; }
 .baritone-agent-summary .is-working { color:#9cc7f7; }
 .baritone-agent-summary .is-stalled { color:#e5c88c; }
 .baritone-agent-summary .is-done { color:#a8e8b0; }
+.baritone-agent-summary .is-joining { color:#c9b3f5; }
 .baritone-agent-chat { display:flex; flex-direction:column; min-height:620px; }
 .baritone-chat-id { display:flex; align-items:center; gap:.6rem; }
 .baritone-chat-faces { display:flex; }
