@@ -2,18 +2,17 @@
  *
  * Background: index.html chooses the visit's frame before styles are applied,
  * so the hero copy never moves. Keep this payload table index-aligned with that
- * head list. The six existing rotation choices remain intact; video5, video6
- * and video7 are appended from idi-assets, and the original egg clip is a
+ * head list. The existing rotation choices remain intact; video5 through
+ * video11 are appended from idi-assets, and the original egg clip is a
  * normal cycle entry too. The epic IDI logo stays separate and rare.
  * Reduced-motion visitors get stills only; low-power visitors
  * keep the smallest local still and never auto-download a clip. Ordinary
  * backgrounds never repeat on consecutive visits.
  *
  * The epic IDI logo is a separate 1/1000 static surprise, not an everyday pick.
- * The original egg clip used to be the matching 1/1000 video surprise;
- * it is an ordinary rotation pick now, and /easteregg still plays it on demand.
- * Low-power devices require an explicit click for it on the egg route. Normal
- * rotation clips play once and hold their last frame.
+ * The original egg clip used to be the matching 1/1000 video surprise; it is
+ * an ordinary rotation pick now. /easteregg shows the actual egg instead: the
+ * epic logo collage. Normal rotation clips play once and hold their frame.
  *
  * Videos start muted so autoplay is allowed everywhere; a small toggle in the
  * corner enables sound while one is on screen. If nothing can be shown,
@@ -29,8 +28,7 @@
 
   // Homepage background pool. Videos and the rare logo stream from the canonical
   // asset bundle; the two ordinary stills are local. The original egg clip is an
-  // ordinary rotation pick too, with a pinned-URL fallback; /easteregg still
-  // plays it on demand.
+  // ordinary rotation pick too, with a pinned-URL fallback.
   const BACKGROUNDS = [
     // videos: the clip ends on the wordmark, so the copy sits top-left and the
     // <h1> hides - the backdrop is already saying the name
@@ -197,13 +195,6 @@
 
 
 
-  // The egg's sources, in order: the bundle's current layout, then the same
-  // file pinned to the commit it was audited in, which resolves no matter how
-  // the bundle is reorganised later.
-  const EGG_SOURCES = [
-    `${ASSET_REPO}/-/raw/${ASSET_REF}${ASSET_DIR}easteregg-video.webm`,
-    EGG_PINNED_FALLBACK,
-  ];
 
   const LAST_KEY = "idi-bg-last";
 
@@ -408,38 +399,15 @@
     if (reducedMotion) handle.dispose(); // one painted frame, no loop
   };
 
-  // On constrained devices, keep the dedicated egg route useful without
-  // silently starting the clip download. The button is an explicit opt-in.
-  if (isEggRoute && lowEnd) {
-    const still = BACKGROUNDS.find((item) => item.name === "homepage-community-background-v4.webp");
-    document.documentElement.dataset.frame = "image";
-    document.documentElement.dataset.wordmark = still.wordmark ? "yes" : "no";
-    document.documentElement.style.setProperty("--focus", still.focus);
-    mountImage(still);
-
-    const playButton = document.createElement("button");
-    playButton.type = "button";
-    playButton.className = "button button-glass egg-play-original";
-    playButton.textContent = "Play the original clip";
-    playButton.addEventListener("click", () => {
-      playButton.remove();
-      mountVideo(EGG_SOURCES, {
-        name: "easteregg-video.webm",
-        log: () => "🦆 /easteregg - the original clip was requested.",
-        onGiveUp: () => giveUp("easter egg clip"),
-      });
-    }, { once: true });
-    body.append(playButton);
-    return;
-  }
-
   // ------------------------------------------------------------------ egg
+  // The dedicated route shows the actual egg: the epic logo collage. The
+  // original clip is an ordinary rotation pick now, so it no longer counts.
   if (egg) {
-    mountVideo(EGG_SOURCES, {
-      name: "easteregg-video.webm",
-      log: () => `\u{1F95A} /easteregg - it was always going to play. Clip: the original one.`,
-      onGiveUp: () => giveUp("easter egg clip"),
-    });
+    const epic = BACKGROUNDS.find((item) => item.rare);
+    document.documentElement.dataset.frame = epic.kind;
+    document.documentElement.dataset.wordmark = epic.wordmark ? "yes" : "no";
+    document.documentElement.style.setProperty("--focus", epic.focus || "50% 50%");
+    mountImage({ ...epic, label: "the actual egg" });
     return;
   }
 

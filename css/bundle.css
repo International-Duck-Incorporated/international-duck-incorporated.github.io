@@ -390,7 +390,7 @@ body[data-page="venomous"] :focus-visible { outline-color: var(--green); }
    Modules load in this order; see the root README for the stylesheet map. */
 
 /* Liquid glass system */
-body::before { content:""; position:fixed; inset:0; z-index:-3; background:radial-gradient(ellipse at 15% 5%,rgba(76,131,255,.13),transparent 42%),radial-gradient(ellipse at 88% 38%,rgba(105,240,210,.08),transparent 38%),#07090d; pointer-events:none; }
+body::before { content:""; position:fixed; inset:0; z-index:-3; background:radial-gradient(ellipse at 15% 5%,rgba(76,131,255,.17),transparent 42%),radial-gradient(ellipse at 88% 38%,rgba(105,240,210,.11),transparent 38%),#07090d; pointer-events:none; }
 body::after { content:""; position:fixed; inset:0; z-index:-2; opacity:.18; pointer-events:none; background-image:linear-gradient(rgba(255,255,255,.018) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.018) 1px,transparent 1px); background-size:64px 64px; mask-image:linear-gradient(to bottom,black,transparent 75%); }
 .glass-card { position:relative; isolation:isolate; overflow:hidden; background:linear-gradient(145deg,rgba(255,255,255,.085),rgba(255,255,255,.025) 38%,rgba(9,13,20,.52)); border-color:rgba(255,255,255,.13); box-shadow:0 22px 65px rgba(0,0,0,.28),inset 0 1px 0 rgba(255,255,255,.16),inset 1px 0 0 rgba(255,255,255,.045); backdrop-filter:blur(28px) saturate(145%); -webkit-backdrop-filter:blur(28px) saturate(145%); }
 .glass-card::before { content:""; position:absolute; z-index:-1; width:62%; height:45%; left:-12%; top:-24%; border-radius:50%; background:radial-gradient(ellipse,rgba(150,195,255,.13),transparent 68%); filter:blur(10px); pointer-events:none; }
@@ -632,7 +632,7 @@ body[data-project="beacon"] footer { position: relative; z-index: 1; }
    base wash. Same shape as the beacon/championscode/nulltrace treatments. */
 body[data-project="baritone"] { position: relative; background: #0a0807; }
 body[data-project="baritone"]::before {
-  background: radial-gradient(ellipse at 74% 16%, rgba(244, 114, 60, .15), transparent 36%), #0a0807;
+  background: radial-gradient(ellipse at 74% 16%, rgba(244, 114, 60, .19), transparent 36%), #0a0807;
   opacity: .96;
 }
 body[data-project="baritone"]::after {
@@ -644,7 +644,7 @@ body[data-project="baritone"]::after {
 body[data-project="baritone"] .eyebrow { color: #f0a35e; }
 body[data-project="idi-assets"] { position: relative; background: #08070d; }
 body[data-project="idi-assets"]::before {
-  background: radial-gradient(ellipse at 72% 15%, rgba(150, 110, 255, .14), transparent 36%), #08070d;
+  background: radial-gradient(ellipse at 72% 15%, rgba(150, 110, 255, .18), transparent 36%), #08070d;
   opacity: .96;
 }
 body[data-project="idi-assets"]::after {
@@ -656,7 +656,7 @@ body[data-project="idi-assets"]::after {
 body[data-project="idi-assets"] .eyebrow { color: #bda4ff; }
 body[data-project="website"] { position: relative; background: #070a10; }
 body[data-project="website"]::before {
-  background: radial-gradient(ellipse at 74% 16%, rgba(90, 155, 242, .15), transparent 36%), #070a10;
+  background: radial-gradient(ellipse at 74% 16%, rgba(90, 155, 242, .19), transparent 36%), #070a10;
   opacity: .96;
 }
 body[data-project="website"]::after {
@@ -668,7 +668,7 @@ body[data-project="website"]::after {
 body[data-project="website"] .eyebrow { color: #8fbdf5; }
 body[data-project="zonedout"] { position: relative; background: #0b070c; }
 body[data-project="zonedout"]::before {
-  background: radial-gradient(ellipse at 72% 15%, rgba(226, 110, 195, .13), transparent 36%), #0b070c;
+  background: radial-gradient(ellipse at 72% 15%, rgba(226, 110, 195, .17), transparent 36%), #0b070c;
   opacity: .96;
 }
 body[data-project="zonedout"]::after {
@@ -695,7 +695,7 @@ body[data-page="member"]:not(.starry-night-page):not(.plus-rain-page):not(.storm
 body[data-page="activity"]::before,
 body[data-page="migration"]::before,
 body[data-page="dashboard"]::before {
-  background: radial-gradient(ellipse at 72% 12%, rgba(96, 140, 220, .16), transparent 40%), radial-gradient(ellipse at 10% 55%, rgba(150, 211, 200, .09), transparent 42%), #07090d;
+  background: radial-gradient(ellipse at 72% 12%, rgba(96, 140, 220, .19), transparent 40%), radial-gradient(ellipse at 10% 55%, rgba(150, 211, 200, .11), transparent 42%), #07090d;
   opacity: .96;
 }
 body[data-page="projects"] main,
@@ -710,6 +710,23 @@ body[data-page="migration"] main,
 body[data-page="migration"] footer,
 body[data-page="dashboard"] main,
 body[data-page="dashboard"] footer { position: relative; z-index: 1; }
+
+/* Living backgrounds: every page's atmosphere glow slowly breathes while its
+   grid drifts a cell on a seamless loop, so the dark never reads flat. This
+   only adds motion, so it composes with each page's own wash above; pages
+   with richer treatments (video, canvas FX) keep them on top, unaffected. */
+@media (prefers-reduced-motion: no-preference) {
+  body::before { animation: ambience-breathe 36s ease-in-out infinite alternate; }
+  body::after { animation: ambience-drift 48s linear infinite; }
+}
+@keyframes ambience-breathe {
+  from { transform: translate3d(-1.5%, -1%, 0) scale(1.05); }
+  to { transform: translate3d(1.5%, 1%, 0) scale(1.08); }
+}
+@keyframes ambience-drift {
+  from { transform: translate3d(0, 0, 0); }
+  to { transform: translate3d(64px, 64px, 0); }
+}
 
 /* ===== css/migration.css ===== */
 /* Migration page and timeline styles.
@@ -2314,7 +2331,6 @@ body.egg-bg[data-page="organization"]::before {
 .activity-low-power-card .button,
 .cf-low-power .button { width: auto; min-height: 42px; }
 .cf-low-power .button { margin-top: .8rem; }
-.egg-play-original { position: fixed; left: 1rem; bottom: 1rem; z-index: 110; }
 
 /* Adaptive low-power mode: retain the tinted glass surfaces without the costly blur. */
 html.low-end { scroll-behavior: auto; }

@@ -511,7 +511,6 @@ body.egg-bg[data-page="organization"]::before {
 .activity-low-power-card .button,
 .cf-low-power .button { width: auto; min-height: 42px; }
 .cf-low-power .button { margin-top: .8rem; }
-.egg-play-original { position: fixed; left: 1rem; bottom: 1rem; z-index: 110; }
 
 /* Adaptive low-power mode: retain the tinted glass surfaces without the costly blur. */
 html.low-end { scroll-behavior: auto; }

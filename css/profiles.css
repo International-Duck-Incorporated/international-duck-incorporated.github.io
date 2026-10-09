@@ -2,7 +2,7 @@
    Modules load in this order; see the root README for the stylesheet map. */
 
 /* Liquid glass system */
-body::before { content:""; position:fixed; inset:0; z-index:-3; background:radial-gradient(ellipse at 15% 5%,rgba(76,131,255,.13),transparent 42%),radial-gradient(ellipse at 88% 38%,rgba(105,240,210,.08),transparent 38%),#07090d; pointer-events:none; }
+body::before { content:""; position:fixed; inset:0; z-index:-3; background:radial-gradient(ellipse at 15% 5%,rgba(76,131,255,.17),transparent 42%),radial-gradient(ellipse at 88% 38%,rgba(105,240,210,.11),transparent 38%),#07090d; pointer-events:none; }
 body::after { content:""; position:fixed; inset:0; z-index:-2; opacity:.18; pointer-events:none; background-image:linear-gradient(rgba(255,255,255,.018) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.018) 1px,transparent 1px); background-size:64px 64px; mask-image:linear-gradient(to bottom,black,transparent 75%); }
 .glass-card { position:relative; isolation:isolate; overflow:hidden; background:linear-gradient(145deg,rgba(255,255,255,.085),rgba(255,255,255,.025) 38%,rgba(9,13,20,.52)); border-color:rgba(255,255,255,.13); box-shadow:0 22px 65px rgba(0,0,0,.28),inset 0 1px 0 rgba(255,255,255,.16),inset 1px 0 0 rgba(255,255,255,.045); backdrop-filter:blur(28px) saturate(145%); -webkit-backdrop-filter:blur(28px) saturate(145%); }
 .glass-card::before { content:""; position:absolute; z-index:-1; width:62%; height:45%; left:-12%; top:-24%; border-radius:50%; background:radial-gradient(ellipse,rgba(150,195,255,.13),transparent 68%); filter:blur(10px); pointer-events:none; }
