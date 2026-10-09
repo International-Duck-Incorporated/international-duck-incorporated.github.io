@@ -139,6 +139,49 @@
       src: `${ASSET_REPO}/-/raw/${ASSET_REF}${ASSET_DIR}easteregg-video.webm`,
       fallbackSrc: EGG_PINNED_FALLBACK,
     },
+    // video8: SEGA-style white IDI card for the first half, then black; holds
+    // the card instead of the tail.
+    {
+      name: "video8.webm",
+      kind: "video",
+      wordmark: true,
+      focus: "50% 50%",
+      holdAt: 2.0,
+      label: "sega-style IDI card, plays out in full",
+      src: `${ASSET_REPO}/-/raw/${ASSET_REF}${ASSET_DIR}video8.webm`,
+    },
+    // video9: Paramount-style mountain intro; holds the full 18s lockup (the
+    // clip fades to black).
+    {
+      name: "video9.webm",
+      kind: "video",
+      wordmark: true,
+      focus: "50% 42%",
+      holdAt: 18.0,
+      label: "paramount-style mountain intro, plays out in full",
+      src: `${ASSET_REPO}/-/raw/${ASSET_REF}${ASSET_DIR}video9.webm`,
+    },
+    // video10: static resolves into the GITLAB ORGANISATION card; holds the
+    // card.
+    {
+      name: "video10.webm",
+      kind: "video",
+      wordmark: true,
+      focus: "50% 50%",
+      holdAt: 4.0,
+      label: "gitlab organisation card, plays out in full",
+      src: `${ASSET_REPO}/-/raw/${ASSET_REF}${ASSET_DIR}video10.webm`,
+    },
+    // video11: glowing org seal, black before and after; holds the bright seal.
+    {
+      name: "video11.webm",
+      kind: "video",
+      wordmark: true,
+      focus: "50% 50%",
+      holdAt: 4.0,
+      label: "the glowing seal clip, plays out in full",
+      src: `${ASSET_REPO}/-/raw/${ASSET_REF}${ASSET_DIR}video11.webm`,
+    },
     // Not part of the regular pool; fetched from the canonical idi-assets repo
     // only when index.html selects the 1/1000 surprise.
     {
