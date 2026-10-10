@@ -224,17 +224,24 @@ body[data-project="website"] footer,
 body[data-project="zonedout"] main,
 body[data-project="zonedout"] footer { position: relative; z-index: 1; }
 
-/* Interior fallback: index, plain member, activity, migration and dashboard
+/* Interior fallback: index, plain member, activity, migration, noosphere and dashboard
    pages. Richer than the base wash; FX pages keep their own treatments. */
 body[data-page="projects"]::before,
 body[data-page="members"]::before,
 body[data-page="member"]:not(.starry-night-page):not(.plus-rain-page):not(.storm-window-page)::before,
 body[data-page="activity"]::before,
 body[data-page="migration"]::before,
+body[data-page="noosphere"]::before,
 body[data-page="dashboard"]::before {
   background: radial-gradient(ellipse at 72% 12%, rgba(96, 140, 220, .19), transparent 40%), radial-gradient(ellipse at 10% 55%, rgba(150, 211, 200, .11), transparent 42%), #07090d;
   opacity: .96;
 }
+body[data-page="noosphere"] { position: relative; background: #07090f; }
+body[data-page="noosphere"]::before {
+  background: radial-gradient(ellipse at 74% 14%, rgba(125, 155, 255, .20), transparent 42%), radial-gradient(ellipse at 15% 58%, rgba(79, 227, 193, .13), transparent 42%), #07090f;
+  opacity: .96;
+}
+body[data-page="noosphere"] .eyebrow { color: #7d9bff; }
 body[data-page="projects"] main,
 body[data-page="projects"] footer,
 body[data-page="members"] main,
@@ -245,6 +252,8 @@ body[data-page="activity"] main,
 body[data-page="activity"] footer,
 body[data-page="migration"] main,
 body[data-page="migration"] footer,
+body[data-page="noosphere"] main,
+body[data-page="noosphere"] footer,
 body[data-page="dashboard"] main,
 body[data-page="dashboard"] footer { position: relative; z-index: 1; }
 

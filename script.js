@@ -22,7 +22,8 @@ const SITE_ROUTES = Object.freeze({
   home: "/", projects: "/projects", members: "/members", venomous: "/projects/venomous",
   nulltrace: "/projects/nulltrace", championscode: "/projects/championscode", zonedout: "/projects/zonedout", beacon: "/projects/beacon", bagley: "/projects/bagley",
   website: "/projects/website", migration: "/migration",
-  baritone: "/projects/baritone", idiAssets: "/projects/idi-assets"
+  baritone: "/projects/baritone", idiAssets: "/projects/idi-assets",
+  noosphere: "/noosphere"
 });
 const GL_SITE_PROJECT = `${GITLAB_API}/projects/${encodeURIComponent(`${GL_GROUP_PATH}/home`)}`;
 const fallbackModules = [{"name":"Aimbot","category":"combat"},{"name":"AntiProjectile","category":"combat"},{"name":"AutoClickerPlus","category":"combat"},{"name":"AutoPotion","category":"combat"},{"name":"AutoShield","category":"combat"},{"name":"CriticalsPlus","category":"combat"},{"name":"CrystalPvP","category":"combat"},{"name":"Hunt","category":"combat"},{"name":"MaceKill","category":"combat"},{"name":"ProjectilePuncher","category":"combat"},{"name":"SuperKnockback","category":"combat"},{"name":"SwordBlock","category":"combat"},{"name":"TargetObsidian","category":"combat"},{"name":"TickBase","category":"combat"},{"name":"TimerRange","category":"combat"},{"name":"TpAura","category":"combat"},{"name":"VAnchorMacro","category":"combat"},{"name":"VAntiTrap","category":"combat"},{"name":"VAutoCity","category":"combat"},{"name":"VAutoDoubleHand","category":"combat"},{"name":"VAutoInvTotem","category":"combat"},{"name":"VBreachSwap","category":"combat"},{"name":"VKeyPearl","category":"combat"},{"name":"VKillAura","category":"combat"},{"name":"VMaceKill","category":"combat"},{"name":"VPopCounter","category":"combat"},{"name":"VShieldBreaker","category":"combat"},{"name":"VShieldBypass","category":"combat"},{"name":"VSwordPlaceObsidian","category":"combat"},{"name":"VWindPearlMacro","category":"combat"},{"name":"VelocityPlus","category":"combat"},{"name":"AntiCheatDetect","category":"detection"},{"name":"AntiStaff","category":"detection"},{"name":"SpectatorAlert","category":"detection"},{"name":"VAntiVanish","category":"detection"},{"name":"VPlayerDetection","category":"detection"},{"name":"VInvisESP","category":"visual"},{"name":"VLightESP","category":"visual"},{"name":"VSkeletonESP","category":"visual"},{"name":"AbortBreaking","category":"exploit"},{"name":"AntiReducedDebugInfo","category":"exploit"},{"name":"ClickTp","category":"exploit"},{"name":"Damage","category":"exploit"},{"name":"Disabler","category":"exploit"},{"name":"Dupe","category":"exploit"},{"name":"ExtendedFirework","category":"exploit"},{"name":"Kick","category":"exploit"},{"name":"LbClip","category":"exploit"},{"name":"MoreCarry","category":"exploit"},{"name":"NameCollector","category":"exploit"},{"name":"NoPitchLimit","category":"exploit"},{"name":"PingSpoof","category":"exploit"},{"name":"PortalMenu","category":"exploit"},{"name":"ResetVL","category":"exploit"},{"name":"SleepWalker","category":"exploit"},{"name":"TimeShift","category":"exploit"},{"name":"VAntiHunger","category":"exploit"},{"name":"VBungeeCordSpoof","category":"exploit"},{"name":"VChorusExploit","category":"exploit"},{"name":"VGhostHand","category":"exploit"},{"name":"VNoPortalHitbox","category":"exploit"},{"name":"VPortalGodMode","category":"exploit"},{"name":"VVehicleOneHit","category":"exploit"},{"name":"DankBobbing","category":"utility"},{"name":"Derp","category":"utility"},{"name":"Twerk","category":"utility"},{"name":"Vomit","category":"utility"},{"name":"ArmorWarning","category":"utility"},{"name":"AutoChatGame","category":"utility"},{"name":"AutoPearl","category":"utility"},{"name":"Chat","category":"utility"},{"name":"ElytraSwap","category":"utility"},{"name":"FarmlandTremble","category":"utility"},{"name":"FlagCheck","category":"utility"},{"name":"GUICloser","category":"utility"},{"name":"InventoryTracker","category":"utility"},{"name":"ItemOrganizer","category":"utility"},{"name":"LagNotifier","category":"utility"},{"name":"MiddleClickAction","category":"utility"},{"name":"PearlTools","category":"utility"},{"name":"ProphuntESP","category":"utility"},{"name":"SafeLogout","category":"utility"},{"name":"SoundESP","category":"utility"},{"name":"Spammer","category":"utility"},{"name":"TNTTimer","category":"utility"},{"name":"TargetLock","category":"utility"},{"name":"Teams","category":"utility"},{"name":"TextFieldProtect","category":"utility"},{"name":"TrueSight","category":"utility"},{"name":"VAntiBot","category":"utility"},{"name":"VAutoEZ","category":"utility"},{"name":"VBookBot","category":"utility"},{"name":"VChoir","category":"utility"},{"name":"VCoordSnapper","category":"utility"},{"name":"VFreecamMining","category":"utility"},{"name":"VHideScoreboard","category":"utility"},{"name":"VNameProtect","category":"utility"},{"name":"VNoBlockInteract","category":"utility"},{"name":"VNotifier","category":"utility"},{"name":"VPacketLogger","category":"utility"},{"name":"AntiBounce","category":"movement"},{"name":"AssertDominance","category":"movement"},{"name":"Clip","category":"movement"},{"name":"Fly","category":"movement"},{"name":"NoPush","category":"movement"},{"name":"Phase","category":"movement"},{"name":"SnapTap","category":"movement"},{"name":"Speed","category":"movement"},{"name":"VBlink","category":"movement"},{"name":"VBoatPhase","category":"movement"},{"name":"VHoleSnap","category":"movement"},{"name":"VRoboWalk","category":"movement"},{"name":"GlobalNetworkInterceptor","category":"utility"},{"name":"NoFallPlus","category":"utility"},{"name":"AntiBlind","category":"visual"},{"name":"VNewChunks","category":"visual"},{"name":"AntiVoid","category":"utility"},{"name":"AutoBreakSelected","category":"utility"},{"name":"AutoToolPlus","category":"utility"},{"name":"NoSignScreen","category":"utility"},{"name":"Scaffold","category":"utility"},{"name":"TimerPlus","category":"utility"},{"name":"VAirPlace","category":"utility"},{"name":"VAutoFarm","category":"utility"}];
@@ -94,9 +95,10 @@ if ("IntersectionObserver" in window) {
 } else revealItems.forEach((item) => item.classList.add("visible"));
 
 async function syncOrganization() {
-  const [group, projects] = await Promise.all([
+  const [group, projects, subgroups] = await Promise.all([
     getJSON(GL_GROUP_API, "application/json"),
-    getJSON(`${GL_GROUP_API}/projects?per_page=100&include_subgroups=true`, "application/json")
+    getJSON(`${GL_GROUP_API}/projects?per_page=100&include_subgroups=false`, "application/json"),
+    getJSON(`${GL_GROUP_API}/subgroups`, "application/json").catch(() => [])
   ]);
   $$('[data-org-avatar]').forEach((image) => {
     image.onerror = () => { image.onerror = null; image.src = "/assets/org-avatar.webp?v=fff479ce"; };
@@ -105,6 +107,29 @@ async function syncOrganization() {
   setText("[data-org-name]", group.name || "International Duck Incorporated");
   setText("[data-org-repos]", projects.length);
   setText("[data-org-stars]", projects.reduce((total, project) => total + (project.star_count || 0), 0));
+  if (subgroups && subgroups.length) setText("[data-org-subgroups-count]", subgroups.length);
+}
+
+const GL_NOOSPHERE_PATH = `${GL_GROUP_PATH}/noosphere`;
+const GL_NOOSPHERE_API = `${GITLAB_API}/groups/${encodeURIComponent(GL_NOOSPHERE_PATH)}`;
+
+async function syncNoosphere() {
+  try {
+    const [group, projects] = await Promise.all([
+      getJSON(GL_NOOSPHERE_API, "application/json"),
+      getJSON(`${GL_NOOSPHERE_API}/projects?per_page=100&order_by=last_activity_at&sort=desc`, "application/json")
+    ]);
+    $$('[data-noosphere-avatar]').forEach((image) => {
+      image.onerror = () => { image.onerror = null; image.src = "/assets/noosphere-avatar.webp?v=e9df725c"; };
+      image.src = group.avatar_url || "/assets/noosphere-avatar.webp?v=e9df725c";
+    });
+    setText("[data-noosphere-name]", group.name || "IDI Noosphere");
+    setText("[data-noosphere-desc]", group.description || "");
+    setText("[data-noosphere-repos]", projects.length);
+    setText("[data-noosphere-stars]", projects.reduce((total, p) => total + (p.star_count || 0), 0));
+  } catch {
+    // Retain checked-in static values if API fails
+  }
 }
 
 const languageColors = { Java: "#b07219", HTML: "#e34c26", CSS: "#563d7c", JavaScript: "#f1e05a", Python: "#3572A5" };
@@ -132,7 +157,8 @@ async function latestReleaseTag(projectApiBase) {
 }
 
 async function syncProjects() {
-  const glProjects = await getJSON(`${GL_GROUP_API}/projects?per_page=100&order_by=last_activity_at&sort=desc&include_subgroups=true`, "application/json");
+  const allGlProjects = await getJSON(`${GL_GROUP_API}/projects?per_page=100&order_by=last_activity_at&sort=desc&include_subgroups=false`, "application/json");
+  const glProjects = allGlProjects.filter((project) => !project.namespace || project.namespace.full_path === GL_GROUP_PATH);
   const [beaconVersion, championscodeVersion] = await Promise.all([
     latestReleaseTag(GL_BEACON_PROJECT),
     latestReleaseTag(GL_CHAMPIONSCODE_PROJECT)
@@ -638,6 +664,7 @@ if (page === "organization") {
   tasks.push(syncMembers());
   if (!lowPowerMode) addLiveTask(syncOrganization());
 }
+if (page === "noosphere" && !lowPowerMode) addLiveTask(syncNoosphere());
 if (page === "members") tasks.push(syncMembers());
 if (page === "projects" && !lowPowerMode) addLiveTask(syncProjects());
 if (page === "projects" && lowPowerMode) {

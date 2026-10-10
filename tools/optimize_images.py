@@ -34,6 +34,10 @@ except ImportError:  # pragma: no cover - tooling convenience
 
 # name -> (long-edge cap, quality). Anything not listed is left alone.
 PROFILES: dict[str, tuple[int, int]] = {
+    # Subgroup and agent project icons.
+    "noosphere-avatar.png": (192, 85),
+    "agentarium-icon.png": (256, 82),
+
     # Project icons, rendered at 59-64 CSS px in cards.
     "venomous-icon.png": (256, 82),
     "nulltrace-icon.png": (256, 82),

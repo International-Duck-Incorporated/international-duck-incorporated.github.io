@@ -41,6 +41,7 @@ PRIORITY = {
     "/projects/baritone": ("weekly", "0.7"),
     "/baritone/dashboard": ("weekly", "0.7"),
     "/projects/idi-assets": ("weekly", "0.6"),
+    "/noosphere": ("weekly", "0.8"),
 }
 
 ORDER = list(PRIORITY)

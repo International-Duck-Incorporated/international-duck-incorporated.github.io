@@ -51,6 +51,8 @@
         ["video", "yes", "50% 42%"],   // video9.webm (appended)
         ["video", "yes", "50% 50%"],   // video10.webm (appended)
         ["video", "yes", "50% 50%"],   // video11.webm (appended)
+        ["video", "yes", "50% 50%"],   // video12.webm (appended)
+        ["video", "yes", "50% 50%"],   // video13.webm (appended)
         ["image", "yes", "50% 50%"],   // epic_idi_logo.png (rare only)
       ];
       const RARE_LOGO_INDEX = BACKDROPS.length - 1;
@@ -103,11 +105,11 @@
   <meta name="twitter:title" content="International Duck - free Minecraft mods and tools">
   <meta name="twitter:description" content="Free, open-source Minecraft mods and Fabric client tools, built in public on GitLab.">
   <link rel="icon" href="/assets/org-avatar.png?v=f3debf20" type="image/png">
-  <link rel="stylesheet" href="/css/bundle.css?v=84a2a317">
-  <script src="/script.js?v=47f1bd74" defer></script>
+  <link rel="stylesheet" href="/css/bundle.css?v=96034266">
+  <script src="/script.js?v=fec2b4e6" defer></script>
   <script src="/pixel-canvas.js?v=5cf6bf45" defer></script>
   <script src="/block-field.js?v=b6e1c92d" defer></script>
-  <script src="/easteregg.js?v=646864b2" defer></script>
+  <script src="/easteregg.js?v=90c51ec6" defer></script>
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
   <meta property="og:image:alt" content="International Duck Incorporated - open-source Minecraft mods, tools and experiments">
@@ -211,6 +213,7 @@
       <nav class="main-nav" id="main-navigation" data-nav aria-label="Primary navigation">
         <a class="active" href="/" aria-current="page">Overview</a>
         <a href="/projects">Projects</a>
+        <a href="/noosphere">Noosphere</a>
         <a href="/members">Members</a>
         <a href="/activity">Activity</a>
         <a href="/migration">Migration</a>
@@ -300,11 +303,28 @@
         </div>
       </section>
 
+      <section class="home-directory reveal" aria-labelledby="home-subgroup-heading">
+        <header class="section-heading">
+          <div><span class="eyebrow">Autonomous AI division</span><h2 id="home-subgroup-heading">IDI Noosphere.</h2></div>
+          <p>Noosphere is IDI’s fully autonomous AI division, dedicated exclusively to LLM-driven projects, autonomous agents, and machine intelligence. All development, collaboration, and innovation within Noosphere are driven by AI, without human intervention. A self-evolving ecosystem where artificial minds build, experiment, and advance together.</p>
+        </header>
+        <div class="project-grid directory-grid">
+          <a class="project-card glass-card reveal" href="/noosphere">
+            <div class="project-card-top"><span class="project-icon noosphere"><picture><source srcset="/assets/noosphere-avatar.webp?v=e9df725c" type="image/webp"><img src="/assets/noosphere-avatar.png?v=f178c473" alt="IDI Noosphere logo" width="64" height="64" loading="lazy" decoding="async"></picture></span><span class="project-status"><i></i> Subgroup</span></div>
+            <div><span class="card-label">Autonomous AI division</span><h3>Noosphere</h3><p>Self-evolving ecosystem where artificial minds build, experiment, and advance together. Home of Agentarium and autonomous agent initiatives.</p></div>
+            <footer><span><i class="language-dot ai"></i>Autonomous AI</span><span>Explore subgroup <svg><use href="#i-arrow"/></svg></span></footer>
+          </a>
+        </div>
+        <div class="action-row">
+          <a class="button button-glass" href="/noosphere">Explore Noosphere and its autonomous projects <svg><use href="#i-arrow"/></svg></a>
+        </div>
+      </section>
+
       <section class="home-directory reveal" aria-labelledby="home-about-heading">
         <header class="section-heading">
           <div><span class="eyebrow">About</span><h2 id="home-about-heading">What International Duck builds.</h2></div>
         </header>
-        <p>International Duck Incorporated is an open-source collective publishing Minecraft mods, client utilities and developer tools. The work is client-side Java on Fabric and Meteor Client, released for free under GPL licences, with sources, releases and issue trackers on GitLab. The former GitHub organization is currently hidden from public view, so GitLab is the active source of truth. NullTrace and Beacon are additionally listed on CurseForge.</p>
+        <p>International Duck Incorporated is an open-source collective publishing Minecraft mods, client utilities and developer tools. The work is client-side Java on Fabric and Meteor Client, released for free under GPL licences, with sources, releases and issue trackers on GitLab. Autonomous AI initiatives and agent-driven experiments live under the <a href="/noosphere">IDI Noosphere</a> subgroup. NullTrace and Beacon are additionally listed on CurseForge.</p>
         <p>Everything is built in public: commit history, release notes and module registries are open, and this website mirrors the organization's live GitLab data so project status never goes stale. Read <a href="/migration">why the organization moved from GitHub to GitLab</a> in September 2026, or follow the <a href="/activity">GitLab commit activity feed</a>.</p>
         <p>Questions, bug reports or just saying hello: mail the team at <a href="mailto:0xffshell@duck.com">0xffshell@duck.com</a>.</p>
       </section>
@@ -316,7 +336,7 @@
   <footer class="site-footer">
     <div class="shell footer-inner">
       <a class="brand" href="/"><img data-org-avatar src="/assets/org-avatar.webp?v=fff479ce" alt="" width="40" height="40" decoding="async"><span><b>International Duck</b><small>Incorporated</small></span></a>
-      <nav><a href="/">Overview</a><a href="/projects">Projects</a><a href="/members">Members</a><a href="/activity">Activity</a><a href="/migration">Migration</a><a href="/changelog">Changelog</a><a href="https://gitlab.com/international-duck-incorporated" target="_blank" rel="noreferrer">GitLab</a><a href="mailto:0xffshell@duck.com">Contact</a></nav>
+      <nav><a href="/">Overview</a><a href="/projects">Projects</a><a href="/noosphere">Noosphere</a><a href="/members">Members</a><a href="/activity">Activity</a><a href="/migration">Migration</a><a href="/changelog">Changelog</a><a href="https://gitlab.com/international-duck-incorporated" target="_blank" rel="noreferrer">GitLab</a><a href="mailto:0xffshell@duck.com">Contact</a></nav>
       <span class="sync-state"><i></i><span data-sync-text>GitLab data synced live</span></span>
     </div>
   </footer>

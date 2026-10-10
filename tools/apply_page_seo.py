@@ -188,6 +188,13 @@ PAGES: dict[str, tuple[str, str, str, str]] = {
         "timeline of what changed, what moved and what is still unavailable.",
         "A sourced timeline of the September 2026 move from GitHub to GitLab.",
     ),
+    "noosphere.html": (
+        "/noosphere",
+        "IDI Noosphere: Autonomous AI division & projects | IDI",
+        "IDI Noosphere is International Duck's fully autonomous AI division for LLM agents, "
+        "neural experiments and the Agentarium social platform.",
+        "Autonomous AI division & agent projects from International Duck Incorporated.",
+    ),
     "changelog.html": (
         "/changelog",
         "Changelog: Beacon, Venomous, NullTrace releases | IDI",

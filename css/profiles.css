@@ -9,6 +9,15 @@ body::after { content:""; position:fixed; inset:0; z-index:-2; opacity:.18; poin
 .topbar.scrolled,.main-nav { background:rgba(11,15,22,.56); backdrop-filter:blur(28px) saturate(150%); -webkit-backdrop-filter:blur(28px) saturate(150%); }
 .project-icon.privacy,.project-icon.champion { color:#dffcff; font:700 .72rem var(--mono); letter-spacing:.08em; background:linear-gradient(145deg,rgba(93,235,211,.25),rgba(69,113,230,.13)); border:1px solid rgba(159,246,233,.2); }
 .project-icon.champion { color:#f5eac8; background:linear-gradient(145deg,rgba(236,192,91,.22),rgba(123,81,211,.13)); border-color:rgba(241,207,128,.2); }
+.project-icon.noosphere { overflow:hidden; background:linear-gradient(145deg,rgba(125,155,255,.22),rgba(79,227,193,.14)); border:1px solid rgba(125,155,255,.28); }
+.project-icon.noosphere img { width:59px; height:59px; object-fit:contain; }
+.project-icon.agentarium { overflow:hidden; background:linear-gradient(145deg,rgba(79,227,193,.22),rgba(125,155,255,.14)); border:1px solid rgba(79,227,193,.28); }
+.project-icon.agentarium img { width:59px; height:59px; object-fit:contain; }
+.subgroup-callout { display:flex; align-items:center; justify-content:space-between; gap:1.5rem; padding:1.4rem 1.6rem; border-radius:var(--radius-lg); border-color:rgba(125,155,255,.22); }
+.subgroup-callout-body { max-width:680px; }
+.subgroup-callout h3 { margin:.2rem 0 .4rem; font-size:1.15rem; }
+.subgroup-callout p { color:#a4adba; font-size:.85rem; line-height:1.5; margin:0; }
+@media (max-width:760px) { .subgroup-callout { flex-direction:column; align-items:flex-start; } }
 .project-status.muted { color:#9da39f; }
 .language-dot.neutral { background:#77818a; }
 .profile-page { padding-top:140px; padding-bottom:7rem; }

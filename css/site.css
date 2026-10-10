@@ -154,6 +154,7 @@ svg { display: block; width: 1.1rem; height: 1.1rem; fill: none; stroke: current
 .language-dot.java { background: #b07219; }
 .language-dot.css { background: #563d7c; }
 .language-dot.html { background: #e34c26; }
+.language-dot.ai { background: #7d9bff; }
 .project-icon.privacy img, .project-icon.champion img { width: 59px; height: 59px; object-fit: contain; }
 .members-section, .activity-section, .module-section { background: rgba(12,15,21,.54); border-block: 1px solid rgba(255,255,255,.045); }
 .subpage-main { min-height: calc(100svh - 155px); padding: 150px 0 clamp(6rem,10vw,9rem); }

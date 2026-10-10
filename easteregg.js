@@ -3,7 +3,7 @@
  * Background: index.html chooses the visit's frame before styles are applied,
  * so the hero copy never moves. Keep this payload table index-aligned with that
  * head list. The existing rotation choices remain intact; video5 through
- * video11 are appended from idi-assets, and the original egg clip is a
+ * video13 are appended from idi-assets, and the original egg clip is a
  * normal cycle entry too. The epic IDI logo stays separate and rare.
  * Reduced-motion visitors get stills only; low-power visitors
  * keep the smallest local still and never auto-download a clip. Ordinary
@@ -179,6 +179,28 @@
       holdAt: 9.0,
       label: "the glowing seal clip, plays out in full",
       src: `${ASSET_REPO}/-/raw/${ASSET_REF}${ASSET_DIR}video11.webm`,
+    },
+    // video12: Warner Bros-style cloud intro and shield; holds the centered
+    // shield lockup.
+    {
+      name: "video12.webm",
+      kind: "video",
+      wordmark: true,
+      focus: "50% 50%",
+      holdAt: 12.0,
+      label: "warner bros-style shield intro, plays out in full",
+      src: `${ASSET_REPO}/-/raw/${ASSET_REF}${ASSET_DIR}video12.webm`,
+    },
+    // video13: shimmering gold particle field with org seal and title; holds
+    // the resolved seal and wordmark.
+    {
+      name: "video13.webm",
+      kind: "video",
+      wordmark: true,
+      focus: "50% 50%",
+      holdAt: 10.0,
+      label: "golden particle seal clip, plays out in full",
+      src: `${ASSET_REPO}/-/raw/${ASSET_REF}${ASSET_DIR}video13.webm`,
     },
     // Not part of the regular pool; fetched from the canonical idi-assets repo
     // only when index.html selects the 1/1000 surprise.
