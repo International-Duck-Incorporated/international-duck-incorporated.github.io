@@ -62,8 +62,8 @@ body[data-page="directory"] .module-section { margin-top: clamp(2.6rem, 5vw, 4.4
 
 body[data-page="directory"] .module-directory {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(252px, 1fr));
-  gap: .9rem;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 1.4rem;
 }
 
 body[data-page="directory"] .module-card {
@@ -72,9 +72,10 @@ body[data-page="directory"] .module-card {
   overflow: hidden;
   border-radius: var(--radius-md);
   transition: transform .18s ease, border-color .18s ease;
+  background: rgba(7, 9, 13, .8);
 }
 
-body[data-page="directory"] .module-card:hover { transform: translateY(-3px); border-color: rgba(90, 155, 242, .28); }
+body[data-page="directory"] .module-card:hover { transform: translateY(-3px); border-color: rgba(90, 155, 242, .35); }
 body[data-page="directory"] .module-card:target { border-color: var(--blue); box-shadow: 0 0 0 1px rgba(90, 155, 242, .45), 0 24px 70px rgba(0, 0, 0, .3); }
 
 /* Screenshot slot. Placeholder until a real capture exists: drop
@@ -87,39 +88,42 @@ body[data-page="directory"] .module-shot {
   place-items: center;
   overflow: hidden;
   background:
-    linear-gradient(150deg, rgba(255, 255, 255, .05), rgba(255, 255, 255, .01) 55%),
+    linear-gradient(150deg, rgba(255, 255, 255, .08), rgba(255, 255, 255, .02) 55%),
     linear-gradient(180deg, #0b1018, #080b11);
   border-bottom: 1px solid var(--line);
+  min-height: 140px;
 }
 
 body[data-page="directory"] .module-shot::before {
   position: absolute;
   inset: 0;
   content: "";
-  opacity: .5;
-  background-image: linear-gradient(rgba(255, 255, 255, .045) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(255, 255, 255, .045) 1px, transparent 1px);
-  background-size: 26px 26px;
-  mask-image: radial-gradient(circle at 50% 55%, #000 10%, transparent 72%);
+  opacity: .7;
+  background-image: 
+    linear-gradient(rgba(255, 255, 255, .06) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, .06) 1px, transparent 1px);
+  background-size: 30px 30px;
+  mask-image: radial-gradient(circle at 50% 55%, #000 8%, transparent 72%);
 }
 
 body[data-page="directory"] .module-shot-tile {
   position: relative;
   font-family: var(--mono);
-  font-size: 1.5rem;
+  font-size: 1.8rem;
   font-weight: 700;
-  letter-spacing: .06em;
-  color: rgba(255, 255, 255, .5);
+  letter-spacing: .08em;
+  color: rgba(255, 255, 255, .6);
+  text-shadow: 0 0 10px rgba(0,0,0,.3);
 }
 
 body[data-page="directory"] .module-shot-label {
   position: absolute;
-  right: .6rem;
-  bottom: .5rem;
+  right: .8rem;
+  bottom: .8rem;
   color: #5b6b7a;
   font-family: var(--mono);
-  font-size: .46rem;
-  letter-spacing: .1em;
+  font-size: .5rem;
+  letter-spacing: .12em;
   text-transform: uppercase;
 }
 
@@ -132,18 +136,32 @@ body[data-page="directory"] .module-shot video {
   object-fit: cover;
 }
 
-body[data-page="directory"] .module-body { display: flex; flex: 1; padding: 1rem 1.05rem .6rem; flex-direction: column; gap: .45rem; }
+body[data-page="directory"] .module-body {
+  display: flex;
+  flex: 1;
+  padding: 1rem 1.2rem .8rem;
+  flex-direction: column;
+  gap: .5rem;
+  background: rgba(7, 9, 13, .6);
+}
 
-body[data-page="directory"] .module-body h3 { margin: 0; font-size: 1.02rem; letter-spacing: -.02em; }
+body[data-page="directory"] .module-body h3 {
+  margin: 0;
+  font-size: 1.08rem;
+  letter-spacing: -.02em;
+}
+
 body[data-page="directory"] .module-body h3 a { display: inline-block; }
 body[data-page="directory"] .module-body h3 a:hover { color: #fff; text-decoration: underline; text-decoration-color: rgba(255, 255, 255, .3); text-underline-offset: 4px; }
+
 body[data-page="directory"] .module-body p { margin: 0; color: #9aa39d; font-size: .78rem; line-height: 1.6; }
+
 body[data-page="directory"] .module-source { color: #5f6a64; font-size: .6rem; }
 body[data-page="directory"] .module-source code { color: inherit; }
 
 body[data-page="directory"] .module-links {
   display: flex;
-  padding: .75rem 1.05rem 1rem;
+  padding: .8rem 1.2rem 1rem;
   gap: 1rem;
   align-items: center;
   border-top: 1px solid rgba(255, 255, 255, .05);
