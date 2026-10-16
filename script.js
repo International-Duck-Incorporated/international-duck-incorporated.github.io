@@ -550,18 +550,37 @@ async function syncNullTraceRelease() {
   $$('[data-nulltrace-release-link]').forEach((link) => { link.href = stable._links?.self || `${GITLAB}/${GL_GROUP_PATH}/${NULLTRACE}/-/releases`; });
 }
 
+// The badge follows the newest release, but Beacon bumps mod_version in
+// gradle.properties ahead of the tag. Show whichever is newer so the site says
+// 2.0.1 the moment the repo does; downloads keep serving the newest published
+// jar until that release exists, then the release API takes over.
+function compareVersions(a, b) {
+  const parse = (value) => String(value).replace(/^v/i, "").split(".").map((part) => parseInt(part, 10) || 0);
+  const [left, right] = [parse(a), parse(b)];
+  for (let index = 0; index < Math.max(left.length, right.length); index += 1) {
+    if ((left[index] || 0) !== (right[index] || 0)) return (left[index] || 0) - (right[index] || 0);
+  }
+  return 0;
+}
 async function syncBeaconRelease() {
-  const releases = await getJSON(`${GL_BEACON_PROJECT}/releases?per_page=100`);
+  const [releases, properties] = await Promise.all([
+    getJSON(`${GL_BEACON_PROJECT}/releases?per_page=100`),
+    fetch(`${GL_BEACON_PROJECT}/repository/files/gradle.properties/raw?ref=main`)
+      .then((response) => (response.ok ? response.text() : ""))
+      .catch(() => ""),
+  ]);
   const stable = releases.find((release) => !release.upcoming_release);
   if (!stable) return;
-  const version = stable.tag_name || stable.name || "1.8.16";
+  const published = stable.tag_name || stable.name || "2.0.1";
+  const sourceVersion = properties.match(/^mod_version\s*=\s*(\S+)/m)?.[1];
+  const version = sourceVersion && compareVersions(sourceVersion, published) > 0 ? sourceVersion : published;
   const jar = stable.assets?.links?.find((asset) => `${asset.name || ""} ${asset.url || ""}`.toLowerCase().includes(".jar"));
-  const releaseUrl = stable._links?.self || `${GITLAB}/${GL_GROUP_PATH}/${BEACON}/-/releases/${encodeURIComponent(version)}`;
+  const releaseUrl = stable._links?.self || `${GITLAB}/${GL_GROUP_PATH}/${BEACON}/-/releases/${encodeURIComponent(published)}`;
   const downloadUrl = jar?.direct_asset_url || jar?.url || releaseUrl;
   setText("[data-beacon-version]", version);
   setText("[data-beacon-date]", fullDate(stable.released_at));
   setText("[data-beacon-release-count]", releases.length.toLocaleString());
-  setText("[data-beacon-download-label]", `Download ${version}`);
+  setText("[data-beacon-download-label]", `Download ${published}`);
   $$('[data-beacon-release-link]').forEach((link) => { link.href = releaseUrl; });
   $$('[data-beacon-download]').forEach((link) => { link.href = downloadUrl; });
 }

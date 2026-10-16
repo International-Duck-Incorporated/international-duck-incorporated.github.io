@@ -47,9 +47,9 @@ PROJECTS = {
     "projects/beacon/index.html": {
         "curseforge": "https://www.curseforge.com/minecraft/mc-mods/beacon-qol",
         "url": "/projects/beacon", "name": "Beacon",
-        "desc": ("Modular, client-side utility mod for Minecraft 26.2 with 55 registered "
+        "desc": ("Modular, client-side utility mod for Minecraft 26.2 with 56 registered "
                  "modules, persistent configuration and an addon API. Vanilla-server-safe."),
-        "version": "1.8.16", "date": "2026-09-25", "os": "Minecraft 26.2",
+        "version": "2.0.1", "date": "2026-09-25", "os": "Minecraft 26.2",
         "repo": GITLAB + "/Beacon",
         "download": GITLAB + "/Beacon/-/releases/1.8.16/downloads/Beacon-1.8.16.jar",
         "license": "https://spdx.org/licenses/GPL-3.0-only.html",

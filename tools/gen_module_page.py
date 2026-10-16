@@ -114,15 +114,12 @@ def main() -> int:
       <section class="directory-hero glass-card reveal">
         <span class="eyebrow">Module directory</span>
         <h1>Beacon modules.</h1>
-        <p class="lead">Every module Beacon registers, with the description it ships with, grouped by category. {total} modules across {len(counts)} categories, all client-side and vanilla-server-safe: no combat automation, no movement automation, no ESP, no exploits.</p>
+        <p class="lead">Every module Beacon registers, grouped by category - {total} client-side, vanilla-server-safe modules across {len(counts)} categories.</p>
         <div class="action-row">
           <a class="button button-blue" href="{CURSEFORGE_URL}" target="_blank" rel="noreferrer"><svg><use href="#i-curseforge"/></svg>Get {CURSEFORGE_NAME} on CurseForge</a>
           <a class="button button-glass" href="{RELEASES_URL}" target="_blank" rel="noreferrer"><svg><use href="#i-download"/></svg>All GitLab releases</a>
-          <a class="button button-glass" href="/projects/beacon">Project overview <svg><use href="#i-arrow"/></svg></a>
-          <a class="button button-glass" href="https://gitlab.com/international-duck-incorporated/Beacon" target="_blank" rel="noreferrer"><svg><use href="#i-gitlab"/></svg>Source repository</a>
         </div>
         <div class="chip-row">{category_nav}</div>
-        <p class="directory-note">Looking for a specific module? Every entry below is a heading you can link to - <code>/projects/beacon/modules#{modules[0]['id']}</code> - and each card links to that module's source file. Screenshots are being added; the tiles below are placeholders until they land.</p>
       </section>
 
 {chr(10).join(sections)}
@@ -130,7 +127,8 @@ def main() -> int:
       <section class="directory-foot glass-card reveal">
         <h2>Where this list comes from</h2>
         <p>{verification}</p>
-        <p>Every Download link on this page goes to <b><a href="{CURSEFORGE_URL}" target="_blank" rel="noreferrer">{CURSEFORGE_NAME}</a></b>, the project's CurseForge listing. The tagged stable releases and the full artifact history stay on GitLab.</p>
+        <p>Every Download link on this page goes to <b><a href="{CURSEFORGE_URL}" target="_blank" rel="noreferrer">{CURSEFORGE_NAME}</a></b>, the project's CurseForge listing. Tagged releases stay on <a href="{RELEASES_URL}" target="_blank" rel="noreferrer">GitLab</a>, and the <a href="https://gitlab.com/international-duck-incorporated/Beacon" target="_blank" rel="noreferrer">source repository</a> is public.</p>
+        <p>Every module heading is linkable - for example <code>/projects/beacon/modules#{modules[0]['id']}</code> - and each card links to that module's source file.</p>
       </section>
     </div>
   </main>"""

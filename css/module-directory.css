@@ -24,13 +24,7 @@ body[data-page="directory"] .directory-hero .lead {
   line-height: 1.75;
 }
 
-body[data-page="directory"] .directory-note {
-  max-width: 78ch;
-  margin: 1.4rem 0 0;
-  color: #7d8780;
-  font-size: .72rem;
-  line-height: 1.7;
-}
+body[data-page="directory"] .directory-hero .chip-row { margin-top: 1.4rem; }
 
 /* Category jump chips, shared with the changelog page. */
 .chip-row { display: flex; flex-wrap: wrap; gap: .5rem; }
