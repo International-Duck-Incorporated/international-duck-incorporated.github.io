@@ -6,26 +6,32 @@
  *
  * The blocklist is hall-of-shame.json in the idi-assets repo:
  *   https://gitlab.com/international-duck-incorporated/idi-assets/-/blob/main/hall-of-shame.json
- * Only the "blockedIps" array of quoted IP strings is read - for example:
- *   { "blockedIps": ["203.0.113.7", "2001:db8::1"], "candidateIps": [...] }
- * Other arrays (such as candidateIps) are ignored on purpose.
  *
- * The file is scanned as plain text rather than parsed as JSON, so even a
- * multi-megabyte list costs about a millisecond to search and a couple of
- * megabytes of isolate memory - no entry-count limit, no parse pauses.
- * Matching is exact (IPv4 or IPv6, letter case ignored).
+ * Two things are read from it, both without parsing the whole document:
+ *   1. blockedIps      - exact IPs, matched by text scan of just that array.
+ *   2. threatIntelSources - the live keyless feeds listed there (currently
+ *      IPsum L1, blocklist.de, CI Army, Spamhaus DROP, FireHOL L1+L2,
+ *      ET compromised, GreenSnow, ET fwip, Binary Defense, DShield) are
+ *      fetched and merged into one compact index: sorted exact IPv4,
+ *      CIDR/range networks (binary search), and exact IPv6.
+ *      Feeds that only list ASNs (Spamhaus ASN-DROP) are skipped - they
+ *      cannot be matched without an ASN-to-prefix map.
+ * Other arrays (such as candidateIps) are not blocked by themselves, but
+ * an IP listed in a live feed is blocked regardless of that status.
  *
- * Edits there are picked up within about five minutes - no redeploy needed.
- * Once a list is loaded, refreshes happen in the background (waitUntil), so
- * visitors never wait on GitLab. If the list cannot be fetched, the last
- * good copy keeps working and the site stays open: blocking never takes the
- * whole site down.
+ * Refreshing: hall-of-shame.json every ~5 minutes, threat feeds every ~3
+ * hours. Once loaded, refreshes happen in the background (waitUntil) so
+ * visitors never wait; a cold isolate briefly waits (up to ~2s) for the
+ * first index so blocking starts immediately. If a fetch fails, the last
+ * good data keeps working and the site stays open: blocking never takes
+ * the whole site down.
  *
  * EXTRA_BLOCKED_IPS: manual entries for emergencies or while GitLab is
  * unreachable; merged with the remote list.
  *
  * To preview the blocked page from a normal connection, append
- * ?blocked-preview=1 to any URL on the site.
+ * ?blocked-preview=1 to any URL on the site. Loopback requests (local
+ * wrangler dev) are never blocked.
  */
 
 export const LIST_URL =
@@ -33,24 +39,41 @@ export const LIST_URL =
 
 const EXTRA_BLOCKED_IPS = [];
 
-const LIST_TTL_MS = 5 * 60 * 1000;
-const LIST_RETRY_MS = 60 * 1000;
-const FETCH_TIMEOUT_MS = 5000;
+const JSON_TTL_MS = 5 * 60 * 1000;
+const JSON_RETRY_MS = 60 * 1000;
+const INTEL_TTL_MS = 3 * 60 * 60 * 1000;
+const INTEL_RETRY_MS = 10 * 60 * 1000;
+const INTEL_COLD_WAIT_MS = 2000;
+const JSON_TIMEOUT_MS = 5000;
+const FEED_TIMEOUT_MS = 10000;
+const MAX_FEEDS = 24;
 const CONTACT_EMAIL = "0xffshell@duck.com";
+const FEED_UA = "IDI-IP-Gate/1.0 (+https://idi-official.pages.dev)";
 
-// Per-isolate cache, shared between requests so the list is not fetched per
-// visitor, plus single-flight so concurrent cold requests share one fetch.
-// `section` holds just the text of the blockedIps array, lowercased.
-let cache = { section: "", loaded: false, nextRefreshAt: 0 };
-let inflight = null;
+// hall-of-shame.json cache (blockedIps text + the feed URLs to use).
+let jsonCache = { section: "", feedUrls: [], loaded: false, nextRefreshAt: 0 };
+let jsonInflight = null;
+
+// Merged threat-intel index. Rebuilt when the feed URL set changes or the
+// TTL lapses; on failure the previous index keeps serving (nextAttemptAt
+// spaces out retries so a dead feed cannot get hammered).
+let intel = { data: null, urlsKey: "", attemptedKey: "", nextAttemptAt: 0 };
+let intelInflight = null;
+
+const EMPTY_INTEL = {
+  v4: new Uint32Array(0),
+  starts: new Uint32Array(0),
+  maxEnds: new Uint32Array(0),
+  v6: new Set(),
+};
 
 const normalizeIp = (value) => (typeof value === "string" ? value.trim().toLowerCase() : "");
+const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
 /**
  * Pull out the text of the "blockedIps" array without parsing the whole
- * document. Works no matter how large the file grows, and stops at the
- * array's closing bracket so other fields (candidateIps and friends) can
- * never leak into the blocklist.
+ * document. Stops at the array's closing bracket so other fields
+ * (candidateIps and friends) can never leak into the blocklist.
  */
 export function blockedSectionFrom(text) {
   const key = text.indexOf('"blockedIps"');
@@ -62,32 +85,173 @@ export function blockedSectionFrom(text) {
   return text.slice(start + 1, end).toLowerCase();
 }
 
-async function loadList() {
+/**
+ * Collect the feed URLs from the "threatIntelSources" section. ASN-only
+ * feeds (asndrop) are skipped, non-HTTPS and duplicates are dropped.
+ */
+export function sourceUrlsFrom(text) {
+  const key = text.indexOf('"threatIntelSources"');
+  if (key === -1) return [];
+  const urls = [];
+  const seen = new Set();
+  for (const match of text.slice(key).matchAll(/"url"\s*:\s*"([^"]+)"/g)) {
+    const url = match[1];
+    if (!/^https:\/\//i.test(url)) continue;
+    if (/asndrop/i.test(url)) continue;
+    if (seen.has(url)) continue;
+    seen.add(url);
+    urls.push(url);
+    if (urls.length >= MAX_FEEDS) break;
+  }
+  return urls;
+}
+
+const ipToU32 = (value) => {
+  const s = String(value).trim();
+  const parts = s.split(".");
+  if (parts.length !== 4) return null;
+  const a = +parts[0], b = +parts[1], c = +parts[2], d = +parts[3];
+  if (!(a >= 0 && a <= 255 && b >= 0 && b <= 255 && c >= 0 && c <= 255 && d >= 0 && d <= 255)) return null;
+  return (((a << 24) >>> 0) + (b << 16) + (c << 8) + d) >>> 0;
+};
+
+/**
+ * Parse one feed's text. Handles plain IPs, CIDR lines ("a.b.c.d/n"),
+ * comments ("#" anywhere), and the DShield two-column start/end format.
+ */
+function parseFeedText(text, isRangeList) {
+  const v4 = [];
+  const ranges = [];
+  const v6 = [];
+  for (const raw of text.split("\n")) {
+    const hash = raw.indexOf("#");
+    const line = (hash === -1 ? raw : raw.slice(0, hash)).trim();
+    if (!line) continue;
+    if (isRangeList) {
+      const [a, b] = line.split(/\s+/);
+      const start = ipToU32(a);
+      const end = ipToU32(b);
+      if (start !== null && end !== null && start <= end) ranges.push([start, end]);
+      continue;
+    }
+    if (line.includes("/")) {
+      const slash = line.indexOf("/");
+      const base = ipToU32(line.slice(0, slash));
+      const bits = Number(line.slice(slash + 1).trim().split(/\s+/)[0]);
+      if (base === null || !Number.isInteger(bits) || bits < 0 || bits > 32) continue;
+      const mask = bits === 0 ? 0 : (0xffffffff << (32 - bits)) >>> 0;
+      const start = (base & mask) >>> 0;
+      ranges.push([start, (start | (~mask >>> 0)) >>> 0]);
+      continue;
+    }
+    if (line.includes(":")) {
+      v6.push(line.toLowerCase());
+      continue;
+    }
+    const value = ipToU32(line);
+    if (value !== null) v4.push(value);
+  }
+  return { v4, ranges, v6 };
+}
+
+async function fetchFeed(url) {
+  const res = await fetch(url, {
+    headers: { "user-agent": FEED_UA, accept: "text/plain, */*" },
+    signal: AbortSignal.timeout(FEED_TIMEOUT_MS),
+    cf: { cacheEverything: true, cacheTtl: 1800 },
+  });
+  if (!res.ok) throw new Error(`${url} -> HTTP ${res.status}`);
+  return parseFeedText(await res.text(), /dshield/i.test(url));
+}
+
+async function buildIntel(urls) {
+  const results = await Promise.allSettled(urls.map((url) => fetchFeed(url)));
+  const v4Chunks = [];
+  const ranges = [];
+  const v6 = new Set();
+  let ok = 0;
+  let failed = 0;
+  for (const result of results) {
+    if (result.status !== "fulfilled") {
+      failed++;
+      continue;
+    }
+    ok++;
+    v4Chunks.push(result.value.v4);
+    for (const range of result.value.ranges) ranges.push(range);
+    for (const address of result.value.v6) v6.add(address);
+  }
+  if (ok === 0 && urls.length > 0) throw new Error("all threat intel feeds failed");
+  if (failed) console.warn(`[ip-gate] ${failed} of ${urls.length} threat feeds failed; using the rest`);
+
+  let total = 0;
+  for (const chunk of v4Chunks) total += chunk.length;
+  const v4 = new Uint32Array(total);
+  let offset = 0;
+  for (const chunk of v4Chunks) {
+    v4.set(chunk, offset);
+    offset += chunk.length;
+  }
+  v4.sort();
+
+  ranges.sort((a, b) => a[0] - b[0] || a[1] - b[1]);
+  const starts = new Uint32Array(ranges.length);
+  const maxEnds = new Uint32Array(ranges.length);
+  let running = 0;
+  for (let i = 0; i < ranges.length; i++) {
+    starts[i] = ranges[i][0];
+    if (ranges[i][1] > running) running = ranges[i][1];
+    maxEnds[i] = running;
+  }
+  return { v4, starts, maxEnds, v6 };
+}
+
+async function loadJson() {
   const res = await fetch(LIST_URL, {
     headers: { accept: "application/json" },
-    signal: AbortSignal.timeout(FETCH_TIMEOUT_MS),
+    signal: AbortSignal.timeout(JSON_TIMEOUT_MS),
     cf: { cacheEverything: true, cacheTtl: 300 },
   });
   if (!res.ok) throw new Error(`blocklist fetch failed: ${res.status}`);
-  return blockedSectionFrom(await res.text());
+  const text = await res.text();
+  return { section: blockedSectionFrom(text), feedUrls: sourceUrlsFrom(text) };
 }
 
-function refreshList() {
-  if (!inflight) {
-    inflight = loadList()
-      .then((section) => {
-        cache = { section, loaded: true, nextRefreshAt: Date.now() + LIST_TTL_MS };
+function refreshJson() {
+  if (!jsonInflight) {
+    jsonInflight = loadJson()
+      .then(({ section, feedUrls }) => {
+        jsonCache = { section, feedUrls, loaded: true, nextRefreshAt: Date.now() + JSON_TTL_MS };
       })
       .catch(() => {
-        // Keep the last good list (empty only on a cold start) and retry
+        // Keep the last good data (empty only on a cold start) and retry
         // shortly instead of failing loudly on every request.
-        cache = { ...cache, nextRefreshAt: Date.now() + LIST_RETRY_MS };
+        jsonCache = { ...jsonCache, nextRefreshAt: Date.now() + JSON_RETRY_MS };
       })
       .finally(() => {
-        inflight = null;
+        jsonInflight = null;
       });
   }
-  return inflight;
+  return jsonInflight;
+}
+
+function refreshIntel(urls, urlsKey) {
+  intel.attemptedKey = urlsKey;
+  if (!intelInflight) {
+    const run = urls.length ? buildIntel(urls) : Promise.resolve(EMPTY_INTEL);
+    intelInflight = run
+      .then((data) => {
+        intel = { data, urlsKey, attemptedKey: urlsKey, nextAttemptAt: Date.now() + INTEL_TTL_MS };
+      })
+      .catch(() => {
+        // Keep the previous index; retry after INTEL_RETRY_MS.
+        intel.nextAttemptAt = Date.now() + INTEL_RETRY_MS;
+      })
+      .finally(() => {
+        intelInflight = null;
+      });
+  }
+  return intelInflight;
 }
 
 export function getClientIp(request) {
@@ -98,25 +262,82 @@ export function isPreview(request) {
   return new URL(request.url).searchParams.has("blocked-preview");
 }
 
-/**
- * @param {string} ip lowercase client IP
- * @param {(promise: Promise<unknown>) => void} [waitUntil] keeps a background
- *   refresh alive past the response; when omitted the refresh is awaited.
- */
-export async function isBlockedIp(ip, waitUntil) {
-  if (Date.now() >= cache.nextRefreshAt) {
-    if (cache.loaded) {
-      // We have a list (possibly a few minutes old): use it right away and
-      // refresh in the background so the visitor never waits on GitLab.
-      const refresh = refreshList();
-      if (waitUntil) waitUntil(refresh);
-      else await refresh;
+function inV4Index(data, ip) {
+  const value = ipToU32(ip);
+  if (value === null) return false;
+  const v4 = data.v4;
+  let lo = 0;
+  let hi = v4.length - 1;
+  while (lo <= hi) {
+    const mid = (lo + hi) >> 1;
+    const v = v4[mid];
+    if (v === value) return true;
+    if (v < value) lo = mid + 1;
+    else hi = mid - 1;
+  }
+  // Range/network check: any network that starts at or below the IP must
+  // have one whose end reaches it (maxEnds is a running max of ends).
+  const starts = data.starts;
+  lo = 0;
+  hi = starts.length - 1;
+  let idx = -1;
+  while (lo <= hi) {
+    const mid = (lo + hi) >> 1;
+    if (starts[mid] <= value) {
+      idx = mid;
+      lo = mid + 1;
     } else {
-      // Cold isolate: wait for the first list so blocking starts immediately.
-      await refreshList();
+      hi = mid - 1;
     }
   }
-  if (cache.section.includes(`"${ip}"`)) return true;
+  return idx >= 0 && data.maxEnds[idx] >= value;
+}
+
+/**
+ * @param {string} ip lowercase client IP
+ * @param {(promise: Promise<unknown>) => void} [waitUntil] keeps background
+ *   refreshes alive past the response; when omitted they are awaited.
+ */
+export async function isBlockedIp(ip, waitUntil) {
+  // Loopback (local wrangler dev) is never blocked.
+  if (ip === "127.0.0.1" || ip === "::1") return false;
+
+  if (Date.now() >= jsonCache.nextRefreshAt) {
+    const refreshing = refreshJson();
+    if (jsonCache.loaded) {
+      if (waitUntil) waitUntil(refreshing);
+      else await refreshing;
+    } else {
+      await refreshing;
+    }
+  }
+
+  const urls = jsonCache.feedUrls;
+  const urlsKey = urls.join("|");
+  const sameKey = Boolean(intel.data) && intel.urlsKey === urlsKey;
+  const due = Date.now() >= intel.nextAttemptAt;
+  const shouldBuild = (!sameKey && (intel.attemptedKey !== urlsKey || due)) || (sameKey && due);
+  if (shouldBuild) {
+    const building = refreshIntel(urls, urlsKey);
+    if (intel.data && waitUntil) waitUntil(building);
+    else if (intel.data) await building;
+    else if (waitUntil) {
+      waitUntil(building);
+      await Promise.race([building, sleep(INTEL_COLD_WAIT_MS)]);
+    } else {
+      await building;
+    }
+  }
+
+  if (jsonCache.section.includes(`"${ip}"`)) return true;
+  const data = intel.data;
+  if (data) {
+    if (ip.includes(":")) {
+      if (data.v6.has(ip)) return true;
+    } else if (inV4Index(data, ip)) {
+      return true;
+    }
+  }
   return EXTRA_BLOCKED_IPS.some((entry) => normalizeIp(entry) === ip);
 }
 
