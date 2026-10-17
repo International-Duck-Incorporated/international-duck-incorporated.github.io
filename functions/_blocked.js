@@ -6,11 +6,20 @@
  *
  * The blocklist is hall-of-shame.json in the idi-assets repo:
  *   https://gitlab.com/international-duck-incorporated/idi-assets/-/blob/main/hall-of-shame.json
- * Format: { "blockedIps": ["203.0.113.7", "2001:db8::1", ...] }
+ * Only the "blockedIps" array of quoted IP strings is read - for example:
+ *   { "blockedIps": ["203.0.113.7", "2001:db8::1"], "candidateIps": [...] }
+ * Other arrays (such as candidateIps) are ignored on purpose.
+ *
+ * The file is scanned as plain text rather than parsed as JSON, so even a
+ * multi-megabyte list costs about a millisecond to search and a couple of
+ * megabytes of isolate memory - no entry-count limit, no parse pauses.
+ * Matching is exact (IPv4 or IPv6, letter case ignored).
+ *
  * Edits there are picked up within about five minutes - no redeploy needed.
- * Matching is exact (IPv4 or IPv6, letter case ignored). If the list cannot
- * be fetched, the last good copy keeps working and the site stays open:
- * blocking never takes the whole site down.
+ * Once a list is loaded, refreshes happen in the background (waitUntil), so
+ * visitors never wait on GitLab. If the list cannot be fetched, the last
+ * good copy keeps working and the site stays open: blocking never takes the
+ * whole site down.
  *
  * EXTRA_BLOCKED_IPS: manual entries for emergencies or while GitLab is
  * unreachable; merged with the remote list.
@@ -26,29 +35,31 @@ const EXTRA_BLOCKED_IPS = [];
 
 const LIST_TTL_MS = 5 * 60 * 1000;
 const LIST_RETRY_MS = 60 * 1000;
-const FETCH_TIMEOUT_MS = 3000;
+const FETCH_TIMEOUT_MS = 5000;
 const CONTACT_EMAIL = "0xffshell@duck.com";
 
 // Per-isolate cache, shared between requests so the list is not fetched per
 // visitor, plus single-flight so concurrent cold requests share one fetch.
-let cache = { ips: new Set(), nextRefreshAt: 0 };
+// `section` holds just the text of the blockedIps array, lowercased.
+let cache = { section: "", loaded: false, nextRefreshAt: 0 };
 let inflight = null;
 
 const normalizeIp = (value) => (typeof value === "string" ? value.trim().toLowerCase() : "");
 
-function collectIps(payload) {
-  const raw = Array.isArray(payload)
-    ? payload
-    : payload && Array.isArray(payload.blockedIps)
-      ? payload.blockedIps
-      : [];
-  const ips = new Set();
-  for (const item of raw) {
-    if (ips.size >= 50000) break;
-    const candidate = normalizeIp(typeof item === "string" ? item : item && (item.ip || item.address));
-    if (candidate) ips.add(candidate);
-  }
-  return ips;
+/**
+ * Pull out the text of the "blockedIps" array without parsing the whole
+ * document. Works no matter how large the file grows, and stops at the
+ * array's closing bracket so other fields (candidateIps and friends) can
+ * never leak into the blocklist.
+ */
+export function blockedSectionFrom(text) {
+  const key = text.indexOf('"blockedIps"');
+  if (key === -1) return "";
+  const start = text.indexOf("[", key);
+  if (start === -1) return "";
+  const end = text.indexOf("]", start);
+  if (end === -1) return "";
+  return text.slice(start + 1, end).toLowerCase();
 }
 
 async function loadList() {
@@ -58,19 +69,19 @@ async function loadList() {
     cf: { cacheEverything: true, cacheTtl: 300 },
   });
   if (!res.ok) throw new Error(`blocklist fetch failed: ${res.status}`);
-  return collectIps(await res.json());
+  return blockedSectionFrom(await res.text());
 }
 
 function refreshList() {
   if (!inflight) {
     inflight = loadList()
-      .then((ips) => {
-        cache = { ips, nextRefreshAt: Date.now() + LIST_TTL_MS };
+      .then((section) => {
+        cache = { section, loaded: true, nextRefreshAt: Date.now() + LIST_TTL_MS };
       })
       .catch(() => {
         // Keep the last good list (empty only on a cold start) and retry
         // shortly instead of failing loudly on every request.
-        cache.nextRefreshAt = Date.now() + LIST_RETRY_MS;
+        cache = { ...cache, nextRefreshAt: Date.now() + LIST_RETRY_MS };
       })
       .finally(() => {
         inflight = null;
@@ -87,9 +98,25 @@ export function isPreview(request) {
   return new URL(request.url).searchParams.has("blocked-preview");
 }
 
-export async function isBlockedIp(ip) {
-  if (Date.now() >= cache.nextRefreshAt) await refreshList();
-  if (cache.ips.has(ip)) return true;
+/**
+ * @param {string} ip lowercase client IP
+ * @param {(promise: Promise<unknown>) => void} [waitUntil] keeps a background
+ *   refresh alive past the response; when omitted the refresh is awaited.
+ */
+export async function isBlockedIp(ip, waitUntil) {
+  if (Date.now() >= cache.nextRefreshAt) {
+    if (cache.loaded) {
+      // We have a list (possibly a few minutes old): use it right away and
+      // refresh in the background so the visitor never waits on GitLab.
+      const refresh = refreshList();
+      if (waitUntil) waitUntil(refresh);
+      else await refresh;
+    } else {
+      // Cold isolate: wait for the first list so blocking starts immediately.
+      await refreshList();
+    }
+  }
+  if (cache.section.includes(`"${ip}"`)) return true;
   return EXTRA_BLOCKED_IPS.some((entry) => normalizeIp(entry) === ip);
 }
 

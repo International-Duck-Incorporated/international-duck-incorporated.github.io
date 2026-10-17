@@ -13,7 +13,7 @@ export async function onRequest(context) {
   const { request } = context;
   const ip = getClientIp(request);
 
-  if (isPreview(request) || (ip && (await isBlockedIp(ip)))) {
+  if (isPreview(request) || (ip && (await isBlockedIp(ip, (p) => context.waitUntil(p))))) {
     return blockedResponse(ip);
   }
 

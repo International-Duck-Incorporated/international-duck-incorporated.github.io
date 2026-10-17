@@ -10,10 +10,10 @@
 import { getClientIp, isPreview, isBlockedIp, blockedResponse } from "./functions/_blocked.js";
 
 export default {
-  async fetch(request, env) {
+  async fetch(request, env, ctx) {
     const ip = getClientIp(request);
 
-    if (isPreview(request) || (ip && (await isBlockedIp(ip)))) {
+    if (isPreview(request) || (ip && (await isBlockedIp(ip, (p) => ctx.waitUntil(p))))) {
       return blockedResponse(ip);
     }
 
