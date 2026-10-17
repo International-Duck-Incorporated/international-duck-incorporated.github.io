@@ -1,6 +1,7 @@
 # Keep repository metadata and generated tooling files out of static asset uploads.
 .git/
 .wrangler/
+functions/
 node_modules/
 .npm/
 .cache/

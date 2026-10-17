@@ -2,3 +2,6 @@
 # Python bytecode from the tools/ scripts
 __pycache__/
 *.pyc
+
+# Local Cloudflare Wrangler state (cache written during deploys)
+.wrangler/
