@@ -139,6 +139,7 @@ svg { display: block; width: 1.1rem; height: 1.1rem; fill: none; stroke: current
 .project-icon.venom { overflow: hidden; background: var(--green); box-shadow: 0 10px 30px rgba(140,247,122,.13); }
 .project-icon.venom img { width: 59px; height: 59px; object-fit: contain; }
 .project-icon.web { color: var(--blue); background: var(--blue-soft); }
+.project-icon.glyph { color: #c4b5fd; background: linear-gradient(145deg, rgba(139,92,246,.26), rgba(34,211,238,.14)); border: 1px solid rgba(139,92,246,.28); }
 .project-icon svg { width: 1.35rem; height: 1.35rem; }
 .project-card-top > .external { color: #68716c; }
 .project-status { display: inline-flex; padding: .45rem .6rem; gap: .42rem; align-items: center; color: #9aa49e; background: rgba(255,255,255,.035); border: 1px solid var(--line); border-radius: 999px; font-size: .54rem; }

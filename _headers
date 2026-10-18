@@ -19,6 +19,8 @@
   Cache-Control: public, max-age=31536000, immutable
 /easteregg.js
   Cache-Control: public, max-age=31536000, immutable
+/glyphsmith.js
+  Cache-Control: public, max-age=31536000, immutable
 /matrix-rain.js
   Cache-Control: public, max-age=31536000, immutable
 /pixel-canvas.js

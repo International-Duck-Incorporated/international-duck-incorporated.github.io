@@ -202,6 +202,13 @@ PAGES: dict[str, tuple[str, str, str, str]] = {
         "ChampionsCode and Bagley - transcribed from each repository's CHANGELOG.md.",
         "Release history for every International Duck project, newest first.",
     ),
+    "glyphsmith.html": (
+        "/glyphsmith",
+        "Glyphsmith: Unicode transformation lab | IDI",
+        "Glyphsmith is a free, 100% client-side Unicode workbench: homoglyph substitution, "
+        "zero-width injection, bidi controls, normalization and a Minecraft chat mode.",
+        "A 100% client-side Unicode transformation lab with a Minecraft chat mode.",
+    ),
 }
 
 OWNED_META = re.compile(

@@ -1,0 +1,284 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <script>
+    (() => {
+      const nav = navigator;
+      const connection = nav.connection || nav.mozConnection || nav.webkitConnection;
+      const lowEnd = Boolean(
+        (connection && connection.saveData) ||
+        (connection && /^(slow-2g|2g)$/.test(connection.effectiveType || "")) ||
+        (typeof nav.deviceMemory === "number" && nav.deviceMemory <= 4) ||
+        (typeof nav.hardwareConcurrency === "number" && nav.hardwareConcurrency <= 4)
+      );
+      window.IDI_LOW_END = lowEnd;
+      window.IDI_REDUCED_MOTION = Boolean(
+        window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches
+      );
+      if (lowEnd) document.documentElement.classList.add("low-end");
+    })();
+  </script>
+  <link rel="preconnect" href="https://gitlab.com" crossorigin>
+  <link rel="preconnect" href="https://gitlab.com">
+  <link rel="dns-prefetch" href="https://gitlab.com">
+  <meta name="theme-color" content="#07090d">
+  <meta property="og:image" content="https://idi-official.pages.dev/assets/og-default.png">
+  <title>Glyphsmith: Unicode transformation lab | IDI</title>
+  <meta name="description" content="Glyphsmith is a free, 100% client-side Unicode workbench: homoglyph substitution, zero-width injection, bidi controls, normalization and a Minecraft chat mode.">
+  <link rel="canonical" href="https://idi-official.pages.dev/glyphsmith">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Glyphsmith: Unicode transformation lab">
+  <meta property="og:description" content="A 100% client-side Unicode transformation lab with a Minecraft chat mode.">
+  <meta property="og:url" content="https://idi-official.pages.dev/glyphsmith">
+  <meta property="og:site_name" content="International Duck Incorporated">
+  <meta property="og:locale" content="en_US">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Glyphsmith: Unicode transformation lab">
+  <meta name="twitter:description" content="A 100% client-side Unicode transformation lab with a Minecraft chat mode.">
+  <link rel="icon" href="/assets/org-avatar.png?v=f3debf20" type="image/png">
+  <link rel="stylesheet" href="/css/bundle.css?v=1f263d21">
+  <script src="/script.js?v=ffe97c4c" defer></script>
+  <script src="/glyphsmith.js?v=552100d6" defer></script>
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="Glyphsmith - a Unicode transformation and obfuscation lab">
+  <meta name="twitter:image" content="https://idi-official.pages.dev/assets/og-default.png">
+  <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Organization",
+      "@id": "https://idi-official.pages.dev/#organization",
+      "name": "International Duck Incorporated",
+      "alternateName": "IDI",
+      "url": "https://idi-official.pages.dev/",
+      "logo": {
+        "@type": "ImageObject",
+        "url": "https://idi-official.pages.dev/assets/org-avatar.png"
+      },
+      "image": "https://idi-official.pages.dev/assets/og-default.png",
+      "description": "Open-source collective building Minecraft mods, tools and experiments in public. GitLab is the active source of truth; the former GitHub organization is currently hidden from public view.",
+      "sameAs": [
+        "https://gitlab.com/international-duck-incorporated"
+      ],
+      "knowsAbout": [
+        "Minecraft mods",
+        "Fabric modding",
+        "Minecraft client utilities",
+        "open source"
+      ]
+    },
+    {
+      "@type": "WebSite",
+      "@id": "https://idi-official.pages.dev/#website",
+      "url": "https://idi-official.pages.dev/",
+      "name": "International Duck Incorporated",
+      "inLanguage": "en",
+      "publisher": {
+        "@id": "https://idi-official.pages.dev/#organization"
+      }
+    },
+    {
+      "@type": "WebPage",
+      "@id": "https://idi-official.pages.dev/glyphsmith#webpage",
+      "url": "https://idi-official.pages.dev/glyphsmith",
+      "name": "Glyphsmith: Unicode transformation lab",
+      "description": "Glyphsmith is a free, 100% client-side Unicode workbench: homoglyph substitution, zero-width injection, bidi controls, normalization and a Minecraft chat mode.",
+      "isPartOf": {
+        "@id": "https://idi-official.pages.dev/#website"
+      },
+      "about": {
+        "@id": "https://idi-official.pages.dev/#organization"
+      },
+      "inLanguage": "en",
+      "primaryImageOfPage": {
+        "@type": "ImageObject",
+        "url": "https://idi-official.pages.dev/assets/og-default.png"
+      },
+      "mainEntity": {
+        "@id": "https://idi-official.pages.dev/glyphsmith#app"
+      },
+      "breadcrumb": {
+        "@id": "https://idi-official.pages.dev/glyphsmith#breadcrumb"
+      }
+    },
+    {
+      "@type": "WebApplication",
+      "@id": "https://idi-official.pages.dev/glyphsmith#app",
+      "name": "Glyphsmith",
+      "url": "https://idi-official.pages.dev/glyphsmith",
+      "applicationCategory": "UtilitiesApplication",
+      "operatingSystem": "Any",
+      "browserRequirements": "Requires a modern browser with JavaScript enabled",
+      "isAccessibleForFree": true,
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "USD"
+      },
+      "publisher": {
+        "@id": "https://idi-official.pages.dev/#organization"
+      }
+    },
+    {
+      "@type": "BreadcrumbList",
+      "@id": "https://idi-official.pages.dev/glyphsmith#breadcrumb",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "International Duck Incorporated",
+          "item": "https://idi-official.pages.dev/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "Glyphsmith",
+          "item": "https://idi-official.pages.dev/glyphsmith"
+        }
+      ]
+    }
+  ]
+}
+  </script>
+</head>
+<body data-page="glyphsmith">
+  <svg class="svg-sprite" aria-hidden="true">
+    <symbol id="i-gitlab" viewBox="0 0 24 24"><path fill="currentColor" stroke="none" d="m23.6004 9.5927-.0337-.0862L20.3.9814a.851.851 0 0 0-.3362-.405.8748.8748 0 0 0-.9997.0539.8748.8748 0 0 0-.29.4399l-2.2055 6.748H7.5375l-2.2057-6.748a.8573.8573 0 0 0-.29-.4412.8748.8748 0 0 0-.9997-.0537.8585.8585 0 0 0-.3362.4049L.4332 9.5015l-.0325.0862a6.0657 6.0657 0 0 0 2.0119 7.0105l.0113.0087.03.0213 4.976 3.7264 2.462 1.8633 1.4995 1.1321a1.0085 1.0085 0 0 0 1.2197 0l1.4995-1.1321 2.4619-1.8633 5.006-3.7489.0125-.01a6.0682 6.0682 0 0 0 2.0094-7.003z"/></symbol>
+    <symbol id="i-menu" viewBox="0 0 24 24"><path d="M4 8h16M4 16h16"/></symbol>
+    <symbol id="i-close" viewBox="0 0 24 24"><path d="m5 5 14 14M19 5 5 19"/></symbol>
+  </svg>
+
+  <a class="skip-link" href="#main">Skip to content</a>
+  <div class="site-glow site-glow-blue" aria-hidden="true"></div>
+
+  <header class="topbar" data-header>
+    <div class="shell topbar-inner">
+      <a class="brand" href="/" aria-label="International Duck Incorporated home">
+        <img data-org-avatar src="/assets/org-avatar.webp?v=fff479ce" alt="" width="40" height="40" decoding="async">
+        <span><b>International Duck</b><small>Incorporated</small></span>
+      </a>
+      <nav class="main-nav" id="main-navigation" data-nav aria-label="Primary navigation">
+        <a href="/">Overview</a>
+        <a href="/projects">Projects</a>
+        <a href="/noosphere">Noosphere</a>
+        <a href="/members">Members</a>
+        <a href="/activity">Activity</a>
+        <a href="/migration">Migration</a>
+        <a class="icon-link" href="https://gitlab.com/international-duck-incorporated" target="_blank" rel="noreferrer" aria-label="International Duck Incorporated on GitLab"><svg><use href="#i-gitlab"/></svg></a>
+      </nav>
+      <button class="menu-button" type="button" data-menu aria-label="Open navigation" aria-controls="main-navigation" aria-expanded="false"><svg class="menu-open"><use href="#i-menu"/></svg><svg class="menu-close"><use href="#i-close"/></svg></button>
+    </div>
+  </header>
+
+<main id="main" class="wrap">
+
+<header class="hero">
+  <div class="hero-in">
+    <div class="logo">
+      <svg viewBox="0 0 64 64" aria-hidden="true">
+        <defs><linearGradient id="lg" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0" stop-color="#8b5cf6"/><stop offset="1" stop-color="#22d3ee"/>
+        </linearGradient></defs>
+        <rect x="4" y="4" width="56" height="56" rx="16" fill="#141a35" stroke="url(#lg)" stroke-width="2"/>
+        <text x="15" y="42" font-size="30" fill="#c4b5fd" font-family="Georgia,serif" opacity=".95">A</text>
+        <text x="29" y="47" font-size="30" fill="#67e8f9" font-family="Georgia,serif" opacity=".8">А</text>
+        <circle cx="47" cy="18" r="3" fill="#22d3ee" opacity=".8"/>
+      </svg>
+      <div>
+        <h1>Glyphsmith</h1>
+        <p class="sub">Unicode transformation &amp; obfuscation workbench — homoglyphs, zero-width, bidi, normalization &amp; more</p>
+      </div>
+    </div>
+    <div class="hero-stats">16 techniques · 45+ variants · 100% client-side</div>
+  </div>
+</header>
+
+  <!-- input -->
+  <section class="panel">
+    <div class="panel-head">
+      <h2>Input</h2>
+      <div class="toolbar">
+        <span style="font-size:12px;color:var(--mut)">samples:</span>
+        <span id="presets" style="display:flex;gap:6px;flex-wrap:wrap"></span>
+        <label class="switch" title="Render zero-width and formatting characters as visible pills in every output">
+          <input type="checkbox" id="reveal"> reveal hidden characters
+        </label>
+        <label class="switch" title="Adapt outputs for Minecraft Java chat: live 256-char meter, hides variants that render as □, warns about §/control chars">
+          <input type="checkbox" id="mcmode" checked> ⛏ minecraft mode
+        </label>
+        <button class="chipbtn" id="clear">clear</button>
+      </div>
+    </div>
+    <textarea id="in" spellcheck="false" autocomplete="off">hello minecraft world 123</textarea>
+    <div class="stat-chips" id="inStats"></div>
+  </section>
+
+  <!-- transformations -->
+  <section>
+    <div class="sechead">
+      <h2>Transformations</h2>
+      <p>Every card updates live as you type. Hover buttons for hints — ⧉ copies the raw text, ⌕ opens the code-point inspector, ↻ re-rolls randomized variants.</p>
+    </div>
+    <div id="cards" class="cards"></div>
+  </section>
+
+  <!-- inspector -->
+  <section class="panel" id="inspector">
+    <div class="panel-head">
+      <h2>Code-point inspector</h2>
+      <span id="inspSrc" class="src">press ⌕ on any output</span>
+    </div>
+    <div id="inspBody"><div class="insp-empty">Nothing inspected yet. The inspector lists every code point with its Unicode name and UTF-8 byte sequence — perfect for seeing exactly what a transformation produced.</div></div>
+  </section>
+
+  <!-- background notes -->
+  <section>
+    <div class="sechead"><h2>Good to know</h2></div>
+    <div class="cards notes">
+      <div class="card note">
+        <h3>🛡 Why filters struggle with this</h3>
+        <ul>
+          <li><b>Bytes ≠ glyphs.</b> The same visible word can be many different code-point sequences; filters compare sequences.</li>
+          <li><b>Defense in depth:</b> normalize (NFKC) → case-fold → apply the UTS&nbsp;#39 confusable skeleton → then match.</li>
+          <li>Layered pipelines (client → server → database collation) may each normalize differently, creating gaps.</li>
+        </ul>
+      </div>
+      <div class="card note">
+        <h3>⛏ Minecraft notes — what actually works in chat</h3>
+        <ul>
+          <li><b>Allowed characters:</b> vanilla Java accepts almost everything from U+0020 up, but kicks you ("Illegal characters in chat") for <code>§</code> section signs and control characters. MC mode flags any output containing them.</li>
+          <li><b>Length:</b> Java chat is capped at <b>256 characters</b> client-side; many servers enforce less. Zero-width padding burns budget fast — watch the <code>⛏ n/256</code> chip on every output.</li>
+          <li><b>Rendering:</b> most of the Basic Multilingual Plane (up to U+FFFF) renders via the built-in Unicode font, even when the blocky default font lacks a glyph. Characters <b>above U+FFFF</b> — squared/negative-circled capitals, supplementary variation selectors — show as <code>□</code>. MC mode hides those variants automatically.</li>
+          <li><b>Zero-width chars</b> render as nothing (or hairline gaps) on current Java builds — but always test on your exact version, font and resource pack.</li>
+          <li><b>Bedrock / Realms</b> run their own filters and may strip or normalize some tricks — results differ per platform. Always test client view <i>and</i> server console.</li>
+        </ul>
+      </div>
+      <div class="card note">
+        <h3>⚖ Responsible use</h3>
+        <ul>
+          <li>Built for <b>security research, filter-robustness testing, education and creative typography</b>.</li>
+          <li>Don't use obfuscation to harass, spam, or evade community rules.</li>
+          <li>If you run a filter: this page is your test suite — harden until every card round-trips to the original text.</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <p class="tagline">Glyphsmith — a Unicode playground. Everything runs locally; nothing leaves your browser. A / А / Α — three scripts, one glyph, zero trust.</p>
+</main>
+
+  <footer class="site-footer">
+    <div class="shell footer-inner">
+      <a class="brand" href="/"><img data-org-avatar src="/assets/org-avatar.webp?v=fff479ce" alt="" width="40" height="40" decoding="async"><span><b>International Duck</b><small>Incorporated</small></span></a>
+      <nav><a href="/">Overview</a><a href="/projects">Projects</a><a href="/noosphere">Noosphere</a><a href="/members">Members</a><a href="/activity">Activity</a><a href="/migration">Migration</a><a href="/glyphsmith">Glyphsmith</a><a href="/changelog">Changelog</a><a href="https://gitlab.com/international-duck-incorporated" target="_blank" rel="noreferrer">GitLab</a><a href="mailto:0xffshell@duck.com">Contact</a></nav>
+      <span class="sync-state"><i></i><span data-sync-text>GitLab data synced live</span></span>
+    </div>
+  </footer>
+
+  <div id="toast"></div>
+</body>
+</html>

@@ -31,6 +31,7 @@ PRIORITY = {
     "/projects/zonedout": ("weekly", "0.7"),
     "/activity": ("weekly", "0.6"),
     "/migration": ("weekly", "0.6"),
+    "/glyphsmith": ("weekly", "0.6"),
     "/members/0xffshell": ("weekly", "0.6"),
     "/members/3spress0": ("weekly", "0.6"),
     "/members/e-vdv-hu": ("weekly", "0.6"),

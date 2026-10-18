@@ -3,9 +3,11 @@
 
 Two kinds of link exist only because a generated page needs to be reachable:
 
-  1. the footer nav gains "Changelog" and a "Contact" mailto link on every
-     page, so /changelog and the team address are one click from anywhere
-     (search engines crawl them from every page as well);
+  1. the footer nav gains "Glyphsmith" (the /glyphsmith tool page), "Changelog"
+     and a "Contact" mailto link on every page, so the tool, /changelog and the
+     team address are one click from anywhere (search engines crawl them from
+     every page as well). The three keep one stable order - Glyphsmith just
+     before Changelog - so every footer reads the same;
   2. the Beacon project page gains a link to its module directory, so
      /projects/beacon/modules is not an orphan page.
 
@@ -20,9 +22,10 @@ import json
 import re
 from pathlib import Path
 
-FOOTER_LINK = '<a href="/changelog">Changelog</a>'
+GLYPHSMITH_LINK = '<a href="/glyphsmith">Glyphsmith</a>'
+CHANGELOG_LINK = '<a href="/changelog">Changelog</a>'
 CONTACT_LINK = '<a href="mailto:0xffshell@duck.com">Contact</a>'
-FOOTER_LINKS = (FOOTER_LINK, CONTACT_LINK)
+FOOTER_LINKS = (CHANGELOG_LINK, CONTACT_LINK)
 FOOTER = re.compile(r'<footer class="site-footer">.*?</footer>', re.S)
 
 # On the Beacon page, alongside the existing action row.
@@ -52,9 +55,18 @@ def main() -> None:
         if footer:
             block = footer.group(0)
             if "<nav>" in block and "</nav>" in block:
-                missing = [link for link in FOOTER_LINKS if link not in updated]
-                if missing:
-                    patched = block.replace("</nav>", "".join(missing) + "</nav>", 1)
+                patched = block
+                missing = [link for link in FOOTER_LINKS if link not in patched]
+                for link in missing:
+                    patched = patched.replace("</nav>", link + "</nav>", 1)
+                if GLYPHSMITH_LINK not in patched:
+                    if CHANGELOG_LINK in patched:
+                        patched = patched.replace(
+                            CHANGELOG_LINK, GLYPHSMITH_LINK + CHANGELOG_LINK, 1
+                        )
+                    else:
+                        patched = patched.replace("</nav>", GLYPHSMITH_LINK + "</nav>", 1)
+                if patched != block:
                     updated = updated[: footer.start()] + patched + updated[footer.end():]
                     footers += 1
 

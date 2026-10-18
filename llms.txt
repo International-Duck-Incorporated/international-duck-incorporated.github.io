@@ -17,6 +17,7 @@ activity. Content is synchronized live from the GitLab API.
 - [Activity](https://idi-official.pages.dev/activity): live GitLab commit feed for every project, with a warning that the private GitHub organization is unavailable.
 - [Migration](https://idi-official.pages.dev/migration): a sourced timeline of IDI's September–October 2026 move from GitHub to GitLab.
 - [Changelog](https://idi-official.pages.dev/changelog): every release from every project, transcribed from each repository's CHANGELOG.md and linked to the matching GitLab release.
+- [Glyphsmith](https://idi-official.pages.dev/glyphsmith): a 100% client-side Unicode transformation lab - homoglyph substitution, zero-width injection, bidi controls, normalization, and a Minecraft chat mode.
 
 ## Projects
 

@@ -35,6 +35,7 @@ MODULE_ORDER = [
     "bagley.css",
     "module-directory.css",
     "changelog.css",
+    "glyphsmith.css",
     "overrides.css",
 ]
 
