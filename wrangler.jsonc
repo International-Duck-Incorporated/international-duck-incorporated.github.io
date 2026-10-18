@@ -8,4 +8,16 @@
     "binding": "ASSETS",
     "run_worker_first": true
   }
+
+  // Optional but recommended: cache the blocklist in KV instead of downloading
+  // it from GitLab on every cold isolate (~1.35 s -> single-digit ms).
+  //
+  //   wrangler kv namespace create IDI_BADEGG
+  //
+  // Paste the id below and uncomment. Without the binding BadEgg still works,
+  // it just pays the cold fetch once per isolate.
+  //
+  // "kv_namespaces": [
+  //   { "binding": "IDI_BADEGG", "id": "<id from the command above>" }
+  // ]
 }
