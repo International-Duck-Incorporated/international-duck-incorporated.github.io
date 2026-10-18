@@ -34,7 +34,7 @@ export async function onRequest(context) {
     ? await isBlockedIp(ip, env, { waitUntil: (p) => context.waitUntil(p) })
     : false;
 
-  if (isPreview(request) || blocked) return blockedResponse(ip);
+  if (isPreview(request) || blocked) return blockedResponse(ip, env);
 
   return context.next();
 }

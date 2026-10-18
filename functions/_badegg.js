@@ -456,17 +456,72 @@ export async function isBlockedIp(ip, env, options = {}) {
 }
 
 // ---------------------------------------------------------------- response
+// The page is the real 403.html asset, rendered with the client IP. The inline
+// template is the fallback so a missing asset still renders a page, not a blank
+// 403. Keep the two in sync - tests/blocked-page.test.mjs asserts they match.
+
+// CONTACT_EMAIL is declared once, at the top of this module.
+export const BLOCKED_PAGE_PATH = "/403.html";
+
 const escapeHtml = (value) =>
   String(value).replace(/[&<>"']/g, (ch) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[ch]));
 
-function blockedPage(ip) {
+/** mailto: href with a pre-filled appeal body. */
+export function appealMailto(ip) {
   const subject = encodeURIComponent("IP block appeal");
   const body = ip
     ? `&amp;body=${encodeURIComponent(`Hi team,\n\nMy IP address (${ip}) looks blocked on the site. Could you take a look?\n\nThanks!`)}`
     : "";
-  const mailto = `mailto:${CONTACT_EMAIL}?subject=${subject}${body}`;
-  const ipChip = ip ? `<p class="ip">Blocked IP <b>${escapeHtml(ip)}</b></p>\n    ` : "";
-  return `<!doctype html>
+  return `mailto:${CONTACT_EMAIL}?subject=${subject}${body}`;
+}
+
+/** The `{{IP_CHIP}}` value, including the trailing indentation the template wants. */
+export function ipChip(ip) {
+  return ip ? `<p class="ip">Blocked IP <b>${escapeHtml(ip)}</b></p>\n    ` : "";
+}
+
+/** Substitute the placeholders in a `403.html` document. */
+export function renderBlockedPage(template, ip) {
+  return template
+    .replaceAll("{{MAILTO}}", appealMailto(ip))
+    .replaceAll("{{IP_CHIP}}", ipChip(ip));
+}
+
+const BLOCKED_HEADERS = {
+  "content-type": "text/html; charset=utf-8",
+  "cache-control": "no-store",
+  "x-robots-tag": "noindex",
+};
+
+export function blockedResponseFrom(template, ip) {
+  return new Response(renderBlockedPage(template, ip), { status: 403, headers: BLOCKED_HEADERS });
+}
+
+/**
+ * Serve the themed 403.
+ *
+ * Reads `403.html` through the ASSETS binding so the page is a normal, editable
+ * asset, and falls back to the inline copy if anything goes wrong. Never throws:
+ * a broken page must not turn a 403 into a 500.
+ */
+export async function blockedResponse(ip, env) {
+  const assets = env && env.ASSETS;
+  if (assets && typeof assets.fetch === "function") {
+    try {
+      const res = await assets.fetch(`https://assets.internal${BLOCKED_PAGE_PATH}`);
+      if (res.ok) {
+        const template = await res.text();
+        if (template.includes("{{MAILTO}}")) return blockedResponseFrom(template, ip);
+      }
+    } catch {
+      // fall through to the inline template
+    }
+  }
+  return blockedResponseFrom(FALLBACK_TEMPLATE, ip);
+}
+
+/** Inline copy of 403.html, minus the wrapper. Verified against the file in tests. */
+export const FALLBACK_TEMPLATE = `<!doctype html>
 <html lang="en">
 <head>
   <meta charset="utf-8">
@@ -503,23 +558,11 @@ function blockedPage(ip) {
     <span class="mark" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.6"/><path d="M5.9 5.9l12.2 12.2"/></svg></span>
     <span class="code">Error / 403</span>
     <h1>Uh oh, you’re blocked.</h1>
-    <p>Your IP address is on the site’s blocklist, so the site won’t load from this connection. If this is a mistake, email <a href="${mailto}">${CONTACT_EMAIL}</a> and we’ll take a look.</p>
-    ${ipChip}<a class="btn" href="${mailto}"><svg viewBox="0 0 24 24"><path d="M3.5 5.5h17v13h-17z"/><path d="m3.5 6.5 8.5 6.5 8.5-6.5"/></svg>Email the team</a>
+    <p>Your IP address is on the site’s blocklist, so the site won’t load from this connection. If this is a mistake, email <a href="{{MAILTO}}">0xffshell@duck.com</a> and we’ll take a look.</p>
+    {{IP_CHIP}}<a class="btn" href="{{MAILTO}}"><svg viewBox="0 0 24 24"><path d="M3.5 5.5h17v13h-17z"/><path d="m3.5 6.5 8.5 6.5 8.5-6.5"/></svg>Email the team</a>
   </main>
 </body>
 </html>`;
-}
-
-export function blockedResponse(ip) {
-  return new Response(blockedPage(ip), {
-    status: 403,
-    headers: {
-      "content-type": "text/html; charset=utf-8",
-      "cache-control": "no-store",
-      "x-robots-tag": "noindex",
-    },
-  });
-}
 
 export function statusResponse() {
   return new Response(JSON.stringify(badeggStatus(), null, 2), {

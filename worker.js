@@ -29,7 +29,7 @@ export default {
       ? await isBlockedIp(ip, env, { waitUntil: (p) => ctx.waitUntil(p) })
       : false;
 
-    if (isPreview(request) || blocked) return blockedResponse(ip);
+    if (isPreview(request) || blocked) return blockedResponse(ip, env);
 
     return env.ASSETS.fetch(request);
   },

@@ -44,3 +44,7 @@
 /superivar /members/superivar 301
 /midas735 /members/midas735 301
 /jojo-8002 /members/jojo-8002 301
+
+# The 403 page is a template the gate fills in. A clean visitor who lands on it
+# directly goes home rather than seeing {{placeholders}}.
+/403.html / 302
