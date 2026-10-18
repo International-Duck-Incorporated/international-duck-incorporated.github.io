@@ -1,7 +1,7 @@
 (() => {
 'use strict';
 /* ============================================================================
-   Glyphsmith — Unicode transformation & obfuscation workbench
+   Glyphsmith: Unicode transformation & obfuscation workbench
    100% client-side. No data leaves the browser.
    ============================================================================ */
 
@@ -161,7 +161,7 @@ function scriptOf(cp) {
 function scriptList(s) {
   const set = new Set();
   for (const c of [...s]) if (c.codePointAt(0) > 127) set.add(scriptOf(c.codePointAt(0)));
-  return set.size ? [...set].sort().join(' · ') : 'Latin only — nothing substitutable';
+  return set.size ? [...set].sort().join(' · ') : 'Latin only, nothing substitutable';
 }
 
 /* ------------------------- compatibility encoders ------------------------ */
@@ -194,18 +194,85 @@ const encSq = t => mapCP(t, c => {
 const ROMAN = { I:'Ⅰ',V:'Ⅴ',X:'Ⅹ',L:'Ⅼ',C:'Ⅽ',D:'Ⅾ',M:'Ⅿ', i:'ⅰ',v:'ⅴ',x:'ⅹ',l:'ⅼ',c:'ⅽ',d:'ⅾ',m:'ⅿ' };
 const encRoman = t => mapCP(t, c => ROMAN[c] || c);
 
+/* Stylized letter tables: small caps, super/subscript, flipped */
+const MINI_SC = { a:'ᴀ',b:'ʙ',c:'ᴄ',d:'ᴅ',e:'ᴇ',f:'ꜰ',g:'ɢ',h:'ʜ',i:'ɪ',j:'ᴊ',k:'ᴋ',l:'ʟ',m:'ᴍ',n:'ɴ',o:'ᴏ',p:'ᴘ',q:'ꞯ',r:'ʀ',s:'ꜱ',t:'ᴛ',u:'ᴜ',v:'ᴠ',w:'ᴡ',x:'x',y:'ʏ',z:'ᴢ' };
+const MINI_UP = { a:'ᵃ',b:'ᵇ',c:'ᶜ',d:'ᵈ',e:'ᵉ',f:'ᶠ',g:'ᵍ',h:'ʰ',i:'ⁱ',j:'ʲ',k:'ᵏ',l:'ˡ',m:'ᵐ',n:'ⁿ',o:'ᵒ',p:'ᵖ',r:'ʳ',s:'ˢ',t:'ᵗ',u:'ᵘ',v:'ᵛ',w:'ʷ',x:'ˣ',y:'ʸ',z:'ᶻ', '0':'⁰','1':'¹','2':'²','3':'³','4':'⁴','5':'⁵','6':'⁶','7':'⁷','8':'⁸','9':'⁹' };
+const MINI_DOWN = { a:'ₐ',e:'ₑ',h:'ₕ',i:'ᵢ',j:'ⱼ',k:'ₖ',l:'ₗ',m:'ₘ',n:'ₙ',o:'ₒ',p:'ₚ',r:'ᵣ',s:'ₛ',t:'ₜ',u:'ᵤ',v:'ᵥ',x:'ₓ', '0':'₀','1':'₁','2':'₂','3':'₃','4':'₄','5':'₅','6':'₆','7':'₇','8':'₈','9':'₉' };
+const FLIP = {
+  a:'ɐ',b:'q',c:'ɔ',d:'p',e:'ǝ',f:'ɟ',g:'ƃ',h:'ɥ',i:'ᴉ',j:'ɾ',k:'ʞ',l:'ן',m:'ɯ',n:'u',o:'o',p:'d',q:'b',r:'ɹ',s:'s',t:'ʇ',u:'n',v:'ʌ',w:'ʍ',x:'x',y:'ʎ',z:'z',
+  A:'∀',C:'Ɔ',E:'Ǝ',F:'Ⅎ',G:'⅁',K:'ʞ',M:'W',N:'N',O:'O',P:'Ԁ',R:'ᴚ',T:'⊥',U:'∩',V:'Λ',W:'M',X:'X',Y:'⅄',Z:'Z',
+  '0':'0','1':'Ɩ','2':'ᄅ','3':'Ɛ','4':'ㄣ','5':'ϛ','6':'9','7':'ㄥ','8':'8','9':'6',
+  '.':'˙',',':"'","'":',','?':'¿','!':'¡','(':')',')':'(','[':']',']':'[','{':'}','}':'{','<':'>','>':'<','_':'‾','&':'⅋','"':'„'
+};
+
+/* Stroked / hooked Latin look-alikes that survive NFKC */
+const HOOK = {
+  a:['ɑ'],b:['ɓ'],c:['ƈ'],d:['đ'],e:['ɇ'],f:['ƒ'],g:['ǥ','ɡ'],h:['ħ'],i:['ı'],j:['ɉ'],
+  l:['ł','ɫ'],m:['ɱ'],n:['ɲ','ŋ'],o:['ø'],p:['þ','ƥ'],r:['ɍ','ɽ'],s:['ʂ'],t:['ŧ','ƫ'],
+  u:['ʉ'],v:['ʋ'],w:['ⱳ'],y:['ƴ'],z:['ƶ','ʐ']
+};
+
+/* Mathematical alphanumeric styles (letterlike exception characters included) */
+const MATH_STYLES = [
+  ['Bold',          { AZ:0x1D400, az:0x1D41A, d0:0x1D7CE }],
+  ['Italic',        { AZ:0x1D434, az:0x1D44E, ex:{ h:0x210E } }],
+  ['Bold italic',   { AZ:0x1D468, az:0x1D482 }],
+  ['Script',        { AZ:0x1D49C, az:0x1D4B6, ex:{ B:0x212C,E:0x2130,F:0x2131,H:0x210B,I:0x2110,L:0x2112,M:0x2133,R:0x211B,e:0x212F,g:0x210A,o:0x2134 } }],
+  ['Fraktur',       { AZ:0x1D504, az:0x1D51E, ex:{ C:0x212D,H:0x210C,I:0x2111,R:0x211C,Z:0x2128 } }],
+  ['Double-struck', { AZ:0x1D538, az:0x1D552, d0:0x1D7D8, ex:{ C:0x2102,H:0x210D,N:0x2115,P:0x2119,Q:0x211A,R:0x211D,Z:0x2124 } }],
+  ['Monospace',     { AZ:0x1D670, az:0x1D68A, d0:0x1D7F6 }],
+  ['Sans bold',     { AZ:0x1D5D4, az:0x1D5EE, d0:0x1D7EC }]
+];
+const mathEnc = st => t => mapCP(t, c => {
+  if (st.ex && st.ex[c]) return String.fromCodePoint(st.ex[c]);
+  const cp = c.codePointAt(0);
+  if (cp >= 65 && cp <= 90 && st.AZ) return String.fromCodePoint(st.AZ + cp - 65);
+  if (cp >= 97 && cp <= 122 && st.az) return String.fromCodePoint(st.az + cp - 97);
+  if (cp >= 48 && cp <= 57 && st.d0) return String.fromCodePoint(st.d0 + cp - 48);
+  return c;
+});
+
+/* Grade-1 braille */
+const BRL_DOTS = { a:'1',b:'12',c:'14',d:'145',e:'15',f:'124',g:'1245',h:'125',i:'24',j:'245',
+  k:'13',l:'123',m:'134',n:'1345',o:'135',p:'1234',q:'12345',r:'1235',s:'234',t:'2345',
+  u:'136',v:'1236',w:'2456',x:'1346',y:'13456',z:'1356' };
+const brlCell = ch => { const d = BRL_DOTS[ch]; if (!d) return null;
+  let v = 0; for (const x of d) v |= 1 << (+x - 1); return String.fromCodePoint(0x2800 + v); };
+const encBraille = (t, marks) => mapCP(t, c => {
+  if (c === ' ') return ' ';
+  if ((c >= '1' && c <= '9') || c === '0') return '⠼' + brlCell(String.fromCharCode(97 + '1234567890'.indexOf(c)));
+  const cell = brlCell(c.toLowerCase());
+  if (!cell) return c;
+  return (/[A-Z]/.test(c) && marks ? '⠠' : '') + cell;
+});
+
+/* Tag characters: ASCII mirrored into the invisible U+E0000 block */
+const encTags = t => mapCP(t, c => {
+  const cp = c.codePointAt(0);
+  return (cp >= 0x20 && cp <= 0x7E) ? String.fromCodePoint(0xE0000 + cp) : '';
+});
+
+/* Simplified UTS #39 skeleton for the defense card */
+const SKEL_INV = (() => {
+  const m = {};
+  for (const base in HOMO) for (const c of HOMO[base]) m[c] = base;
+  m['ſ'] = 's'; m['ß'] = 'ss'; m['ẞ'] = 'ss';
+  return m;
+})();
+const skeleton = t => mapCP(t.normalize('NFKC').toLowerCase(), c => SKEL_INV[c] || c);
+
 /* ================================ CARDS ================================== */
 const CARDS = [
 { id:'homo', num:'01', title:'Homoglyph substitution', tag:'confusables',
-  desc:`Swaps Latin letters for look-alikes from other scripts — Cyrillic <code>А</code>, Greek <code>Α</code>, Armenian <code>Օ</code>, Cherokee-like number forms. It reads the same to a human, but every code point differs, so exact string matching fails.`,
+  desc:`Swaps Latin letters for look-alikes from other scripts: Cyrillic <code>А</code>, Greek <code>Α</code>, Armenian <code>Օ</code>, Cherokee-like number forms. It reads the same to a human, but every code point differs, so exact string matching fails.`,
   run(t) {
     const s = mapCP(t, c => HOMO[c] ? HOMO[c][0] : c);
-    return [{ label:'Deterministic — first confusable everywhere', text:s, note:'Scripts in output: ' + scriptList(s) }];
+    return [{ label:'Deterministic: first confusable everywhere', text:s, note:'Scripts in output: ' + scriptList(s) }];
   }
 },
 { id:'mixed', num:'02', title:'Mixed-script blender', tag:'confusables', random:true,
   controls:[{ k:'range', id:'p', label:'swap density %', min:10, max:100, step:5, def:65 }],
-  desc:`Same confusable table, applied at random per character with the density you choose — a Cyrillic <code>е</code> here, a Greek <code>ο</code> there. A single visible “word” ends up spanning several scripts, which defeats per-script rules and single-alphabet regexes. Press ↻ to re-roll.`,
+  desc:`Same confusable table, applied at random per character with the density you choose: a Cyrillic <code>е</code> here, a Greek <code>ο</code> there. A single visible “word” ends up spanning several scripts, which defeats per-script rules and single-alphabet regexes. Press ↻ to re-roll.`,
   run(t, o) {
     const p = (+o.p) / 100;
     const src = [...t]; let swapped = 0;
@@ -215,16 +282,16 @@ const CARDS = [
       if (idx.length) { const k = rnd(idx); arr[k] = rnd(HOMO[src[k]]); }
     }
     const s = arr.join('');
-    return [{ label:`Random mix — ~${o.p}% of substitutable letters swapped`, text:s, note:'Scripts in output: ' + scriptList(s) }];
+    return [{ label:`Random mix: ~${o.p}% of substitutable letters swapped`, text:s, note:'Scripts in output: ' + scriptList(s) }];
   }
 },
 { id:'zw', num:'03', title:'Zero-width injection', tag:'invisible', random:true,
   controls:[{ k:'select', id:'ch', label:'character', options:[
       ['​','ZWSP · U+200B'], ['‌','ZWNJ · U+200C'], ['‍','ZWJ · U+200D'],
       ['⁠','WORD JOINER · U+2060'], ['﻿','BOM / ZWNBSP · U+FEFF'], ['᠎','MONGOLIAN VOWEL SEP · U+180E'],
-      ['͏','CGJ · U+034F'], ['mix','mix of all']]},
+      ['͏','CGJ · U+034F'], ['ㅤ','HANGUL FILLER · U+3164'], ['⠀','BRAILLE BLANK · U+2800'], ['mix','mix of all']]},
     { k:'range', id:'n', label:'chars per gap', min:1, max:5, def:1 }],
-  desc:`Inserts invisible formatting characters between letters. Displayed text is unchanged, but code-point-wise the word is full of holes — <code>String.length</code> grows while the screen shows the same thing. Toggle “reveal hidden characters” to see them.`,
+  desc:`Inserts invisible formatting characters between letters. Displayed text is unchanged, but code-point-wise the word is full of holes: <code>String.length</code> grows while the screen shows the same thing. Toggle “reveal hidden characters” to see them.`,
   run(t, o) {
     const n = +o.n;
     const pick = () => o.ch === 'mix' ? rnd(Object.values(ZWCH)) : o.ch;
@@ -232,7 +299,7 @@ const CARDS = [
     const inject = w => { const cs = [...w]; let r = ''; cs.forEach((c, i) => { r += c; if (i < cs.length - 1) r += gap(); }); return r; };
     return [
       { label:'Injected between every character', text:inject(t) },
-      { label:'Inside words only — spaces intact', text:t.split(' ').map(inject).join(' ') }
+      { label:'Inside words only, spaces intact', text:t.split(' ').map(inject).join(' ') }
     ];
   }
 },
@@ -241,7 +308,7 @@ const CARDS = [
       ['zalgo','zalgo stack'], ['accent','light diacritics'], ['strike','strikethrough overlay'],
       ['slash','slash overlay'], ['under','low line overlay']]},
     { k:'range', id:'lv', label:'zalgo level', min:1, max:3, def:2 }],
-  desc:`Appends combining marks that attach to the preceding base letter — one visible glyph, many code points. Filters see a long code-point train; readers see a word wearing a hat (or twenty).`,
+  desc:`Appends combining marks that attach to the preceding base letter: one visible glyph, many code points. Filters see a long code-point train; readers see a word wearing a hat (or twenty).`,
   run(t, o) {
     const m = o.m, lv = +o.lv; let text = '', label = '';
     if (m === 'zalgo') {
@@ -254,7 +321,7 @@ const CARDS = [
         if (lv >= 3) { r += rnd(DOWN); if (chance(.6)) r += rnd(DOWN); }
         return r;
       });
-      label = 'Zalgo stack — level ' + lv;
+      label = 'Zalgo stack, level ' + lv;
     } else if (m === 'accent') {
       const AC = ['́','̀','̈','̂','̃','̇'];
       text = mapCP(t, c => /[aeiouyAEIOUY]/.test(c) ? c + rnd(AC) : c);
@@ -263,32 +330,32 @@ const CARDS = [
     else if (m === 'slash')     { text = mapCP(t, c => c === ' ' ? c : c + '̸'); label = 'Long solidus overlay · U+0338'; }
     else                        { text = mapCP(t, c => c === ' ' ? c : c + '̲'); label = 'Low line overlay · U+0332'; }
     const kc = mapCP(t, c => /[a-z0-9]/i.test(c) ? c + '⃣' : c);
-    return [{ label, text }, { label:'Bonus — combining enclosing keycap U+20E3', text:kc }];
+    return [{ label, text }, { label:'Bonus: combining enclosing keycap U+20E3', text:kc }];
   }
 },
 { id:'norm', num:'05', title:'Normalization twins', tag:'normalization',
-  desc:`“é” can be one code point (<code>U+00E9</code>) or two (<code>U+0065 U+0301</code>). NFC / NFD / NFKC forms render identically but compare unequal until normalized — a textbook filter gap when only one side of the pipeline normalizes. Try the “diacritics” sample text.`,
+  desc:`“é” can be one code point (<code>U+00E9</code>) or two (<code>U+0065 U+0301</code>). NFC / NFD / NFKC forms render identically but compare unequal until normalized, a textbook filter gap when only one side of the pipeline normalizes. Try the “diacritics” sample text.`,
   run(t) {
     const nfc = t.normalize('NFC'), nfd = t.normalize('NFD'), nfkc = t.normalize('NFKC');
     const info = `input === NFC: ${t === nfc}    ·    NFC === NFD: ${nfc === nfd}    ·    NFKC === input: ${nfkc === t}`;
     return [
-      { label:'NFC — composed', text:nfc },
-      { label:'NFD — decomposed (é → e + ◌́)', text:nfd },
-      { label:'NFKC — compatibility composed', text:nfkc },
+      { label:'NFC: composed', text:nfc },
+      { label:'NFD: decomposed (é → e + ◌́)', text:nfd },
+      { label:'NFKC: compatibility composed', text:nfkc },
       { label:'Sanity check', text:info, info:true }
     ];
   }
 },
 { id:'space', num:'06', title:'Whitespace alchemy', tag:'whitespace', random:true,
   controls:[{ k:'select', id:'sp', label:'space character', options:SP_OPTS, def:' ' }],
-  desc:`Unicode defines ~25 different space characters. Many tokenizers (<code>split(" ")</code>, some <code>\\s</code> implementations) only treat a few of them as whitespace — <code>U+1680</code>, <code>U+2000–U+200A</code>, <code>U+3000</code> render as ordinary gaps but often slip through word splitting.`,
+  desc:`Unicode defines ~25 different space characters. Many tokenizers (<code>split(" ")</code>, some <code>\\s</code> implementations) only treat a few of them as whitespace: <code>U+1680</code>, <code>U+2000–U+200A</code>, <code>U+3000</code> render as ordinary gaps but often slip through word splitting.`,
   run(t, o) {
     const sp = o.sp;
     const salad = t.split('').map(c => c === ' ' ? rnd(SPC_CHARS) : c).join('');
     return [
       { label:'Every plain space → chosen character', text:t.split(' ').join(sp) },
-      { label:'Kerned — space char between all letters', text:[...t].join(sp) },
-      { label:'Space salad — random unusual space per gap', text:salad }
+      { label:'Kerned: space char between all letters', text:[...t].join(sp) },
+      { label:'Space salad: random unusual space per gap', text:salad }
     ];
   }
 },
@@ -308,15 +375,15 @@ const CARDS = [
     const A = mapCP(t, c => CASEMAP[c] || c);
     const B = mapCP(t, c => c === 'i' ? 'İ' : c === 'I' ? 'ı' : c);
     return [
-      { label:'Fold-equivalents — ſ, Kelvin K, Ångström, Ohm Ω, ẞ', text:A,
+      { label:'Fold-equivalents: ſ, Kelvin K, Ångström, Ohm Ω, ẞ', text:A,
         note:'ſ survives JS toLowerCase unchanged · Unicode-aware matching maps it to s' },
-      { label:'Turkish dot trap — i → İ, I → ı', text:B,
-        note:'"İ".toLowerCase() === "i̇" (2 code points) · "ı".toUpperCase() === "I" — locale-sensitive' }
+      { label:'Turkish dot trap: i → İ, I → ı', text:B,
+        note:'Locale-sensitive: "İ".toLowerCase() === "i̇" (2 code points) · "ı".toUpperCase() === "I"' }
     ];
   }
 },
 { id:'fw', num:'09', title:'Fullwidth conversion', tag:'width',
-  desc:`Shifts ASCII into the Halfwidth/Fullwidth Forms block (Ａ→<code>U+FF21</code>…). Looks stylized but legible, and completely escapes ASCII-only matchers — until <code>NFKC</code> folds every character straight back.`,
+  desc:`Shifts ASCII into the Halfwidth/Fullwidth Forms block (Ａ→<code>U+FF21</code>…). Looks stylized but legible, and completely escapes ASCII-only matchers, until <code>NFKC</code> folds every character straight back.`,
   run(t) {
     const fwch = c => {
       const cp = c.codePointAt(0);
@@ -327,31 +394,31 @@ const CARDS = [
     const B = mapCP(t, c => /[0-9A-Za-z]/.test(c) ? fwch(c) : c);
     const back = [...A].slice(0, 40).join('').normalize('NFKC') + (cps(A) > 40 ? '…' : '');
     return [
-      { label:'Strict — incl. space → IDEOGRAPHIC SPACE U+3000', text:A },
+      { label:'Strict: incl. space → IDEOGRAPHIC SPACE U+3000', text:A },
       { label:'Letters & digits only', text:B, note:'NFKC reverts the fullwidth form →  ' + back }
     ];
   }
 },
 { id:'compat', num:'10', title:'Compatibility characters', tag:'compat',
-  desc:`Characters carrying a compatibility decomposition: ligatures, circled / parenthesized / squared / negative-circled letters, Roman numerals. Every one of these <code>NFKC</code>-normalizes back to plain ASCII — see the proof row.`,
+  desc:`Characters carrying a compatibility decomposition: ligatures, circled / parenthesized / squared / negative-circled letters, Roman numerals. Every one of these <code>NFKC</code>-normalizes back to plain ASCII. See the proof row.`,
   run(t) {
     return [
-      { label:'Typographic ligatures — ﬀ ﬁ ﬂ ﬃ ﬄ ﬆ', text:t.replace(/ffi/g,'ﬃ').replace(/ffl/g,'ﬄ').replace(/ff/g,'ﬀ').replace(/fi/g,'ﬁ').replace(/fl/g,'ﬂ').replace(/st/g,'ﬆ') },
-      { label:'Circled — ⓗⓔⓛⓛⓞ', text:encCircle(t) },
-      { label:'Parenthesized — ⒣⒠⒧⒧⒪', text:encParen(t) },
-      { label:'Negative circled — 🅗🅔🅛🅛🅞', text:encNegCirc(t), astral:true },
-      { label:'Negative squared — 🄷🄴🄻🄻🄾', text:encSq(t), astral:true },
-      { label:'Roman numerals — Ⅰ Ⅴ Ⅹ Ⅼ Ⅽ Ⅾ Ⅿ', text:encRoman(t) },
-      { label:'Proof — NFKC of the circled form', text:encCircle(t).normalize('NFKC'), info:true }
+      { label:'Typographic ligatures: ﬀ ﬁ ﬂ ﬃ ﬄ ﬆ', text:t.replace(/ffi/g,'ﬃ').replace(/ffl/g,'ﬄ').replace(/ff/g,'ﬀ').replace(/fi/g,'ﬁ').replace(/fl/g,'ﬂ').replace(/st/g,'ﬆ') },
+      { label:'Circled: ⓗⓔⓛⓛⓞ', text:encCircle(t) },
+      { label:'Parenthesized: ⒣⒠⒧⒧⒪', text:encParen(t) },
+      { label:'Negative circled: 🅗🅔🅛🅛🅞', text:encNegCirc(t), astral:true },
+      { label:'Negative squared: 🄷🄴🄻🄻🄾', text:encSq(t), astral:true },
+      { label:'Roman numerals: Ⅰ Ⅴ Ⅹ Ⅼ Ⅽ Ⅾ Ⅿ', text:encRoman(t) },
+      { label:'Proof: NFKC of the circled form', text:encCircle(t).normalize('NFKC'), info:true }
     ];
   }
 },
 { id:'bidi', num:'11', title:'Bidirectional controls', tag:'bidi',
-  desc:`Directional formatting characters reorder what renders vs. what is stored. The infamous <code>U+202E</code> RIGHT-TO-LEFT OVERRIDE has been abused for years to disguise file names (“txt…exe” spoofing) — here it shows how eyes and machines can read different strings from identical bytes.`,
+  desc:`Directional formatting characters reorder what renders vs. what is stored. The infamous <code>U+202E</code> RIGHT-TO-LEFT OVERRIDE has been abused for years to disguise file names (“txt…exe” spoofing). Here it shows how eyes and machines can read different strings from identical bytes.`,
   run(t) {
     return [
-      { label:'Display-reversed — logical order unchanged', text:'‮' + t + '‬' },
-      { label:'Stealth — renders identical, stored reversed', text:'‮' + rev(t) + '‬',
+      { label:'Display-reversed: logical order unchanged', text:'‮' + t + '‬' },
+      { label:'Stealth: renders identical, stored reversed', text:'‮' + rev(t) + '‬',
         note:'Copy this and inspect it: the code points read backwards while the screen shows your text' },
       { label:'LRM (U+200E) between every character', text:[...t].join('‎') },
       { label:'RTL isolates around each word', text:t.split(' ').map(w => '⁧' + w + '⁩').join(' ') }
@@ -359,7 +426,7 @@ const CARDS = [
   }
 },
 { id:'vs', num:'12', title:'Variation selectors', tag:'invisible', random:true,
-  desc:`Variation selectors (<code>U+FE00–FE0F</code>, plus <code>U+E0100–E01EF</code> for 256 total) tweak glyph presentation. On plain letters they are usually invisible — and 256 distinct values can invisibly encode an entire byte per character (the “variation-selector steganography” trick). <code>VS-16</code> forces emoji presentation.`,
+  desc:`Variation selectors (<code>U+FE00–FE0F</code>, plus <code>U+E0100–E01EF</code> for 256 total) tweak glyph presentation. On plain letters they are usually invisible, and 256 distinct values can invisibly encode an entire byte per character (the “variation-selector steganography” trick). <code>VS-16</code> forces emoji presentation.`,
   run(t) {
     const vsAll = mapCP(t, c => c + '︀');
     const vsMix = mapCP(t, c => {
@@ -373,12 +440,12 @@ const CARDS = [
     return [
       { label:'VS-1 (U+FE00) after every character', text:vsAll },
       { label:'Random VS 1–256 sprinkled in', text:vsMix },
-      { label:'Emoji presentation — VS-16 everywhere + keycaps on digits', text:emo }
+      { label:'Emoji presentation: VS-16 everywhere + keycaps on digits', text:emo }
     ];
   }
 },
 { id:'enc', num:'13', title:'Encoding / decoding discrepancies', tag:'bytes',
-  desc:`The same bytes decode differently depending on the charset each layer assumes. UTF-8 misread as Windows-1252 yields classic mojibake (<code>é → Ã©</code>); double-encoding amplifies it. Modern decoders reject overlong sequences — legacy parsers did not, which enabled historical path/filter bypasses.`,
+  desc:`The same bytes decode differently depending on the charset each layer assumes. UTF-8 misread as Windows-1252 yields classic mojibake (<code>é → Ã©</code>); double-encoding amplifies it. Modern decoders reject overlong sequences; legacy parsers did not, which enabled historical path/filter bypasses.`,
   run(t) {
     const bs = [...utf8(t)];
     const hexs = bs.map(b => b.toString(16).toUpperCase().padStart(2, '0')).join(' ');
@@ -390,29 +457,29 @@ const CARDS = [
     const u16  = t.split('').map(ch => ch.charCodeAt(0).toString(16).toUpperCase().padStart(4, '0')).join(' ');
     return [
       { label:'UTF-8 bytes (hex)', text:hexs },
-      { label:'Mojibake — these bytes re-read as Windows-1252', text:moj },
-      { label:'Double encoding — mojibake of the mojibake', text:moj2 },
+      { label:'Mojibake: these bytes re-read as Windows-1252', text:moj },
+      { label:'Double encoding: mojibake of the mojibake', text:moj2 },
       { label:'Percent-encoding (encodeURIComponent)', text:encodeURIComponent(t) },
       { label:'HTML numeric entities (non-ASCII)', text:ent },
       { label:'Unicode escapes (JS / Python style)', text:esc },
-      { label:'UTF-16 code units — astral chars split in two', text:u16 },
+      { label:'UTF-16 code units: astral chars split in two', text:u16 },
       { label:'Overlong UTF-8 (reference only)', info:true,
-        text:'“/” (0x2F) overlong → C0 AF   ·   NUL → C0 80 — rejected by RFC-3629-compliant decoders, but accepted by some legacy IIS / Tomcat setups, enabling path-traversal and filter bypasses. Shown as hex; no live decoder here will produce it.' }
+        text:'“/” (0x2F) overlong → C0 AF   ·   NUL → C0 80; rejected by RFC-3629-compliant decoders, but accepted by some legacy IIS / Tomcat setups, enabling path-traversal and filter bypasses. Shown as hex; no live decoder here will produce it.' }
     ];
   }
 },
 { id:'rep', num:'14', title:'Repeated-character tricks', tag:'repeat',
-  desc:`Doubling letters is trivial for humans to read but breaks exact matching — and gluing each duplicate pair with a zero-width character produces a stored pattern that matches neither the doubled nor the plain form.`,
+  desc:`Doubling letters is trivial for humans to read but breaks exact matching, and gluing each duplicate pair with a zero-width character produces a stored pattern that matches neither the doubled nor the plain form.`,
   run(t) {
     return [
-      { label:'Doubled — hheelllloo', text:mapCP(t, c => c === ' ' ? ' ' : c + c) },
+      { label:'Doubled: hheelllloo', text:mapCP(t, c => c === ' ' ? ' ' : c + c) },
       { label:'Doubled, pairs glued with ZWSP', text:mapCP(t, c => c === ' ' ? ' ' : c + '​' + c) },
       { label:'Tripled', text:mapCP(t, c => c === ' ' ? ' ' : c + c + c) }
     ];
   }
 },
 { id:'tok', num:'15', title:'Tokenization shenanigans', tag:'tokenize',
-  desc:`Filters tokenize text into “words”; Unicode lets you glue words together or split one apart invisibly. Where the tokenizer and the human disagree about word boundaries, checks fall through — e.g. <code>\\s</code> handling of NBSP differs across engines, and soft hyphens vanish mid-word.`,
+  desc:`Filters tokenize text into “words”; Unicode lets you glue words together or split one apart invisibly. Where the tokenizer and the human disagree about word boundaries, checks fall through; e.g. <code>\\s</code> handling of NBSP differs across engines, and soft hyphens vanish mid-word.`,
   run(t) {
     const words = t.split(' ');
     return [
@@ -426,7 +493,7 @@ const CARDS = [
 },
 { id:'chaos', num:'16', title:'Chaos mixer', tag:'combo', random:true,
   controls:[{ k:'range', id:'i', label:'intensity', min:1, max:10, def:5 }],
-  desc:`One knob, everything at once — homoglyphs, zero-width injection, variation selectors, combining marks, repetition, punctuation and weird spaces, applied stochastically per character. Crank the intensity and re-roll ↻ until it is unhinged but still readable.`,
+  desc:`One knob, everything at once: homoglyphs, zero-width injection, variation selectors, combining marks, repetition, punctuation and weird spaces, applied stochastically per character. Crank the intensity and re-roll ↻ until it is unhinged but still readable.`,
   run(t, o) {
     const i = +o.i, p = .045 + i * .02, used = new Set();
     const s = mapCP(t, c => {
@@ -441,7 +508,79 @@ const CARDS = [
       return r;
     });
     return [{ label:'Everything-mixer output', text:s,
-      note:'Techniques used: ' + (used.size ? [...used].join(' · ') : 'none — press ↻ again') }];
+      note:'Techniques used: ' + (used.size ? [...used].join(' · ') : 'none; press ↻ again') }];
+  }
+},
+{ id:'math', num:'17', title:'Mathematical alphabets', tag:'stylized',
+  desc:`The math blocks carry several complete alphabets (<code>U+1D400–U+1D7FF</code>): bold, italic, script, fraktur, double-struck, monospace. They render as ordinary letters, but every glyph is a single code point from a block normal text never contains, and <code>NFKC</code> refuses to fold them back. All rows sit above U+FFFF, so minecraft mode hides them; toggle it off to see.`,
+  run(t) {
+    return MATH_STYLES.map(([label, st]) => ({ label, text:mathEnc(st)(t), astral:true }));
+  }
+},
+{ id:'mini', num:'18', title:'Small caps, super & subscript', tag:'stylized',
+  desc:`Phonetic and letterlike blocks supply miniature versions of ordinary letters: true small capitals (<code>ꜱᴍᴀʟʟ ᴄᴀᴘꜱ</code>), superscripts (<code>ᵗⁱⁿʸ</code>) and the sparse set of subscript letters. Legible to readers, invisible to plain ASCII matching, and all of it stays inside the BMP, so minecraft mode keeps everything.`,
+  run(t) {
+    return [
+      { label:'Small caps: capitals and lowercase both map down', text:mapCP(t, c => MINI_SC[c.toLowerCase()] || c),
+        note:'q uses ꞯ (U+A7AF); x has no small capital form and stays plain' },
+      { label:'Superscript', text:mapCP(t, c => MINI_UP[c.toLowerCase()] || c),
+        note:'q has no superscript form and stays as-is' },
+      { label:'Subscript', text:mapCP(t, c => MINI_DOWN[c.toLowerCase()] || c),
+        note:'b, c, d, f, g and several others have no subscript form' }
+    ];
+  }
+},
+{ id:'flip', num:'19', title:'Flipped & reversed text', tag:'stylized',
+  desc:`Two mirror tricks in one card: plain string reversal, and the classic “upside down” style that maps each character to a turned look-alike from IPA, Greek and Letterlike blocks and then reverses the order. Tilt your head (or mirror the screen) and the original is right there, while the stored code points have nothing in common with it.`,
+  run(t) {
+    const up = rev(mapCP(t, c => FLIP[c] || c));
+    return [
+      { label:'Reversed: same characters, inverse order', text:rev(t) },
+      { label:'Upside down: turned letters plus reversal', text:up,
+        note:'Characters with no turned form (B, D, H, J and friends) stay as they are' }
+    ];
+  }
+},
+{ id:'tag', num:'20', title:'Tag smuggling', tag:'invisible',
+  desc:`The Tags block (<code>U+E0000–E007F</code>) mirrors ASCII one to one but renders as nothing at all, so a full message can ride along inside ordinary-looking text. Tag smuggling has been used to slip instructions past moderation and LLM prompt filters. Toggle reveal mode, or press ⌕, to watch hidden characters decode character by character.`,
+  run(t) {
+    return [
+      { label:'Visible text with a hidden twin attached', text:t + encTags(t), astral:true,
+        note:'Every ASCII character of your text is repeated invisibly after it' },
+      { label:'Fully hidden: renders as empty', text:encTags(t), astral:true,
+        note:'Reveal mode shows each tag as a TAG pill' }
+    ];
+  }
+},
+{ id:'brl', num:'21', title:'Braille cipher', tag:'encodings',
+  desc:`Grade-1 braille is a straight one-to-one mapping onto the braille block (<code>U+2800–U+28FF</code>). It is a real alphabet rather than a party trick: filters that only know Latin letters see punctuation-like cells, while a braille display reads the message perfectly.`,
+  run(t) {
+    return [
+      { label:'Grade 1, with capital ⠠ and number ⠼ signs', text:encBraille(t, true) },
+      { label:'Case folded: no capital signs', text:encBraille(t, false) }
+    ];
+  }
+},
+{ id:'hook', num:'22', title:'Stroked & hooked letters', tag:'confusables', random:true,
+  desc:`Latin Extended and IPA supply dressed-up versions of ordinary letters: <code>đ ł ø ħ ŧ</code>. Unlike diacritic builds they are single code points with no <code>NFKC</code> decomposition, so normalization alone will not fold them back, and readers barely notice. Press ↻ for a random pick wherever several exist.`,
+  run(t) {
+    return [
+      { label:'Deterministic: first look-alike everywhere', text:mapCP(t, c => HOOK[c] ? HOOK[c][0] : c) },
+      { label:'Random pick per letter', text:mapCP(t, c => HOOK[c] ? rnd(HOOK[c]) : c) }
+    ];
+  }
+},
+{ id:'skel', num:'23', title:'Skeleton check (defense)', tag:'defense',
+  desc:`The defensive flip side of the lab: normalize to <code>NFKC</code>, case-fold, then map common confusables back to their Latin skeletons. If your filter collapses every obfuscation card here to the same skeleton as the original input, it is doing its job.`,
+  run(t) {
+    const sk = skeleton(t);
+    const sk2 = skeleton(mapCP(t, c => HOMO[c] ? HOMO[c][0] : c));
+    return [
+      { label:'Skeleton of the input', text:sk },
+      { label:'Skeleton of the fully homoglyph-swapped version', text:sk2,
+        note: sk === sk2 ? 'Identical: normalization plus folding reverses the swap'
+                         : 'Differs: the swap survives NFKC plus case folding' }
+    ];
   }
 }
 ];
@@ -449,7 +588,7 @@ const CARDS = [
 const PRESETS = [
   ['hello world', 'hello minecraft world 123'],
   ['ligature bait', 'The fiendish waffle knight strikes softly'],
-  ['diacritics', 'Café, naïve façade — coördinate 42'],
+  ['diacritics', 'Café, naïve façade, coördinate 42'],
   ['emoji + digits', 'I ❤ 2 build #m1n3cr4ft']
 ];
 
@@ -517,13 +656,13 @@ function outRow(card, out, inC) {
   const cb = el('button', 'icon-btn', '⧉'); cb.title = 'Copy raw text';
   cb.addEventListener('click', () => copyText(out.text));
   const ib = el('button', 'icon-btn', '⌕'); ib.title = 'Inspect code points';
-  ib.addEventListener('click', () => inspect(card.title + ' — ' + out.label, out.text));
+  ib.addEventListener('click', () => inspect(card.title + ' · ' + out.label, out.text));
   head.append(stats, cb, ib);
   if (STATE.mc && !out.info) {
     head.append(el('span', 'mcchip ' + (c <= 256 ? 'mc-ok' : 'mc-bad'),
-      c <= 256 ? `⛏ fits ${c}/256` : `⛏ ${c}/256 — over the vanilla limit`));
+      c <= 256 ? `⛏ fits ${c}/256` : `⛏ ${c}/256 · over the vanilla limit`));
     if (hasAstral(out.text)) head.append(el('span', 'mcchip mc-warn', '⚠ astral → □ in vanilla font'));
-    if (hasIllegalMC(out.text)) head.append(el('span', 'mcchip mc-bad', '✗ §/control char — vanilla kicks'));
+    if (hasIllegalMC(out.text)) head.append(el('span', 'mcchip mc-bad', '✗ §/control char · vanilla kicks'));
   }
   row.append(head);
   const pre = el('pre', 'ot');
@@ -541,7 +680,7 @@ function draw(card) {
   if (STATE.mc) outs = outs.filter(o => { if (!o.info && o.astral) { hiddenCount++; return false; } return true; });
   const rows = outs.map(o => outRow(card, o, inC));
   if (hiddenCount) rows.push(outRow(card, { label:'Minecraft compatibility', info:true,
-    text:`${hiddenCount} variant(s) hidden — they sit above U+FFFF (astral plane) and render as □ in the vanilla Minecraft font. Toggle ⛏ minecraft mode off to see them anyway.` }, inC));
+    text:`${hiddenCount} variant(s) hidden: they sit above U+FFFF (astral plane) and render as □ in the vanilla Minecraft font. Toggle ⛏ minecraft mode off to see them anyway.` }, inC));
   card._outs.replaceChildren(...rows);
 }
 function updateStats() {
@@ -595,7 +734,7 @@ function fallbackCopy(t) {
   ta.value = t; ta.style.position = 'fixed'; ta.style.opacity = '0';
   document.body.append(ta); ta.select();
   try { document.execCommand('copy'); toast('Copied to clipboard'); }
-  catch (e) { toast('Copy failed — select the text manually'); }
+  catch (e) { toast('Copy failed. Select the text manually.'); }
   ta.remove();
 }
 function copyText(t) {

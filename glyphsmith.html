@@ -40,7 +40,7 @@
   <link rel="icon" href="/assets/org-avatar.png?v=f3debf20" type="image/png">
   <link rel="stylesheet" href="/css/bundle.css?v=1f263d21">
   <script src="/script.js?v=ffe97c4c" defer></script>
-  <script src="/glyphsmith.js?v=552100d6" defer></script>
+  <script src="/glyphsmith.js?v=3134952c" defer></script>
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
   <meta property="og:image:alt" content="Glyphsmith - a Unicode transformation and obfuscation lab">
@@ -190,10 +190,10 @@
       </svg>
       <div>
         <h1>Glyphsmith</h1>
-        <p class="sub">Unicode transformation &amp; obfuscation workbench — homoglyphs, zero-width, bidi, normalization &amp; more</p>
+        <p class="sub">Unicode transformation &amp; obfuscation workbench: homoglyphs, zero-width, bidi, normalization &amp; more</p>
       </div>
     </div>
-    <div class="hero-stats">16 techniques · 45+ variants · 100% client-side</div>
+    <div class="hero-stats">23 techniques · 70+ variants · 100% client-side</div>
   </div>
 </header>
 
@@ -221,7 +221,7 @@
   <section>
     <div class="sechead">
       <h2>Transformations</h2>
-      <p>Every card updates live as you type. Hover buttons for hints — ⧉ copies the raw text, ⌕ opens the code-point inspector, ↻ re-rolls randomized variants.</p>
+      <p>Every card updates live as you type. Hover buttons for hints: ⧉ copies the raw text, ⌕ opens the code-point inspector, ↻ re-rolls randomized variants.</p>
     </div>
     <div id="cards" class="cards"></div>
   </section>
@@ -232,7 +232,7 @@
       <h2>Code-point inspector</h2>
       <span id="inspSrc" class="src">press ⌕ on any output</span>
     </div>
-    <div id="inspBody"><div class="insp-empty">Nothing inspected yet. The inspector lists every code point with its Unicode name and UTF-8 byte sequence — perfect for seeing exactly what a transformation produced.</div></div>
+    <div id="inspBody"><div class="insp-empty">Nothing inspected yet. The inspector lists every code point with its Unicode name and UTF-8 byte sequence, perfect for seeing exactly what a transformation produced.</div></div>
   </section>
 
   <!-- background notes -->
@@ -248,13 +248,13 @@
         </ul>
       </div>
       <div class="card note">
-        <h3>⛏ Minecraft notes — what actually works in chat</h3>
+        <h3>⛏ Minecraft notes: what actually works in chat</h3>
         <ul>
           <li><b>Allowed characters:</b> vanilla Java accepts almost everything from U+0020 up, but kicks you ("Illegal characters in chat") for <code>§</code> section signs and control characters. MC mode flags any output containing them.</li>
-          <li><b>Length:</b> Java chat is capped at <b>256 characters</b> client-side; many servers enforce less. Zero-width padding burns budget fast — watch the <code>⛏ n/256</code> chip on every output.</li>
-          <li><b>Rendering:</b> most of the Basic Multilingual Plane (up to U+FFFF) renders via the built-in Unicode font, even when the blocky default font lacks a glyph. Characters <b>above U+FFFF</b> — squared/negative-circled capitals, supplementary variation selectors — show as <code>□</code>. MC mode hides those variants automatically.</li>
-          <li><b>Zero-width chars</b> render as nothing (or hairline gaps) on current Java builds — but always test on your exact version, font and resource pack.</li>
-          <li><b>Bedrock / Realms</b> run their own filters and may strip or normalize some tricks — results differ per platform. Always test client view <i>and</i> server console.</li>
+          <li><b>Length:</b> Java chat is capped at <b>256 characters</b> client-side; many servers enforce less. Zero-width padding burns budget fast; watch the <code>⛏ n/256</code> chip on every output.</li>
+          <li><b>Rendering:</b> most of the Basic Multilingual Plane (up to U+FFFF) renders via the built-in Unicode font, even when the blocky default font lacks a glyph. Characters <b>above U+FFFF</b> (squared/negative-circled capitals, supplementary variation selectors) show as <code>□</code>. MC mode hides those variants automatically.</li>
+          <li><b>Zero-width chars</b> render as nothing (or hairline gaps) on current Java builds, but always test on your exact version, font and resource pack.</li>
+          <li><b>Bedrock / Realms</b> run their own filters and may strip or normalize some tricks; results differ per platform. Always test client view <i>and</i> server console.</li>
         </ul>
       </div>
       <div class="card note">
@@ -262,13 +262,13 @@
         <ul>
           <li>Built for <b>security research, filter-robustness testing, education and creative typography</b>.</li>
           <li>Don't use obfuscation to harass, spam, or evade community rules.</li>
-          <li>If you run a filter: this page is your test suite — harden until every card round-trips to the original text.</li>
+          <li>If you run a filter: this page is your test suite: harden until every card round-trips to the original text.</li>
         </ul>
       </div>
     </div>
   </section>
 
-  <p class="tagline">Glyphsmith — a Unicode playground. Everything runs locally; nothing leaves your browser. A / А / Α — three scripts, one glyph, zero trust.</p>
+  <p class="tagline">Glyphsmith is a Unicode playground. Everything runs locally; nothing leaves your browser. A / А / Α: three scripts, one glyph, zero trust.</p>
 </main>
 
   <footer class="site-footer">
