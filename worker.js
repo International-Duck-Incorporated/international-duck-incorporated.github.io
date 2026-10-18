@@ -14,11 +14,15 @@ import {
   blockedResponse,
   wantsStatus,
   statusResponse,
+  ensureIndex,
 } from "./functions/_badegg.js";
 
 export default {
   async fetch(request, env, ctx) {
-    if (wantsStatus(request)) return statusResponse();
+    if (wantsStatus(request)) {
+      await ensureIndex(env, { waitUntil: (p) => ctx.waitUntil(p) });
+      return statusResponse();
+    }
 
     const ip = getClientIp(request);
     const blocked = ip

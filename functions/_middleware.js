@@ -16,12 +16,18 @@ import {
   blockedResponse,
   wantsStatus,
   statusResponse,
+  ensureIndex,
 } from "./_badegg.js";
 
 export async function onRequest(context) {
   const { request, env } = context;
 
-  if (wantsStatus(request)) return statusResponse();
+  // Warm the index before reporting, otherwise a cold isolate always says
+  // loaded:false even when everything is healthy.
+  if (wantsStatus(request)) {
+    await ensureIndex(env, { waitUntil: (p) => context.waitUntil(p) });
+    return statusResponse();
+  }
 
   const ip = getClientIp(request);
   const blocked = ip

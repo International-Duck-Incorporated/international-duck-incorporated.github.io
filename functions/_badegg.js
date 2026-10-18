@@ -35,7 +35,11 @@ const KV_KEY = "badegg:blocklist:v2";
 const TTL_MS = 10 * 60 * 1000;          // how stale the in-isolate index may get
 const RETRY_MS = 60 * 1000;             // backoff after a failed refresh
 const KV_CACHE_TTL_S = 300;             // Cloudflare edge cache for the KV read
-const COLD_WAIT_MS = 1500;              // max a cold request may block
+const COLD_WAIT_MS = 9000;              // max a cold request may block (see note)
+// A cold isolate has no index, so a short race means the first requests run
+// UNFILTERED - a real bypass for a banlist. The fetch itself is bounded by
+// FETCH_TIMEOUT_MS, so waiting for it is bounded too; we only fail open if the
+// artifact genuinely cannot be fetched.
 const FETCH_TIMEOUT_MS = 8000;
 const CONTACT_EMAIL = "0xffshell@duck.com";
 const BIN_MAGIC = 0x49444932;           // "IDI2"
@@ -383,7 +387,7 @@ export async function ensureIndex(env, options = {}) {
         work,
         new Promise((resolve) => setTimeout(() => resolve(null), COLD_WAIT_MS)),
       ]);
-      if (!raced) return null;             // allowed; refresh lands in the background
+      if (!raced) return null;             // only when fetching genuinely failed
       state = { index: raced.index, loadedAt: Date.now(), source: raced.source, nextAttemptAt: 0, lastError: null };
       return raced.index;
     }
