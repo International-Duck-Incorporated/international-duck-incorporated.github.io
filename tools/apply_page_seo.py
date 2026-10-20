@@ -39,7 +39,7 @@ BRAND = "IDI"
 PAGES: dict[str, tuple[str, str, str, str]] = {
     "index.html": (
         "/",
-        "International Duck - free Minecraft mods and tools",
+        "International Duck — open-source mods and tools",
         "Open-source Minecraft mods and tools from International Duck Incorporated: the 56-module "
         "Beacon, Venomous, NullTrace and more, all free on GitLab.",
         "Free, open-source Minecraft mods and Fabric client tools, built in public on GitLab.",
