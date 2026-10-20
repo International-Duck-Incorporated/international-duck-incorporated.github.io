@@ -17,11 +17,25 @@ URLs for crawlers and scrapers, not browser downloads.
 Run from the repo root:  python3 tools/bust_cache.py
 Idempotent: existing ?v= values are replaced on each run.
 """
+
 import hashlib
 import re
 from pathlib import Path
 
-ASSET_EXT = ("png", "webp", "jpg", "jpeg", "gif", "svg", "mp4", "webm", "woff2", "woff", "ttf", "otf")
+ASSET_EXT = (
+    "png",
+    "webp",
+    "jpg",
+    "jpeg",
+    "gif",
+    "svg",
+    "mp4",
+    "webm",
+    "woff2",
+    "woff",
+    "ttf",
+    "otf",
+)
 ASSET_REF = re.compile(
     r"""(["'(])/assets/(?P<name>[\w./-]+\.(?:""" + "|".join(ASSET_EXT) + r"""))(?:\?v=[\w-]+)?"""
 )
@@ -46,7 +60,7 @@ def main() -> None:
         digest = assets.get(match.group("name"))
         if not digest:
             return match.group(0)
-        return f'{match.group(1)}/assets/{match.group("name")}?v={digest}'
+        return f"{match.group(1)}/assets/{match.group('name')}?v={digest}"
 
     changed = 0
     pages = sorted(root.rglob("*.html"))
@@ -62,10 +76,16 @@ def main() -> None:
         # quote their own script tag in a header comment, and rewriting those
         # would change the file's hash on every run (never converging).
         if page.suffix == ".html":
-            src = re.sub(r'href="/css/(?P<name>[\w-]+)\.css(?:\?v=[\w-]+)?"',
-                         lambda m: f'href="/css/{m.group("name")}.css?v={css[m.group("name")]}"', src)
-            src = re.sub(r'src="/(?P<name>[\w-]+)\.js(?:\?v=[\w-]+)?"',
-                         lambda m: f'src="/{m.group("name")}.js?v={js[m.group("name")]}"', src)
+            src = re.sub(
+                r'href="/css/(?P<name>[\w-]+)\.css(?:\?v=[\w-]+)?"',
+                lambda m: f'href="/css/{m.group("name")}.css?v={css[m.group("name")]}"',
+                src,
+            )
+            src = re.sub(
+                r'src="/(?P<name>[\w-]+)\.js(?:\?v=[\w-]+)?"',
+                lambda m: f'src="/{m.group("name")}.js?v={js[m.group("name")]}"',
+                src,
+            )
         src = ASSET_REF.sub(fix_asset, src)
 
         if src != orig:

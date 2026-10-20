@@ -9,6 +9,7 @@ the page's static HTML (versions, release dates, licences, repository URLs).
 Idempotent: pages that already contain application/ld+json are skipped.
 Run from repo root:  python3 tools/apply_jsonld.py
 """
+
 import json
 import re
 from pathlib import Path
@@ -27,12 +28,13 @@ ORG = {
     "url": SITE + "/",
     "logo": {"@type": "ImageObject", "url": SITE + "/assets/org-avatar.png"},
     "image": OG_IMAGE,
-    "description": ("Open-source collective building Minecraft mods, tools and experiments "
-                    "in public. GitLab is the active source of truth; the former GitHub "
-                    "organization is currently hidden from public view."),
+    "description": (
+        "Open-source collective building Minecraft mods, tools and experiments "
+        "in public. GitLab is the active source of truth; the former GitHub "
+        "organization is currently hidden from public view."
+    ),
     "sameAs": [GITLAB],
-    "knowsAbout": ["Minecraft mods", "Fabric modding", "Minecraft client utilities",
-                   "open source"],
+    "knowsAbout": ["Minecraft mods", "Fabric modding", "Minecraft client utilities", "open source"],
 }
 WEB = {
     "@type": "WebSite",
@@ -46,57 +48,86 @@ WEB = {
 PROJECTS = {
     "projects/beacon/index.html": {
         "curseforge": "https://www.curseforge.com/minecraft/mc-mods/beacon-qol",
-        "url": "/projects/beacon", "name": "Beacon",
-        "desc": ("Modular, client-side utility mod for Minecraft 26.2 with 56 registered "
-                 "modules, persistent configuration and an addon API. Vanilla-server-safe."),
-        "version": "2.0.1", "date": "2026-09-25", "os": "Minecraft 26.2",
+        "url": "/projects/beacon",
+        "name": "Beacon",
+        "desc": (
+            "Modular, client-side utility mod for Minecraft 26.2 with 56 registered "
+            "modules, persistent configuration and an addon API. Vanilla-server-safe."
+        ),
+        "version": "2.0.1",
+        "date": "2026-09-25",
+        "os": "Minecraft 26.2",
         "repo": GITLAB + "/Beacon",
         "download": GITLAB + "/Beacon/-/releases/1.8.16/downloads/Beacon-1.8.16.jar",
         "license": "https://spdx.org/licenses/GPL-3.0-only.html",
     },
     "projects/venomous.html": {
-        "url": "/projects/venomous", "name": "Venomous",
-        "desc": ("Optimized and refined Meteor Client addon for Minecraft 26.2 with 124 "
-                 "modules. Stable release v7.0.0."),
-        "version": "7.0.0", "date": None, "os": "Minecraft 26.2",
+        "url": "/projects/venomous",
+        "name": "Venomous",
+        "desc": (
+            "Optimized and refined Meteor Client addon for Minecraft 26.2 with 124 "
+            "modules. Stable release v7.0.0."
+        ),
+        "version": "7.0.0",
+        "date": None,
+        "os": "Minecraft 26.2",
         "repo": GITLAB + "/Venomous",
         "download": GITLAB + "/Venomous/-/releases/v7.0.0",
         "license": None,
     },
     "projects/nulltrace.html": {
-        "url": "/projects/nulltrace", "name": "NullTrace",
-        "desc": ("Client-side Fabric privacy and anti-fingerprinting mod for Minecraft "
-                 "1.21.11, 26.1, 26.2 and 26.3: client brand spoofing, fingerprint "
-                 "protection, tracking defenses and safer server connections."),
-        "version": "2.0.0", "date": "2026-09-24",
+        "url": "/projects/nulltrace",
+        "name": "NullTrace",
+        "desc": (
+            "Client-side Fabric privacy and anti-fingerprinting mod for Minecraft "
+            "1.21.11, 26.1, 26.2 and 26.3: client brand spoofing, fingerprint "
+            "protection, tracking defenses and safer server connections."
+        ),
+        "version": "2.0.0",
+        "date": "2026-09-24",
         "os": "Minecraft 1.21.11 / 26.1 / 26.2 / 26.3",
         "repo": GITLAB + "/NullTrace",
         "download": GITLAB + "/NullTrace/-/releases/v2.0.0",
         "license": "https://spdx.org/licenses/GPL-3.0.html",
     },
     "projects/championscode.html": {
-        "url": "/projects/championscode", "name": "ChampionsCode",
-        "desc": ("Client-side Fabric mod for Minecraft 26.3 for authorized, defensive server "
-                 "and plugin research and controlled runtime Java addon development."),
-        "version": "0.1.0-beta.1", "date": "2026-09-25", "os": "Minecraft 26.3",
+        "url": "/projects/championscode",
+        "name": "ChampionsCode",
+        "desc": (
+            "Client-side Fabric mod for Minecraft 26.3 for authorized, defensive server "
+            "and plugin research and controlled runtime Java addon development."
+        ),
+        "version": "0.1.0-beta.1",
+        "date": "2026-09-25",
+        "os": "Minecraft 26.3",
         "repo": GITLAB + "/ChampionsCode",
         "download": GITLAB + "/ChampionsCode/-/releases/v0.1.0-beta.1",
         "license": None,
     },
     "projects/bagley.html": {
-        "url": "/projects/bagley", "name": "Bagley",
-        "desc": ("Opt-in, client-side AI chat assistant addon for Beacon with local provider "
-                 "configuration and optional memory. Requires Beacon 1.9.0 or newer."),
-        "version": None, "date": None, "os": "Minecraft (via Beacon)",
+        "url": "/projects/bagley",
+        "name": "Bagley",
+        "desc": (
+            "Opt-in, client-side AI chat assistant addon for Beacon with local provider "
+            "configuration and optional memory. Requires Beacon 1.9.0 or newer."
+        ),
+        "version": None,
+        "date": None,
+        "os": "Minecraft (via Beacon)",
         "repo": GITLAB + "/beacon-bagley",
         "download": None,
         "license": "https://spdx.org/licenses/GPL-3.0-only.html",
     },
     "projects/zonedout.html": {
-        "url": "/projects/zonedout", "name": "ZonedOut",
-        "desc": ("In-development client-side Minecraft 26.3 Fabric mod with combat and utility "
-                 "features, a Metro-style UI and 36-module seed/world-generation analysis."),
-        "version": "0.1.0", "date": None, "os": "Minecraft 26.3",
+        "url": "/projects/zonedout",
+        "name": "ZonedOut",
+        "desc": (
+            "In-development client-side Minecraft 26.3 Fabric mod with combat and utility "
+            "features, a Metro-style UI and 36-module seed/world-generation analysis."
+        ),
+        "version": "0.1.0",
+        "date": None,
+        "os": "Minecraft 26.3",
         "repo": GITLAB + "/zonedout",
         "download": None,
         "license": "https://spdx.org/licenses/GPL-3.0-only.html",
@@ -104,11 +135,16 @@ PROJECTS = {
 }
 
 PROJECTS["projects/website.html"] = {
-    "url": "/projects/website", "name": "IDI website",
-    "desc": ("The static, dependency-free source repository for this website: an open-source "
-             "organization dashboard synchronized live with the GitLab API and deployed on "
-             "Cloudflare Pages."),
-    "version": None, "date": None, "os": "Web",
+    "url": "/projects/website",
+    "name": "IDI website",
+    "desc": (
+        "The static, dependency-free source repository for this website: an open-source "
+        "organization dashboard synchronized live with the GitLab API and deployed on "
+        "Cloudflare Pages."
+    ),
+    "version": None,
+    "date": None,
+    "os": "Web",
     "repo": GITLAB + "/home",
     "download": None,
     "license": None,
@@ -117,24 +153,42 @@ PROJECTS["projects/website.html"] = {
 }
 
 MEMBERS = {
-    "members/0xffshell.html": {"url": "/members/0xffshell", "name": "0xFFshell",
+    "members/0xffshell.html": {
+        "url": "/members/0xffshell",
+        "name": "0xFFshell",
         "desc": "International Duck's main writer.",
-        "sameAs": ["https://gitlab.com/0xFFshell"]},
-    "members/3spress0.html": {"url": "/members/3spress0", "name": "espress0",
+        "sameAs": ["https://gitlab.com/0xFFshell"],
+    },
+    "members/3spress0.html": {
+        "url": "/members/3spress0",
+        "name": "espress0",
         "desc": "Backend developer and backbone of most International Duck projects.",
-        "sameAs": ["https://gitlab.com/espress0"]},
-    "members/e-vdv-hu.html": {"url": "/members/e-vdv-hu", "name": "E-VDV-HU",
+        "sameAs": ["https://gitlab.com/3spress0"],
+    },
+    "members/e-vdv-hu.html": {
+        "url": "/members/e-vdv-hu",
+        "name": "E-VDV-HU",
         "desc": "Backend and hosting manager for International Duck.",
-        "sameAs": []},
-    "members/midas735.html": {"url": "/members/midas735", "name": "midas735",
+        "sameAs": [],
+    },
+    "members/midas735.html": {
+        "url": "/members/midas735",
+        "name": "midas735",
         "desc": "Just happy to be here at International Duck Incorporated.",
-        "sameAs": ["https://gitlab.com/midas735"]},
-    "members/superivar.html": {"url": "/members/superivar", "name": "Xx-superIvar-xX",
+        "sameAs": ["https://gitlab.com/midas735"],
+    },
+    "members/superivar.html": {
+        "url": "/members/superivar",
+        "name": "Xx-superIvar-xX",
         "desc": "Product tester for International Duck Incorporated.",
-        "sameAs": ["https://gitlab.com/Xx-superIvar-xX"]},
-    "members/jojo-8002.html": {"url": "/members/jojo-8002", "name": "Jojo-8002",
+        "sameAs": ["https://gitlab.com/Xx-superIvar-xX"],
+    },
+    "members/jojo-8002.html": {
+        "url": "/members/jojo-8002",
+        "name": "Jojo-8002",
         "desc": "Here for shit n giggles at International Duck Incorporated.",
-        "sameAs": []},
+        "sameAs": [],
+    },
 }
 
 CRUMBS = {
@@ -145,11 +199,17 @@ CRUMBS = {
     "/members/": [("International Duck Incorporated", "/"), ("Members", "/members/")],
 }
 for _rel, _p in PROJECTS.items():
-    CRUMBS[_p["url"]] = [("International Duck Incorporated", "/"), ("Projects", "/projects/"),
-                         (_p["name"], _p["url"])]
+    CRUMBS[_p["url"]] = [
+        ("International Duck Incorporated", "/"),
+        ("Projects", "/projects/"),
+        (_p["name"], _p["url"]),
+    ]
 for _rel, _m in MEMBERS.items():
-    CRUMBS[_m["url"]] = [("International Duck Incorporated", "/"), ("Members", "/members/"),
-                         (_m["name"], _m["url"])]
+    CRUMBS[_m["url"]] = [
+        ("International Duck Incorporated", "/"),
+        ("Members", "/members/"),
+        (_m["name"], _m["url"]),
+    ]
 
 
 def breadcrumbs(url: str):
@@ -230,31 +290,56 @@ def build(rel: str, url: str, title: str, desc: str):
         graph.append(person)
     elif url == "/projects/":
         graph[2] = webpage(url, title, desc, "CollectionPage")
-        graph.append({"@type": "ItemList", "@id": SITE + url + "#list",
-                      "name": "Public projects",
-                      "numberOfItems": len(PROJECTS),
-                      "itemListElement": [
-                          {"@type": "ListItem", "position": i + 1,
-                           "name": p["name"], "url": SITE + p["url"]}
-                          for i, p in enumerate(PROJECTS.values())]})
+        graph.append(
+            {
+                "@type": "ItemList",
+                "@id": SITE + url + "#list",
+                "name": "Public projects",
+                "numberOfItems": len(PROJECTS),
+                "itemListElement": [
+                    {
+                        "@type": "ListItem",
+                        "position": i + 1,
+                        "name": p["name"],
+                        "url": SITE + p["url"],
+                    }
+                    for i, p in enumerate(PROJECTS.values())
+                ],
+            }
+        )
     elif url == "/members/":
         graph[2] = webpage(url, title, desc, "CollectionPage")
-        graph.append({"@type": "ItemList", "@id": SITE + url + "#list",
-                      "name": "Public members",
-                      "numberOfItems": len(MEMBERS),
-                      "itemListElement": [
-                          {"@type": "ListItem", "position": i + 1,
-                           "name": m["name"], "url": SITE + m["url"]}
-                          for i, m in enumerate(MEMBERS.values())]})
+        graph.append(
+            {
+                "@type": "ItemList",
+                "@id": SITE + url + "#list",
+                "name": "Public members",
+                "numberOfItems": len(MEMBERS),
+                "itemListElement": [
+                    {
+                        "@type": "ListItem",
+                        "position": i + 1,
+                        "name": m["name"],
+                        "url": SITE + m["url"],
+                    }
+                    for i, m in enumerate(MEMBERS.values())
+                ],
+            }
+        )
     return {"@context": "https://schema.org", "@graph": graph}
 
 
 def main() -> None:
     root = Path(__file__).resolve().parent.parent
-    pages = {**{r: PROJECTS[r]["url"] for r in PROJECTS},
-             **{r: MEMBERS[r]["url"] for r in MEMBERS},
-             "index.html": "/", "activity.html": "/activity", "migration.html": "/migration",
-             "projects/index.html": "/projects/", "members/index.html": "/members/"}
+    pages = {
+        **{r: PROJECTS[r]["url"] for r in PROJECTS},
+        **{r: MEMBERS[r]["url"] for r in MEMBERS},
+        "index.html": "/",
+        "activity.html": "/activity",
+        "migration.html": "/migration",
+        "projects/index.html": "/projects/",
+        "members/index.html": "/members/",
+    }
     done = 0
     for rel, url in pages.items():
         path = root / rel

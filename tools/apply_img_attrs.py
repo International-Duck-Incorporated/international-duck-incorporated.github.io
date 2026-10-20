@@ -11,6 +11,7 @@ fetchpriority hint is emitted anywhere.
 
 Run from repo root:  python3 tools/apply_img_attrs.py
 """
+
 import re
 from pathlib import Path
 
@@ -24,11 +25,11 @@ def fix(match: re.Match) -> str:
     below_fold = width >= 64 or bool(re.search(r"(member|contributor)-", src))
     if below_fold:
         if "loading=" in tag:
-            add = [] if "decoding=" in tag else ["decoding=\"async\""]
+            add = [] if "decoding=" in tag else ['decoding="async"']
         else:
-            add = ["loading=\"lazy\""] + ([] if "decoding=" in tag else ["decoding=\"async\""])
+            add = ['loading="lazy"'] + ([] if "decoding=" in tag else ['decoding="async"'])
     else:
-        add = [] if "decoding=" in tag else ["decoding=\"async\""]
+        add = [] if "decoding=" in tag else ['decoding="async"']
     if not add:
         return tag
     return tag[:-1].rstrip() + " " + " ".join(add) + ">"

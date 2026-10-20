@@ -39,9 +39,9 @@ DOWNLOAD_URL = CURSEFORGE_URL
 
 CATEGORY_BLURB = {
     "Utility": "Tools that speed up the things you do every session: eating, sorting, "
-               "reconnecting, keeping track of where you died.",
+    "reconnecting, keeping track of where you died.",
     "Render": "Client-side presentation: HUD elements, overlays, camera and viewmodel tweaks. "
-              "Nothing here changes what the server sees.",
+    "Nothing here changes what the server sees.",
     "World": "Information about the world around you - crops, light levels, structures, items and entities.",
     "Misc": "Everything that does not belong in a lane: chat hygiene, notifications, scoreboard and team display.",
     "Fun": "Cosmetics and toys kept deliberately separate from the functional modules.",
@@ -50,19 +50,19 @@ CATEGORY_BLURB = {
 
 def module_card(module: dict, download_url: str) -> str:
     initials = re.sub(r"[^A-Za-z]", "", module["name"])[:2].upper()
-    return f"""        <article class="module-card glass-card reveal category-{module['category'].lower()}" id="{module['id']}">
-          <div class="module-shot" data-shot-for="{module['id']}">
+    return f"""        <article class="module-card glass-card reveal category-{module["category"].lower()}" id="{module["id"]}">
+          <div class="module-shot" data-shot-for="{module["id"]}">
             <span class="module-shot-tile" aria-hidden="true">{html.escape(initials)}</span>
-            <span class="module-shot-label">{html.escape(module['name'])}</span>
+            <span class="module-shot-label">{html.escape(module["name"])}</span>
           </div>
           <div class="module-body">
-            <h3><a href="#{module['id']}">{html.escape(module['name'])}</a></h3>
-            <p>{html.escape(module['description'])}</p>
-            <p class="module-source"><code>{html.escape(module['class'])}.java</code></p>
+            <h3><a href="#{module["id"]}">{html.escape(module["name"])}</a></h3>
+            <p>{html.escape(module["description"])}</p>
+            <p class="module-source"><code>{html.escape(module["class"])}.java</code></p>
           </div>
           <footer class="module-links">
             <a class="module-link" href="{download_url}" target="_blank" rel="noreferrer">Download <svg><use href="#i-download"/></svg></a>
-            <a class="module-link muted" href="{module['source_url']}" target="_blank" rel="noreferrer">Source <svg><use href="#i-external"/></svg></a>
+            <a class="module-link muted" href="{module["source_url"]}" target="_blank" rel="noreferrer">Source <svg><use href="#i-external"/></svg></a>
           </footer>
         </article>"""
 
@@ -83,7 +83,7 @@ def main() -> int:
         sections.append(f"""      <section class="module-section reveal" id="category-{category.lower()}" aria-labelledby="heading-{category.lower()}">
         <header class="section-heading">
           <div>
-            <span class="eyebrow">{count} module{'s' if count != 1 else ''}</span>
+            <span class="eyebrow">{count} module{"s" if count != 1 else ""}</span>
             <h2 id="heading-{category.lower()}">{html.escape(category)}</h2>
           </div>
           <p>{html.escape(blurb)}</p>
@@ -102,7 +102,7 @@ def main() -> int:
         f"List generated from Beacon's own registration list "
         f"(<code>{html.escape(data['registration_source'].split('/')[-1])}</code>, "
         f"<code>{total}</code> <code>register()</code> calls) at "
-        f"<a href=\"{data['project_url']}/-/commit/{data['commit']}\" target=\"_blank\" rel=\"noreferrer\">{data['commit_short']}</a> "
+        f'<a href="{data["project_url"]}/-/commit/{data["commit"]}" target="_blank" rel="noreferrer">{data["commit_short"]}</a> '
         f"on {data['commit_date']}; each description is the string the module passes to "
         f"<code>Module</code> in its own constructor. Snapshot taken {data['fetched']}."
     )
@@ -128,43 +128,66 @@ def main() -> int:
         <h2>Where this list comes from</h2>
         <p>{verification}</p>
         <p>Every Download link on this page goes to <b><a href="{CURSEFORGE_URL}" target="_blank" rel="noreferrer">{CURSEFORGE_NAME}</a></b>, the project's CurseForge listing. Tagged releases stay on <a href="{RELEASES_URL}" target="_blank" rel="noreferrer">GitLab</a>, and the <a href="https://gitlab.com/international-duck-incorporated/Beacon" target="_blank" rel="noreferrer">source repository</a> is public.</p>
-        <p>Every module heading is linkable - for example <code>/projects/beacon/modules#{modules[0]['id']}</code> - and each card links to that module's source file.</p>
+        <p>Every module heading is linkable - for example <code>/projects/beacon/modules#{modules[0]["id"]}</code> - and each card links to that module's source file.</p>
       </section>
     </div>
   </main>"""
 
-    jsonld = json.dumps({
-        "@context": "https://schema.org",
-        "@graph": [
-            {
-                "@type": "BreadcrumbList",
-                "@id": f"{SITE}{URL_PATH}#breadcrumb",
-                "itemListElement": [
-                    {"@type": "ListItem", "position": 1, "name": "International Duck Incorporated", "item": f"{SITE}/"},
-                    {"@type": "ListItem", "position": 2, "name": "Projects", "item": f"{SITE}/projects/"},
-                    {"@type": "ListItem", "position": 3, "name": "Beacon", "item": f"{SITE}/projects/beacon"},
-                    {"@type": "ListItem", "position": 4, "name": "Modules", "item": f"{SITE}{URL_PATH}"},
-                ],
-            },
-            {
-                "@type": "ItemList",
-                "@id": f"{SITE}{URL_PATH}#modules",
-                "name": "Beacon modules",
-                "description": f"All {total} modules registered by Beacon, a client-side Fabric utility mod for Minecraft.",
-                "numberOfItems": total,
-                "itemListElement": [
-                    {
-                        "@type": "ListItem",
-                        "position": index,
-                        "name": module["name"],
-                        "description": module["description"],
-                        "url": f"{SITE}{URL_PATH}#{module['id']}",
-                    }
-                    for index, module in enumerate(modules, start=1)
-                ],
-            },
-        ],
-    }, indent=2)
+    jsonld = json.dumps(
+        {
+            "@context": "https://schema.org",
+            "@graph": [
+                {
+                    "@type": "BreadcrumbList",
+                    "@id": f"{SITE}{URL_PATH}#breadcrumb",
+                    "itemListElement": [
+                        {
+                            "@type": "ListItem",
+                            "position": 1,
+                            "name": "International Duck Incorporated",
+                            "item": f"{SITE}/",
+                        },
+                        {
+                            "@type": "ListItem",
+                            "position": 2,
+                            "name": "Projects",
+                            "item": f"{SITE}/projects/",
+                        },
+                        {
+                            "@type": "ListItem",
+                            "position": 3,
+                            "name": "Beacon",
+                            "item": f"{SITE}/projects/beacon",
+                        },
+                        {
+                            "@type": "ListItem",
+                            "position": 4,
+                            "name": "Modules",
+                            "item": f"{SITE}{URL_PATH}",
+                        },
+                    ],
+                },
+                {
+                    "@type": "ItemList",
+                    "@id": f"{SITE}{URL_PATH}#modules",
+                    "name": "Beacon modules",
+                    "description": f"All {total} modules registered by Beacon, a client-side Fabric utility mod for Minecraft.",
+                    "numberOfItems": total,
+                    "itemListElement": [
+                        {
+                            "@type": "ListItem",
+                            "position": index,
+                            "name": module["name"],
+                            "description": module["description"],
+                            "url": f"{SITE}{URL_PATH}#{module['id']}",
+                        }
+                        for index, module in enumerate(modules, start=1)
+                    ],
+                },
+            ],
+        },
+        indent=2,
+    )
 
     page = sitegen.assemble(
         shells=shells,

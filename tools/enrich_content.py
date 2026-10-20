@@ -10,6 +10,7 @@ hydration is unaffected (the new markup deliberately carries no data-org-* hooks
 Idempotent: pages containing data-seo-enriched are skipped.
 Run from repo root:  python3 tools/enrich_content.py
 """
+
 from pathlib import Path
 
 LAZY = ' loading="lazy" decoding="async"'
@@ -108,7 +109,9 @@ def insert(path: Path, block: str) -> bool:
         nested = _indent(block.replace('class="shell home-directory', 'class="home-directory'), 2)
         anchor = "        </section>\n      </div>\n    </section>"
         assert anchor in src, f"{path}: below-fold closing anchor not found"
-        src = src.replace(anchor, "        </section>\n" + nested + "      </div>\n    </section>", 1)
+        src = src.replace(
+            anchor, "        </section>\n" + nested + "      </div>\n    </section>", 1
+        )
     else:
         assert src.count("</main>") == 1, f"{path}: unexpected </main> count"
         src = src.replace("  </main>", block + "  </main>", 1)
@@ -118,9 +121,11 @@ def insert(path: Path, block: str) -> bool:
 
 def main() -> None:
     root = Path(__file__).resolve().parent.parent
-    for rel, block in [("index.html", HOME_BLOCK),
-                       ("members/index.html", MEMBERS_BLOCK),
-                       ("activity.html", ACTIVITY_BLOCK)]:
+    for rel, block in [
+        ("index.html", HOME_BLOCK),
+        ("members/index.html", MEMBERS_BLOCK),
+        ("activity.html", ACTIVITY_BLOCK),
+    ]:
         print(f"{rel}: {'updated' if insert(root / rel, block) else 'already enriched'}")
 
 

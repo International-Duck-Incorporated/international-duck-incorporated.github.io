@@ -25,9 +25,7 @@ export default {
     }
 
     const ip = getClientIp(request);
-    const blocked = ip
-      ? await isBlockedIp(ip, env, { waitUntil: (p) => ctx.waitUntil(p) })
-      : false;
+    const blocked = ip ? await isBlockedIp(ip, env, { waitUntil: (p) => ctx.waitUntil(p) }) : false;
 
     if (isPreview(request) || blocked) return blockedResponse(ip, env);
 

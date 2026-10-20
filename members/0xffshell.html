@@ -1,196 +1,325 @@
 <!doctype html>
 <html lang="en">
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <script>
-    (() => {
-      const nav = navigator;
-      const connection = nav.connection || nav.mozConnection || nav.webkitConnection;
-      const lowEnd = Boolean(
-        (connection && connection.saveData) ||
-        (connection && /^(slow-2g|2g)$/.test(connection.effectiveType || "")) ||
-        (typeof nav.deviceMemory === "number" && nav.deviceMemory <= 4) ||
-        (typeof nav.hardwareConcurrency === "number" && nav.hardwareConcurrency <= 4)
-      );
-      window.IDI_LOW_END = lowEnd;
-      window.IDI_REDUCED_MOTION = Boolean(
-        window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches
-      );
-      if (lowEnd) document.documentElement.classList.add("low-end");
-    })();
-  </script>
-  <link rel="preconnect" href="https://gitlab.com" crossorigin>
-  <link rel="preconnect" href="https://gitlab.com">
-  <link rel="dns-prefetch" href="https://gitlab.com">
-  <meta name="theme-color" content="#07090d">
-    <meta property="og:image" content="https://idi-official.pages.dev/assets/og-default.png">
-  <title>0xFFshell - International Duck member profile | IDI</title>
-  <meta name="description" content="0xFFshell is the main writer at International Duck Incorporated, contributing to the Venomous Meteor addon and the group&#x27;s other Minecraft projects on GitLab.">
-  <link rel="canonical" href="https://idi-official.pages.dev/members/0xffshell">
-  <meta property="og:type" content="website">
-  <meta property="og:title" content="0xFFshell - International Duck member profile">
-  <meta property="og:description" content="Main writer at International Duck Incorporated.">
-  <meta property="og:url" content="https://idi-official.pages.dev/members/0xffshell">
-  <meta property="og:site_name" content="International Duck Incorporated">
-  <meta property="og:locale" content="en_US">
-  <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="0xFFshell - International Duck member profile">
-  <meta name="twitter:description" content="Main writer at International Duck Incorporated.">
-  <link rel="icon" href="/assets/org-avatar.png?v=f3debf20" type="image/png">
-  <link rel="stylesheet" href="/css/bundle.css?v=1f263d21">
-  <script src="/script.js?v=ffe97c4c" defer></script>
-  <script src="/commit-feed.js?v=bdc09dd1" defer></script>
-  <script src="/pixel-canvas.js?v=9d12b50d" defer></script> <script src="/matrix-rain.js?v=a22b9411" defer></script>
-  <meta property="og:image:width" content="1200">
-  <meta property="og:image:height" content="630">
-  <meta property="og:image:alt" content="International Duck Incorporated - open-source Minecraft mods, tools and experiments">
-  <meta name="twitter:image" content="https://idi-official.pages.dev/assets/og-default.png">
-  <script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@graph": [
-    {
-      "@type": "Organization",
-      "@id": "https://idi-official.pages.dev/#organization",
-      "name": "International Duck Incorporated",
-      "alternateName": "IDI",
-      "url": "https://idi-official.pages.dev/",
-      "logo": {
-        "@type": "ImageObject",
-        "url": "https://idi-official.pages.dev/assets/org-avatar.png"
-      },
-      "image": "https://idi-official.pages.dev/assets/og-default.png",
-      "description": "Open-source collective building Minecraft mods, tools and experiments in public. GitLab is the active source of truth; the former GitHub organization is currently hidden from public view.",
-      "sameAs": [
-        "https://gitlab.com/international-duck-incorporated"
-      ],
-      "knowsAbout": [
-        "Minecraft mods",
-        "Fabric modding",
-        "Minecraft client utilities",
-        "open source"
-      ]
-    },
-    {
-      "@type": "WebSite",
-      "@id": "https://idi-official.pages.dev/#website",
-      "url": "https://idi-official.pages.dev/",
-      "name": "International Duck Incorporated",
-      "inLanguage": "en",
-      "publisher": {
-        "@id": "https://idi-official.pages.dev/#organization"
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <script>
+      (() => {
+        const nav = navigator;
+        const connection = nav.connection || nav.mozConnection || nav.webkitConnection;
+        const lowEnd = Boolean(
+          (connection && connection.saveData) ||
+            (connection && /^(slow-2g|2g)$/.test(connection.effectiveType || "")) ||
+            (typeof nav.deviceMemory === "number" && nav.deviceMemory <= 4) ||
+            (typeof nav.hardwareConcurrency === "number" && nav.hardwareConcurrency <= 4)
+        );
+        window.IDI_LOW_END = lowEnd;
+        window.IDI_REDUCED_MOTION = Boolean(
+          window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches
+        );
+        if (lowEnd) document.documentElement.classList.add("low-end");
+      })();
+    </script>
+    <link rel="preconnect" href="https://gitlab.com" crossorigin />
+    <link rel="preconnect" href="https://gitlab.com" />
+    <link rel="dns-prefetch" href="https://gitlab.com" />
+    <meta name="theme-color" content="#07090d" />
+    <meta property="og:image" content="https://idi-official.pages.dev/assets/og-default.png" />
+    <title>0xFFshell - International Duck member profile | IDI</title>
+    <meta
+      name="description"
+      content="0xFFshell is the main writer at International Duck Incorporated, contributing to the Venomous Meteor addon and the group&#x27;s other Minecraft projects on GitLab."
+    />
+    <link rel="canonical" href="https://idi-official.pages.dev/members/0xffshell" />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="0xFFshell - International Duck member profile" />
+    <meta property="og:description" content="Main writer at International Duck Incorporated." />
+    <meta property="og:url" content="https://idi-official.pages.dev/members/0xffshell" />
+    <meta property="og:site_name" content="International Duck Incorporated" />
+    <meta property="og:locale" content="en_US" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="0xFFshell - International Duck member profile" />
+    <meta name="twitter:description" content="Main writer at International Duck Incorporated." />
+    <link rel="icon" href="/assets/org-avatar.png?v=f3debf20" type="image/png" />
+    <link rel="stylesheet" href="/css/bundle.css?v=583143c6" />
+    <script src="/script.js?v=0443d2ee" defer></script>
+    <script src="/commit-feed.js?v=52be3925" defer></script>
+    <script src="/pixel-canvas.js?v=8f2c93f3" defer></script>
+    <script src="/matrix-rain.js?v=e424600f" defer></script>
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta
+      property="og:image:alt"
+      content="International Duck Incorporated - open-source Minecraft mods, tools and experiments"
+    />
+    <meta name="twitter:image" content="https://idi-official.pages.dev/assets/og-default.png" />
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@graph": [
+          {
+            "@type": "Organization",
+            "@id": "https://idi-official.pages.dev/#organization",
+            "name": "International Duck Incorporated",
+            "alternateName": "IDI",
+            "url": "https://idi-official.pages.dev/",
+            "logo": {
+              "@type": "ImageObject",
+              "url": "https://idi-official.pages.dev/assets/org-avatar.png"
+            },
+            "image": "https://idi-official.pages.dev/assets/og-default.png",
+            "description": "Open-source collective building Minecraft mods, tools and experiments in public. GitLab is the active source of truth; the former GitHub organization is currently hidden from public view.",
+            "sameAs": ["https://gitlab.com/international-duck-incorporated"],
+            "knowsAbout": [
+              "Minecraft mods",
+              "Fabric modding",
+              "Minecraft client utilities",
+              "open source"
+            ]
+          },
+          {
+            "@type": "WebSite",
+            "@id": "https://idi-official.pages.dev/#website",
+            "url": "https://idi-official.pages.dev/",
+            "name": "International Duck Incorporated",
+            "inLanguage": "en",
+            "publisher": {
+              "@id": "https://idi-official.pages.dev/#organization"
+            }
+          },
+          {
+            "@type": "ProfilePage",
+            "@id": "https://idi-official.pages.dev/members/0xffshell#webpage",
+            "url": "https://idi-official.pages.dev/members/0xffshell",
+            "name": "0xFFshell - International Duck",
+            "description": "0xFFshell, International Duck's main writer.",
+            "isPartOf": {
+              "@id": "https://idi-official.pages.dev/#website"
+            },
+            "about": {
+              "@id": "https://idi-official.pages.dev/#organization"
+            },
+            "inLanguage": "en",
+            "primaryImageOfPage": {
+              "@type": "ImageObject",
+              "url": "https://idi-official.pages.dev/assets/og-default.png"
+            },
+            "breadcrumb": {
+              "@id": "https://idi-official.pages.dev/members/0xffshell#breadcrumb"
+            },
+            "mainEntity": {
+              "@id": "https://idi-official.pages.dev/members/0xffshell#person"
+            }
+          },
+          {
+            "@type": "BreadcrumbList",
+            "@id": "https://idi-official.pages.dev/members/0xffshell#breadcrumb",
+            "itemListElement": [
+              {
+                "@type": "ListItem",
+                "position": 1,
+                "name": "International Duck Incorporated",
+                "item": "https://idi-official.pages.dev/"
+              },
+              {
+                "@type": "ListItem",
+                "position": 2,
+                "name": "Members",
+                "item": "https://idi-official.pages.dev/members/"
+              },
+              {
+                "@type": "ListItem",
+                "position": 3,
+                "name": "0xFFshell",
+                "item": "https://idi-official.pages.dev/members/0xffshell"
+              }
+            ]
+          },
+          {
+            "@type": "Person",
+            "@id": "https://idi-official.pages.dev/members/0xffshell#person",
+            "name": "0xFFshell",
+            "description": "International Duck's main writer.",
+            "url": "https://idi-official.pages.dev/members/0xffshell",
+            "memberOf": {
+              "@id": "https://idi-official.pages.dev/#organization"
+            },
+            "sameAs": ["https://gitlab.com/0xFFshell"]
+          }
+        ]
       }
-    },
-    {
-      "@type": "ProfilePage",
-      "@id": "https://idi-official.pages.dev/members/0xffshell#webpage",
-      "url": "https://idi-official.pages.dev/members/0xffshell",
-      "name": "0xFFshell - International Duck",
-      "description": "0xFFshell, International Duck's main writer.",
-      "isPartOf": {
-        "@id": "https://idi-official.pages.dev/#website"
-      },
-      "about": {
-        "@id": "https://idi-official.pages.dev/#organization"
-      },
-      "inLanguage": "en",
-      "primaryImageOfPage": {
-        "@type": "ImageObject",
-        "url": "https://idi-official.pages.dev/assets/og-default.png"
-      },
-      "breadcrumb": {
-        "@id": "https://idi-official.pages.dev/members/0xffshell#breadcrumb"
-      },
-      "mainEntity": {
-        "@id": "https://idi-official.pages.dev/members/0xffshell#person"
-      }
-    },
-    {
-      "@type": "BreadcrumbList",
-      "@id": "https://idi-official.pages.dev/members/0xffshell#breadcrumb",
-      "itemListElement": [
-        {
-          "@type": "ListItem",
-          "position": 1,
-          "name": "International Duck Incorporated",
-          "item": "https://idi-official.pages.dev/"
-        },
-        {
-          "@type": "ListItem",
-          "position": 2,
-          "name": "Members",
-          "item": "https://idi-official.pages.dev/members/"
-        },
-        {
-          "@type": "ListItem",
-          "position": 3,
-          "name": "0xFFshell",
-          "item": "https://idi-official.pages.dev/members/0xffshell"
-        }
-      ]
-    },
-    {
-      "@type": "Person",
-      "@id": "https://idi-official.pages.dev/members/0xffshell#person",
-      "name": "0xFFshell",
-      "description": "International Duck's main writer.",
-      "url": "https://idi-official.pages.dev/members/0xffshell",
-      "memberOf": {
-        "@id": "https://idi-official.pages.dev/#organization"
-      },
-      "sameAs": [
-        "https://gitlab.com/0xFFshell"
-      ]
-    }
-  ]
-}
-  </script>
-</head>
-<body data-page="member" data-member="0xffshell">
-  <svg class="svg-sprite" aria-hidden="true">
-    <symbol id="i-gitlab" viewBox="0 0 24 24"><path fill="currentColor" stroke="none" d="m23.6004 9.5927-.0337-.0862L20.3.9814a.851.851 0 0 0-.3362-.405.8748.8748 0 0 0-.9997.0539.8748.8748 0 0 0-.29.4399l-2.2055 6.748H7.5375l-2.2057-6.748a.8573.8573 0 0 0-.29-.4412.8748.8748 0 0 0-.9997-.0537.8585.8585 0 0 0-.3362.4049L.4332 9.5015l-.0325.0862a6.0657 6.0657 0 0 0 2.0119 7.0105l.0113.0087.03.0213 4.976 3.7264 2.462 1.8633 1.4995 1.1321a1.0085 1.0085 0 0 0 1.2197 0l1.4995-1.1321 2.4619-1.8633 5.006-3.7489.0125-.01a6.0682 6.0682 0 0 0 2.0094-7.003z"/></symbol>
-    <symbol id="i-menu" viewBox="0 0 24 24"><path d="M4 8h16M4 16h16"/></symbol>
-    <symbol id="i-close" viewBox="0 0 24 24"><path d="m5 5 14 14M19 5 5 19"/></symbol>
-  </svg>
+    </script>
+  </head>
+  <body data-page="member" data-member="0xffshell">
+    <svg class="svg-sprite" aria-hidden="true">
+      <symbol id="i-gitlab" viewBox="0 0 24 24">
+        <path
+          fill="currentColor"
+          stroke="none"
+          d="m23.6004 9.5927-.0337-.0862L20.3.9814a.851.851 0 0 0-.3362-.405.8748.8748 0 0 0-.9997.0539.8748.8748 0 0 0-.29.4399l-2.2055 6.748H7.5375l-2.2057-6.748a.8573.8573 0 0 0-.29-.4412.8748.8748 0 0 0-.9997-.0537.8585.8585 0 0 0-.3362.4049L.4332 9.5015l-.0325.0862a6.0657 6.0657 0 0 0 2.0119 7.0105l.0113.0087.03.0213 4.976 3.7264 2.462 1.8633 1.4995 1.1321a1.0085 1.0085 0 0 0 1.2197 0l1.4995-1.1321 2.4619-1.8633 5.006-3.7489.0125-.01a6.0682 6.0682 0 0 0 2.0094-7.003z"
+        />
+      </symbol>
+      <symbol id="i-menu" viewBox="0 0 24 24"><path d="M4 8h16M4 16h16" /></symbol>
+      <symbol id="i-close" viewBox="0 0 24 24"><path d="m5 5 14 14M19 5 5 19" /></symbol>
+    </svg>
 
-  <a class="skip-link" href="#main">Skip to content</a>
-  <div class="site-glow site-glow-blue" aria-hidden="true"></div>
-  <canvas id="matrix-rain" class="effect-background" aria-hidden="true"></canvas>
+    <a class="skip-link" href="#main">Skip to content</a>
+    <div class="site-glow site-glow-blue" aria-hidden="true"></div>
+    <canvas id="matrix-rain" class="effect-background" aria-hidden="true"></canvas>
 
-  <header class="topbar" data-header>
-    <div class="shell topbar-inner">
-      <a class="brand" href="/" aria-label="International Duck Incorporated home"><img data-org-avatar src="/assets/org-avatar.webp?v=fff479ce" alt="" width="40" height="40" decoding="async"><span><b>International Duck</b><small>Incorporated</small></span></a>
-      <nav class="main-nav" id="main-navigation" data-nav aria-label="Primary navigation">
-        <a href="/">Overview</a><a href="/projects">Projects</a><a href="/noosphere">Noosphere</a><a class="active" href="/members" aria-current="page">Members</a><a href="/activity">Activity</a><a href="/migration">Migration</a><a class="icon-link" href="https://gitlab.com/international-duck-incorporated" target="_blank" rel="noreferrer" aria-label="International Duck Incorporated on GitLab"><svg><use href="#i-gitlab"/></svg></a>
-      </nav>
-      <button class="menu-button" type="button" data-menu aria-label="Open navigation" aria-controls="main-navigation" aria-expanded="false"><svg class="menu-open"><use href="#i-menu"/></svg><svg class="menu-close"><use href="#i-close"/></svg></button>
-    </div>
-  </header>
+    <header class="topbar" data-header>
+      <div class="shell topbar-inner">
+        <a class="brand" href="/" aria-label="International Duck Incorporated home"
+          ><img
+            data-org-avatar
+            src="/assets/org-avatar.webp?v=fff479ce"
+            alt=""
+            width="40"
+            height="40"
+            decoding="async"
+          /><span><b>International Duck</b><small>Incorporated</small></span></a
+        >
+        <nav class="main-nav" id="main-navigation" data-nav aria-label="Primary navigation">
+          <a href="/">Overview</a><a href="/projects">Projects</a><a href="/noosphere">Noosphere</a
+          ><a class="active" href="/members" aria-current="page">Members</a
+          ><a href="/activity">Activity</a><a href="/migration">Migration</a
+          ><a
+            class="icon-link"
+            href="https://gitlab.com/international-duck-incorporated"
+            target="_blank"
+            rel="noreferrer"
+            aria-label="International Duck Incorporated on GitLab"
+            ><svg><use href="#i-gitlab" /></svg
+          ></a>
+        </nav>
+        <button
+          class="menu-button"
+          type="button"
+          data-menu
+          aria-label="Open navigation"
+          aria-controls="main-navigation"
+          aria-expanded="false"
+        >
+          <svg class="menu-open"><use href="#i-menu" /></svg
+          ><svg class="menu-close"><use href="#i-close" /></svg>
+        </button>
+      </div>
+    </header>
 
-  <main id="main" class="profile-page member-page">
-    <div class="shell">
-      <div class="breadcrumbs"><a href="/">International Duck</a><span>/</span><a href="/members">Members</a><span>/</span><b>0xFFshell</b></div>
-      <section class="profile-hero">
-        <article class="profile-intro glass-card reveal">
-          <picture><source srcset="/assets/member-0xffshell.webp?v=827f401e" type="image/webp"><img class="avatar" src="/assets/member-0xffshell.png?v=d8a12bec" alt="0xFFshell" loading="lazy" decoding="async"></picture>
-          <span class="eyebrow">Member profile</span>
-          <div class="account-status account-status-terminated" role="status" aria-label="GitHub account status: banned"><strong>GitHub account banned</strong><span>0xFF remains an active International Duck member and now develops on GitLab.</span></div>
-          <h1>0xFFshell.</h1>
-          <p class="lead">An active member of International Duck and the team's main writer, with visible contributions to Venomous and the GitLab migration.</p>
-          <div class="action-row"><a class="button button-blue" href="https://gitlab.com/0xFFshell" target="_blank" rel="noreferrer"><pixel-canvas data-gap="6" data-speed="35" data-colors="#ddfbe4, #8cf77a, #4caf6d"></pixel-canvas><svg><use href="#i-gitlab"/></svg>View GitLab</a></div>
-        </article>
-        <aside class="profile-sidebar glass-card reveal">
-          <div><span class="eyebrow">At a glance</span><div class="fact-list"><div class="fact"><small>GitHub status</small><b class="fact-danger">Banned</b></div><div class="fact"><small>GitLab status</small><b>Active</b></div><div class="fact"><small>GitLab profile</small><b><a href="https://gitlab.com/0xFFshell" target="_blank" rel="noreferrer">@0xFFshell ↗</a></b></div><div class="fact"><small>Role</small><b>Main writer</b></div><div class="fact"><small>Focus</small><b>Minecraft client development</b></div></div></div>
-        </aside>
-      </section>
-      <section class="detail-grid">
-        <article class="detail-panel glass-card reveal"><span class="eyebrow">Work</span><h2>Still part of the crew.</h2><ul><li>Writes for the Venomous Meteor Client addon.</li><li>Contributes to ChampionsCode and the organization website on GitLab.</li><li>Created the Beacon project in the GitLab group and helped move team operations there.</li></ul></article>
-        <article class="detail-panel glass-card reveal"><span class="eyebrow">Profile note</span><h2>Active on GitLab.</h2><p>The GitHub profile is unavailable following the ban, but that account action did not end 0xFF's International Duck membership. Public GitLab activity shows continued work across Beacon, ChampionsCode, Venomous, and this website.</p></article>
-      </section>
-    </div>
-  </main>
+    <main id="main" class="profile-page member-page">
+      <div class="shell">
+        <div class="breadcrumbs">
+          <a href="/">International Duck</a><span>/</span><a href="/members">Members</a
+          ><span>/</span><b>0xFFshell</b>
+        </div>
+        <section class="profile-hero">
+          <article class="profile-intro glass-card reveal">
+            <picture
+              ><source srcset="/assets/member-0xffshell.webp?v=827f401e" type="image/webp" />
+              <img
+                class="avatar"
+                src="/assets/member-0xffshell.png?v=d8a12bec"
+                alt="0xFFshell"
+                loading="lazy"
+                decoding="async"
+            /></picture>
+            <span class="eyebrow">Member profile</span>
+            <div
+              class="account-status account-status-terminated"
+              role="status"
+              aria-label="GitHub account status: banned"
+            >
+              <strong>GitHub account banned</strong
+              ><span
+                >0xFF remains an active International Duck member and now develops on GitLab.</span
+              >
+            </div>
+            <h1>0xFFshell.</h1>
+            <p class="lead">
+              An active member of International Duck and the team's main writer, with visible
+              contributions to Venomous and the GitLab migration.
+            </p>
+            <div class="action-row">
+              <a
+                class="button button-blue"
+                href="https://gitlab.com/0xFFshell"
+                target="_blank"
+                rel="noreferrer"
+                ><pixel-canvas
+                  data-gap="6"
+                  data-speed="35"
+                  data-colors="#ddfbe4, #8cf77a, #4caf6d"
+                ></pixel-canvas
+                ><svg><use href="#i-gitlab" /></svg>View GitLab</a
+              >
+            </div>
+          </article>
+          <aside class="profile-sidebar glass-card reveal">
+            <div>
+              <span class="eyebrow">At a glance</span>
+              <div class="fact-list">
+                <div class="fact">
+                  <small>GitHub status</small><b class="fact-danger">Banned</b>
+                </div>
+                <div class="fact"><small>GitLab status</small><b>Active</b></div>
+                <div class="fact">
+                  <small>GitLab profile</small
+                  ><b
+                    ><a href="https://gitlab.com/0xFFshell" target="_blank" rel="noreferrer"
+                      >@0xFFshell ↗</a
+                    ></b
+                  >
+                </div>
+                <div class="fact"><small>Role</small><b>Main writer</b></div>
+                <div class="fact"><small>Focus</small><b>Minecraft client development</b></div>
+              </div>
+            </div>
+          </aside>
+        </section>
+        <section class="detail-grid">
+          <article class="detail-panel glass-card reveal">
+            <span class="eyebrow">Work</span>
+            <h2>Still part of the crew.</h2>
+            <ul>
+              <li>Writes for the Venomous Meteor Client addon.</li>
+              <li>Contributes to ChampionsCode and the organization website on GitLab.</li>
+              <li>
+                Created the Beacon project in the GitLab group and helped move team operations
+                there.
+              </li>
+            </ul>
+          </article>
+          <article class="detail-panel glass-card reveal">
+            <span class="eyebrow">Profile note</span>
+            <h2>Active on GitLab.</h2>
+            <p>
+              The GitHub profile is unavailable following the ban, but that account action did not
+              end 0xFF's International Duck membership. Public GitLab activity shows continued work
+              across Beacon, ChampionsCode, Venomous, and this website.
+            </p>
+          </article>
+        </section>
+      </div>
+    </main>
 
-  <footer class="site-footer"><div class="shell footer-inner"><a class="brand" href="/"><picture><source srcset="/assets/org-avatar.webp?v=fff479ce" type="image/webp"><img src="/assets/org-avatar.png?v=f3debf20" alt="" decoding="async"></picture><span><b>International Duck</b><small>Incorporated</small></span></a><nav><a href="/projects">Projects</a><a href="/noosphere">Noosphere</a><a href="/members">Members</a><a href="/activity">Activity</a><a href="/migration">Migration</a><a href="/glyphsmith">Glyphsmith</a><a href="/changelog">Changelog</a><a href="https://gitlab.com/international-duck-incorporated">GitLab</a><a href="mailto:0xffshell@duck.com">Contact</a></nav><span class="sync-state"><i></i><span data-sync-text>GitLab data synced live</span></span></div></footer>
-</body>
+    <footer class="site-footer">
+      <div class="shell footer-inner">
+        <a class="brand" href="/"
+          ><picture
+            ><source srcset="/assets/org-avatar.webp?v=fff479ce" type="image/webp" />
+            <img src="/assets/org-avatar.png?v=f3debf20" alt="" decoding="async" /></picture
+          ><span><b>International Duck</b><small>Incorporated</small></span></a
+        >
+        <nav>
+          <a href="/projects">Projects</a><a href="/noosphere">Noosphere</a
+          ><a href="/members">Members</a><a href="/activity">Activity</a
+          ><a href="/migration">Migration</a><a href="/glyphsmith">Glyphsmith</a
+          ><a href="/changelog">Changelog</a
+          ><a href="https://gitlab.com/international-duck-incorporated">GitLab</a
+          ><a href="mailto:0xffshell@duck.com">Contact</a>
+        </nav>
+        <span class="sync-state"><i></i><span data-sync-text>GitLab data synced live</span></span>
+      </div>
+    </footer>
+  </body>
 </html>

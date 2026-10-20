@@ -1,218 +1,446 @@
 <!doctype html>
 <html lang="en">
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <script>
-    (() => {
-      const nav = navigator;
-      const connection = nav.connection || nav.mozConnection || nav.webkitConnection;
-      const lowEnd = Boolean(
-        (connection && connection.saveData) ||
-        (connection && /^(slow-2g|2g)$/.test(connection.effectiveType || "")) ||
-        (typeof nav.deviceMemory === "number" && nav.deviceMemory <= 4) ||
-        (typeof nav.hardwareConcurrency === "number" && nav.hardwareConcurrency <= 4)
-      );
-      window.IDI_LOW_END = lowEnd;
-      window.IDI_REDUCED_MOTION = Boolean(
-        window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches
-      );
-      if (lowEnd) document.documentElement.classList.add("low-end");
-    })();
-  </script>
-  <link rel="preconnect" href="https://gitlab.com" crossorigin>
-  <link rel="preconnect" href="https://gitlab.com">
-  <link rel="dns-prefetch" href="https://gitlab.com">
-  <meta name="theme-color" content="#07090d">
-    <meta property="og:image" content="https://idi-official.pages.dev/assets/og-default.png">
-  <title>midas735 - International Duck member profile | IDI</title>
-  <meta name="description" content="midas735 is a public member of International Duck Incorporated, taking part in the group&#x27;s free Minecraft mod projects and their GitLab activity.">
-  <link rel="canonical" href="https://idi-official.pages.dev/members/midas735">
-  <meta property="og:type" content="website">
-  <meta property="og:title" content="midas735 - International Duck member profile">
-  <meta property="og:description" content="Public member of International Duck Incorporated.">
-  <meta property="og:url" content="https://idi-official.pages.dev/members/midas735">
-  <meta property="og:site_name" content="International Duck Incorporated">
-  <meta property="og:locale" content="en_US">
-  <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="midas735 - International Duck member profile">
-  <meta name="twitter:description" content="Public member of International Duck Incorporated.">
-  <link rel="icon" href="/assets/org-avatar.png?v=f3debf20" type="image/png">
-  <link rel="stylesheet" href="/css/bundle.css?v=1f263d21">
-  <script src="/script.js?v=ffe97c4c" defer></script>
-  <script src="/commit-feed.js?v=bdc09dd1" defer></script>
-  <script src="/pixel-canvas.js?v=9d12b50d" defer></script>
-  <style>
-    /* Goofy ahh gif: THE background. Not an accent. THE background. */
-    /* isolation makes body its own stacking context, so the z-index:-2 layer
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <script>
+      (() => {
+        const nav = navigator;
+        const connection = nav.connection || nav.mozConnection || nav.webkitConnection;
+        const lowEnd = Boolean(
+          (connection && connection.saveData) ||
+            (connection && /^(slow-2g|2g)$/.test(connection.effectiveType || "")) ||
+            (typeof nav.deviceMemory === "number" && nav.deviceMemory <= 4) ||
+            (typeof nav.hardwareConcurrency === "number" && nav.hardwareConcurrency <= 4)
+        );
+        window.IDI_LOW_END = lowEnd;
+        window.IDI_REDUCED_MOTION = Boolean(
+          window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches
+        );
+        if (lowEnd) document.documentElement.classList.add("low-end");
+      })();
+    </script>
+    <link rel="preconnect" href="https://gitlab.com" crossorigin />
+    <link rel="preconnect" href="https://gitlab.com" />
+    <link rel="dns-prefetch" href="https://gitlab.com" />
+    <meta name="theme-color" content="#07090d" />
+    <meta property="og:image" content="https://idi-official.pages.dev/assets/og-default.png" />
+    <title>midas735 - International Duck member profile | IDI</title>
+    <meta
+      name="description"
+      content="midas735 is a public member of International Duck Incorporated, taking part in the group&#x27;s free Minecraft mod projects and their GitLab activity."
+    />
+    <link rel="canonical" href="https://idi-official.pages.dev/members/midas735" />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="midas735 - International Duck member profile" />
+    <meta property="og:description" content="Public member of International Duck Incorporated." />
+    <meta property="og:url" content="https://idi-official.pages.dev/members/midas735" />
+    <meta property="og:site_name" content="International Duck Incorporated" />
+    <meta property="og:locale" content="en_US" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="midas735 - International Duck member profile" />
+    <meta name="twitter:description" content="Public member of International Duck Incorporated." />
+    <link rel="icon" href="/assets/org-avatar.png?v=f3debf20" type="image/png" />
+    <link rel="stylesheet" href="/css/bundle.css?v=583143c6" />
+    <script src="/script.js?v=0443d2ee" defer></script>
+    <script src="/commit-feed.js?v=52be3925" defer></script>
+    <script src="/pixel-canvas.js?v=8f2c93f3" defer></script>
+    <style>
+      /* Goofy ahh gif: THE background. Not an accent. THE background. */
+      /* isolation makes body its own stacking context, so the z-index:-2 layer
        paints ABOVE body's opaque gradient instead of being buried under it. */
-    body[data-member="midas735"]{isolation:isolate;}
-    .goofy-bg{position:fixed;inset:0;z-index:-2;pointer-events:none;background:url("/assets/goofy-ahh.gif?v=2bf771aa") center / cover no-repeat;background-image:image-set(url("/assets/goofy-ahh.webp?v=25a140e4") type("image/webp"),url("/assets/goofy-ahh.gif?v=2bf771aa") type("image/gif"));}
-    .goofy-bg::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg, rgba(7,9,13,.66), rgba(7,9,13,.52) 45%, rgba(7,9,13,.78));}
-    .commit-log{display:flex;flex-direction:column;gap:.9rem;margin-top:1rem;}
-    .commit-log .commit{display:grid;grid-template-columns:auto 1fr;gap:.35rem .8rem;padding:.85rem 1rem;border:1px solid rgba(140,180,255,.18);border-radius:12px;background:rgba(10,16,28,.45);}
-    .commit code{font-size:.8rem;opacity:.75;align-self:start;padding-top:.15rem;}
-    .commit b{font-size:.95rem;}
-    .commit small{grid-column:2;opacity:.7;line-height:1.5;}
-    .commit .meta{grid-column:2;font-size:.75rem;letter-spacing:.04em;text-transform:uppercase;opacity:.55;}
-  </style>
-  <meta property="og:image:width" content="1200">
-  <meta property="og:image:height" content="630">
-  <meta property="og:image:alt" content="International Duck Incorporated - open-source Minecraft mods, tools and experiments">
-  <meta name="twitter:image" content="https://idi-official.pages.dev/assets/og-default.png">
-  <script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@graph": [
-    {
-      "@type": "Organization",
-      "@id": "https://idi-official.pages.dev/#organization",
-      "name": "International Duck Incorporated",
-      "alternateName": "IDI",
-      "url": "https://idi-official.pages.dev/",
-      "logo": {
-        "@type": "ImageObject",
-        "url": "https://idi-official.pages.dev/assets/org-avatar.png"
-      },
-      "image": "https://idi-official.pages.dev/assets/og-default.png",
-      "description": "Open-source collective building Minecraft mods, tools and experiments in public. GitLab is the active source of truth; the former GitHub organization is currently hidden from public view.",
-      "sameAs": [
-        "https://gitlab.com/international-duck-incorporated"
-      ],
-      "knowsAbout": [
-        "Minecraft mods",
-        "Fabric modding",
-        "Minecraft client utilities",
-        "open source"
-      ]
-    },
-    {
-      "@type": "WebSite",
-      "@id": "https://idi-official.pages.dev/#website",
-      "url": "https://idi-official.pages.dev/",
-      "name": "International Duck Incorporated",
-      "inLanguage": "en",
-      "publisher": {
-        "@id": "https://idi-official.pages.dev/#organization"
+      body[data-member="midas735"] {
+        isolation: isolate;
       }
-    },
-    {
-      "@type": "ProfilePage",
-      "@id": "https://idi-official.pages.dev/members/midas735#webpage",
-      "url": "https://idi-official.pages.dev/members/midas735",
-      "name": "midas735 - International Duck",
-      "description": "midas735, just happy to be here at International Duck.",
-      "isPartOf": {
-        "@id": "https://idi-official.pages.dev/#website"
-      },
-      "about": {
-        "@id": "https://idi-official.pages.dev/#organization"
-      },
-      "inLanguage": "en",
-      "primaryImageOfPage": {
-        "@type": "ImageObject",
-        "url": "https://idi-official.pages.dev/assets/og-default.png"
-      },
-      "breadcrumb": {
-        "@id": "https://idi-official.pages.dev/members/midas735#breadcrumb"
-      },
-      "mainEntity": {
-        "@id": "https://idi-official.pages.dev/members/midas735#person"
+      .goofy-bg {
+        position: fixed;
+        inset: 0;
+        z-index: -2;
+        pointer-events: none;
+        background: url("/assets/goofy-ahh.gif?v=2bf771aa") center / cover no-repeat;
+        background-image: image-set(
+          url("/assets/goofy-ahh.webp?v=25a140e4") type("image/webp"),
+          url("/assets/goofy-ahh.gif?v=2bf771aa") type("image/gif")
+        );
       }
-    },
-    {
-      "@type": "BreadcrumbList",
-      "@id": "https://idi-official.pages.dev/members/midas735#breadcrumb",
-      "itemListElement": [
-        {
-          "@type": "ListItem",
-          "position": 1,
-          "name": "International Duck Incorporated",
-          "item": "https://idi-official.pages.dev/"
-        },
-        {
-          "@type": "ListItem",
-          "position": 2,
-          "name": "Members",
-          "item": "https://idi-official.pages.dev/members/"
-        },
-        {
-          "@type": "ListItem",
-          "position": 3,
-          "name": "midas735",
-          "item": "https://idi-official.pages.dev/members/midas735"
-        }
-      ]
-    },
-    {
-      "@type": "Person",
-      "@id": "https://idi-official.pages.dev/members/midas735#person",
-      "name": "midas735",
-      "description": "Just happy to be here at International Duck Incorporated.",
-      "url": "https://idi-official.pages.dev/members/midas735",
-      "memberOf": {
-        "@id": "https://idi-official.pages.dev/#organization"
-      },
-      "sameAs": [
-        "https://gitlab.com/midas735",
-        "https://github.com/midas735"
-      ]
-    }
-  ]
-}
-  </script>
-</head>
-<body data-page="member" data-member="midas735">
-  <svg class="svg-sprite" aria-hidden="true"><symbol id="i-gitlab" viewBox="0 0 24 24"><path fill="currentColor" stroke="none" d="m23.6004 9.5927-.0337-.0862L20.3.9814a.851.851 0 0 0-.3362-.405.8748.8748 0 0 0-.9997.0539.8748.8748 0 0 0-.29.4399l-2.2055 6.748H7.5375l-2.2057-6.748a.8573.8573 0 0 0-.29-.4412.8748.8748 0 0 0-.9997-.0537.8585.8585 0 0 0-.3362.4049L.4332 9.5015l-.0325.0862a6.0657 6.0657 0 0 0 2.0119 7.0105l.0113.0087.03.0213 4.976 3.7264 2.462 1.8633 1.4995 1.1321a1.0085 1.0085 0 0 0 1.2197 0l1.4995-1.1321 2.4619-1.8633 5.006-3.7489.0125-.01a6.0682 6.0682 0 0 0 2.0094-7.003z"/></symbol>
-    <symbol id="i-menu" viewBox="0 0 24 24"><path d="M4 8h16M4 16h16"/></symbol>
-    <symbol id="i-close" viewBox="0 0 24 24"><path d="m5 5 14 14M19 5 5 19"/></symbol>
-  <symbol id="i-github" viewBox="0 0 24 24"><path fill="currentColor" stroke="none" d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/></symbol></svg>
+      .goofy-bg::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(
+          180deg,
+          rgba(7, 9, 13, 0.66),
+          rgba(7, 9, 13, 0.52) 45%,
+          rgba(7, 9, 13, 0.78)
+        );
+      }
+      .commit-log {
+        display: flex;
+        flex-direction: column;
+        gap: 0.9rem;
+        margin-top: 1rem;
+      }
+      .commit-log .commit {
+        display: grid;
+        grid-template-columns: auto 1fr;
+        gap: 0.35rem 0.8rem;
+        padding: 0.85rem 1rem;
+        border: 1px solid rgba(140, 180, 255, 0.18);
+        border-radius: 12px;
+        background: rgba(10, 16, 28, 0.45);
+      }
+      .commit code {
+        font-size: 0.8rem;
+        opacity: 0.75;
+        align-self: start;
+        padding-top: 0.15rem;
+      }
+      .commit b {
+        font-size: 0.95rem;
+      }
+      .commit small {
+        grid-column: 2;
+        opacity: 0.7;
+        line-height: 1.5;
+      }
+      .commit .meta {
+        grid-column: 2;
+        font-size: 0.75rem;
+        letter-spacing: 0.04em;
+        text-transform: uppercase;
+        opacity: 0.55;
+      }
+    </style>
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta
+      property="og:image:alt"
+      content="International Duck Incorporated - open-source Minecraft mods, tools and experiments"
+    />
+    <meta name="twitter:image" content="https://idi-official.pages.dev/assets/og-default.png" />
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@graph": [
+          {
+            "@type": "Organization",
+            "@id": "https://idi-official.pages.dev/#organization",
+            "name": "International Duck Incorporated",
+            "alternateName": "IDI",
+            "url": "https://idi-official.pages.dev/",
+            "logo": {
+              "@type": "ImageObject",
+              "url": "https://idi-official.pages.dev/assets/org-avatar.png"
+            },
+            "image": "https://idi-official.pages.dev/assets/og-default.png",
+            "description": "Open-source collective building Minecraft mods, tools and experiments in public. GitLab is the active source of truth; the former GitHub organization is currently hidden from public view.",
+            "sameAs": ["https://gitlab.com/international-duck-incorporated"],
+            "knowsAbout": [
+              "Minecraft mods",
+              "Fabric modding",
+              "Minecraft client utilities",
+              "open source"
+            ]
+          },
+          {
+            "@type": "WebSite",
+            "@id": "https://idi-official.pages.dev/#website",
+            "url": "https://idi-official.pages.dev/",
+            "name": "International Duck Incorporated",
+            "inLanguage": "en",
+            "publisher": {
+              "@id": "https://idi-official.pages.dev/#organization"
+            }
+          },
+          {
+            "@type": "ProfilePage",
+            "@id": "https://idi-official.pages.dev/members/midas735#webpage",
+            "url": "https://idi-official.pages.dev/members/midas735",
+            "name": "midas735 - International Duck",
+            "description": "midas735, just happy to be here at International Duck.",
+            "isPartOf": {
+              "@id": "https://idi-official.pages.dev/#website"
+            },
+            "about": {
+              "@id": "https://idi-official.pages.dev/#organization"
+            },
+            "inLanguage": "en",
+            "primaryImageOfPage": {
+              "@type": "ImageObject",
+              "url": "https://idi-official.pages.dev/assets/og-default.png"
+            },
+            "breadcrumb": {
+              "@id": "https://idi-official.pages.dev/members/midas735#breadcrumb"
+            },
+            "mainEntity": {
+              "@id": "https://idi-official.pages.dev/members/midas735#person"
+            }
+          },
+          {
+            "@type": "BreadcrumbList",
+            "@id": "https://idi-official.pages.dev/members/midas735#breadcrumb",
+            "itemListElement": [
+              {
+                "@type": "ListItem",
+                "position": 1,
+                "name": "International Duck Incorporated",
+                "item": "https://idi-official.pages.dev/"
+              },
+              {
+                "@type": "ListItem",
+                "position": 2,
+                "name": "Members",
+                "item": "https://idi-official.pages.dev/members/"
+              },
+              {
+                "@type": "ListItem",
+                "position": 3,
+                "name": "midas735",
+                "item": "https://idi-official.pages.dev/members/midas735"
+              }
+            ]
+          },
+          {
+            "@type": "Person",
+            "@id": "https://idi-official.pages.dev/members/midas735#person",
+            "name": "midas735",
+            "description": "Just happy to be here at International Duck Incorporated.",
+            "url": "https://idi-official.pages.dev/members/midas735",
+            "memberOf": {
+              "@id": "https://idi-official.pages.dev/#organization"
+            },
+            "sameAs": ["https://gitlab.com/midas735", "https://github.com/midas735"]
+          }
+        ]
+      }
+    </script>
+  </head>
+  <body data-page="member" data-member="midas735">
+    <svg class="svg-sprite" aria-hidden="true">
+      <symbol id="i-gitlab" viewBox="0 0 24 24">
+        <path
+          fill="currentColor"
+          stroke="none"
+          d="m23.6004 9.5927-.0337-.0862L20.3.9814a.851.851 0 0 0-.3362-.405.8748.8748 0 0 0-.9997.0539.8748.8748 0 0 0-.29.4399l-2.2055 6.748H7.5375l-2.2057-6.748a.8573.8573 0 0 0-.29-.4412.8748.8748 0 0 0-.9997-.0537.8585.8585 0 0 0-.3362.4049L.4332 9.5015l-.0325.0862a6.0657 6.0657 0 0 0 2.0119 7.0105l.0113.0087.03.0213 4.976 3.7264 2.462 1.8633 1.4995 1.1321a1.0085 1.0085 0 0 0 1.2197 0l1.4995-1.1321 2.4619-1.8633 5.006-3.7489.0125-.01a6.0682 6.0682 0 0 0 2.0094-7.003z"
+        />
+      </symbol>
+      <symbol id="i-menu" viewBox="0 0 24 24"><path d="M4 8h16M4 16h16" /></symbol>
+      <symbol id="i-close" viewBox="0 0 24 24"><path d="m5 5 14 14M19 5 5 19" /></symbol>
+      <symbol id="i-github" viewBox="0 0 24 24">
+        <path
+          fill="currentColor"
+          stroke="none"
+          d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"
+        />
+      </symbol>
+    </svg>
 
-  <a class="skip-link" href="#main">Skip to content</a>
-  <div class="goofy-bg" aria-hidden="true"></div>
-  <div class="site-glow site-glow-blue" aria-hidden="true"></div>
+    <a class="skip-link" href="#main">Skip to content</a>
+    <div class="goofy-bg" aria-hidden="true"></div>
+    <div class="site-glow site-glow-blue" aria-hidden="true"></div>
 
-  <header class="topbar" data-header>
-    <div class="shell topbar-inner">
-      <a class="brand" href="/" aria-label="International Duck Incorporated home"><img data-org-avatar src="/assets/org-avatar.webp?v=fff479ce" alt="" width="40" height="40" decoding="async"><span><b>International Duck</b><small>Incorporated</small></span></a>
-      <nav class="main-nav" id="main-navigation" data-nav aria-label="Primary navigation">
-        <a href="/">Overview</a><a href="/projects">Projects</a><a href="/noosphere">Noosphere</a><a class="active" href="/members" aria-current="page">Members</a><a href="/activity">Activity</a><a href="/migration">Migration</a><a class="icon-link" href="https://gitlab.com/international-duck-incorporated" target="_blank" rel="noreferrer" aria-label="International Duck Incorporated on GitLab"><svg><use href="#i-gitlab"/></svg></a>
-      </nav>
-      <button class="menu-button" type="button" data-menu aria-label="Open navigation" aria-controls="main-navigation" aria-expanded="false"><svg class="menu-open"><use href="#i-menu"/></svg><svg class="menu-close"><use href="#i-close"/></svg></button>
-    </div>
-  </header>
+    <header class="topbar" data-header>
+      <div class="shell topbar-inner">
+        <a class="brand" href="/" aria-label="International Duck Incorporated home"
+          ><img
+            data-org-avatar
+            src="/assets/org-avatar.webp?v=fff479ce"
+            alt=""
+            width="40"
+            height="40"
+            decoding="async"
+          /><span><b>International Duck</b><small>Incorporated</small></span></a
+        >
+        <nav class="main-nav" id="main-navigation" data-nav aria-label="Primary navigation">
+          <a href="/">Overview</a><a href="/projects">Projects</a><a href="/noosphere">Noosphere</a
+          ><a class="active" href="/members" aria-current="page">Members</a
+          ><a href="/activity">Activity</a><a href="/migration">Migration</a
+          ><a
+            class="icon-link"
+            href="https://gitlab.com/international-duck-incorporated"
+            target="_blank"
+            rel="noreferrer"
+            aria-label="International Duck Incorporated on GitLab"
+            ><svg><use href="#i-gitlab" /></svg
+          ></a>
+        </nav>
+        <button
+          class="menu-button"
+          type="button"
+          data-menu
+          aria-label="Open navigation"
+          aria-controls="main-navigation"
+          aria-expanded="false"
+        >
+          <svg class="menu-open"><use href="#i-menu" /></svg
+          ><svg class="menu-close"><use href="#i-close" /></svg>
+        </button>
+      </div>
+    </header>
 
-  <main id="main" class="profile-page member-page">
-    <div class="shell">
-      <div class="breadcrumbs"><a href="/">International Duck</a><span>/</span><a href="/members">Members</a><span>/</span><b>midas735</b></div>
-      <section class="profile-hero">
-        <article class="profile-intro glass-card reveal">
-          <picture><source srcset="/assets/member-midas735.webp?v=3700f4a4" type="image/webp"><img class="avatar" src="/assets/member-midas735.png?v=68b91afe" alt="midas735's profile avatar: a person in a Snorlax costume" loading="lazy" decoding="async"></picture>
-          <span class="eyebrow">Member profile / cryptid sighting</span>
-          <h1>Midas735.</h1>
-          <p class="lead">Everything he touches turns to gold. Everything he commits turns to a branch named <code>patch-1</code> that nobody ever merges. Midas is International Duck's most elusive member: officially classified as a goofy ahh developer, spotted in the wild about twice a month, and always mid-fumble when it happens. His official role is simple: just happy to be here.</p>
-          <div class="action-row"><a class="button button-blue" href="https://gitlab.com/midas735" target="_blank" rel="noreferrer"><svg><use href="#i-gitlab"/></svg>View GitLab</a><a class="button button-glass" href="https://github.com/midas735" target="_blank" rel="noreferrer"><svg><use href="#i-github"/></svg>View GitHub</a></div>
-        </article>
-        <aside class="profile-sidebar glass-card reveal">
-          <div><span class="eyebrow">At a glance</span><div class="fact-list"><div class="fact"><small>Handle</small><b>@midas735</b></div><div class="fact"><small>Role</small><b>Just happy to be here</b></div><div class="fact"><small>GitLab</small><b><a href="https://gitlab.com/midas735" target="_blank" rel="noreferrer">@midas735 ↗</a></b></div><div class="fact"><small>GitHub</small><b><a href="https://github.com/midas735" target="_blank" rel="noreferrer">@midas735 ↗</a></b></div><div class="fact"><small>Commits this week</small><b>2 (a personal record)</b></div><div class="fact"><small>Branches merged</small><b>0, and proud of it</b></div><div class="fact"><small>Natural habitat</small><b>patch-1</b></div><div class="fact"><small>Top speed</small><b>735 (units unknown)</b></div></div></div>
-        </aside>
-      </section>
-      <section class="detail-grid">
-        <article class="detail-panel glass-card reveal"><span class="eyebrow">Member</span><h2>Part of the group. Allegedly.</h2><p>midas735 is listed as a public member of International Duck Incorporated, which is legally the most that can be proven. Witnesses report he joined the public GitLab roster on October 5th and then unleashed both of his commits on the same morning. Efficiency. He now also has a public GitLab profile at <a href="https://gitlab.com/midas735" target="_blank" rel="noreferrer">@midas735</a>, listed as a member since October 5, 2026.</p></article>
-        <article class="detail-panel glass-card reveal"><span class="eyebrow">Why the background?</span><h2>The goofy ahh thing.</h2><p>The background is a scientifically accurate reenactment of midas's development workflow, playing fullscreen on infinite loop, exactly as nature intended. The profile picture is legally a Snorlax: a creature famous for sleeping 20 hours a day and still shipping more than midas. Both serve as a decoy so you stop looking at his contribution graph.</p></article>
-        <article class="detail-panel glass-card reveal" style="grid-column:1 / -1;"><span class="eyebrow">Recent activity</span><h2>The commits of the last few days.</h2><p>Both of them. Recorded here in full, for historians.</p>
-          <div class="commit-log">
-            <div class="commit"><code>fork</code><b>Forked Xx-superIvar-xX/gitdemo</b><small>Sep 28, 2026 - The classic opening move. Why write code when someone else already did?</small><span class="meta">midas735/gitdemo</span></div>
-            <div class="commit"><code>fork</code><b>Forked E-VDV-HU/very-epic-cool-repo</b><small>Sep 28, 2026 - Double fork morning. The man was unstoppable. For about eight minutes.</small><span class="meta">midas735/very-epic-cool-repo</span></div>
-            <div class="commit"><code>a783a2c</code><b>Remove humorous fumbles list from readme</b><small>Sep 28, 2026 - espress0 had published a "top 10 biggest fumbles of the day" list in the readme, starring midas in entries 1 through 4. Midas's response: delete the evidence. Historians call this "damage control"; midas calls it "code cleanup".</small><span class="meta">midas735/very-epic-cool-repo @ patch-1 - +1 / -8</span></div>
-            <div class="commit"><code>9f74799</code><b>Update README with additional commentary</b><small>Sep 28, 2026 - Four whole lines of "additional commentary" added to superIvar's readme. The contents have been sealed by the International Duck legal department. On a branch nobody merged, so technically it never happened.</small><span class="meta">midas735/gitdemo @ patch-1 - +4 / -0</span></div>
-          </div>
-          <p style="margin-top:1rem;opacity:.7;"><em>Total output, last few days: 2 forks, 2 commits, 5 lines added, 8 lines deleted. Net contribution: -3 lines. The fumbles list retaliation-to-original-work ratio remains at a flawless 100%.</em></p>
-        </article>
-      </section>
-    </div>
-  </main>
+    <main id="main" class="profile-page member-page">
+      <div class="shell">
+        <div class="breadcrumbs">
+          <a href="/">International Duck</a><span>/</span><a href="/members">Members</a
+          ><span>/</span><b>midas735</b>
+        </div>
+        <section class="profile-hero">
+          <article class="profile-intro glass-card reveal">
+            <picture
+              ><source srcset="/assets/member-midas735.webp?v=3700f4a4" type="image/webp" />
+              <img
+                class="avatar"
+                src="/assets/member-midas735.png?v=68b91afe"
+                alt="midas735's profile avatar: a person in a Snorlax costume"
+                loading="lazy"
+                decoding="async"
+            /></picture>
+            <span class="eyebrow">Member profile / cryptid sighting</span>
+            <h1>Midas735.</h1>
+            <p class="lead">
+              Everything he touches turns to gold. Everything he commits turns to a branch named
+              <code>patch-1</code> that nobody ever merges. Midas is International Duck's most
+              elusive member: officially classified as a goofy ahh developer, spotted in the wild
+              about twice a month, and always mid-fumble when it happens. His official role is
+              simple: just happy to be here.
+            </p>
+            <div class="action-row">
+              <a
+                class="button button-blue"
+                href="https://gitlab.com/midas735"
+                target="_blank"
+                rel="noreferrer"
+                ><svg><use href="#i-gitlab" /></svg>View GitLab</a
+              ><a
+                class="button button-glass"
+                href="https://github.com/midas735"
+                target="_blank"
+                rel="noreferrer"
+                ><svg><use href="#i-github" /></svg>View GitHub</a
+              >
+            </div>
+          </article>
+          <aside class="profile-sidebar glass-card reveal">
+            <div>
+              <span class="eyebrow">At a glance</span>
+              <div class="fact-list">
+                <div class="fact"><small>Handle</small><b>@midas735</b></div>
+                <div class="fact"><small>Role</small><b>Just happy to be here</b></div>
+                <div class="fact">
+                  <small>GitLab</small
+                  ><b
+                    ><a href="https://gitlab.com/midas735" target="_blank" rel="noreferrer"
+                      >@midas735 ↗</a
+                    ></b
+                  >
+                </div>
+                <div class="fact">
+                  <small>GitHub</small
+                  ><b
+                    ><a href="https://github.com/midas735" target="_blank" rel="noreferrer"
+                      >@midas735 ↗</a
+                    ></b
+                  >
+                </div>
+                <div class="fact"><small>Commits this week</small><b>2 (a personal record)</b></div>
+                <div class="fact"><small>Branches merged</small><b>0, and proud of it</b></div>
+                <div class="fact"><small>Natural habitat</small><b>patch-1</b></div>
+                <div class="fact"><small>Top speed</small><b>735 (units unknown)</b></div>
+              </div>
+            </div>
+          </aside>
+        </section>
+        <section class="detail-grid">
+          <article class="detail-panel glass-card reveal">
+            <span class="eyebrow">Member</span>
+            <h2>Part of the group. Allegedly.</h2>
+            <p>
+              midas735 is listed as a public member of International Duck Incorporated, which is
+              legally the most that can be proven. Witnesses report he joined the public GitLab
+              roster on October 5th and then unleashed both of his commits on the same morning.
+              Efficiency. He now also has a public GitLab profile at
+              <a href="https://gitlab.com/midas735" target="_blank" rel="noreferrer">@midas735</a>,
+              listed as a member since October 5, 2026.
+            </p>
+          </article>
+          <article class="detail-panel glass-card reveal">
+            <span class="eyebrow">Why the background?</span>
+            <h2>The goofy ahh thing.</h2>
+            <p>
+              The background is a scientifically accurate reenactment of midas's development
+              workflow, playing fullscreen on infinite loop, exactly as nature intended. The profile
+              picture is legally a Snorlax: a creature famous for sleeping 20 hours a day and still
+              shipping more than midas. Both serve as a decoy so you stop looking at his
+              contribution graph.
+            </p>
+          </article>
+          <article class="detail-panel glass-card reveal" style="grid-column: 1 / -1">
+            <span class="eyebrow">Recent activity</span>
+            <h2>The commits of the last few days.</h2>
+            <p>Both of them. Recorded here in full, for historians.</p>
+            <div class="commit-log">
+              <div class="commit">
+                <code>fork</code><b>Forked Xx-superIvar-xX/gitdemo</b
+                ><small
+                  >Sep 28, 2026 - The classic opening move. Why write code when someone else already
+                  did?</small
+                ><span class="meta">midas735/gitdemo</span>
+              </div>
+              <div class="commit">
+                <code>fork</code><b>Forked E-VDV-HU/very-epic-cool-repo</b
+                ><small
+                  >Sep 28, 2026 - Double fork morning. The man was unstoppable. For about eight
+                  minutes.</small
+                ><span class="meta">midas735/very-epic-cool-repo</span>
+              </div>
+              <div class="commit">
+                <code>a783a2c</code><b>Remove humorous fumbles list from readme</b
+                ><small
+                  >Sep 28, 2026 - espress0 had published a "top 10 biggest fumbles of the day" list
+                  in the readme, starring midas in entries 1 through 4. Midas's response: delete the
+                  evidence. Historians call this "damage control"; midas calls it "code
+                  cleanup".</small
+                ><span class="meta">midas735/very-epic-cool-repo @ patch-1 - +1 / -8</span>
+              </div>
+              <div class="commit">
+                <code>9f74799</code><b>Update README with additional commentary</b
+                ><small
+                  >Sep 28, 2026 - Four whole lines of "additional commentary" added to superIvar's
+                  readme. The contents have been sealed by the International Duck legal department.
+                  On a branch nobody merged, so technically it never happened.</small
+                ><span class="meta">midas735/gitdemo @ patch-1 - +4 / -0</span>
+              </div>
+            </div>
+            <p style="margin-top: 1rem; opacity: 0.7">
+              <em
+                >Total output, last few days: 2 forks, 2 commits, 5 lines added, 8 lines deleted.
+                Net contribution: -3 lines. The fumbles list retaliation-to-original-work ratio
+                remains at a flawless 100%.</em
+              >
+            </p>
+          </article>
+        </section>
+      </div>
+    </main>
 
-  <footer class="site-footer"><div class="shell footer-inner"><a class="brand" href="/"><picture><source srcset="/assets/org-avatar.webp?v=fff479ce" type="image/webp"><img src="/assets/org-avatar.png?v=f3debf20" alt="" decoding="async"></picture><span><b>International Duck</b><small>Incorporated</small></span></a><nav><a href="/projects">Projects</a><a href="/noosphere">Noosphere</a><a href="/members">Members</a><a href="/activity">Activity</a><a href="/migration">Migration</a><a href="/glyphsmith">Glyphsmith</a><a href="/changelog">Changelog</a><a href="https://gitlab.com/international-duck-incorporated">GitLab</a><a href="mailto:0xffshell@duck.com">Contact</a></nav><span class="sync-state"><i></i><span data-sync-text>GitLab data synced live</span></span></div></footer>
-</body>
+    <footer class="site-footer">
+      <div class="shell footer-inner">
+        <a class="brand" href="/"
+          ><picture
+            ><source srcset="/assets/org-avatar.webp?v=fff479ce" type="image/webp" />
+            <img src="/assets/org-avatar.png?v=f3debf20" alt="" decoding="async" /></picture
+          ><span><b>International Duck</b><small>Incorporated</small></span></a
+        >
+        <nav>
+          <a href="/projects">Projects</a><a href="/noosphere">Noosphere</a
+          ><a href="/members">Members</a><a href="/activity">Activity</a
+          ><a href="/migration">Migration</a><a href="/glyphsmith">Glyphsmith</a
+          ><a href="/changelog">Changelog</a
+          ><a href="https://gitlab.com/international-duck-incorporated">GitLab</a
+          ><a href="mailto:0xffshell@duck.com">Contact</a>
+        </nav>
+        <span class="sync-state"><i></i><span data-sync-text>GitLab data synced live</span></span>
+      </div>
+    </footer>
+  </body>
 </html>

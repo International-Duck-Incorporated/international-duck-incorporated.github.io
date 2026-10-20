@@ -16,7 +16,7 @@
     [126, 92, 255],
     [26, 238, 211],
     [255, 75, 184],
-    [255, 184, 71]
+    [255, 184, 71],
   ];
 
   const nodeCount = () => Math.min(72, Math.max(28, Math.round((width * height) / 23000)));
@@ -31,9 +31,9 @@
         y: Math.random() * height,
         vx: Math.cos(angle) * speed,
         vy: Math.sin(angle) * speed,
-        radius: .8 + Math.random() * 1.8,
+        radius: 0.8 + Math.random() * 1.8,
         phase: Math.random() * Math.PI * 2,
-        color: Math.floor(Math.random() * palette.length)
+        color: Math.floor(Math.random() * palette.length),
       });
     }
   }
@@ -59,7 +59,7 @@
     context.clearRect(0, 0, width, height);
     context.globalCompositeOperation = "lighter";
 
-    const maxDistance = Math.min(180, Math.max(125, width * .12));
+    const maxDistance = Math.min(180, Math.max(125, width * 0.12));
     const maxDistanceSquared = maxDistance * maxDistance;
 
     for (const node of nodes) {
@@ -83,12 +83,14 @@
         if (distanceSquared > maxDistanceSquared) continue;
 
         const strength = 1 - Math.sqrt(distanceSquared) / maxDistance;
-        const pulse = reduceMotion.matches ? .6 : .5 + .5 * Math.sin(time * .0014 + a.phase + b.phase);
+        const pulse = reduceMotion.matches
+          ? 0.6
+          : 0.5 + 0.5 * Math.sin(time * 0.0014 + a.phase + b.phase);
         const gradient = context.createLinearGradient(a.x, a.y, b.x, b.y);
-        gradient.addColorStop(0, rgba(palette[a.color], strength * (.08 + pulse * .2)));
-        gradient.addColorStop(1, rgba(palette[b.color], strength * (.08 + (1 - pulse) * .2)));
+        gradient.addColorStop(0, rgba(palette[a.color], strength * (0.08 + pulse * 0.2)));
+        gradient.addColorStop(1, rgba(palette[b.color], strength * (0.08 + (1 - pulse) * 0.2)));
         context.strokeStyle = gradient;
-        context.lineWidth = .45 + strength * 1.1;
+        context.lineWidth = 0.45 + strength * 1.1;
         context.beginPath();
         context.moveTo(a.x, a.y);
         context.lineTo(b.x, b.y);
@@ -97,11 +99,11 @@
     }
 
     for (const node of nodes) {
-      const pulse = reduceMotion.matches ? .75 : .62 + Math.sin(time * .002 + node.phase) * .38;
+      const pulse = reduceMotion.matches ? 0.75 : 0.62 + Math.sin(time * 0.002 + node.phase) * 0.38;
       const color = palette[node.color];
       const glow = context.createRadialGradient(node.x, node.y, 0, node.x, node.y, node.radius * 7);
-      glow.addColorStop(0, rgba(color, .85 * pulse));
-      glow.addColorStop(.22, rgba(color, .38 * pulse));
+      glow.addColorStop(0, rgba(color, 0.85 * pulse));
+      glow.addColorStop(0.22, rgba(color, 0.38 * pulse));
       glow.addColorStop(1, rgba(color, 0));
       context.fillStyle = glow;
       context.beginPath();
@@ -111,7 +113,7 @@
   }
 
   function animate(time) {
-    const delta = Math.min((time - lastTime) / 1000 || 0, .04);
+    const delta = Math.min((time - lastTime) / 1000 || 0, 0.04);
     lastTime = time;
     draw(time, delta);
     frame = requestAnimationFrame(animate);

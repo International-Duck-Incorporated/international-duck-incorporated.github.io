@@ -1,233 +1,442 @@
 <!doctype html>
 <html lang="en">
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <script>
-    (() => {
-      const nav = navigator;
-      const connection = nav.connection || nav.mozConnection || nav.webkitConnection;
-      const lowEnd = Boolean(
-        (connection && connection.saveData) ||
-        (connection && /^(slow-2g|2g)$/.test(connection.effectiveType || "")) ||
-        (typeof nav.deviceMemory === "number" && nav.deviceMemory <= 4) ||
-        (typeof nav.hardwareConcurrency === "number" && nav.hardwareConcurrency <= 4)
-      );
-      window.IDI_LOW_END = lowEnd;
-      window.IDI_REDUCED_MOTION = Boolean(
-        window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches
-      );
-      if (lowEnd) document.documentElement.classList.add("low-end");
-    })();
-  </script>
-  <link rel="preconnect" href="https://gitlab.com" crossorigin>
-  <link rel="preconnect" href="https://gitlab.com">
-  <link rel="dns-prefetch" href="https://gitlab.com">
-  <meta name="theme-color" content="#07090d">
-  <meta property="og:image" content="https://idi-official.pages.dev/assets/og-default.png">
-  <title>The International Duck team: public members | IDI</title>
-  <meta name="description" content="The public members of International Duck Incorporated - developers, testers and writers behind the group&#x27;s free Minecraft mods on GitLab.">
-  <link rel="canonical" href="https://idi-official.pages.dev/members/">
-  <meta property="og:type" content="website">
-  <meta property="og:title" content="The International Duck team: public members">
-  <meta property="og:description" content="The developers, testers and writers behind International Duck&#x27;s Minecraft mods.">
-  <meta property="og:url" content="https://idi-official.pages.dev/members/">
-  <meta property="og:site_name" content="International Duck Incorporated">
-  <meta property="og:locale" content="en_US">
-  <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="The International Duck team: public members">
-  <meta name="twitter:description" content="The developers, testers and writers behind International Duck&#x27;s Minecraft mods.">
-  <link rel="icon" href="/assets/org-avatar.png?v=f3debf20" type="image/png">
-  <link rel="stylesheet" href="/css/bundle.css?v=1f263d21">
-  <script src="/script.js?v=ffe97c4c" defer></script>
-  <meta property="og:image:width" content="1200">
-  <meta property="og:image:height" content="630">
-  <meta property="og:image:alt" content="International Duck Incorporated - open-source Minecraft mods, tools and experiments">
-  <meta name="twitter:image" content="https://idi-official.pages.dev/assets/og-default.png">
-  <script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@graph": [
-    {
-      "@type": "Organization",
-      "@id": "https://idi-official.pages.dev/#organization",
-      "name": "International Duck Incorporated",
-      "alternateName": "IDI",
-      "url": "https://idi-official.pages.dev/",
-      "logo": {
-        "@type": "ImageObject",
-        "url": "https://idi-official.pages.dev/assets/org-avatar.png"
-      },
-      "image": "https://idi-official.pages.dev/assets/og-default.png",
-      "description": "Open-source collective building Minecraft mods, tools and experiments in public. GitLab is the active source of truth; the former GitHub organization is currently hidden from public view.",
-      "sameAs": [
-        "https://gitlab.com/international-duck-incorporated"
-      ],
-      "knowsAbout": [
-        "Minecraft mods",
-        "Fabric modding",
-        "Minecraft client utilities",
-        "open source"
-      ]
-    },
-    {
-      "@type": "WebSite",
-      "@id": "https://idi-official.pages.dev/#website",
-      "url": "https://idi-official.pages.dev/",
-      "name": "International Duck Incorporated",
-      "inLanguage": "en",
-      "publisher": {
-        "@id": "https://idi-official.pages.dev/#organization"
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <script>
+      (() => {
+        const nav = navigator;
+        const connection = nav.connection || nav.mozConnection || nav.webkitConnection;
+        const lowEnd = Boolean(
+          (connection && connection.saveData) ||
+            (connection && /^(slow-2g|2g)$/.test(connection.effectiveType || "")) ||
+            (typeof nav.deviceMemory === "number" && nav.deviceMemory <= 4) ||
+            (typeof nav.hardwareConcurrency === "number" && nav.hardwareConcurrency <= 4)
+        );
+        window.IDI_LOW_END = lowEnd;
+        window.IDI_REDUCED_MOTION = Boolean(
+          window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches
+        );
+        if (lowEnd) document.documentElement.classList.add("low-end");
+      })();
+    </script>
+    <link rel="preconnect" href="https://gitlab.com" crossorigin />
+    <link rel="preconnect" href="https://gitlab.com" />
+    <link rel="dns-prefetch" href="https://gitlab.com" />
+    <meta name="theme-color" content="#07090d" />
+    <meta property="og:image" content="https://idi-official.pages.dev/assets/og-default.png" />
+    <title>The International Duck team: public members | IDI</title>
+    <meta
+      name="description"
+      content="The public members of International Duck Incorporated - developers, testers and writers behind the group&#x27;s free Minecraft mods on GitLab."
+    />
+    <link rel="canonical" href="https://idi-official.pages.dev/members/" />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="The International Duck team: public members" />
+    <meta
+      property="og:description"
+      content="The developers, testers and writers behind International Duck&#x27;s Minecraft mods."
+    />
+    <meta property="og:url" content="https://idi-official.pages.dev/members/" />
+    <meta property="og:site_name" content="International Duck Incorporated" />
+    <meta property="og:locale" content="en_US" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="The International Duck team: public members" />
+    <meta
+      name="twitter:description"
+      content="The developers, testers and writers behind International Duck&#x27;s Minecraft mods."
+    />
+    <link rel="icon" href="/assets/org-avatar.png?v=f3debf20" type="image/png" />
+    <link rel="stylesheet" href="/css/bundle.css?v=583143c6" />
+    <script src="/script.js?v=0443d2ee" defer></script>
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta
+      property="og:image:alt"
+      content="International Duck Incorporated - open-source Minecraft mods, tools and experiments"
+    />
+    <meta name="twitter:image" content="https://idi-official.pages.dev/assets/og-default.png" />
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@graph": [
+          {
+            "@type": "Organization",
+            "@id": "https://idi-official.pages.dev/#organization",
+            "name": "International Duck Incorporated",
+            "alternateName": "IDI",
+            "url": "https://idi-official.pages.dev/",
+            "logo": {
+              "@type": "ImageObject",
+              "url": "https://idi-official.pages.dev/assets/org-avatar.png"
+            },
+            "image": "https://idi-official.pages.dev/assets/og-default.png",
+            "description": "Open-source collective building Minecraft mods, tools and experiments in public. GitLab is the active source of truth; the former GitHub organization is currently hidden from public view.",
+            "sameAs": ["https://gitlab.com/international-duck-incorporated"],
+            "knowsAbout": [
+              "Minecraft mods",
+              "Fabric modding",
+              "Minecraft client utilities",
+              "open source"
+            ]
+          },
+          {
+            "@type": "WebSite",
+            "@id": "https://idi-official.pages.dev/#website",
+            "url": "https://idi-official.pages.dev/",
+            "name": "International Duck Incorporated",
+            "inLanguage": "en",
+            "publisher": {
+              "@id": "https://idi-official.pages.dev/#organization"
+            }
+          },
+          {
+            "@type": "CollectionPage",
+            "@id": "https://idi-official.pages.dev/members/#webpage",
+            "url": "https://idi-official.pages.dev/members/",
+            "name": "Members - International Duck Incorporated",
+            "description": "Public members of International Duck Incorporated, synchronized with GitLab.",
+            "isPartOf": {
+              "@id": "https://idi-official.pages.dev/#website"
+            },
+            "about": {
+              "@id": "https://idi-official.pages.dev/#organization"
+            },
+            "inLanguage": "en",
+            "primaryImageOfPage": {
+              "@type": "ImageObject",
+              "url": "https://idi-official.pages.dev/assets/og-default.png"
+            },
+            "breadcrumb": {
+              "@id": "https://idi-official.pages.dev/members/#breadcrumb"
+            }
+          },
+          {
+            "@type": "BreadcrumbList",
+            "@id": "https://idi-official.pages.dev/members/#breadcrumb",
+            "itemListElement": [
+              {
+                "@type": "ListItem",
+                "position": 1,
+                "name": "International Duck Incorporated",
+                "item": "https://idi-official.pages.dev/"
+              },
+              {
+                "@type": "ListItem",
+                "position": 2,
+                "name": "Members",
+                "item": "https://idi-official.pages.dev/members/"
+              }
+            ]
+          },
+          {
+            "@type": "ItemList",
+            "@id": "https://idi-official.pages.dev/members/#list",
+            "name": "Public members",
+            "numberOfItems": 6,
+            "itemListElement": [
+              {
+                "@type": "ListItem",
+                "position": 1,
+                "name": "0xFFshell",
+                "url": "https://idi-official.pages.dev/members/0xffshell"
+              },
+              {
+                "@type": "ListItem",
+                "position": 2,
+                "name": "espress0",
+                "url": "https://idi-official.pages.dev/members/3spress0"
+              },
+              {
+                "@type": "ListItem",
+                "position": 3,
+                "name": "E-VDV-HU",
+                "url": "https://idi-official.pages.dev/members/e-vdv-hu"
+              },
+              {
+                "@type": "ListItem",
+                "position": 4,
+                "name": "midas735",
+                "url": "https://idi-official.pages.dev/members/midas735"
+              },
+              {
+                "@type": "ListItem",
+                "position": 5,
+                "name": "Xx-superIvar-xX",
+                "url": "https://idi-official.pages.dev/members/superivar"
+              },
+              {
+                "@type": "ListItem",
+                "position": 6,
+                "name": "Jojo-8002",
+                "url": "https://idi-official.pages.dev/members/jojo-8002"
+              }
+            ]
+          }
+        ]
       }
-    },
-    {
-      "@type": "CollectionPage",
-      "@id": "https://idi-official.pages.dev/members/#webpage",
-      "url": "https://idi-official.pages.dev/members/",
-      "name": "Members - International Duck Incorporated",
-      "description": "Public members of International Duck Incorporated, synchronized with GitLab.",
-      "isPartOf": {
-        "@id": "https://idi-official.pages.dev/#website"
-      },
-      "about": {
-        "@id": "https://idi-official.pages.dev/#organization"
-      },
-      "inLanguage": "en",
-      "primaryImageOfPage": {
-        "@type": "ImageObject",
-        "url": "https://idi-official.pages.dev/assets/og-default.png"
-      },
-      "breadcrumb": {
-        "@id": "https://idi-official.pages.dev/members/#breadcrumb"
-      }
-    },
-    {
-      "@type": "BreadcrumbList",
-      "@id": "https://idi-official.pages.dev/members/#breadcrumb",
-      "itemListElement": [
-        {
-          "@type": "ListItem",
-          "position": 1,
-          "name": "International Duck Incorporated",
-          "item": "https://idi-official.pages.dev/"
-        },
-        {
-          "@type": "ListItem",
-          "position": 2,
-          "name": "Members",
-          "item": "https://idi-official.pages.dev/members/"
-        }
-      ]
-    },
-    {
-      "@type": "ItemList",
-      "@id": "https://idi-official.pages.dev/members/#list",
-      "name": "Public members",
-      "numberOfItems": 6,
-      "itemListElement": [
-        {
-          "@type": "ListItem",
-          "position": 1,
-          "name": "0xFFshell",
-          "url": "https://idi-official.pages.dev/members/0xffshell"
-        },
-        {
-          "@type": "ListItem",
-          "position": 2,
-          "name": "espress0",
-          "url": "https://idi-official.pages.dev/members/3spress0"
-        },
-        {
-          "@type": "ListItem",
-          "position": 3,
-          "name": "E-VDV-HU",
-          "url": "https://idi-official.pages.dev/members/e-vdv-hu"
-        },
-        {
-          "@type": "ListItem",
-          "position": 4,
-          "name": "midas735",
-          "url": "https://idi-official.pages.dev/members/midas735"
-        },
-        {
-          "@type": "ListItem",
-          "position": 5,
-          "name": "Xx-superIvar-xX",
-          "url": "https://idi-official.pages.dev/members/superivar"
-        },
-        {
-          "@type": "ListItem",
-          "position": 6,
-          "name": "Jojo-8002",
-          "url": "https://idi-official.pages.dev/members/jojo-8002"
-        }
-      ]
-    }
-  ]
-}
-  </script>
-</head>
-<body data-page="members">
-  <svg class="svg-sprite" aria-hidden="true">
-    <symbol id="i-external" viewBox="0 0 24 24"><path d="M14 5h5v5M19 5l-9 9M18 13v6H5V6h6"/></symbol><symbol id="i-gitlab" viewBox="0 0 24 24"><path fill="currentColor" stroke="none" d="m23.6004 9.5927-.0337-.0862L20.3.9814a.851.851 0 0 0-.3362-.405.8748.8748 0 0 0-.9997.0539.8748.8748 0 0 0-.29.4399l-2.2055 6.748H7.5375l-2.2057-6.748a.8573.8573 0 0 0-.29-.4412.8748.8748 0 0 0-.9997-.0537.8585.8585 0 0 0-.3362.4049L.4332 9.5015l-.0325.0862a6.0657 6.0657 0 0 0 2.0119 7.0105l.0113.0087.03.0213 4.976 3.7264 2.462 1.8633 1.4995 1.1321a1.0085 1.0085 0 0 0 1.2197 0l1.4995-1.1321 2.4619-1.8633 5.006-3.7489.0125-.01a6.0682 6.0682 0 0 0 2.0094-7.003z"/></symbol>
-    <symbol id="i-menu" viewBox="0 0 24 24"><path d="M4 8h16M4 16h16"/></symbol>
-    <symbol id="i-close" viewBox="0 0 24 24"><path d="m5 5 14 14M19 5 5 19"/></symbol>
-  </svg>
+    </script>
+  </head>
+  <body data-page="members">
+    <svg class="svg-sprite" aria-hidden="true">
+      <symbol id="i-external" viewBox="0 0 24 24">
+        <path d="M14 5h5v5M19 5l-9 9M18 13v6H5V6h6" />
+      </symbol>
+      <symbol id="i-gitlab" viewBox="0 0 24 24">
+        <path
+          fill="currentColor"
+          stroke="none"
+          d="m23.6004 9.5927-.0337-.0862L20.3.9814a.851.851 0 0 0-.3362-.405.8748.8748 0 0 0-.9997.0539.8748.8748 0 0 0-.29.4399l-2.2055 6.748H7.5375l-2.2057-6.748a.8573.8573 0 0 0-.29-.4412.8748.8748 0 0 0-.9997-.0537.8585.8585 0 0 0-.3362.4049L.4332 9.5015l-.0325.0862a6.0657 6.0657 0 0 0 2.0119 7.0105l.0113.0087.03.0213 4.976 3.7264 2.462 1.8633 1.4995 1.1321a1.0085 1.0085 0 0 0 1.2197 0l1.4995-1.1321 2.4619-1.8633 5.006-3.7489.0125-.01a6.0682 6.0682 0 0 0 2.0094-7.003z"
+        />
+      </symbol>
+      <symbol id="i-menu" viewBox="0 0 24 24"><path d="M4 8h16M4 16h16" /></symbol>
+      <symbol id="i-close" viewBox="0 0 24 24"><path d="m5 5 14 14M19 5 5 19" /></symbol>
+    </svg>
 
-  <a class="skip-link" href="#main">Skip to content</a>
-  <div class="site-glow site-glow-blue" aria-hidden="true"></div>
+    <a class="skip-link" href="#main">Skip to content</a>
+    <div class="site-glow site-glow-blue" aria-hidden="true"></div>
 
-  <header class="topbar" data-header>
-    <div class="shell topbar-inner">
-      <a class="brand" href="/" aria-label="International Duck Incorporated home">
-        <img data-org-avatar src="/assets/org-avatar.webp?v=fff479ce" alt="" width="40" height="40" decoding="async">
-        <span><b>International Duck</b><small>Incorporated</small></span>
-      </a>
-      <nav class="main-nav" id="main-navigation" data-nav aria-label="Primary navigation">
-        <a href="/">Overview</a>
-        <a href="/projects">Projects</a><a href="/noosphere">Noosphere</a>
-        <a class="active" href="/members" aria-current="page">Members</a><a href="/activity">Activity</a><a href="/migration">Migration</a>
-        <a class="icon-link" href="https://gitlab.com/international-duck-incorporated" target="_blank" rel="noreferrer" aria-label="International Duck Incorporated on GitLab"><svg><use href="#i-gitlab"/></svg></a>
-      </nav>
-      <button class="menu-button" type="button" data-menu aria-label="Open navigation" aria-controls="main-navigation" aria-expanded="false"><svg class="menu-open"><use href="#i-menu"/></svg><svg class="menu-close"><use href="#i-close"/></svg></button>
-    </div>
-  </header>
-
-  <main id="main" class="subpage-main">
-    <section class="shell">
-      <header class="subpage-heading reveal">
-        <div class="breadcrumbs"><a href="/">International Duck</a><span>/</span><b>Members</b></div>
-        <span class="eyebrow">Organization</span>
-        <h1>Members.</h1>
-        <p>Six public members make up the International Duck roster. Each profile links to the member's public account, with project and activity details where available.</p>
-        <div class="directory-status"><span class="status-pill"><i></i><b data-org-members-count>6</b> public members</span><span class="source-chip"><i></i> Live GitLab data</span></div>
-      </header>
-
-      <div class="members-grid directory-grid" data-org-members>
-        <a class="person-card glass-card reveal" data-member-card="0xffshell" href="/members/0xffshell"><picture><source srcset="/assets/member-0xffshell.webp?v=827f401e" type="image/webp"><img src="/assets/member-0xffshell.png?v=d8a12bec" alt="0xFFshell" width="96" height="96" loading="lazy" decoding="async"></picture><div><span class="shadowban-label">Active member · GitHub banned</span><h3>0xFFshell</h3><p>Main writer</p></div><svg><use href="#i-external"/></svg></a>
-        <a class="person-card glass-card reveal" data-member-card="3spress0" href="/members/3spress0"><picture><source srcset="/assets/contributor-3spress0.webp?v=a3c2db19" type="image/webp"><img src="/assets/contributor-3spress0.png?v=1e7edf44" alt="espress0" width="96" height="96" loading="lazy" decoding="async"></picture><div><span class="shadowban-label">Active member · GitHub banned</span><h3>espress0</h3><p>Backend developer · project backbone</p></div><svg><use href="#i-external"/></svg></a>
-        <a class="person-card glass-card reveal" data-member-card="e-vdv-hu" href="/members/e-vdv-hu"><picture><source srcset="/assets/member-e-vdv-hu.webp?v=0774275d" type="image/webp"><img src="/assets/member-e-vdv-hu.png?v=6b19c40c" alt="E-VDV-HU" width="96" height="96" loading="lazy" decoding="async"></picture><div><span>Public member</span><h3>E-VDV-HU</h3><p>Backend &amp; hosting manager</p></div><svg><use href="#i-external"/></svg></a>
-        <a class="person-card glass-card reveal" data-member-card="xx-superivar-xx" href="/members/superivar"><picture><source srcset="/assets/member-xx-superivar-xx.webp?v=1c79d93d" type="image/webp"><img src="/assets/member-xx-superivar-xx.png?v=36a4e373" alt="Xx-superIvar-xX" width="96" height="96" loading="lazy" decoding="async"></picture><div><span>Public member</span><h3>Xx-superIvar-xX</h3><p>Product tester</p></div><svg><use href="#i-external"/></svg></a>
-        <a class="person-card glass-card reveal" data-member-card="midas735" href="/members/midas735"><picture><source srcset="/assets/member-midas735.webp?v=3700f4a4" type="image/webp"><img src="/assets/member-midas735.png?v=68b91afe" alt="midas735" width="96" height="96" loading="lazy" decoding="async"></picture><div><span>Public member</span><h3>midas735</h3><p>Just happy to be here</p></div><svg><use href="#i-external"/></svg></a>
-        <a class="person-card glass-card reveal" data-member-card="jojo-8002" href="/members/jojo-8002"><picture><source srcset="/assets/member-jojo-8002.webp?v=8c2a077e" type="image/webp"><img src="/assets/member-jojo-8002.png?v=c1ddc403" alt="Jojo-8002" width="96" height="96" loading="lazy" decoding="async"></picture><div><span>Public member</span><h3>Jojo-8002</h3><p>Here for shit n giggles</p></div><svg><use href="#i-external"/></svg></a>
+    <header class="topbar" data-header>
+      <div class="shell topbar-inner">
+        <a class="brand" href="/" aria-label="International Duck Incorporated home">
+          <img
+            data-org-avatar
+            src="/assets/org-avatar.webp?v=fff479ce"
+            alt=""
+            width="40"
+            height="40"
+            decoding="async"
+          />
+          <span><b>International Duck</b><small>Incorporated</small></span>
+        </a>
+        <nav class="main-nav" id="main-navigation" data-nav aria-label="Primary navigation">
+          <a href="/">Overview</a>
+          <a href="/projects">Projects</a><a href="/noosphere">Noosphere</a>
+          <a class="active" href="/members" aria-current="page">Members</a
+          ><a href="/activity">Activity</a><a href="/migration">Migration</a>
+          <a
+            class="icon-link"
+            href="https://gitlab.com/international-duck-incorporated"
+            target="_blank"
+            rel="noreferrer"
+            aria-label="International Duck Incorporated on GitLab"
+            ><svg><use href="#i-gitlab" /></svg
+          ></a>
+        </nav>
+        <button
+          class="menu-button"
+          type="button"
+          data-menu
+          aria-label="Open navigation"
+          aria-controls="main-navigation"
+          aria-expanded="false"
+        >
+          <svg class="menu-open"><use href="#i-menu" /></svg
+          ><svg class="menu-close"><use href="#i-close" /></svg>
+        </button>
       </div>
-    </section>
+    </header>
 
-    <section class="shell home-directory reveal" aria-labelledby="members-about-heading" data-seo-enriched>
-      <header class="section-heading">
-        <div><span class="eyebrow">About the roster</span><h2 id="members-about-heading">Who we are.</h2></div>
-      </header>
-      <p>International Duck Incorporated has six public members. GitLab does not expose group membership through its public API, so this directory is a checked-in roster. Each card links to a profile page with the member's public account and, where available, project or activity details.</p>
-      <p>Commit attribution from the active GitLab source lives on the <a href="/activity">activity page</a>. The former GitHub organization is currently hidden/private, so its API and mirror data are not used. Upstream contributors to forked projects and automation accounts are listed separately and are not counted as members.</p>
-    </section>
-  </main>
+    <main id="main" class="subpage-main">
+      <section class="shell">
+        <header class="subpage-heading reveal">
+          <div class="breadcrumbs">
+            <a href="/">International Duck</a><span>/</span><b>Members</b>
+          </div>
+          <span class="eyebrow">Organization</span>
+          <h1>Members.</h1>
+          <p>
+            Six public members make up the International Duck roster. Each profile links to the
+            member's public account, with project and activity details where available.
+          </p>
+          <div class="directory-status">
+            <span class="status-pill"><i></i><b data-org-members-count>6</b> public members</span
+            ><span class="source-chip"><i></i> Live GitLab data</span>
+          </div>
+        </header>
 
-  <footer class="site-footer">
-    <div class="shell footer-inner">
-      <a class="brand" href="/"><img data-org-avatar src="/assets/org-avatar.webp?v=fff479ce" alt="" width="40" height="40" decoding="async"><span><b>International Duck</b><small>Incorporated</small></span></a>
-      <nav><a href="/">Overview</a><a href="/projects">Projects</a><a href="/noosphere">Noosphere</a><a href="/members">Members</a><a href="/activity">Activity</a><a href="/migration">Migration</a><a href="/glyphsmith">Glyphsmith</a><a href="/changelog">Changelog</a><a href="https://gitlab.com/international-duck-incorporated" target="_blank" rel="noreferrer">GitLab</a><a href="mailto:0xffshell@duck.com">Contact</a></nav>
-      <span class="sync-state"><i></i><span data-sync-text>GitLab data synced live</span></span>
-    </div>
-  </footer>
-</body>
+        <div class="members-grid directory-grid" data-org-members>
+          <a
+            class="person-card glass-card reveal"
+            data-member-card="0xffshell"
+            href="/members/0xffshell"
+            ><picture
+              ><source srcset="/assets/member-0xffshell.webp?v=827f401e" type="image/webp" />
+              <img
+                src="/assets/member-0xffshell.png?v=d8a12bec"
+                alt="0xFFshell"
+                width="96"
+                height="96"
+                loading="lazy"
+                decoding="async"
+            /></picture>
+            <div>
+              <span class="shadowban-label">Active member · GitHub banned</span>
+              <h3>0xFFshell</h3>
+              <p>Main writer</p>
+            </div>
+            <svg><use href="#i-external" /></svg
+          ></a>
+          <a
+            class="person-card glass-card reveal"
+            data-member-card="3spress0"
+            href="/members/3spress0"
+            ><picture
+              ><source srcset="/assets/contributor-3spress0.webp?v=a3c2db19" type="image/webp" />
+              <img
+                src="/assets/contributor-3spress0.png?v=1e7edf44"
+                alt="espress0"
+                width="96"
+                height="96"
+                loading="lazy"
+                decoding="async"
+            /></picture>
+            <div>
+              <span>Public member</span>
+              <h3>espress0</h3>
+              <p>Backend developer · project backbone</p>
+            </div>
+            <svg><use href="#i-external" /></svg
+          ></a>
+          <a
+            class="person-card glass-card reveal"
+            data-member-card="e-vdv-hu"
+            href="/members/e-vdv-hu"
+            ><picture
+              ><source srcset="/assets/member-e-vdv-hu.webp?v=0774275d" type="image/webp" />
+              <img
+                src="/assets/member-e-vdv-hu.png?v=6b19c40c"
+                alt="E-VDV-HU"
+                width="96"
+                height="96"
+                loading="lazy"
+                decoding="async"
+            /></picture>
+            <div>
+              <span>Public member</span>
+              <h3>E-VDV-HU</h3>
+              <p>Backend &amp; hosting manager</p>
+            </div>
+            <svg><use href="#i-external" /></svg
+          ></a>
+          <a
+            class="person-card glass-card reveal"
+            data-member-card="xx-superivar-xx"
+            href="/members/superivar"
+            ><picture
+              ><source srcset="/assets/member-xx-superivar-xx.webp?v=1c79d93d" type="image/webp" />
+              <img
+                src="/assets/member-xx-superivar-xx.png?v=36a4e373"
+                alt="Xx-superIvar-xX"
+                width="96"
+                height="96"
+                loading="lazy"
+                decoding="async"
+            /></picture>
+            <div>
+              <span>Public member</span>
+              <h3>Xx-superIvar-xX</h3>
+              <p>Product tester</p>
+            </div>
+            <svg><use href="#i-external" /></svg
+          ></a>
+          <a
+            class="person-card glass-card reveal"
+            data-member-card="midas735"
+            href="/members/midas735"
+            ><picture
+              ><source srcset="/assets/member-midas735.webp?v=3700f4a4" type="image/webp" />
+              <img
+                src="/assets/member-midas735.png?v=68b91afe"
+                alt="midas735"
+                width="96"
+                height="96"
+                loading="lazy"
+                decoding="async"
+            /></picture>
+            <div>
+              <span>Public member</span>
+              <h3>midas735</h3>
+              <p>Just happy to be here</p>
+            </div>
+            <svg><use href="#i-external" /></svg
+          ></a>
+          <a
+            class="person-card glass-card reveal"
+            data-member-card="jojo-8002"
+            href="/members/jojo-8002"
+            ><picture
+              ><source srcset="/assets/member-jojo-8002.webp?v=8c2a077e" type="image/webp" />
+              <img
+                src="/assets/member-jojo-8002.png?v=c1ddc403"
+                alt="Jojo-8002"
+                width="96"
+                height="96"
+                loading="lazy"
+                decoding="async"
+            /></picture>
+            <div>
+              <span>Public member</span>
+              <h3>Jojo-8002</h3>
+              <p>Here for shit n giggles</p>
+            </div>
+            <svg><use href="#i-external" /></svg
+          ></a>
+        </div>
+      </section>
+
+      <section
+        class="shell home-directory reveal"
+        aria-labelledby="members-about-heading"
+        data-seo-enriched
+      >
+        <header class="section-heading">
+          <div>
+            <span class="eyebrow">About the roster</span>
+            <h2 id="members-about-heading">Who we are.</h2>
+          </div>
+        </header>
+        <p>
+          International Duck Incorporated has six public members. GitLab does not expose group
+          membership through its public API, so this directory is a checked-in roster. Each card
+          links to a profile page with the member's public account and, where available, project or
+          activity details.
+        </p>
+        <p>
+          Commit attribution from the active GitLab source lives on the
+          <a href="/activity">activity page</a>. The former GitHub organization is currently
+          hidden/private, so its API and mirror data are not used. Upstream contributors to forked
+          projects and automation accounts are listed separately and are not counted as members.
+        </p>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <div class="shell footer-inner">
+        <a class="brand" href="/"
+          ><img
+            data-org-avatar
+            src="/assets/org-avatar.webp?v=fff479ce"
+            alt=""
+            width="40"
+            height="40"
+            decoding="async"
+          /><span><b>International Duck</b><small>Incorporated</small></span></a
+        >
+        <nav>
+          <a href="/">Overview</a><a href="/projects">Projects</a><a href="/noosphere">Noosphere</a
+          ><a href="/members">Members</a><a href="/activity">Activity</a
+          ><a href="/migration">Migration</a><a href="/glyphsmith">Glyphsmith</a
+          ><a href="/changelog">Changelog</a
+          ><a
+            href="https://gitlab.com/international-duck-incorporated"
+            target="_blank"
+            rel="noreferrer"
+            >GitLab</a
+          ><a href="mailto:0xffshell@duck.com">Contact</a>
+        </nav>
+        <span class="sync-state"><i></i><span data-sync-text>GitLab data synced live</span></span>
+      </div>
+    </footer>
+  </body>
 </html>

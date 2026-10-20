@@ -9,7 +9,7 @@
   width: 100%;
   height: 100%;
   pointer-events: none;
-  opacity: .72;
+  opacity: 0.72;
   mix-blend-mode: screen;
 }
 body[data-project="championscode"],
@@ -18,54 +18,72 @@ body[data-project="nulltrace"] {
   background: #07090d;
 }
 body[data-page="organization"]::before {
-  background: radial-gradient(ellipse at 66% 18%, rgba(40, 63, 97, .16), transparent 38%), #06080c;
+  background: radial-gradient(ellipse at 66% 18%, rgba(40, 63, 97, 0.16), transparent 38%), #06080c;
 }
 body[data-project="championscode"]::before {
-  background: radial-gradient(ellipse at 76% 18%, rgba(202, 137, 45, .16), transparent 36%), #07090d;
-  opacity: .96;
+  background:
+    radial-gradient(ellipse at 76% 18%, rgba(202, 137, 45, 0.16), transparent 36%), #07090d;
+  opacity: 0.96;
 }
 body[data-project="championscode"]::after {
-  opacity: .12;
-  background-image: linear-gradient(rgba(255, 255, 255, .026) 1px, transparent 1px), linear-gradient(90deg, rgba(255, 255, 255, .026) 1px, transparent 1px);
+  opacity: 0.12;
+  background-image:
+    linear-gradient(rgba(255, 255, 255, 0.026) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.026) 1px, transparent 1px);
   background-size: 64px 64px;
   mask-image: linear-gradient(to bottom, black 0%, transparent 88%);
 }
-body[data-project="championscode"] .atmosphere-canvas { opacity: 1; filter: saturate(1.35) contrast(1.12); }
+body[data-project="championscode"] .atmosphere-canvas {
+  opacity: 1;
+  filter: saturate(1.35) contrast(1.12);
+}
 body[data-project="championscode"] .site-glow-blue {
-  background: radial-gradient(circle, rgba(219, 157, 65, .36), transparent 66%);
-  opacity: .16;
+  background: radial-gradient(circle, rgba(219, 157, 65, 0.36), transparent 66%);
+  opacity: 0.16;
 }
 body[data-project="championscode"] .profile-intro,
 body[data-project="championscode"] .profile-sidebar,
 body[data-project="championscode"] .detail-panel {
-  border-color: rgba(240, 194, 111, .2);
-  box-shadow: 0 24px 70px rgba(0, 0, 0, .38), inset 0 1px 0 rgba(255, 244, 211, .1), inset 1px 0 0 rgba(255, 235, 190, .035);
+  border-color: rgba(240, 194, 111, 0.2);
+  box-shadow:
+    0 24px 70px rgba(0, 0, 0, 0.38),
+    inset 0 1px 0 rgba(255, 244, 211, 0.1),
+    inset 1px 0 0 rgba(255, 235, 190, 0.035);
 }
-body[data-project="championscode"] .eyebrow { color: #e9b965; }
+body[data-project="championscode"] .eyebrow {
+  color: #e9b965;
+}
 body[data-project="championscode"] .project-mark {
-  background: linear-gradient(145deg, rgba(236, 192, 91, .3), rgba(123, 81, 211, .18));
-  border-color: rgba(241, 207, 128, .32);
-  box-shadow: 0 16px 38px rgba(0, 0, 0, .28), 0 0 42px rgba(232, 174, 71, .1);
+  background: linear-gradient(145deg, rgba(236, 192, 91, 0.3), rgba(123, 81, 211, 0.18));
+  border-color: rgba(241, 207, 128, 0.32);
+  box-shadow:
+    0 16px 38px rgba(0, 0, 0, 0.28),
+    0 0 42px rgba(232, 174, 71, 0.1);
 }
 body[data-project="nulltrace"]::before {
-  background: radial-gradient(ellipse at 84% 16%, rgba(62, 193, 221, .14), transparent 36%), #050b10;
-  opacity: .96;
+  background:
+    radial-gradient(ellipse at 84% 16%, rgba(62, 193, 221, 0.14), transparent 36%), #050b10;
+  opacity: 0.96;
 }
 body[data-project="nulltrace"]::after {
-  opacity: .1;
-  background-image: linear-gradient(rgba(140, 228, 255, .025) 1px, transparent 1px), linear-gradient(90deg, rgba(140, 228, 255, .025) 1px, transparent 1px);
+  opacity: 0.1;
+  background-image:
+    linear-gradient(rgba(140, 228, 255, 0.025) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(140, 228, 255, 0.025) 1px, transparent 1px);
   background-size: 64px 64px;
   mask-image: linear-gradient(to bottom, black 0%, transparent 88%);
 }
-body[data-project="nulltrace"] .atmosphere-canvas { opacity: .98; }
+body[data-project="nulltrace"] .atmosphere-canvas {
+  opacity: 0.98;
+}
 body[data-project="nulltrace"] .profile-intro,
 body[data-project="nulltrace"] .profile-sidebar,
 body[data-project="nulltrace"] .detail-panel {
-  border-color: rgba(102, 220, 237, .2);
+  border-color: rgba(102, 220, 237, 0.2);
 }
 body[data-project="nulltrace"] .site-glow-blue {
-  background: radial-gradient(circle, rgba(52, 198, 224, .38), transparent 66%);
-  opacity: .18;
+  background: radial-gradient(circle, rgba(52, 198, 224, 0.38), transparent 66%);
+  opacity: 0.18;
 }
 body[data-project="championscode"] main,
 body[data-project="championscode"] footer,
@@ -78,36 +96,80 @@ body[data-project="nulltrace"] footer {
 .website-page .project-mark.website-mark {
   display: grid;
   color: #dffcff;
-  background: linear-gradient(145deg, rgba(90, 155, 242, .3), rgba(117, 78, 214, .18));
-  border-color: rgba(150, 211, 255, .28);
+  background: linear-gradient(145deg, rgba(90, 155, 242, 0.3), rgba(117, 78, 214, 0.18));
+  border-color: rgba(150, 211, 255, 0.28);
   font: 800 1.7rem var(--mono);
-  letter-spacing: -.12em;
-  text-indent: -.12em;
-  box-shadow: 0 16px 38px rgba(0, 0, 0, .28), 0 0 42px rgba(90, 155, 242, .1);
+  letter-spacing: -0.12em;
+  text-indent: -0.12em;
+  box-shadow:
+    0 16px 38px rgba(0, 0, 0, 0.28),
+    0 0 42px rgba(90, 155, 242, 0.1);
 }
 
-.account-status { display: flex; width: 100%; margin: .05rem 0 1rem; padding: .7rem .8rem; gap: .65rem; align-items: center; color: #ffd9dd; background: linear-gradient(135deg, rgba(174, 67, 91, .2), rgba(97, 41, 65, .12)); border: 1px solid rgba(255, 137, 153, .28); border-radius: 12px; box-shadow: inset 0 1px 0 rgba(255, 214, 220, .07); font-size: .68rem; line-height: 1.35; }
-.account-status::before { content: ""; width: 7px; height: 7px; flex: 0 0 auto; background: #ff879a; border-radius: 50%; box-shadow: 0 0 12px rgba(255, 135, 154, .72); }
-.account-status strong { color: #ffacb8; font-family: var(--mono); font-size: .62rem; letter-spacing: .03em; white-space: nowrap; }
-.account-status span { color: #e9bfc5; }
-.fact b.fact-danger { color: #ff9eae; }
+.account-status {
+  display: flex;
+  width: 100%;
+  margin: 0.05rem 0 1rem;
+  padding: 0.7rem 0.8rem;
+  gap: 0.65rem;
+  align-items: center;
+  color: #ffd9dd;
+  background: linear-gradient(135deg, rgba(174, 67, 91, 0.2), rgba(97, 41, 65, 0.12));
+  border: 1px solid rgba(255, 137, 153, 0.28);
+  border-radius: 12px;
+  box-shadow: inset 0 1px 0 rgba(255, 214, 220, 0.07);
+  font-size: 0.68rem;
+  line-height: 1.35;
+}
+.account-status::before {
+  content: "";
+  width: 7px;
+  height: 7px;
+  flex: 0 0 auto;
+  background: #ff879a;
+  border-radius: 50%;
+  box-shadow: 0 0 12px rgba(255, 135, 154, 0.72);
+}
+.account-status strong {
+  color: #ffacb8;
+  font-family: var(--mono);
+  font-size: 0.62rem;
+  letter-spacing: 0.03em;
+  white-space: nowrap;
+}
+.account-status span {
+  color: #e9bfc5;
+}
+.fact b.fact-danger {
+  color: #ff9eae;
+}
 
 /* Beacon project */
 .project-icon.beacon {
   overflow: hidden;
-  background: linear-gradient(145deg, rgba(115, 226, 255, .24), rgba(54, 122, 235, .14));
-  border: 1px solid rgba(143, 230, 255, .24);
-  box-shadow: 0 10px 30px rgba(72, 184, 255, .11);
+  background: linear-gradient(145deg, rgba(115, 226, 255, 0.24), rgba(54, 122, 235, 0.14));
+  border: 1px solid rgba(143, 230, 255, 0.24);
+  box-shadow: 0 10px 30px rgba(72, 184, 255, 0.11);
 }
-.project-icon.beacon img { width: 59px; height: 59px; object-fit: contain; }
-body[data-project="beacon"] { position: relative; background: #050c11; }
+.project-icon.beacon img {
+  width: 59px;
+  height: 59px;
+  object-fit: contain;
+}
+body[data-project="beacon"] {
+  position: relative;
+  background: #050c11;
+}
 body[data-project="beacon"]::before {
-  background: radial-gradient(ellipse at 78% 15%, rgba(66, 190, 244, .16), transparent 38%), #050c11;
-  opacity: .98;
+  background:
+    radial-gradient(ellipse at 78% 15%, rgba(66, 190, 244, 0.16), transparent 38%), #050c11;
+  opacity: 0.98;
 }
 body[data-project="beacon"]::after {
-  opacity: .11;
-  background-image: linear-gradient(rgba(132, 226, 255, .026) 1px, transparent 1px), linear-gradient(90deg, rgba(132, 226, 255, .026) 1px, transparent 1px);
+  opacity: 0.11;
+  background-image:
+    linear-gradient(rgba(132, 226, 255, 0.026) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(132, 226, 255, 0.026) 1px, transparent 1px);
   background-size: 64px 64px;
   mask-image: linear-gradient(to bottom, black 0%, transparent 88%);
 }
@@ -124,97 +186,168 @@ body[data-project="beacon"]::after {
   height: 100%;
   object-fit: cover;
   object-position: center;
-  filter: saturate(.82) contrast(1.05) brightness(.62);
+  filter: saturate(0.82) contrast(1.05) brightness(0.62);
 }
 .beacon-video-background::after {
   content: "";
   position: absolute;
   inset: 0;
   background:
-    linear-gradient(180deg, rgba(3, 8, 13, .58) 0%, rgba(3, 9, 14, .38) 35%, rgba(3, 8, 13, .72) 100%),
-    radial-gradient(circle at 50% 34%, transparent 0%, rgba(3, 9, 14, .18) 58%, rgba(3, 8, 13, .56) 100%);
+    linear-gradient(
+      180deg,
+      rgba(3, 8, 13, 0.58) 0%,
+      rgba(3, 9, 14, 0.38) 35%,
+      rgba(3, 8, 13, 0.72) 100%
+    ),
+    radial-gradient(
+      circle at 50% 34%,
+      transparent 0%,
+      rgba(3, 9, 14, 0.18) 58%,
+      rgba(3, 8, 13, 0.56) 100%
+    );
 }
 body[data-project="beacon"] .glass-card {
-  background: linear-gradient(145deg, rgba(20, 31, 40, .82), rgba(7, 14, 21, .72));
+  background: linear-gradient(145deg, rgba(20, 31, 40, 0.82), rgba(7, 14, 21, 0.72));
 }
 body[data-project="beacon"] .site-glow-blue {
-  background: radial-gradient(circle, rgba(67, 199, 255, .42), transparent 66%);
-  opacity: .18;
+  background: radial-gradient(circle, rgba(67, 199, 255, 0.42), transparent 66%);
+  opacity: 0.18;
 }
 body[data-project="beacon"] .profile-intro,
 body[data-project="beacon"] .profile-sidebar,
-body[data-project="beacon"] .detail-panel { border-color: rgba(113, 220, 255, .2); }
-body[data-project="beacon"] .eyebrow { color: #77dfff; }
+body[data-project="beacon"] .detail-panel {
+  border-color: rgba(113, 220, 255, 0.2);
+}
+body[data-project="beacon"] .eyebrow {
+  color: #77dfff;
+}
 body[data-project="beacon"] .project-mark {
-  padding: .35rem;
+  padding: 0.35rem;
   object-fit: contain;
-  background: linear-gradient(145deg, rgba(127, 230, 255, .22), rgba(62, 119, 230, .14));
-  border-color: rgba(151, 232, 255, .3);
-  box-shadow: 0 16px 38px rgba(0, 0, 0, .28), 0 0 42px rgba(75, 195, 255, .12);
+  background: linear-gradient(145deg, rgba(127, 230, 255, 0.22), rgba(62, 119, 230, 0.14));
+  border-color: rgba(151, 232, 255, 0.3);
+  box-shadow:
+    0 16px 38px rgba(0, 0, 0, 0.28),
+    0 0 42px rgba(75, 195, 255, 0.12);
 }
 body[data-project="beacon"] main,
-body[data-project="beacon"] footer { position: relative; z-index: 1; }
-@media (prefers-reduced-motion: reduce) {
-  .beacon-video-background video { display: none; }
+body[data-project="beacon"] footer {
+  position: relative;
+  z-index: 1;
 }
-.detail-panel code { padding: .12rem .3rem; color: #c7eaf4; background: rgba(117, 214, 246, .08); border-radius: 5px; font: .9em var(--mono); }
+@media (prefers-reduced-motion: reduce) {
+  .beacon-video-background video {
+    display: none;
+  }
+}
+.detail-panel code {
+  padding: 0.12rem 0.3rem;
+  color: #c7eaf4;
+  background: rgba(117, 214, 246, 0.08);
+  border-radius: 5px;
+  font: 0.9em var(--mono);
+}
 
 /* Neutral account status: informative, not alarming. */
-.account-status.account-status-neutral { color: #dfe7ef; background: linear-gradient(135deg, rgba(90, 155, 242, .14), rgba(45, 78, 122, .1)); border-color: rgba(90, 155, 242, .3); box-shadow: inset 0 1px 0 rgba(214, 230, 255, .07); }
-.account-status.account-status-neutral::before { background: #5a9bf2; box-shadow: 0 0 12px rgba(90, 155, 242, .6); }
-.account-status.account-status-neutral strong { color: #a9c8f5; }
-.account-status.account-status-neutral span { color: #c6d6e8; }
+.account-status.account-status-neutral {
+  color: #dfe7ef;
+  background: linear-gradient(135deg, rgba(90, 155, 242, 0.14), rgba(45, 78, 122, 0.1));
+  border-color: rgba(90, 155, 242, 0.3);
+  box-shadow: inset 0 1px 0 rgba(214, 230, 255, 0.07);
+}
+.account-status.account-status-neutral::before {
+  background: #5a9bf2;
+  box-shadow: 0 0 12px rgba(90, 155, 242, 0.6);
+}
+.account-status.account-status-neutral strong {
+  color: #a9c8f5;
+}
+.account-status.account-status-neutral span {
+  color: #c6d6e8;
+}
 
 /* Gap atmospheres: projects and interior pages that previously had only the
    base wash. Same shape as the beacon/championscode/nulltrace treatments. */
-body[data-project="baritone"] { position: relative; background: #0a0807; }
+body[data-project="baritone"] {
+  position: relative;
+  background: #0a0807;
+}
 body[data-project="baritone"]::before {
-  background: radial-gradient(ellipse at 74% 16%, rgba(244, 114, 60, .19), transparent 36%), #0a0807;
-  opacity: .96;
+  background:
+    radial-gradient(ellipse at 74% 16%, rgba(244, 114, 60, 0.19), transparent 36%), #0a0807;
+  opacity: 0.96;
 }
 body[data-project="baritone"]::after {
-  opacity: .1;
-  background-image: linear-gradient(rgba(255, 255, 255, .026) 1px, transparent 1px), linear-gradient(90deg, rgba(255, 255, 255, .026) 1px, transparent 1px);
+  opacity: 0.1;
+  background-image:
+    linear-gradient(rgba(255, 255, 255, 0.026) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.026) 1px, transparent 1px);
   background-size: 64px 64px;
   mask-image: linear-gradient(to bottom, black 0%, transparent 88%);
 }
-body[data-project="baritone"] .eyebrow { color: #f0a35e; }
-body[data-project="idi-assets"] { position: relative; background: #08070d; }
+body[data-project="baritone"] .eyebrow {
+  color: #f0a35e;
+}
+body[data-project="idi-assets"] {
+  position: relative;
+  background: #08070d;
+}
 body[data-project="idi-assets"]::before {
-  background: radial-gradient(ellipse at 72% 15%, rgba(150, 110, 255, .18), transparent 36%), #08070d;
-  opacity: .96;
+  background:
+    radial-gradient(ellipse at 72% 15%, rgba(150, 110, 255, 0.18), transparent 36%), #08070d;
+  opacity: 0.96;
 }
 body[data-project="idi-assets"]::after {
-  opacity: .1;
-  background-image: linear-gradient(rgba(255, 255, 255, .026) 1px, transparent 1px), linear-gradient(90deg, rgba(255, 255, 255, .026) 1px, transparent 1px);
+  opacity: 0.1;
+  background-image:
+    linear-gradient(rgba(255, 255, 255, 0.026) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.026) 1px, transparent 1px);
   background-size: 64px 64px;
   mask-image: linear-gradient(to bottom, black 0%, transparent 88%);
 }
-body[data-project="idi-assets"] .eyebrow { color: #bda4ff; }
-body[data-project="website"] { position: relative; background: #070a10; }
+body[data-project="idi-assets"] .eyebrow {
+  color: #bda4ff;
+}
+body[data-project="website"] {
+  position: relative;
+  background: #070a10;
+}
 body[data-project="website"]::before {
-  background: radial-gradient(ellipse at 74% 16%, rgba(90, 155, 242, .19), transparent 36%), #070a10;
-  opacity: .96;
+  background:
+    radial-gradient(ellipse at 74% 16%, rgba(90, 155, 242, 0.19), transparent 36%), #070a10;
+  opacity: 0.96;
 }
 body[data-project="website"]::after {
-  opacity: .1;
-  background-image: linear-gradient(rgba(255, 255, 255, .026) 1px, transparent 1px), linear-gradient(90deg, rgba(255, 255, 255, .026) 1px, transparent 1px);
+  opacity: 0.1;
+  background-image:
+    linear-gradient(rgba(255, 255, 255, 0.026) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.026) 1px, transparent 1px);
   background-size: 64px 64px;
   mask-image: linear-gradient(to bottom, black 0%, transparent 88%);
 }
-body[data-project="website"] .eyebrow { color: #8fbdf5; }
-body[data-project="zonedout"] { position: relative; background: #0b070c; }
+body[data-project="website"] .eyebrow {
+  color: #8fbdf5;
+}
+body[data-project="zonedout"] {
+  position: relative;
+  background: #0b070c;
+}
 body[data-project="zonedout"]::before {
-  background: radial-gradient(ellipse at 72% 15%, rgba(226, 110, 195, .17), transparent 36%), #0b070c;
-  opacity: .96;
+  background:
+    radial-gradient(ellipse at 72% 15%, rgba(226, 110, 195, 0.17), transparent 36%), #0b070c;
+  opacity: 0.96;
 }
 body[data-project="zonedout"]::after {
-  opacity: .1;
-  background-image: linear-gradient(rgba(255, 255, 255, .026) 1px, transparent 1px), linear-gradient(90deg, rgba(255, 255, 255, .026) 1px, transparent 1px);
+  opacity: 0.1;
+  background-image:
+    linear-gradient(rgba(255, 255, 255, 0.026) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.026) 1px, transparent 1px);
   background-size: 64px 64px;
   mask-image: linear-gradient(to bottom, black 0%, transparent 88%);
 }
-body[data-project="zonedout"] .eyebrow { color: #e79ad0; }
+body[data-project="zonedout"] .eyebrow {
+  color: #e79ad0;
+}
 body[data-project="baritone"] main,
 body[data-project="baritone"] footer,
 body[data-project="idi-assets"] main,
@@ -222,32 +355,47 @@ body[data-project="idi-assets"] footer,
 body[data-project="website"] main,
 body[data-project="website"] footer,
 body[data-project="zonedout"] main,
-body[data-project="zonedout"] footer { position: relative; z-index: 1; }
+body[data-project="zonedout"] footer {
+  position: relative;
+  z-index: 1;
+}
 
 /* Interior fallback: index, plain member, activity, migration, noosphere and dashboard
    pages. Richer than the base wash; FX pages keep their own treatments. */
 body[data-page="projects"]::before,
 body[data-page="members"]::before,
-body[data-page="member"]:not(.starry-night-page):not(.plus-rain-page):not(.storm-window-page)::before,
+body[data-page="member"]:not(.starry-night-page):not(.plus-rain-page):not(
+    .storm-window-page
+  )::before,
 body[data-page="activity"]::before,
 body[data-page="migration"]::before,
 body[data-page="noosphere"]::before,
 body[data-page="dashboard"]::before {
-  background: radial-gradient(ellipse at 72% 12%, rgba(96, 140, 220, .19), transparent 40%), radial-gradient(ellipse at 10% 55%, rgba(150, 211, 200, .11), transparent 42%), #07090d;
-  opacity: .96;
+  background:
+    radial-gradient(ellipse at 72% 12%, rgba(96, 140, 220, 0.19), transparent 40%),
+    radial-gradient(ellipse at 10% 55%, rgba(150, 211, 200, 0.11), transparent 42%), #07090d;
+  opacity: 0.96;
 }
-body[data-page="noosphere"] { position: relative; background: #07090f; }
+body[data-page="noosphere"] {
+  position: relative;
+  background: #07090f;
+}
 body[data-page="noosphere"]::before {
-  background: radial-gradient(ellipse at 74% 14%, rgba(125, 155, 255, .20), transparent 42%), radial-gradient(ellipse at 15% 58%, rgba(79, 227, 193, .13), transparent 42%), #07090f;
-  opacity: .96;
+  background:
+    radial-gradient(ellipse at 74% 14%, rgba(125, 155, 255, 0.2), transparent 42%),
+    radial-gradient(ellipse at 15% 58%, rgba(79, 227, 193, 0.13), transparent 42%), #07090f;
+  opacity: 0.96;
 }
-body[data-page="noosphere"] .eyebrow { color: #7d9bff; }
+body[data-page="noosphere"] .eyebrow {
+  color: #7d9bff;
+}
 body[data-page="projects"] main,
 body[data-page="projects"] footer,
 body[data-page="members"] main,
 body[data-page="members"] footer,
 body[data-page="member"]:not(.starry-night-page):not(.plus-rain-page):not(.storm-window-page) main,
-body[data-page="member"]:not(.starry-night-page):not(.plus-rain-page):not(.storm-window-page) footer,
+body[data-page="member"]:not(.starry-night-page):not(.plus-rain-page):not(.storm-window-page)
+  footer,
 body[data-page="activity"] main,
 body[data-page="activity"] footer,
 body[data-page="migration"] main,
@@ -255,21 +403,36 @@ body[data-page="migration"] footer,
 body[data-page="noosphere"] main,
 body[data-page="noosphere"] footer,
 body[data-page="dashboard"] main,
-body[data-page="dashboard"] footer { position: relative; z-index: 1; }
+body[data-page="dashboard"] footer {
+  position: relative;
+  z-index: 1;
+}
 
 /* Living backgrounds: every page's atmosphere glow slowly breathes while its
    grid drifts a cell on a seamless loop, so the dark never reads flat. This
    only adds motion, so it composes with each page's own wash above; pages
    with richer treatments (video, canvas FX) keep them on top, unaffected. */
 @media (prefers-reduced-motion: no-preference) {
-  body::before { animation: ambience-breathe 36s ease-in-out infinite alternate; }
-  body::after { animation: ambience-drift 48s linear infinite; }
+  body::before {
+    animation: ambience-breathe 36s ease-in-out infinite alternate;
+  }
+  body::after {
+    animation: ambience-drift 48s linear infinite;
+  }
 }
 @keyframes ambience-breathe {
-  from { transform: translate3d(-1.5%, -1%, 0) scale(1.05); }
-  to { transform: translate3d(1.5%, 1%, 0) scale(1.08); }
+  from {
+    transform: translate3d(-1.5%, -1%, 0) scale(1.05);
+  }
+  to {
+    transform: translate3d(1.5%, 1%, 0) scale(1.08);
+  }
 }
 @keyframes ambience-drift {
-  from { transform: translate3d(0, 0, 0); }
-  to { transform: translate3d(64px, 64px, 0); }
+  from {
+    transform: translate3d(0, 0, 0);
+  }
+  to {
+    transform: translate3d(64px, 64px, 0);
+  }
 }

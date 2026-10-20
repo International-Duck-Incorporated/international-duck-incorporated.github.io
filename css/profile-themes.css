@@ -15,9 +15,9 @@ body.starry-night-page::before {
   z-index: -2;
   pointer-events: none;
   background:
-    radial-gradient(circle at 18% 18%, rgba(87, 111, 238, .34), transparent 35%),
-    radial-gradient(circle at 82% 26%, rgba(183, 77, 209, .24), transparent 36%),
-    radial-gradient(circle at 52% 88%, rgba(48, 174, 203, .2), transparent 42%),
+    radial-gradient(circle at 18% 18%, rgba(87, 111, 238, 0.34), transparent 35%),
+    radial-gradient(circle at 82% 26%, rgba(183, 77, 209, 0.24), transparent 36%),
+    radial-gradient(circle at 52% 88%, rgba(48, 174, 203, 0.2), transparent 42%),
     linear-gradient(145deg, #050713 5%, #10122d 48%, #160b25 100%);
   background-size: 135% 135%;
   animation: starrynight-gradient 18s ease-in-out infinite alternate;
@@ -28,9 +28,17 @@ body.starry-night-page::after {
   inset: 0;
   z-index: -1;
   pointer-events: none;
-  background: linear-gradient(180deg, rgba(3,5,13,.6), transparent 28%, transparent 72%, rgba(3,5,13,.7));
+  background: linear-gradient(
+    180deg,
+    rgba(3, 5, 13, 0.6),
+    transparent 28%,
+    transparent 72%,
+    rgba(3, 5, 13, 0.7)
+  );
 }
-body.starry-night-page .site-glow { display: none; }
+body.starry-night-page .site-glow {
+  display: none;
+}
 .starrynight-bg-container {
   position: fixed;
   inset: 0;
@@ -43,12 +51,20 @@ body.starry-night-page .site-glow { display: none; }
   display: block;
   background: #f6f5ff;
   border-radius: 50%;
-  box-shadow: 0 0 7px 1px rgba(194, 207, 255, .72);
+  box-shadow: 0 0 7px 1px rgba(194, 207, 255, 0.72);
 }
-.starrynight-twinkle-1 { animation: starrynight-twinkle-a 6s ease-in-out infinite; }
-.starrynight-twinkle-2 { animation: starrynight-twinkle-b 7s ease-in-out infinite; }
-.starrynight-twinkle-3 { animation: starrynight-twinkle-a 8s ease-in-out infinite reverse; }
-.starrynight-twinkle-4 { animation: starrynight-twinkle-b 5s ease-in-out infinite reverse; }
+.starrynight-twinkle-1 {
+  animation: starrynight-twinkle-a 6s ease-in-out infinite;
+}
+.starrynight-twinkle-2 {
+  animation: starrynight-twinkle-b 7s ease-in-out infinite;
+}
+.starrynight-twinkle-3 {
+  animation: starrynight-twinkle-a 8s ease-in-out infinite reverse;
+}
+.starrynight-twinkle-4 {
+  animation: starrynight-twinkle-b 5s ease-in-out infinite reverse;
+}
 .starrynight-shooting-star {
   position: absolute;
   width: 4px;
@@ -56,7 +72,10 @@ body.starry-night-page .site-glow { display: none; }
   background: #fff;
   border-radius: 50%;
   opacity: 0;
-  box-shadow: 0 0 0 4px rgba(174,193,255,.08), 0 0 0 8px rgba(174,193,255,.05), 0 0 20px rgba(204,214,255,.75);
+  box-shadow:
+    0 0 0 4px rgba(174, 193, 255, 0.08),
+    0 0 0 8px rgba(174, 193, 255, 0.05),
+    0 0 20px rgba(204, 214, 255, 0.75);
   animation: starrynight-shoot 6s linear infinite;
 }
 .starrynight-shooting-star::before {
@@ -68,30 +87,62 @@ body.starry-night-page .site-glow { display: none; }
   height: 1px;
   transform: translateY(-50%);
   /* The star travels toward its local -X direction, so the tail extends +X. */
-  background: linear-gradient(90deg, rgba(218,225,255,.9), transparent);
+  background: linear-gradient(90deg, rgba(218, 225, 255, 0.9), transparent);
 }
 @keyframes starrynight-gradient {
-  from { background-position: 0% 20%; filter: hue-rotate(0deg); }
-  to { background-position: 100% 75%; filter: hue-rotate(18deg); }
+  from {
+    background-position: 0% 20%;
+    filter: hue-rotate(0deg);
+  }
+  to {
+    background-position: 100% 75%;
+    filter: hue-rotate(18deg);
+  }
 }
 @keyframes starrynight-twinkle-a {
-  0%, 100% { opacity: .25; transform: scale(.75); }
-  45% { opacity: 1; transform: scale(1.25); }
+  0%,
+  100% {
+    opacity: 0.25;
+    transform: scale(0.75);
+  }
+  45% {
+    opacity: 1;
+    transform: scale(1.25);
+  }
 }
 @keyframes starrynight-twinkle-b {
-  0%, 100% { opacity: .8; }
-  55% { opacity: .15; }
+  0%,
+  100% {
+    opacity: 0.8;
+  }
+  55% {
+    opacity: 0.15;
+  }
 }
 @keyframes starrynight-shoot {
-  0%, 12% { opacity: 0; transform: rotate(315deg) translateX(0); }
-  15%, 65% { opacity: 1; }
-  100% { opacity: 0; transform: rotate(315deg) translateX(-1500px); }
+  0%,
+  12% {
+    opacity: 0;
+    transform: rotate(315deg) translateX(0);
+  }
+  15%,
+  65% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+    transform: rotate(315deg) translateX(-1500px);
+  }
 }
 @media (prefers-reduced-motion: reduce) {
   body.starry-night-page::before,
   .starrynight-star,
-  .starrynight-shooting-star { animation: none !important; }
-  .starrynight-shooting-star { display: none; }
+  .starrynight-shooting-star {
+    animation: none !important;
+  }
+  .starrynight-shooting-star {
+    display: none;
+  }
 }
 
 /* Green Matrix background â€” 0xFFshell profile
@@ -108,10 +159,12 @@ body.matrix-rain-page::before {
   z-index: -1;
   pointer-events: none;
   background:
-    linear-gradient(180deg, rgba(1,7,3,.7), transparent 25%),
-    linear-gradient(0deg, rgba(1,7,3,.78), transparent 30%);
+    linear-gradient(180deg, rgba(1, 7, 3, 0.7), transparent 25%),
+    linear-gradient(0deg, rgba(1, 7, 3, 0.78), transparent 30%);
 }
-body.matrix-rain-page .site-glow { display: none; }
+body.matrix-rain-page .site-glow {
+  display: none;
+}
 .matrix-rain-canvas {
   position: fixed;
   inset: 0;
@@ -121,11 +174,15 @@ body.matrix-rain-page .site-glow { display: none; }
   pointer-events: none;
   background: #020704;
 }
-body.matrix-rain-page .eyebrow { color: #64f889; }
+body.matrix-rain-page .eyebrow {
+  color: #64f889;
+}
 body.matrix-rain-page .button-blue {
   color: #021006;
   background: #5cf47f;
   border-color: #5cf47f;
-  box-shadow: 0 10px 30px rgba(62,235,105,.18);
+  box-shadow: 0 10px 30px rgba(62, 235, 105, 0.18);
 }
-body.matrix-rain-page .button-blue:hover { background: #7cff99; }
+body.matrix-rain-page .button-blue:hover {
+  background: #7cff99;
+}

@@ -4,13 +4,14 @@
 Uses only assets already in the repo (assets/org-avatar.png) plus DejaVu,
 which is available in the build sandbox. Output: assets/og-default.png
 """
+
 from PIL import Image, ImageDraw, ImageFont, ImageFilter
 
 W, H = 1200, 630
-BG = (7, 9, 13)          # matches <meta name="theme-color" content="#07090d">
-BLUE = (138, 184, 246)   # #8ab8f6 from the site palette
-STEEL = (74, 127, 192)   # #4a7fc0
-TEXT = (220, 236, 255)   # #dcecff
+BG = (7, 9, 13)  # matches <meta name="theme-color" content="#07090d">
+BLUE = (138, 184, 246)  # #8ab8f6 from the site palette
+STEEL = (74, 127, 192)  # #4a7fc0
+TEXT = (220, 236, 255)  # #dcecff
 MUTED = (150, 168, 194)
 
 FONT = "/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf"
@@ -71,8 +72,11 @@ d.text((TX, AY - 4), "INTERNATIONAL DUCK INCORPORATED", font=f_kick, fill=BLUE)
 d.text((TX, AY + 40), "International Duck", font=f_1, fill=TEXT)
 d.text((TX, AY + 118), "Incorporated.", font=f_2, fill=MUTED)
 ty = AY + 212
-for line in wrap("Open-source Minecraft mods, tools and experiments \u2014 built in public on GitLab.",
-                 f_tag, MAXW):
+for line in wrap(
+    "Open-source Minecraft mods, tools and experiments \u2014 built in public on GitLab.",
+    f_tag,
+    MAXW,
+):
     d.text((TX, ty), line, font=f_tag, fill=MUTED)
     ty += 40
 

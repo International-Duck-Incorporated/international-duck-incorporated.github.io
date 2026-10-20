@@ -7,6 +7,7 @@ Skips pages that declare <meta name="robots" content="noindex">.
 each entry is read from that page's own <link rel="canonical"> (owned by
 tools/apply_page_seo.py), so the sitemap cannot disagree with the canonicals.
 """
+
 import datetime
 import re
 import subprocess
@@ -49,7 +50,9 @@ ORDER = list(PRIORITY)
 
 
 def canonical_for(text: str, path: Path) -> str | None:
-    match = re.search(r'<link rel="canonical" href="https://idi-official\.pages\.dev(?P<url>[^"]*)"', text)
+    match = re.search(
+        r'<link rel="canonical" href="https://idi-official\.pages\.dev(?P<url>[^"]*)"', text
+    )
     if match:
         return match.group("url")
     return None
@@ -68,7 +71,9 @@ def lastmod(path: Path) -> str:
     try:
         out = subprocess.run(
             ["git", "log", "-1", "--format=%cs", "--", path.as_posix()],
-            capture_output=True, text=True, check=True,
+            capture_output=True,
+            text=True,
+            check=True,
         ).stdout.strip()
         return out or datetime.date.today().isoformat()
     except subprocess.CalledProcessError:
@@ -86,24 +91,30 @@ def main() -> int:
             continue
         canonical = canonical_for(text, html)
         if canonical is None:
-            print(f"warning: {html.relative_to(root)} has no canonical; falling back to its path",
-                  file=sys.stderr)
+            print(
+                f"warning: {html.relative_to(root)} has no canonical; falling back to its path",
+                file=sys.stderr,
+            )
         entries.append((canonical or url_for(html.relative_to(root)), html))
 
     unknown = [u for u, _ in entries if u not in PRIORITY]
     if unknown:
         print(f"warning: pages missing priority mapping: {unknown}", file=sys.stderr)
 
-    lines = ['<?xml version="1.0" encoding="UTF-8"?>',
-             '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">']
+    lines = [
+        '<?xml version="1.0" encoding="UTF-8"?>',
+        '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">',
+    ]
     for url, path in sorted(entries, key=lambda e: ORDER.index(e[0]) if e[0] in ORDER else 99):
         changefreq, prio = PRIORITY.get(url, ("weekly", "0.5"))
-        lines += ["  <url>",
-                  f"    <loc>{SITE}{url}</loc>",
-                  f"    <lastmod>{lastmod(path)}</lastmod>",
-                  f"    <changefreq>{changefreq}</changefreq>",
-                  f"    <priority>{prio}</priority>",
-                  "  </url>"]
+        lines += [
+            "  <url>",
+            f"    <loc>{SITE}{url}</loc>",
+            f"    <lastmod>{lastmod(path)}</lastmod>",
+            f"    <changefreq>{changefreq}</changefreq>",
+            f"    <priority>{prio}</priority>",
+            "  </url>",
+        ]
     lines.append("</urlset>")
 
     (root / "sitemap.xml").write_text("\n".join(lines) + "\n", encoding="utf-8")

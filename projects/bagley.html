@@ -1,228 +1,414 @@
 <!doctype html>
 <html lang="en">
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <script>
-    (() => {
-      const nav = navigator;
-      const connection = nav.connection || nav.mozConnection || nav.webkitConnection;
-      const lowEnd = Boolean(
-        (connection && connection.saveData) ||
-        (connection && /^(slow-2g|2g)$/.test(connection.effectiveType || "")) ||
-        (typeof nav.deviceMemory === "number" && nav.deviceMemory <= 4) ||
-        (typeof nav.hardwareConcurrency === "number" && nav.hardwareConcurrency <= 4)
-      );
-      window.IDI_LOW_END = lowEnd;
-      window.IDI_REDUCED_MOTION = Boolean(
-        window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches
-      );
-      if (lowEnd) document.documentElement.classList.add("low-end");
-    })();
-  </script>
-  <link rel="preconnect" href="https://gitlab.com" crossorigin>
-  <link rel="preconnect" href="https://gitlab.com">
-  <link rel="dns-prefetch" href="https://gitlab.com">
-  <meta name="theme-color" content="#07090d">
-  <meta property="og:image" content="https://idi-official.pages.dev/assets/og-default.png">
-  <title>Bagley, AI chat addon for the Beacon Minecraft mod | IDI</title>
-  <meta name="description" content="Bagley is a free, opt-in AI chat assistant addon for the Beacon Minecraft mod, with local provider configuration and optional conversation memory.">
-  <link rel="canonical" href="https://idi-official.pages.dev/projects/bagley">
-  <meta property="og:type" content="website">
-  <meta property="og:title" content="Bagley, AI chat addon for the Beacon Minecraft mod">
-  <meta property="og:description" content="Opt-in AI chat assistant addon for the Beacon Minecraft mod. Free and open source.">
-  <meta property="og:url" content="https://idi-official.pages.dev/projects/bagley">
-  <meta property="og:site_name" content="International Duck Incorporated">
-  <meta property="og:locale" content="en_US">
-  <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="Bagley, AI chat addon for the Beacon Minecraft mod">
-  <meta name="twitter:description" content="Opt-in AI chat assistant addon for the Beacon Minecraft mod. Free and open source.">
-  <link rel="icon" href="/assets/bagley-icon.png?v=25a4b846" type="image/png">
-  <link rel="stylesheet" href="/css/bundle.css?v=1f263d21">
-  <script src="/script.js?v=ffe97c4c" defer></script>
-  <script src="/pixel-canvas.js?v=9d12b50d" defer></script>
-  <meta property="og:image:width" content="1200">
-  <meta property="og:image:height" content="630">
-  <meta property="og:image:alt" content="International Duck Incorporated - open-source Minecraft mods, tools and experiments">
-  <meta name="twitter:image" content="https://idi-official.pages.dev/assets/og-default.png">
-  <script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@graph": [
-    {
-      "@type": "Organization",
-      "@id": "https://idi-official.pages.dev/#organization",
-      "name": "International Duck Incorporated",
-      "alternateName": "IDI",
-      "url": "https://idi-official.pages.dev/",
-      "logo": {
-        "@type": "ImageObject",
-        "url": "https://idi-official.pages.dev/assets/org-avatar.png"
-      },
-      "image": "https://idi-official.pages.dev/assets/og-default.png",
-      "description": "Open-source collective building Minecraft mods, tools and experiments in public. GitLab is the active source of truth; the former GitHub organization is currently hidden from public view.",
-      "sameAs": [
-        "https://gitlab.com/international-duck-incorporated"
-      ],
-      "knowsAbout": [
-        "Minecraft mods",
-        "Fabric modding",
-        "Minecraft client utilities",
-        "open source"
-      ]
-    },
-    {
-      "@type": "WebSite",
-      "@id": "https://idi-official.pages.dev/#website",
-      "url": "https://idi-official.pages.dev/",
-      "name": "International Duck Incorporated",
-      "inLanguage": "en",
-      "publisher": {
-        "@id": "https://idi-official.pages.dev/#organization"
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <script>
+      (() => {
+        const nav = navigator;
+        const connection = nav.connection || nav.mozConnection || nav.webkitConnection;
+        const lowEnd = Boolean(
+          (connection && connection.saveData) ||
+            (connection && /^(slow-2g|2g)$/.test(connection.effectiveType || "")) ||
+            (typeof nav.deviceMemory === "number" && nav.deviceMemory <= 4) ||
+            (typeof nav.hardwareConcurrency === "number" && nav.hardwareConcurrency <= 4)
+        );
+        window.IDI_LOW_END = lowEnd;
+        window.IDI_REDUCED_MOTION = Boolean(
+          window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches
+        );
+        if (lowEnd) document.documentElement.classList.add("low-end");
+      })();
+    </script>
+    <link rel="preconnect" href="https://gitlab.com" crossorigin />
+    <link rel="preconnect" href="https://gitlab.com" />
+    <link rel="dns-prefetch" href="https://gitlab.com" />
+    <meta name="theme-color" content="#07090d" />
+    <meta property="og:image" content="https://idi-official.pages.dev/assets/og-default.png" />
+    <title>Bagley, AI chat addon for the Beacon Minecraft mod | IDI</title>
+    <meta
+      name="description"
+      content="Bagley is a free, opt-in AI chat assistant addon for the Beacon Minecraft mod, with local provider configuration and optional conversation memory."
+    />
+    <link rel="canonical" href="https://idi-official.pages.dev/projects/bagley" />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="Bagley, AI chat addon for the Beacon Minecraft mod" />
+    <meta
+      property="og:description"
+      content="Opt-in AI chat assistant addon for the Beacon Minecraft mod. Free and open source."
+    />
+    <meta property="og:url" content="https://idi-official.pages.dev/projects/bagley" />
+    <meta property="og:site_name" content="International Duck Incorporated" />
+    <meta property="og:locale" content="en_US" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Bagley, AI chat addon for the Beacon Minecraft mod" />
+    <meta
+      name="twitter:description"
+      content="Opt-in AI chat assistant addon for the Beacon Minecraft mod. Free and open source."
+    />
+    <link rel="icon" href="/assets/bagley-icon.png?v=25a4b846" type="image/png" />
+    <link rel="stylesheet" href="/css/bundle.css?v=583143c6" />
+    <script src="/script.js?v=0443d2ee" defer></script>
+    <script src="/pixel-canvas.js?v=8f2c93f3" defer></script>
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta
+      property="og:image:alt"
+      content="International Duck Incorporated - open-source Minecraft mods, tools and experiments"
+    />
+    <meta name="twitter:image" content="https://idi-official.pages.dev/assets/og-default.png" />
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@graph": [
+          {
+            "@type": "Organization",
+            "@id": "https://idi-official.pages.dev/#organization",
+            "name": "International Duck Incorporated",
+            "alternateName": "IDI",
+            "url": "https://idi-official.pages.dev/",
+            "logo": {
+              "@type": "ImageObject",
+              "url": "https://idi-official.pages.dev/assets/org-avatar.png"
+            },
+            "image": "https://idi-official.pages.dev/assets/og-default.png",
+            "description": "Open-source collective building Minecraft mods, tools and experiments in public. GitLab is the active source of truth; the former GitHub organization is currently hidden from public view.",
+            "sameAs": ["https://gitlab.com/international-duck-incorporated"],
+            "knowsAbout": [
+              "Minecraft mods",
+              "Fabric modding",
+              "Minecraft client utilities",
+              "open source"
+            ]
+          },
+          {
+            "@type": "WebSite",
+            "@id": "https://idi-official.pages.dev/#website",
+            "url": "https://idi-official.pages.dev/",
+            "name": "International Duck Incorporated",
+            "inLanguage": "en",
+            "publisher": {
+              "@id": "https://idi-official.pages.dev/#organization"
+            }
+          },
+          {
+            "@type": "WebPage",
+            "@id": "https://idi-official.pages.dev/projects/bagley#webpage",
+            "url": "https://idi-official.pages.dev/projects/bagley",
+            "name": "Bagley - International Duck",
+            "description": "Bagley is an opt-in, client-side AI chat assistant addon for Beacon.",
+            "isPartOf": {
+              "@id": "https://idi-official.pages.dev/#website"
+            },
+            "about": {
+              "@id": "https://idi-official.pages.dev/#organization"
+            },
+            "inLanguage": "en",
+            "primaryImageOfPage": {
+              "@type": "ImageObject",
+              "url": "https://idi-official.pages.dev/assets/og-default.png"
+            },
+            "breadcrumb": {
+              "@id": "https://idi-official.pages.dev/projects/bagley#breadcrumb"
+            }
+          },
+          {
+            "@type": "BreadcrumbList",
+            "@id": "https://idi-official.pages.dev/projects/bagley#breadcrumb",
+            "itemListElement": [
+              {
+                "@type": "ListItem",
+                "position": 1,
+                "name": "International Duck Incorporated",
+                "item": "https://idi-official.pages.dev/"
+              },
+              {
+                "@type": "ListItem",
+                "position": 2,
+                "name": "Projects",
+                "item": "https://idi-official.pages.dev/projects/"
+              },
+              {
+                "@type": "ListItem",
+                "position": 3,
+                "name": "Bagley",
+                "item": "https://idi-official.pages.dev/projects/bagley"
+              }
+            ]
+          },
+          {
+            "@type": "SoftwareApplication",
+            "@id": "https://idi-official.pages.dev/projects/bagley#app",
+            "name": "Bagley",
+            "description": "Opt-in, client-side AI chat assistant addon for Beacon with local provider configuration and optional memory. Requires Beacon 1.9.0 or newer.",
+            "url": "https://idi-official.pages.dev/projects/bagley",
+            "applicationCategory": "GameMod",
+            "operatingSystem": "Minecraft (via Beacon)",
+            "programmingLanguage": "Java",
+            "isAccessibleForFree": true,
+            "author": {
+              "@id": "https://idi-official.pages.dev/#organization"
+            },
+            "publisher": {
+              "@id": "https://idi-official.pages.dev/#organization"
+            },
+            "codeRepository": "https://gitlab.com/international-duck-incorporated/beacon-bagley",
+            "offers": {
+              "@type": "Offer",
+              "price": "0",
+              "priceCurrency": "USD"
+            },
+            "license": "https://spdx.org/licenses/GPL-3.0-only.html"
+          }
+        ]
       }
-    },
-    {
-      "@type": "WebPage",
-      "@id": "https://idi-official.pages.dev/projects/bagley#webpage",
-      "url": "https://idi-official.pages.dev/projects/bagley",
-      "name": "Bagley - International Duck",
-      "description": "Bagley is an opt-in, client-side AI chat assistant addon for Beacon.",
-      "isPartOf": {
-        "@id": "https://idi-official.pages.dev/#website"
-      },
-      "about": {
-        "@id": "https://idi-official.pages.dev/#organization"
-      },
-      "inLanguage": "en",
-      "primaryImageOfPage": {
-        "@type": "ImageObject",
-        "url": "https://idi-official.pages.dev/assets/og-default.png"
-      },
-      "breadcrumb": {
-        "@id": "https://idi-official.pages.dev/projects/bagley#breadcrumb"
-      }
-    },
-    {
-      "@type": "BreadcrumbList",
-      "@id": "https://idi-official.pages.dev/projects/bagley#breadcrumb",
-      "itemListElement": [
-        {
-          "@type": "ListItem",
-          "position": 1,
-          "name": "International Duck Incorporated",
-          "item": "https://idi-official.pages.dev/"
-        },
-        {
-          "@type": "ListItem",
-          "position": 2,
-          "name": "Projects",
-          "item": "https://idi-official.pages.dev/projects/"
-        },
-        {
-          "@type": "ListItem",
-          "position": 3,
-          "name": "Bagley",
-          "item": "https://idi-official.pages.dev/projects/bagley"
-        }
-      ]
-    },
-    {
-      "@type": "SoftwareApplication",
-      "@id": "https://idi-official.pages.dev/projects/bagley#app",
-      "name": "Bagley",
-      "description": "Opt-in, client-side AI chat assistant addon for Beacon with local provider configuration and optional memory. Requires Beacon 1.9.0 or newer.",
-      "url": "https://idi-official.pages.dev/projects/bagley",
-      "applicationCategory": "GameMod",
-      "operatingSystem": "Minecraft (via Beacon)",
-      "programmingLanguage": "Java",
-      "isAccessibleForFree": true,
-      "author": {
-        "@id": "https://idi-official.pages.dev/#organization"
-      },
-      "publisher": {
-        "@id": "https://idi-official.pages.dev/#organization"
-      },
-      "codeRepository": "https://gitlab.com/international-duck-incorporated/beacon-bagley",
-      "offers": {
-        "@type": "Offer",
-        "price": "0",
-        "priceCurrency": "USD"
-      },
-      "license": "https://spdx.org/licenses/GPL-3.0-only.html"
-    }
-  ]
-}
-  </script>
-</head>
-<body data-page="project" data-project="bagley">
-  <svg class="svg-sprite" aria-hidden="true">
-    <symbol id="i-gitlab" viewBox="0 0 24 24"><path fill="currentColor" stroke="none" d="m23.6004 9.5927-.0337-.0862L20.3.9814a.851.851 0 0 0-.3362-.405.8748.8748 0 0 0-.9997.0539.8748.8748 0 0 0-.29.4399l-2.2055 6.748H7.5375l-2.2057-6.748a.8573.8573 0 0 0-.29-.4412.8748.8748 0 0 0-.9997-.0537.8585.8585 0 0 0-.3362.4049L.4332 9.5015l-.0325.0862a6.0657 6.0657 0 0 0 2.0119 7.0105l.0113.0087.03.0213 4.976 3.7264 2.462 1.8633 1.4995 1.1321a1.0085 1.0085 0 0 0 1.2197 0l1.4995-1.1321 2.4619-1.8633 5.006-3.7489.0125-.01a6.0682 6.0682 0 0 0 2.0094-7.003z"/></symbol>
-    <symbol id="i-arrow" viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></symbol>
-    <symbol id="i-menu" viewBox="0 0 24 24"><path d="M4 8h16M4 16h16"/></symbol>
-    <symbol id="i-close" viewBox="0 0 24 24"><path d="m5 5 14 14M19 5 5 19"/></symbol>
-  </svg>
+    </script>
+  </head>
+  <body data-page="project" data-project="bagley">
+    <svg class="svg-sprite" aria-hidden="true">
+      <symbol id="i-gitlab" viewBox="0 0 24 24">
+        <path
+          fill="currentColor"
+          stroke="none"
+          d="m23.6004 9.5927-.0337-.0862L20.3.9814a.851.851 0 0 0-.3362-.405.8748.8748 0 0 0-.9997.0539.8748.8748 0 0 0-.29.4399l-2.2055 6.748H7.5375l-2.2057-6.748a.8573.8573 0 0 0-.29-.4412.8748.8748 0 0 0-.9997-.0537.8585.8585 0 0 0-.3362.4049L.4332 9.5015l-.0325.0862a6.0657 6.0657 0 0 0 2.0119 7.0105l.0113.0087.03.0213 4.976 3.7264 2.462 1.8633 1.4995 1.1321a1.0085 1.0085 0 0 0 1.2197 0l1.4995-1.1321 2.4619-1.8633 5.006-3.7489.0125-.01a6.0682 6.0682 0 0 0 2.0094-7.003z"
+        />
+      </symbol>
+      <symbol id="i-arrow" viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6" /></symbol>
+      <symbol id="i-menu" viewBox="0 0 24 24"><path d="M4 8h16M4 16h16" /></symbol>
+      <symbol id="i-close" viewBox="0 0 24 24"><path d="m5 5 14 14M19 5 5 19" /></symbol>
+    </svg>
 
-  <a class="skip-link" href="#main">Skip to content</a>
-  <div class="site-glow site-glow-blue" aria-hidden="true"></div>
-  <div class="bagley-wave-background" aria-hidden="true"><span></span><span></span><span></span></div>
-
-  <header class="topbar" data-header>
-    <div class="shell topbar-inner">
-      <a class="brand" href="/" aria-label="International Duck Incorporated home"><img data-org-avatar src="/assets/org-avatar.webp?v=fff479ce" alt="" width="40" height="40" decoding="async"><span><b>International Duck</b><small>Incorporated</small></span></a>
-      <nav class="main-nav" id="main-navigation" data-nav aria-label="Primary navigation">
-        <a href="/">Overview</a><a class="active" href="/projects" aria-current="page">Projects</a><a href="/noosphere">Noosphere</a><a href="/members">Members</a><a href="/activity">Activity</a><a href="/migration">Migration</a>
-        <a class="icon-link" href="https://gitlab.com/international-duck-incorporated" target="_blank" rel="noreferrer" aria-label="International Duck Incorporated on GitLab"><svg><use href="#i-gitlab"/></svg></a>
-      </nav>
-      <button class="menu-button" type="button" data-menu aria-label="Open navigation" aria-controls="main-navigation" aria-expanded="false"><svg class="menu-open"><use href="#i-menu"/></svg><svg class="menu-close"><use href="#i-close"/></svg></button>
+    <a class="skip-link" href="#main">Skip to content</a>
+    <div class="site-glow site-glow-blue" aria-hidden="true"></div>
+    <div class="bagley-wave-background" aria-hidden="true">
+      <span></span><span></span><span></span>
     </div>
-  </header>
 
-  <main id="main" class="profile-page project-page">
-    <div class="shell">
-      <div class="breadcrumbs"><a href="/">International Duck</a><span>/</span><a href="/projects">Projects</a><span>/</span><b>Bagley</b></div>
-      <section class="profile-hero">
-        <article class="profile-intro glass-card reveal">
-          <picture><source srcset="/assets/bagley-icon.webp?v=f22db4e3" type="image/webp"><img class="project-mark" src="/assets/bagley-icon.png?v=25a4b846" alt="Bagley logo" width="82" height="82" loading="lazy" decoding="async"></picture>
-          <span class="eyebrow">Beacon addon · opt-in assistant</span>
-          <h1>Bagley.</h1>
-          <p class="lead">An opt-in, client-side AI chat assistant distributed as a separate Fabric mod for Beacon. Bagley connects only to the OpenAI Chat Completions-compatible endpoint you configure locally.</p>
-          <div class="action-row">
-            <a class="button button-blue" href="https://gitlab.com/international-duck-incorporated/beacon-bagley" target="_blank" rel="noreferrer"><pixel-canvas data-gap="6" data-speed="35" data-colors="#dcecff, #8ab8f6, #4a7fc0"></pixel-canvas><svg><use href="#i-gitlab"/></svg>View repository</a>
-            <a class="button button-glass" href="https://gitlab.com/international-duck-incorporated/beacon-bagley/-/blob/main/docs/BAGLEY.md" target="_blank" rel="noreferrer">Read the guide <svg><use href="#i-arrow"/></svg></a>
-          </div>
-        </article>
-        <aside class="profile-sidebar glass-card reveal"><div><span class="eyebrow">Project facts</span><div class="fact-list">
-          <div class="fact"><small>Status</small><b>Active development</b></div>
-          <div class="fact"><small>Technology</small><b>Java · Fabric · Beacon API</b></div>
-          <div class="fact"><small>Requirement</small><b>Beacon 1.9.0 or newer</b></div>
-          <div class="fact"><small>Configuration</small><b>Local, excluded from share codes</b></div>
-          <div class="fact"><small>License</small><b>GPL-3.0-only</b></div>
-        </div></div></aside>
-      </section>
+    <header class="topbar" data-header>
+      <div class="shell topbar-inner">
+        <a class="brand" href="/" aria-label="International Duck Incorporated home"
+          ><img
+            data-org-avatar
+            src="/assets/org-avatar.webp?v=fff479ce"
+            alt=""
+            width="40"
+            height="40"
+            decoding="async"
+          /><span><b>International Duck</b><small>Incorporated</small></span></a
+        >
+        <nav class="main-nav" id="main-navigation" data-nav aria-label="Primary navigation">
+          <a href="/">Overview</a><a class="active" href="/projects" aria-current="page">Projects</a
+          ><a href="/noosphere">Noosphere</a><a href="/members">Members</a
+          ><a href="/activity">Activity</a><a href="/migration">Migration</a>
+          <a
+            class="icon-link"
+            href="https://gitlab.com/international-duck-incorporated"
+            target="_blank"
+            rel="noreferrer"
+            aria-label="International Duck Incorporated on GitLab"
+            ><svg><use href="#i-gitlab" /></svg
+          ></a>
+        </nav>
+        <button
+          class="menu-button"
+          type="button"
+          data-menu
+          aria-label="Open navigation"
+          aria-controls="main-navigation"
+          aria-expanded="false"
+        >
+          <svg class="menu-open"><use href="#i-menu" /></svg
+          ><svg class="menu-close"><use href="#i-close" /></svg>
+        </button>
+      </div>
+    </header>
 
-      <section class="detail-grid">
-        <article class="detail-panel glass-card reveal"><span class="eyebrow">Opt-in by design</span><h2>Disabled until enabled.</h2><p>Bagley is a separate addon rather than a built-in Beacon dependency. Install matching Beacon and Bagley builds, then enable the module explicitly in Beacon’s GUI.</p></article>
-        <article class="detail-panel glass-card reveal"><span class="eyebrow">Provider control</span><h2>Your endpoint, your key.</h2><p>The endpoint and API key live in <code>config/beacon-bagley.json</code>. They are deliberately kept outside Beacon’s configuration share-code system and should never be committed or shared.</p></article>
-        <article class="detail-panel glass-card reveal"><span class="eyebrow">Compatibility</span><h2>Built per target.</h2><p>Bagley is built once for each supported Minecraft version and uses Beacon’s public addon entrypoint, module registry, and configuration API.</p></article>
-        <article class="detail-panel glass-card reveal"><span class="eyebrow">Migration</span><h2>Existing settings preserved.</h2><p>On first enable, Bagley can migrate the former built-in Bagely configuration and memory files, preserve custom prompts, and update the old module entry through Beacon’s alias API.</p></article>
-      </section>
-
-      <section class="project-deep-dive" aria-labelledby="bagley-workflow-title">
-        <header class="section-heading reveal"><div><span class="eyebrow">Setup</span><h2 id="bagley-workflow-title">Three deliberate steps.</h2></div><p>Installation keeps the assistant, its provider access, and its memory under the player’s control.</p></header>
-        <div class="project-feature-grid">
-          <article class="project-feature glass-card reveal"><span>01</span><h3>Install matching builds</h3><p>Add Fabric API, Beacon 1.9.0 or newer, and the Bagley build for the same Minecraft target to the mods folder.</p></article>
-          <article class="project-feature glass-card reveal"><span>02</span><h3>Configure locally</h3><p>Set an OpenAI-compatible endpoint and API key in the local Bagley configuration file.</p></article>
-          <article class="project-feature glass-card reveal"><span>03</span><h3>Enable explicitly</h3><p>Turn Bagley on in the Beacon GUI and choose whether optional conversation memory fits your privacy needs.</p></article>
+    <main id="main" class="profile-page project-page">
+      <div class="shell">
+        <div class="breadcrumbs">
+          <a href="/">International Duck</a><span>/</span><a href="/projects">Projects</a
+          ><span>/</span><b>Bagley</b>
         </div>
-      </section>
+        <section class="profile-hero">
+          <article class="profile-intro glass-card reveal">
+            <picture
+              ><source srcset="/assets/bagley-icon.webp?v=f22db4e3" type="image/webp" />
+              <img
+                class="project-mark"
+                src="/assets/bagley-icon.png?v=25a4b846"
+                alt="Bagley logo"
+                width="82"
+                height="82"
+                loading="lazy"
+                decoding="async"
+            /></picture>
+            <span class="eyebrow">Beacon addon · opt-in assistant</span>
+            <h1>Bagley.</h1>
+            <p class="lead">
+              An opt-in, client-side AI chat assistant distributed as a separate Fabric mod for
+              Beacon. Bagley connects only to the OpenAI Chat Completions-compatible endpoint you
+              configure locally.
+            </p>
+            <div class="action-row">
+              <a
+                class="button button-blue"
+                href="https://gitlab.com/international-duck-incorporated/beacon-bagley"
+                target="_blank"
+                rel="noreferrer"
+                ><pixel-canvas
+                  data-gap="6"
+                  data-speed="35"
+                  data-colors="#dcecff, #8ab8f6, #4a7fc0"
+                ></pixel-canvas
+                ><svg><use href="#i-gitlab" /></svg>View repository</a
+              >
+              <a
+                class="button button-glass"
+                href="https://gitlab.com/international-duck-incorporated/beacon-bagley/-/blob/main/docs/BAGLEY.md"
+                target="_blank"
+                rel="noreferrer"
+                >Read the guide <svg><use href="#i-arrow" /></svg
+              ></a>
+            </div>
+          </article>
+          <aside class="profile-sidebar glass-card reveal">
+            <div>
+              <span class="eyebrow">Project facts</span>
+              <div class="fact-list">
+                <div class="fact"><small>Status</small><b>Active development</b></div>
+                <div class="fact"><small>Technology</small><b>Java · Fabric · Beacon API</b></div>
+                <div class="fact"><small>Requirement</small><b>Beacon 1.9.0 or newer</b></div>
+                <div class="fact">
+                  <small>Configuration</small><b>Local, excluded from share codes</b>
+                </div>
+                <div class="fact"><small>License</small><b>GPL-3.0-only</b></div>
+              </div>
+            </div>
+          </aside>
+        </section>
 
-      <section class="project-callout glass-card reveal">
-        <div><span class="eyebrow">Privacy boundary</span><h2>Credentials stay out of shared settings.</h2><p>Bagley’s endpoint, API key, and optional conversation memory are local-only concerns. Review the complete guide before connecting the addon to any provider.</p></div>
-        <a class="button button-glass" href="https://gitlab.com/international-duck-incorporated/beacon-bagley/-/blob/main/docs/BAGLEY.md" target="_blank" rel="noreferrer">Open the Bagley guide <svg><use href="#i-arrow"/></svg></a>
-      </section>
-    </div>
-  </main>
+        <section class="detail-grid">
+          <article class="detail-panel glass-card reveal">
+            <span class="eyebrow">Opt-in by design</span>
+            <h2>Disabled until enabled.</h2>
+            <p>
+              Bagley is a separate addon rather than a built-in Beacon dependency. Install matching
+              Beacon and Bagley builds, then enable the module explicitly in Beacon’s GUI.
+            </p>
+          </article>
+          <article class="detail-panel glass-card reveal">
+            <span class="eyebrow">Provider control</span>
+            <h2>Your endpoint, your key.</h2>
+            <p>
+              The endpoint and API key live in <code>config/beacon-bagley.json</code>. They are
+              deliberately kept outside Beacon’s configuration share-code system and should never be
+              committed or shared.
+            </p>
+          </article>
+          <article class="detail-panel glass-card reveal">
+            <span class="eyebrow">Compatibility</span>
+            <h2>Built per target.</h2>
+            <p>
+              Bagley is built once for each supported Minecraft version and uses Beacon’s public
+              addon entrypoint, module registry, and configuration API.
+            </p>
+          </article>
+          <article class="detail-panel glass-card reveal">
+            <span class="eyebrow">Migration</span>
+            <h2>Existing settings preserved.</h2>
+            <p>
+              On first enable, Bagley can migrate the former built-in Bagely configuration and
+              memory files, preserve custom prompts, and update the old module entry through
+              Beacon’s alias API.
+            </p>
+          </article>
+        </section>
 
-  <footer class="site-footer"><div class="shell footer-inner"><a class="brand" href="/"><img data-org-avatar src="/assets/org-avatar.webp?v=fff479ce" alt="" width="40" height="40" decoding="async"><span><b>International Duck</b><small>Incorporated</small></span></a><nav><a href="/">Overview</a><a href="/projects">Projects</a><a href="/noosphere">Noosphere</a><a href="/members">Members</a><a href="/activity">Activity</a><a href="/migration">Migration</a><a href="/projects/bagley">Bagley</a><a href="https://gitlab.com/international-duck-incorporated/beacon-bagley" target="_blank" rel="noreferrer">GitLab</a><a href="/glyphsmith">Glyphsmith</a><a href="/changelog">Changelog</a><a href="mailto:0xffshell@duck.com">Contact</a></nav><span class="sync-state"><i></i><span data-sync-text>GitLab data synced live</span></span></div></footer>
-</body>
+        <section class="project-deep-dive" aria-labelledby="bagley-workflow-title">
+          <header class="section-heading reveal">
+            <div>
+              <span class="eyebrow">Setup</span>
+              <h2 id="bagley-workflow-title">Three deliberate steps.</h2>
+            </div>
+            <p>
+              Installation keeps the assistant, its provider access, and its memory under the
+              player’s control.
+            </p>
+          </header>
+          <div class="project-feature-grid">
+            <article class="project-feature glass-card reveal">
+              <span>01</span>
+              <h3>Install matching builds</h3>
+              <p>
+                Add Fabric API, Beacon 1.9.0 or newer, and the Bagley build for the same Minecraft
+                target to the mods folder.
+              </p>
+            </article>
+            <article class="project-feature glass-card reveal">
+              <span>02</span>
+              <h3>Configure locally</h3>
+              <p>
+                Set an OpenAI-compatible endpoint and API key in the local Bagley configuration
+                file.
+              </p>
+            </article>
+            <article class="project-feature glass-card reveal">
+              <span>03</span>
+              <h3>Enable explicitly</h3>
+              <p>
+                Turn Bagley on in the Beacon GUI and choose whether optional conversation memory
+                fits your privacy needs.
+              </p>
+            </article>
+          </div>
+        </section>
+
+        <section class="project-callout glass-card reveal">
+          <div>
+            <span class="eyebrow">Privacy boundary</span>
+            <h2>Credentials stay out of shared settings.</h2>
+            <p>
+              Bagley’s endpoint, API key, and optional conversation memory are local-only concerns.
+              Review the complete guide before connecting the addon to any provider.
+            </p>
+          </div>
+          <a
+            class="button button-glass"
+            href="https://gitlab.com/international-duck-incorporated/beacon-bagley/-/blob/main/docs/BAGLEY.md"
+            target="_blank"
+            rel="noreferrer"
+            >Open the Bagley guide <svg><use href="#i-arrow" /></svg
+          ></a>
+        </section>
+      </div>
+    </main>
+
+    <footer class="site-footer">
+      <div class="shell footer-inner">
+        <a class="brand" href="/"
+          ><img
+            data-org-avatar
+            src="/assets/org-avatar.webp?v=fff479ce"
+            alt=""
+            width="40"
+            height="40"
+            decoding="async"
+          /><span><b>International Duck</b><small>Incorporated</small></span></a
+        >
+        <nav>
+          <a href="/">Overview</a><a href="/projects">Projects</a><a href="/noosphere">Noosphere</a
+          ><a href="/members">Members</a><a href="/activity">Activity</a
+          ><a href="/migration">Migration</a><a href="/projects/bagley">Bagley</a
+          ><a
+            href="https://gitlab.com/international-duck-incorporated/beacon-bagley"
+            target="_blank"
+            rel="noreferrer"
+            >GitLab</a
+          ><a href="/glyphsmith">Glyphsmith</a><a href="/changelog">Changelog</a
+          ><a href="mailto:0xffshell@duck.com">Contact</a>
+        </nav>
+        <span class="sync-state"><i></i><span data-sync-text>GitLab data synced live</span></span>
+      </div>
+    </footer>
+  </body>
 </html>

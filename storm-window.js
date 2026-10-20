@@ -15,12 +15,12 @@
  * <body> has the class "storm-window-page".
  */
 (function () {
-'use strict';
+  "use strict";
 
-// The page keeps its CSS sky/scrim fallback without allocating five full-screen canvases.
-if (window.IDI_LOW_END) return;
+  // The page keeps its CSS sky/scrim fallback without allocating five full-screen canvases.
+  if (window.IDI_LOW_END) return;
 
-/*
+  /*
 
 Stormy Window ⛈️ by Frank Force
 It was a dark and stormy night...
@@ -37,228 +37,229 @@ Features
 
 */
 
-// locals (structure kept from the original; setup replaced for site use)
-const a = document.createElement('canvas');
-const c = a.getContext("2d");
+  // locals (structure kept from the original; setup replaced for site use)
+  const a = document.createElement("canvas");
+  const c = a.getContext("2d");
 
-let i, j, k, g, h,
-frame, brightness,
-lightningBranch, lightningBranchMax,
+  let i,
+    j,
+    k,
+    g,
+    h,
+    frame,
+    brightness,
+    lightningBranch,
+    lightningBranchMax,
+    contextBack,
+    contextMid,
+    contextMid2,
+    contextMid3,
+    grayColor = (l = 0, a = 1) => (contextBack.fillStyle = c.fillStyle = `hsl(0,0%,${l}%,${a}`),
+    drawBackground = () => {
+      // background sky
+      for (i = 99; i--; )
+        ((contextBack.fillStyle = grayColor(99 - i)),
+          contextBack.fillRect(0, (i / 199) * a.height, a.width, -a.height));
 
-contextBack, contextMid, contextMid2, contextMid3,
+      // moon
+      contextBack.fillStyle = grayColor(99, 0.5);
+      contextBack.ellipse(
+        (Math.random() * 0.8 + 0.1) * a.width,
+        99 + Math.random() * 199,
+        99,
+        99,
+        0,
+        0,
+        9
+      );
+      contextBack.fill();
 
-grayColor = (l = 0, a = 1) => contextBack.fillStyle = c.fillStyle = `hsl(0,0%,${l}%,${a}`,
+      // mountains
+      for (g = h = j = 9; j--; )
+        for (i = 0; i < a.width; ++i) {
+          ((contextBack.fillStyle = grayColor(j * 3 + g / 19)),
+            contextBack.fillRect(i, a.height + g - (j / 15 + 0.1) * a.height, 1, a.height));
+          g += h = Math.random() < 0.1 ? Math.random() * 2 - 1 : h - g / 1e4;
+        }
 
-drawBackground = () =>
-{
-  // background sky
-  for (i = 99; i--;)
-  contextBack.fillStyle = grayColor(99 - i),
-  contextBack.fillRect(0, i / 199 * a.height, a.width, -a.height);
+      // Window frame intentionally omitted so the storm fills the entire page.
+    },
+    lightning = (X, Y, V, Z) => {
+      for (; Y < a.height; ) {
+        contextMid3.fillRect((X += V * Z), (Y += 1 + Z / 9), Z, Z);
 
-  // moon
-  contextBack.fillStyle = grayColor(99, .5);
-  contextBack.ellipse(
-  (Math.random() * .8 + .1) * a.width, 99 + Math.random() * 199,
-  99, 99,
-  0, 0, 9);
-  contextBack.fill();
+        if (Math.random() < 0.1) V = Math.random() - 0.5;
+        if (lightningBranchMax && ++lightningBranch > 399) {
+          --lightningBranchMax;
+          lightningBranch = 0;
+          lightning(X, Y, V, Math.random() * Z * 0.8 + 1);
+        }
+      }
+    },
+    // main game loop
+    update = () => {
+      // draw lightning
+      canvasMid.style["mixBlendMode"] =
+        canvasMid2.style["mixBlendMode"] =
+        canvasMid3.style["mixBlendMode"] =
+          "screen";
+      canvasMid3.style["filter"] = "invert(";
+      contextMid3.globalCompositeOperation = "lighter";
+      contextMid3.fillStyle = grayColor(2);
+      contextMid3.fillRect(0, 0, a.width, a.height);
+      contextMid3.globalCompositeOperation = "source-over";
+      if (Math.random() < 0.003) {
+        lightningBranch = lightningBranchMax = 20;
+        brightness = 95;
+        contextMid3.fillStyle = grayColor(0, 0.5);
+        lightning((Math.random() * 0.8 + 0.1) * a.width, -500, 0, Math.random() * 9 + 6);
+      }
 
-  // mountains
-  for (g = h = j = 9; j--;)
-  for (i = 0; i < a.width; ++i)
-  {
-    contextBack.fillStyle = grayColor(j * 3 + g / 19),
-    contextBack.fillRect(i, a.height + g - (j / 15 + .1) * a.height, 1, a.height);
-    g += h = Math.random() < .1 ? Math.random() * 2 - 1 : h - g / 1e4;
+      // draw rain
+      contextMid.fillStyle = grayColor((brightness -= 2), 0.4);
+      contextMid.fillRect(0, 0, a.width, a.height);
+      contextMid.rotate(-0.2);
+      contextMid.fillStyle = grayColor(99, 0.2);
+      for (i = 2e3; i--; )
+        contextMid.fillRect(
+          Math.sin(i ** 3) * a.width + a.width / 2,
+          (((2e3 + i) / 2) * ((frame / 60) * (1 + Math.sin(i) / 4) + 9)) % (a.height + a.width / 4),
+          Math.sin(i) * 2,
+          50
+        );
+      contextMid.rotate(0.2);
+
+      // draw raindrops
+      contextMid2.fillStyle = grayColor(0, 0.2);
+      contextMid2.fillRect(0, 0, a.width, a.height);
+      for (j = 2; j--; )
+        for (contextMid2.fillStyle = grayColor(30 + 99 * j, 0.1), i = 500; i--; ) {
+          contextMid2.beginPath();
+          contextMid2.ellipse(
+            (((i / 500) * a.width + frame / 9) % a.width) +
+              Math.sin((frame / 99) * ((i % 29) + 9) + i),
+            ((i ** 3 + (frame * ((i % 29) + 9)) / 9) % a.height) - j * 2,
+            (g = 3 - j + Math.sin(i + frame / 60) / 2),
+            g * (Math.sin(i + frame / 60 + 11) + 2),
+            0,
+            0,
+            9
+          );
+          contextMid2.fill();
+        }
+
+      ++frame;
+    };
+
+  ///////////////////////////////////////////////////////////////////////////////
+
+  // setup background canvases (site adaptation: fixed layers under the page)
+  var canvasBack, canvasMid, canvasMid2, canvasMid3;
+
+  function sizeCanvases() {
+    a.width = canvasBack.width = canvasMid.width = canvasMid2.width = canvasMid3.width = innerWidth;
+
+    a.height =
+      canvasBack.height =
+      canvasMid.height =
+      canvasMid2.height =
+      canvasMid3.height =
+        innerHeight;
   }
 
-  // Window frame intentionally omitted so the storm fills the entire page.
-},
+  function start() {
+    const styleLayer = (canvas) => {
+      canvas.style.position = "fixed";
+      canvas.style.top = "0";
+      canvas.style.left = "0";
+      canvas.style.zIndex = "-2";
+      canvas.style.pointerEvents = "none";
+      canvas.setAttribute("aria-hidden", "true");
+    };
 
-lightning = (X, Y, V, Z) =>
-{
-  for (; Y < a.height;)
-  {
-    contextMid3.fillRect(X += V * Z, Y += 1 + Z / 9, Z, Z);
+    canvasBack = a.cloneNode();
+    canvasMid = a.cloneNode();
+    canvasMid3 = a.cloneNode();
+    canvasMid2 = a.cloneNode();
 
-    if (Math.random() < .1)
-    V = Math.random() - .5;
-    if (lightningBranchMax && ++lightningBranch > 399)
-    {
-      --lightningBranchMax;
-      lightningBranch = 0;
-      lightning(X, Y, V, Math.random() * Z * .8 + 1);
-    }
-  }
-},
+    // DOM order = paint order: back, rain, lightning, raindrops
+    styleLayer(canvasBack);
+    styleLayer(canvasMid);
+    styleLayer(canvasMid3);
+    styleLayer(canvasMid2);
+    styleLayer(a);
 
-// main game loop
-update = () =>
-{
-  // draw lightning
-  canvasMid.style['mixBlendMode'] =
-  canvasMid2.style['mixBlendMode'] =
-  canvasMid3.style['mixBlendMode'] = 'screen';
-  canvasMid3.style['filter'] = "invert(";
-  contextMid3.globalCompositeOperation = 'lighter';
-  contextMid3.fillStyle = grayColor(2);
-  contextMid3.fillRect(0, 0, a.width, a.height);
-  contextMid3.globalCompositeOperation = 'source-over';
-  if (Math.random() < .003)
-  {
-    lightningBranch = lightningBranchMax = 20;
-    brightness = 95;
-    contextMid3.fillStyle = grayColor(0, .5);
-    lightning((Math.random() * .8 + .1) * a.width, -500, 0, Math.random() * 9 + 6);
-  }
+    document.body.insertBefore(a, document.body.firstChild);
+    document.body.insertBefore(canvasMid2, a);
+    document.body.insertBefore(canvasMid3, canvasMid2);
+    document.body.insertBefore(canvasMid, canvasMid3);
+    document.body.insertBefore(canvasBack, canvasMid);
 
-  // draw rain
-  contextMid.fillStyle = grayColor(brightness -= 2, .4);
-  contextMid.fillRect(0, 0, a.width, a.height);
-  contextMid.rotate(-.2);
-  contextMid.fillStyle = grayColor(99, .2);
-  for (i = 2e3; i--;)
-  contextMid.fillRect(
-  Math.sin(i ** 3) * a.width + a.width / 2,
-  (2e3 + i) / 2 * (frame / 60 * (1 + Math.sin(i) / 4) + 9) % (a.height + a.width / 4),
-  Math.sin(i) * 2, 50);
-  contextMid.rotate(.2);
+    contextBack = canvasBack.getContext("2d");
+    contextMid = canvasMid.getContext("2d");
+    contextMid2 = canvasMid2.getContext("2d");
+    contextMid3 = canvasMid3.getContext("2d");
 
-  // draw raindrops
-  contextMid2.fillStyle = grayColor(0, .2);
-  contextMid2.fillRect(0, 0, a.width, a.height);
-  for (j = 2; j--;)
-  for (contextMid2.fillStyle = grayColor(30 + 99 * j, .1), i = 500; i--;)
-  {
-    contextMid2.beginPath();
-    contextMid2.ellipse(
-    (i / 500 * a.width + frame / 9) % a.width + Math.sin(frame / 99 * (i % 29 + 9) + i),
-    (i ** 3 + frame * (i % 29 + 9) / 9) % a.height - j * 2,
-    g = 3 - j + Math.sin(i + frame / 60) / 2,
-    g * (Math.sin(i + frame / 60 + 11) + 2),
-    0, 0, 9);
-    contextMid2.fill();
-  }
-
-  ++frame;
-};
-
-///////////////////////////////////////////////////////////////////////////////
-
-// setup background canvases (site adaptation: fixed layers under the page)
-var canvasBack, canvasMid, canvasMid2, canvasMid3;
-
-function sizeCanvases() {
-  a.width =
-  canvasBack.width =
-  canvasMid.width =
-  canvasMid2.width =
-  canvasMid3.width = innerWidth;
-
-  a.height =
-  canvasBack.height =
-  canvasMid.height =
-  canvasMid2.height =
-  canvasMid3.height = innerHeight;
-}
-
-function start() {
-  const styleLayer = (canvas) => {
-    canvas.style.position = 'fixed';
-    canvas.style.top = '0';
-    canvas.style.left = '0';
-    canvas.style.zIndex = '-2';
-    canvas.style.pointerEvents = 'none';
-    canvas.setAttribute('aria-hidden', 'true');
-  };
-
-  canvasBack = a.cloneNode();
-  canvasMid = a.cloneNode();
-  canvasMid3 = a.cloneNode();
-  canvasMid2 = a.cloneNode();
-
-  // DOM order = paint order: back, rain, lightning, raindrops
-  styleLayer(canvasBack);
-  styleLayer(canvasMid);
-  styleLayer(canvasMid3);
-  styleLayer(canvasMid2);
-  styleLayer(a);
-
-  document.body.insertBefore(a, document.body.firstChild);
-  document.body.insertBefore(canvasMid2, a);
-  document.body.insertBefore(canvasMid3, canvasMid2);
-  document.body.insertBefore(canvasMid, canvasMid3);
-  document.body.insertBefore(canvasBack, canvasMid);
-
-  contextBack = canvasBack.getContext("2d");
-  contextMid = canvasMid.getContext("2d");
-  contextMid2 = canvasMid2.getContext("2d");
-  contextMid3 = canvasMid3.getContext("2d");
-
-  sizeCanvases();
-
-  // init
-  drawBackground(frame = brightness = 0);
-
-  addEventListener('resize', () => {
     sizeCanvases();
-    drawBackground();
-  });
 
-  // enhanced rendering system for smoother frame rate (from the original)
-  let frameTimeLastMS = 0, frameTimeBufferMS = 0, averageFPS = 0;
-  const updateAnimation = (frameTimeMS = 0) =>
-  {
-    requestAnimationFrame(updateAnimation);
+    // init
+    drawBackground((frame = brightness = 0));
 
-    // update time keeping
-    let frameTimeDeltaMS = frameTimeMS - frameTimeLastMS;
-    frameTimeLastMS = frameTimeMS;
-    frameTimeBufferMS += frameTimeDeltaMS;
-    frameTimeBufferMS = Math.min(frameTimeBufferMS, 50);
+    addEventListener("resize", () => {
+      sizeCanvases();
+      drawBackground();
+    });
 
-    // apply time delta smoothing, improves smoothness of framerate in some browsers
-    let deltaSmooth = 0;
-    if (frameTimeBufferMS < 0 && frameTimeBufferMS > -9)
-    {
-      // force an update each frame if time is close enough (not just a fast refresh rate)
-      deltaSmooth = frameTimeBufferMS;
-      frameTimeBufferMS = 0;
+    // enhanced rendering system for smoother frame rate (from the original)
+    let frameTimeLastMS = 0,
+      frameTimeBufferMS = 0,
+      averageFPS = 0;
+    const updateAnimation = (frameTimeMS = 0) => {
+      requestAnimationFrame(updateAnimation);
+
+      // update time keeping
+      let frameTimeDeltaMS = frameTimeMS - frameTimeLastMS;
+      frameTimeLastMS = frameTimeMS;
+      frameTimeBufferMS += frameTimeDeltaMS;
+      frameTimeBufferMS = Math.min(frameTimeBufferMS, 50);
+
+      // apply time delta smoothing, improves smoothness of framerate in some browsers
+      let deltaSmooth = 0;
+      if (frameTimeBufferMS < 0 && frameTimeBufferMS > -9) {
+        // force an update each frame if time is close enough (not just a fast refresh rate)
+        deltaSmooth = frameTimeBufferMS;
+        frameTimeBufferMS = 0;
+      }
+
+      // update multiple frames if necessary in case of slow framerate
+      for (; frameTimeBufferMS >= 0; frameTimeBufferMS -= 1e3 / 60) update();
+
+      // add the time smoothing back in
+      frameTimeBufferMS += deltaSmooth;
+
+      contextMid.fillStyle = grayColor(99);
+      contextMid.font = "5em monospace";
+      if (frameTimeDeltaMS) averageFPS = 0.9 * averageFPS + 0.1 * (1000 / frameTimeDeltaMS);
+      //contextMid.fillText(averageFPS|0, 99, 99); // show fps
+    };
+
+    if (matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      // accessibility: one static storm frame instead of animation
+      update();
+      return;
     }
 
-    // update multiple frames if necessary in case of slow framerate
-    for (; frameTimeBufferMS >= 0; frameTimeBufferMS -= 1e3 / 60)
-    update();
-
-    // add the time smoothing back in
-    frameTimeBufferMS += deltaSmooth;
-
-    contextMid.fillStyle = grayColor(99);
-    contextMid.font = '5em monospace';
-    if (frameTimeDeltaMS)
-    averageFPS = .9 * averageFPS + .1 * (1000 / frameTimeDeltaMS);
-    //contextMid.fillText(averageFPS|0, 99, 99); // show fps
-  };
-
-  if (matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches) {
-    // accessibility: one static storm frame instead of animation
-    update();
-    return;
+    updateAnimation();
   }
 
-  updateAnimation();
-}
+  function init() {
+    if (!document.body.classList.contains("storm-window-page")) return;
+    start();
+  }
 
-function init() {
-  if (!document.body.classList.contains('storm-window-page')) return;
-  start();
-}
-
-if (document.readyState === 'loading') {
-  document.addEventListener('DOMContentLoaded', init);
-} else {
-  init();
-}
-
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", init);
+  } else {
+    init();
+  }
 })();

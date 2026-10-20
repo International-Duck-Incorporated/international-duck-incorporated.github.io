@@ -1,293 +1,681 @@
 <!doctype html>
 <html lang="en">
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <script>
-    (() => {
-      const nav = navigator;
-      const connection = nav.connection || nav.mozConnection || nav.webkitConnection;
-      const lowEnd = Boolean(
-        (connection && connection.saveData) ||
-        (connection && /^(slow-2g|2g)$/.test(connection.effectiveType || "")) ||
-        (typeof nav.deviceMemory === "number" && nav.deviceMemory <= 4) ||
-        (typeof nav.hardwareConcurrency === "number" && nav.hardwareConcurrency <= 4)
-      );
-      window.IDI_LOW_END = lowEnd;
-      window.IDI_REDUCED_MOTION = Boolean(
-        window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches
-      );
-      if (lowEnd) document.documentElement.classList.add("low-end");
-    })();
-  </script>
-  <link rel="preconnect" href="https://gitlab.com" crossorigin>
-  <link rel="preconnect" href="https://gitlab.com">
-  <link rel="dns-prefetch" href="https://gitlab.com">
-  <meta name="theme-color" content="#07090d">
-  <meta property="og:image" content="https://idi-official.pages.dev/assets/og-default.png">
-  <title>Venomous, Meteor Client addon for Minecraft 26.2 | IDI</title>
-  <meta name="description" content="Venomous is an optimized, refined Meteor Client addon for Minecraft 26.2 - free and open source, with stable releases and nightly builds on GitLab.">
-  <link rel="canonical" href="https://idi-official.pages.dev/projects/venomous">
-  <meta property="og:type" content="website">
-  <meta property="og:title" content="Venomous, Meteor Client addon for Minecraft 26.2">
-  <meta property="og:description" content="Optimized, refined Meteor Client addon for Minecraft 26.2. Free and open source.">
-  <meta property="og:url" content="https://idi-official.pages.dev/projects/venomous">
-  <meta property="og:site_name" content="International Duck Incorporated">
-  <meta property="og:locale" content="en_US">
-  <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="Venomous, Meteor Client addon for Minecraft 26.2">
-  <meta name="twitter:description" content="Optimized, refined Meteor Client addon for Minecraft 26.2. Free and open source.">
-  <link rel="icon" href="/assets/venomous-icon.png?v=70bd6d7b" type="image/png">
-  <link rel="stylesheet" href="/css/bundle.css?v=1f263d21">
-  <script src="/script.js?v=ffe97c4c" defer></script>
-  <script src="/pixel-canvas.js?v=9d12b50d" defer></script> <script src="/venom-hex.js?v=1e93f55a" defer></script>
-  <meta property="og:image:width" content="1200">
-  <meta property="og:image:height" content="630">
-  <meta property="og:image:alt" content="International Duck Incorporated - open-source Minecraft mods, tools and experiments">
-  <meta name="twitter:image" content="https://idi-official.pages.dev/assets/og-default.png">
-  <script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@graph": [
-    {
-      "@type": "Organization",
-      "@id": "https://idi-official.pages.dev/#organization",
-      "name": "International Duck Incorporated",
-      "alternateName": "IDI",
-      "url": "https://idi-official.pages.dev/",
-      "logo": {
-        "@type": "ImageObject",
-        "url": "https://idi-official.pages.dev/assets/org-avatar.png"
-      },
-      "image": "https://idi-official.pages.dev/assets/og-default.png",
-      "description": "Open-source collective building Minecraft mods, tools and experiments in public. GitLab is the active source of truth; the former GitHub organization is currently hidden from public view.",
-      "sameAs": [
-        "https://gitlab.com/international-duck-incorporated"
-      ],
-      "knowsAbout": [
-        "Minecraft mods",
-        "Fabric modding",
-        "Minecraft client utilities",
-        "open source"
-      ]
-    },
-    {
-      "@type": "WebSite",
-      "@id": "https://idi-official.pages.dev/#website",
-      "url": "https://idi-official.pages.dev/",
-      "name": "International Duck Incorporated",
-      "inLanguage": "en",
-      "publisher": {
-        "@id": "https://idi-official.pages.dev/#organization"
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <script>
+      (() => {
+        const nav = navigator;
+        const connection = nav.connection || nav.mozConnection || nav.webkitConnection;
+        const lowEnd = Boolean(
+          (connection && connection.saveData) ||
+            (connection && /^(slow-2g|2g)$/.test(connection.effectiveType || "")) ||
+            (typeof nav.deviceMemory === "number" && nav.deviceMemory <= 4) ||
+            (typeof nav.hardwareConcurrency === "number" && nav.hardwareConcurrency <= 4)
+        );
+        window.IDI_LOW_END = lowEnd;
+        window.IDI_REDUCED_MOTION = Boolean(
+          window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches
+        );
+        if (lowEnd) document.documentElement.classList.add("low-end");
+      })();
+    </script>
+    <link rel="preconnect" href="https://gitlab.com" crossorigin />
+    <link rel="preconnect" href="https://gitlab.com" />
+    <link rel="dns-prefetch" href="https://gitlab.com" />
+    <meta name="theme-color" content="#07090d" />
+    <meta property="og:image" content="https://idi-official.pages.dev/assets/og-default.png" />
+    <title>Venomous, Meteor Client addon for Minecraft 26.2 | IDI</title>
+    <meta
+      name="description"
+      content="Venomous is an optimized, refined Meteor Client addon for Minecraft 26.2 - free and open source, with stable releases and nightly builds on GitLab."
+    />
+    <link rel="canonical" href="https://idi-official.pages.dev/projects/venomous" />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="Venomous, Meteor Client addon for Minecraft 26.2" />
+    <meta
+      property="og:description"
+      content="Optimized, refined Meteor Client addon for Minecraft 26.2. Free and open source."
+    />
+    <meta property="og:url" content="https://idi-official.pages.dev/projects/venomous" />
+    <meta property="og:site_name" content="International Duck Incorporated" />
+    <meta property="og:locale" content="en_US" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Venomous, Meteor Client addon for Minecraft 26.2" />
+    <meta
+      name="twitter:description"
+      content="Optimized, refined Meteor Client addon for Minecraft 26.2. Free and open source."
+    />
+    <link rel="icon" href="/assets/venomous-icon.png?v=70bd6d7b" type="image/png" />
+    <link rel="stylesheet" href="/css/bundle.css?v=583143c6" />
+    <script src="/script.js?v=0443d2ee" defer></script>
+    <script src="/pixel-canvas.js?v=8f2c93f3" defer></script>
+    <script src="/venom-hex.js?v=98fb8938" defer></script>
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta
+      property="og:image:alt"
+      content="International Duck Incorporated - open-source Minecraft mods, tools and experiments"
+    />
+    <meta name="twitter:image" content="https://idi-official.pages.dev/assets/og-default.png" />
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@graph": [
+          {
+            "@type": "Organization",
+            "@id": "https://idi-official.pages.dev/#organization",
+            "name": "International Duck Incorporated",
+            "alternateName": "IDI",
+            "url": "https://idi-official.pages.dev/",
+            "logo": {
+              "@type": "ImageObject",
+              "url": "https://idi-official.pages.dev/assets/org-avatar.png"
+            },
+            "image": "https://idi-official.pages.dev/assets/og-default.png",
+            "description": "Open-source collective building Minecraft mods, tools and experiments in public. GitLab is the active source of truth; the former GitHub organization is currently hidden from public view.",
+            "sameAs": ["https://gitlab.com/international-duck-incorporated"],
+            "knowsAbout": [
+              "Minecraft mods",
+              "Fabric modding",
+              "Minecraft client utilities",
+              "open source"
+            ]
+          },
+          {
+            "@type": "WebSite",
+            "@id": "https://idi-official.pages.dev/#website",
+            "url": "https://idi-official.pages.dev/",
+            "name": "International Duck Incorporated",
+            "inLanguage": "en",
+            "publisher": {
+              "@id": "https://idi-official.pages.dev/#organization"
+            }
+          },
+          {
+            "@type": "WebPage",
+            "@id": "https://idi-official.pages.dev/projects/venomous#webpage",
+            "url": "https://idi-official.pages.dev/projects/venomous",
+            "name": "Venomous - International Duck",
+            "description": "Venomous - an optimized and refined Meteor Client addon for Minecraft 26.2.",
+            "isPartOf": {
+              "@id": "https://idi-official.pages.dev/#website"
+            },
+            "about": {
+              "@id": "https://idi-official.pages.dev/#organization"
+            },
+            "inLanguage": "en",
+            "primaryImageOfPage": {
+              "@type": "ImageObject",
+              "url": "https://idi-official.pages.dev/assets/og-default.png"
+            },
+            "breadcrumb": {
+              "@id": "https://idi-official.pages.dev/projects/venomous#breadcrumb"
+            }
+          },
+          {
+            "@type": "BreadcrumbList",
+            "@id": "https://idi-official.pages.dev/projects/venomous#breadcrumb",
+            "itemListElement": [
+              {
+                "@type": "ListItem",
+                "position": 1,
+                "name": "International Duck Incorporated",
+                "item": "https://idi-official.pages.dev/"
+              },
+              {
+                "@type": "ListItem",
+                "position": 2,
+                "name": "Projects",
+                "item": "https://idi-official.pages.dev/projects/"
+              },
+              {
+                "@type": "ListItem",
+                "position": 3,
+                "name": "Venomous",
+                "item": "https://idi-official.pages.dev/projects/venomous"
+              }
+            ]
+          },
+          {
+            "@type": "SoftwareApplication",
+            "@id": "https://idi-official.pages.dev/projects/venomous#app",
+            "name": "Venomous",
+            "description": "Optimized and refined Meteor Client addon for Minecraft 26.2 with 124 modules. Stable release v7.0.0.",
+            "url": "https://idi-official.pages.dev/projects/venomous",
+            "applicationCategory": "GameMod",
+            "operatingSystem": "Minecraft 26.2",
+            "programmingLanguage": "Java",
+            "isAccessibleForFree": true,
+            "author": {
+              "@id": "https://idi-official.pages.dev/#organization"
+            },
+            "publisher": {
+              "@id": "https://idi-official.pages.dev/#organization"
+            },
+            "codeRepository": "https://gitlab.com/international-duck-incorporated/Venomous",
+            "offers": {
+              "@type": "Offer",
+              "price": "0",
+              "priceCurrency": "USD"
+            },
+            "softwareVersion": "7.0.0",
+            "downloadUrl": "https://gitlab.com/international-duck-incorporated/Venomous/-/releases/v7.0.0"
+          }
+        ]
       }
-    },
-    {
-      "@type": "WebPage",
-      "@id": "https://idi-official.pages.dev/projects/venomous#webpage",
-      "url": "https://idi-official.pages.dev/projects/venomous",
-      "name": "Venomous - International Duck",
-      "description": "Venomous - an optimized and refined Meteor Client addon for Minecraft 26.2.",
-      "isPartOf": {
-        "@id": "https://idi-official.pages.dev/#website"
-      },
-      "about": {
-        "@id": "https://idi-official.pages.dev/#organization"
-      },
-      "inLanguage": "en",
-      "primaryImageOfPage": {
-        "@type": "ImageObject",
-        "url": "https://idi-official.pages.dev/assets/og-default.png"
-      },
-      "breadcrumb": {
-        "@id": "https://idi-official.pages.dev/projects/venomous#breadcrumb"
-      }
-    },
-    {
-      "@type": "BreadcrumbList",
-      "@id": "https://idi-official.pages.dev/projects/venomous#breadcrumb",
-      "itemListElement": [
-        {
-          "@type": "ListItem",
-          "position": 1,
-          "name": "International Duck Incorporated",
-          "item": "https://idi-official.pages.dev/"
-        },
-        {
-          "@type": "ListItem",
-          "position": 2,
-          "name": "Projects",
-          "item": "https://idi-official.pages.dev/projects/"
-        },
-        {
-          "@type": "ListItem",
-          "position": 3,
-          "name": "Venomous",
-          "item": "https://idi-official.pages.dev/projects/venomous"
-        }
-      ]
-    },
-    {
-      "@type": "SoftwareApplication",
-      "@id": "https://idi-official.pages.dev/projects/venomous#app",
-      "name": "Venomous",
-      "description": "Optimized and refined Meteor Client addon for Minecraft 26.2 with 124 modules. Stable release v7.0.0.",
-      "url": "https://idi-official.pages.dev/projects/venomous",
-      "applicationCategory": "GameMod",
-      "operatingSystem": "Minecraft 26.2",
-      "programmingLanguage": "Java",
-      "isAccessibleForFree": true,
-      "author": {
-        "@id": "https://idi-official.pages.dev/#organization"
-      },
-      "publisher": {
-        "@id": "https://idi-official.pages.dev/#organization"
-      },
-      "codeRepository": "https://gitlab.com/international-duck-incorporated/Venomous",
-      "offers": {
-        "@type": "Offer",
-        "price": "0",
-        "priceCurrency": "USD"
-      },
-      "softwareVersion": "7.0.0",
-      "downloadUrl": "https://gitlab.com/international-duck-incorporated/Venomous/-/releases/v7.0.0"
-    }
-  ]
-}
-  </script>
-</head>
-<body data-page="venomous">
-  <svg class="svg-sprite" aria-hidden="true">
-    <symbol id="i-arrow" viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></symbol>
-    <symbol id="i-external" viewBox="0 0 24 24"><path d="M14 5h5v5M19 5l-9 9M18 13v6H5V6h6"/></symbol>
-    <symbol id="i-download" viewBox="0 0 24 24"><path d="M12 3v12M7 10l5 5 5-5M4 20h16"/></symbol>
-    <symbol id="i-gitlab" viewBox="0 0 24 24"><path fill="currentColor" stroke="none" d="m23.6004 9.5927-.0337-.0862L20.3.9814a.851.851 0 0 0-.3362-.405.8748.8748 0 0 0-.9997.0539.8748.8748 0 0 0-.29.4399l-2.2055 6.748H7.5375l-2.2057-6.748a.8573.8573 0 0 0-.29-.4412.8748.8748 0 0 0-.9997-.0537.8585.8585 0 0 0-.3362.4049L.4332 9.5015l-.0325.0862a6.0657 6.0657 0 0 0 2.0119 7.0105l.0113.0087.03.0213 4.976 3.7264 2.462 1.8633 1.4995 1.1321a1.0085 1.0085 0 0 0 1.2197 0l1.4995-1.1321 2.4619-1.8633 5.006-3.7489.0125-.01a6.0682 6.0682 0 0 0 2.0094-7.003z"/></symbol>
-    <symbol id="i-sword" viewBox="0 0 24 24"><path d="m11 19-6-6"/><path d="m5 21-2-2"/><path d="m8 16-4 4"/><path d="M9.5 17.5 20.414 6.586A2 2 0 0 0 21 5.172V3h-2.172a2 2 0 0 0-1.414.586L6.5 14.5"/></symbol>
-    <symbol id="i-zap" viewBox="0 0 24 24"><path d="M13 2 5 14h7l-1 8 8-12h-7z"/></symbol>
-    <symbol id="i-move" viewBox="0 0 24 24"><path d="M12 2v20M8 6l4-4 4 4M8 18l4 4 4-4M2 12h20M6 8l-4 4 4 4M18 8l4 4-4 4"/></symbol>
-    <symbol id="i-radar" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="3"/><path d="m12 12 6-6M4.5 4.5l3 3"/></symbol>
-    <symbol id="i-eye" viewBox="0 0 24 24"><path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7S2 12 2 12Z"/><circle cx="12" cy="12" r="3"/></symbol>
-    <symbol id="i-box" viewBox="0 0 24 24"><path d="m12 2 9 5-9 5-9-5zM3 7v10l9 5 9-5V7M12 12v10"/></symbol>
-    <symbol id="i-search" viewBox="0 0 24 24"><circle cx="10.5" cy="10.5" r="6.5"/><path d="m15.5 15.5 5 5"/></symbol>
-    <symbol id="i-package" viewBox="0 0 24 24"><path d="m4 7 8-4 8 4v10l-8 4-8-4zM4 7l8 4 8-4M12 11v10"/></symbol>
-    <symbol id="i-folder" viewBox="0 0 24 24"><path d="M3 5h7l2 2h9v12H3z"/></symbol>
-    <symbol id="i-play" viewBox="0 0 24 24"><path d="m8 4 12 8-12 8z"/></symbol>
-    <symbol id="i-star" viewBox="0 0 24 24"><path d="m12 2 3 6 7 .9-5 4.8 1.3 7-6.3-3.3-6.3 3.3 1.3-7-5-4.8L9 8z"/></symbol>
-    <symbol id="i-fork" viewBox="0 0 24 24"><circle cx="7" cy="5" r="2"/><circle cx="17" cy="5" r="2"/><circle cx="12" cy="19" r="2"/><path d="M7 7v3c0 2 2 3 5 3s5-1 5-3V7M12 13v4"/></symbol>
-    <symbol id="i-code" viewBox="0 0 24 24"><path d="m8 5-6 7 6 7M16 5l6 7-6 7M14 3l-4 18"/></symbol>
-    <symbol id="i-commit" viewBox="0 0 24 24"><path d="M2 12h6M16 12h6"/><circle cx="12" cy="12" r="4"/></symbol>
-    <symbol id="i-user" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 22c0-5 3-8 8-8s8 3 8 8"/></symbol>
-    <symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></symbol>
-    <symbol id="i-check" viewBox="0 0 24 24"><path d="m4 12 5 5L20 6"/></symbol>
-    <symbol id="i-menu" viewBox="0 0 24 24"><path d="M4 8h16M4 16h16"/></symbol>
-    <symbol id="i-close" viewBox="0 0 24 24"><path d="m5 5 14 14M19 5 5 19"/></symbol>
-  </svg>
+    </script>
+  </head>
+  <body data-page="venomous">
+    <svg class="svg-sprite" aria-hidden="true">
+      <symbol id="i-arrow" viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6" /></symbol>
+      <symbol id="i-external" viewBox="0 0 24 24">
+        <path d="M14 5h5v5M19 5l-9 9M18 13v6H5V6h6" />
+      </symbol>
+      <symbol id="i-download" viewBox="0 0 24 24">
+        <path d="M12 3v12M7 10l5 5 5-5M4 20h16" />
+      </symbol>
+      <symbol id="i-gitlab" viewBox="0 0 24 24">
+        <path
+          fill="currentColor"
+          stroke="none"
+          d="m23.6004 9.5927-.0337-.0862L20.3.9814a.851.851 0 0 0-.3362-.405.8748.8748 0 0 0-.9997.0539.8748.8748 0 0 0-.29.4399l-2.2055 6.748H7.5375l-2.2057-6.748a.8573.8573 0 0 0-.29-.4412.8748.8748 0 0 0-.9997-.0537.8585.8585 0 0 0-.3362.4049L.4332 9.5015l-.0325.0862a6.0657 6.0657 0 0 0 2.0119 7.0105l.0113.0087.03.0213 4.976 3.7264 2.462 1.8633 1.4995 1.1321a1.0085 1.0085 0 0 0 1.2197 0l1.4995-1.1321 2.4619-1.8633 5.006-3.7489.0125-.01a6.0682 6.0682 0 0 0 2.0094-7.003z"
+        />
+      </symbol>
+      <symbol id="i-sword" viewBox="0 0 24 24">
+        <path d="m11 19-6-6" />
+        <path d="m5 21-2-2" />
+        <path d="m8 16-4 4" />
+        <path d="M9.5 17.5 20.414 6.586A2 2 0 0 0 21 5.172V3h-2.172a2 2 0 0 0-1.414.586L6.5 14.5" />
+      </symbol>
+      <symbol id="i-zap" viewBox="0 0 24 24"><path d="M13 2 5 14h7l-1 8 8-12h-7z" /></symbol>
+      <symbol id="i-move" viewBox="0 0 24 24">
+        <path d="M12 2v20M8 6l4-4 4 4M8 18l4 4 4-4M2 12h20M6 8l-4 4 4 4M18 8l4 4-4 4" />
+      </symbol>
+      <symbol id="i-radar" viewBox="0 0 24 24">
+        <circle cx="12" cy="12" r="8" />
+        <circle cx="12" cy="12" r="3" />
+        <path d="m12 12 6-6M4.5 4.5l3 3" />
+      </symbol>
+      <symbol id="i-eye" viewBox="0 0 24 24">
+        <path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7S2 12 2 12Z" />
+        <circle cx="12" cy="12" r="3" />
+      </symbol>
+      <symbol id="i-box" viewBox="0 0 24 24">
+        <path d="m12 2 9 5-9 5-9-5zM3 7v10l9 5 9-5V7M12 12v10" />
+      </symbol>
+      <symbol id="i-search" viewBox="0 0 24 24">
+        <circle cx="10.5" cy="10.5" r="6.5" />
+        <path d="m15.5 15.5 5 5" />
+      </symbol>
+      <symbol id="i-package" viewBox="0 0 24 24">
+        <path d="m4 7 8-4 8 4v10l-8 4-8-4zM4 7l8 4 8-4M12 11v10" />
+      </symbol>
+      <symbol id="i-folder" viewBox="0 0 24 24"><path d="M3 5h7l2 2h9v12H3z" /></symbol>
+      <symbol id="i-play" viewBox="0 0 24 24"><path d="m8 4 12 8-12 8z" /></symbol>
+      <symbol id="i-star" viewBox="0 0 24 24">
+        <path d="m12 2 3 6 7 .9-5 4.8 1.3 7-6.3-3.3-6.3 3.3 1.3-7-5-4.8L9 8z" />
+      </symbol>
+      <symbol id="i-fork" viewBox="0 0 24 24">
+        <circle cx="7" cy="5" r="2" />
+        <circle cx="17" cy="5" r="2" />
+        <circle cx="12" cy="19" r="2" />
+        <path d="M7 7v3c0 2 2 3 5 3s5-1 5-3V7M12 13v4" />
+      </symbol>
+      <symbol id="i-code" viewBox="0 0 24 24">
+        <path d="m8 5-6 7 6 7M16 5l6 7-6 7M14 3l-4 18" />
+      </symbol>
+      <symbol id="i-commit" viewBox="0 0 24 24">
+        <path d="M2 12h6M16 12h6" />
+        <circle cx="12" cy="12" r="4" />
+      </symbol>
+      <symbol id="i-user" viewBox="0 0 24 24">
+        <circle cx="12" cy="8" r="4" />
+        <path d="M4 22c0-5 3-8 8-8s8 3 8 8" />
+      </symbol>
+      <symbol id="i-clock" viewBox="0 0 24 24">
+        <circle cx="12" cy="12" r="9" />
+        <path d="M12 7v5l3 2" />
+      </symbol>
+      <symbol id="i-check" viewBox="0 0 24 24"><path d="m4 12 5 5L20 6" /></symbol>
+      <symbol id="i-menu" viewBox="0 0 24 24"><path d="M4 8h16M4 16h16" /></symbol>
+      <symbol id="i-close" viewBox="0 0 24 24"><path d="m5 5 14 14M19 5 5 19" /></symbol>
+    </svg>
 
-  <a class="skip-link" href="#main">Skip to content</a>
-  <div class="site-glow site-glow-green" aria-hidden="true"></div>
-  <canvas id="venom-hex" class="effect-background" aria-hidden="true"></canvas>
+    <a class="skip-link" href="#main">Skip to content</a>
+    <div class="site-glow site-glow-green" aria-hidden="true"></div>
+    <canvas id="venom-hex" class="effect-background" aria-hidden="true"></canvas>
 
-  <header class="topbar" data-header>
-    <div class="shell topbar-inner">
-      <a class="brand" href="/" aria-label="International Duck Incorporated home"><img data-org-avatar src="/assets/org-avatar.webp?v=fff479ce" alt="" width="40" height="40" decoding="async"><span><b>International Duck</b><small>Incorporated</small></span></a>
-      <nav class="main-nav" id="main-navigation" data-nav aria-label="Primary navigation">
-        <a href="/">Overview</a>
-        <a href="/projects">Projects</a><a href="/noosphere">Noosphere</a>
-        <a href="/members">Members</a>
-        <a href="/activity">Activity</a>
-        <a href="/migration">Migration</a>
-        <a class="icon-link" href="https://gitlab.com/international-duck-incorporated" target="_blank" rel="noreferrer" aria-label="International Duck Incorporated on GitLab"><svg><use href="#i-gitlab"/></svg></a>
-      </nav>
-      <button class="menu-button" type="button" data-menu aria-label="Open navigation" aria-controls="main-navigation" aria-expanded="false"><svg class="menu-open"><use href="#i-menu"/></svg><svg class="menu-close"><use href="#i-close"/></svg></button>
-    </div>
-  </header>
-
-  <main id="main">
-    <section class="venom-hero shell">
-      <div class="venom-copy reveal">
-        <div class="breadcrumbs"><a href="/">International Duck</a><span>/</span><span>Projects</span><span>/</span><b>Venomous</b></div>
-        <div class="status-pill green"><i></i> Stable <b data-release-version>v7.0.0</b></div>
-        <h1>Venomous.</h1>
-        <p class="venom-tagline">Optimized &amp; refined<br>Meteor Client addon.</p>
-        <p class="venom-description"><span data-module-total>124</span> focused modules for Minecraft 26.2, covering combat, movement, detection, rendering, automation, and more.</p>
-        <div class="action-row">
-          <a class="button button-green" data-stable-download href="https://gitlab.com/international-duck-incorporated/Venomous/-/releases/v7.0.0/downloads/Venomous-7.0.0.jar"><pixel-canvas data-gap="6" data-speed="35" data-colors="#ddfbe4, #8cf77a, #4caf6d"></pixel-canvas><svg><use href="#i-download"/></svg>Download <span data-release-version>v7.0.0</span></a>
-          <a class="button button-glass" href="https://gitlab.com/international-duck-incorporated/Venomous" target="_blank" rel="noreferrer"><pixel-canvas data-gap="6" data-speed="35" data-colors="#ddfbe4, #8cf77a, #4caf6d"></pixel-canvas><svg><use href="#i-gitlab"/></svg>View source</a>
-        </div>
-        <div class="requirement-row"><span>Minecraft <b>26.2</b></span><span>Meteor Client</span><span>Java <b>25</b></span></div>
+    <header class="topbar" data-header>
+      <div class="shell topbar-inner">
+        <a class="brand" href="/" aria-label="International Duck Incorporated home"
+          ><img
+            data-org-avatar
+            src="/assets/org-avatar.webp?v=fff479ce"
+            alt=""
+            width="40"
+            height="40"
+            decoding="async"
+          /><span><b>International Duck</b><small>Incorporated</small></span></a
+        >
+        <nav class="main-nav" id="main-navigation" data-nav aria-label="Primary navigation">
+          <a href="/">Overview</a>
+          <a href="/projects">Projects</a><a href="/noosphere">Noosphere</a>
+          <a href="/members">Members</a>
+          <a href="/activity">Activity</a>
+          <a href="/migration">Migration</a>
+          <a
+            class="icon-link"
+            href="https://gitlab.com/international-duck-incorporated"
+            target="_blank"
+            rel="noreferrer"
+            aria-label="International Duck Incorporated on GitLab"
+            ><svg><use href="#i-gitlab" /></svg
+          ></a>
+        </nav>
+        <button
+          class="menu-button"
+          type="button"
+          data-menu
+          aria-label="Open navigation"
+          aria-controls="main-navigation"
+          aria-expanded="false"
+        >
+          <svg class="menu-open"><use href="#i-menu" /></svg
+          ><svg class="menu-close"><use href="#i-close" /></svg>
+        </button>
       </div>
+    </header>
 
-      <div class="venom-visual glass-card reveal" aria-label="Venomous project identity">
-        <div class="visual-topline"><span>VENOMOUS / PROJECT 01</span><span class="live-label"><i></i> ONLINE</span></div>
-        <div class="venom-logo-stage"><picture><source srcset="/assets/venomous-icon.webp?v=a2f98ad3" type="image/webp"><img src="/assets/venomous-icon.png?v=70bd6d7b" alt="Venomous snake logo" width="512" height="512" loading="lazy" decoding="async"></picture></div>
-        <div class="visual-metrics"><div><small>VERSION</small><b data-release-short>7.0.0</b></div><div><small>MODULES</small><b data-module-total>124</b></div><div><small>LANGUAGE</small><b data-language>Java</b></div></div>
-      </div>
-    </section>
-
-    <section class="metric-dock venom-metrics shell reveal" aria-label="Live repository status">
-      <div class="glass-card"><span class="metric-icon green"><svg><use href="#i-star"/></svg></span><span><small>STARS</small><b data-stars>0</b></span></div>
-      <div class="glass-card"><span class="metric-icon green"><svg><use href="#i-fork"/></svg></span><span><small>FORKS</small><b data-forks>0</b></span></div>
-      <div class="glass-card"><span class="metric-icon green"><svg><use href="#i-clock"/></svg></span><span><small>LAST PUSH</small><b data-last-push>recently</b></span></div>
-    </section>
-
-    <section class="content-section shell" id="features">
-      <header class="section-heading reveal"><div><span class="eyebrow green">Capabilities</span><h2>Every angle covered.</h2></div><p>Purpose-built systems organized around the way you play.</p></header>
-      <div class="capability-grid">
-        <article class="capability-card glass-card reveal"><span class="capability-icon"><svg><use href="#i-sword"/></svg></span><div><h3>Combat</h3><p>CrystalPvP, KillAura, MaceKill, Aimbot, shields, and macros.</p></div><b data-category-count="combat">31</b></article>
-        <article class="capability-card glass-card reveal"><span class="capability-icon"><svg><use href="#i-zap"/></svg></span><div><h3>Exploits</h3><p>Packet, timing, portal, movement, and server interaction utilities.</p></div><b data-category-count="exploit">24</b></article>
-        <article class="capability-card glass-card reveal"><span class="capability-icon"><svg><use href="#i-move"/></svg></span><div><h3>Movement</h3><p>Fly, Speed, Phase, Blink, BoatPhase, SnapTap, and precise control.</p></div><b data-category-count="movement">12</b></article>
-        <article class="capability-card glass-card reveal"><span class="capability-icon"><svg><use href="#i-radar"/></svg></span><div><h3>Detection</h3><p>AntiCheat, staff, vanish, spectator, and player detection.</p></div><b data-category-count="detection">5</b></article>
-        <article class="capability-card glass-card reveal"><span class="capability-icon"><svg><use href="#i-eye"/></svg></span><div><h3>Visual</h3><p>Skeleton, light, invisibility, chunk, and visibility enhancements.</p></div><b data-category-count="visual">5</b></article>
-        <article class="capability-card glass-card reveal"><span class="capability-icon"><svg><use href="#i-box"/></svg></span><div><h3>Utility</h3><p>Automation, inventory, world, safety, notification, and fun modules.</p></div><b data-category-count="utility">47</b></article>
-      </div>
-    </section>
-
-    <section class="content-section module-section" id="modules">
-      <div class="shell">
-        <header class="section-heading reveal"><div><span class="eyebrow green">Source index</span><h2>Modules.</h2></div><span class="source-chip"><i></i><span data-module-source>Synced from ModuleRegistry.java</span></span></header>
-        <div class="module-browser glass-card reveal">
-          <div class="module-toolbar">
-            <div class="module-filters" data-module-filters>
-              <button class="active" type="button" data-filter="all">All <b data-module-total>124</b></button>
-              <button type="button" data-filter="combat">Combat <b>31</b></button>
-              <button type="button" data-filter="exploit">Exploit <b>24</b></button>
-              <button type="button" data-filter="movement">Movement <b>12</b></button>
-              <button type="button" data-filter="detection">Detection <b>5</b></button>
-              <button type="button" data-filter="visual">Visual <b>5</b></button>
-              <button type="button" data-filter="utility">Utility <b>47</b></button>
-            </div>
-            <label class="module-search"><svg><use href="#i-search"/></svg><span class="sr-only">Search modules</span><input type="search" data-module-search placeholder="Search modules" autocomplete="off"></label>
+    <main id="main">
+      <section class="venom-hero shell">
+        <div class="venom-copy reveal">
+          <div class="breadcrumbs">
+            <a href="/">International Duck</a><span>/</span><span>Projects</span><span>/</span
+            ><b>Venomous</b>
           </div>
-          <div class="module-result-head"><span data-results-label>All modules</span><b data-results-count>124 results</b></div>
-          <div class="module-grid" data-module-grid aria-live="polite"></div>
-          <div class="empty-state" data-empty hidden>No modules match this search.</div>
-          <button class="show-all" type="button" data-show-all>Show all modules <svg><use href="#i-arrow"/></svg></button>
+          <div class="status-pill green"><i></i> Stable <b data-release-version>v7.0.0</b></div>
+          <h1>Venomous.</h1>
+          <p class="venom-tagline">Optimized &amp; refined<br />Meteor Client addon.</p>
+          <p class="venom-description">
+            <span data-module-total>124</span> focused modules for Minecraft 26.2, covering combat,
+            movement, detection, rendering, automation, and more.
+          </p>
+          <div class="action-row">
+            <a
+              class="button button-green"
+              data-stable-download
+              href="https://gitlab.com/international-duck-incorporated/Venomous/-/releases/v7.0.0/downloads/Venomous-7.0.0.jar"
+              ><pixel-canvas
+                data-gap="6"
+                data-speed="35"
+                data-colors="#ddfbe4, #8cf77a, #4caf6d"
+              ></pixel-canvas
+              ><svg><use href="#i-download" /></svg>Download
+              <span data-release-version>v7.0.0</span></a
+            >
+            <a
+              class="button button-glass"
+              href="https://gitlab.com/international-duck-incorporated/Venomous"
+              target="_blank"
+              rel="noreferrer"
+              ><pixel-canvas
+                data-gap="6"
+                data-speed="35"
+                data-colors="#ddfbe4, #8cf77a, #4caf6d"
+              ></pixel-canvas
+              ><svg><use href="#i-gitlab" /></svg>View source</a
+            >
+          </div>
+          <div class="requirement-row">
+            <span>Minecraft <b>26.2</b></span
+            ><span>Meteor Client</span><span>Java <b>25</b></span>
+          </div>
         </div>
-      </div>
-    </section>
 
-    <section class="content-section shell" id="releases">
-      <header class="section-heading reveal"><div><span class="eyebrow green">Downloads</span><h2>Choose a channel.</h2></div><p>Release files and metadata come directly from GitLab.</p></header>
-      <div class="release-grid">
-        <article class="release-card glass-card featured reveal"><span class="release-icon"><svg><use href="#i-check"/></svg></span><div><span class="card-label">Stable</span><h3 data-release-version>v7.0.0</h3><p>Recommended tagged build.</p></div><div class="release-info"><span data-stable-date>Latest release</span><span data-stable-size>JAR</span></div><a data-stable-download href="https://gitlab.com/international-duck-incorporated/Venomous/-/releases/v7.0.0/downloads/Venomous-7.0.0.jar" aria-label="Download stable release"><svg><use href="#i-download"/></svg></a><pixel-canvas data-gap="7" data-speed="35" data-colors="#ddfbe4, #8cf77a, #4caf6d"></pixel-canvas></article>
-        <article class="release-card glass-card reveal"><span class="release-icon"><svg><use href="#i-zap"/></svg></span><div><span class="card-label">Nightly</span><h3 data-nightly-version>Latest main</h3><p>Fresh automated build.</p></div><div class="release-info"><span data-nightly-date>Automated</span><span data-nightly-size>JAR</span></div><a data-nightly-download href="https://gitlab.com/international-duck-incorporated/Venomous/-/tags/nightly" aria-label="Download nightly release"><svg><use href="#i-download"/></svg></a><pixel-canvas data-gap="7" data-speed="35" data-colors="#e8edf2, #9aa7b4, #5f6d7c"></pixel-canvas></article>
-      </div>
+        <div class="venom-visual glass-card reveal" aria-label="Venomous project identity">
+          <div class="visual-topline">
+            <span>VENOMOUS / PROJECT 01</span><span class="live-label"><i></i> ONLINE</span>
+          </div>
+          <div class="venom-logo-stage">
+            <picture
+              ><source srcset="/assets/venomous-icon.webp?v=a2f98ad3" type="image/webp" />
+              <img
+                src="/assets/venomous-icon.png?v=70bd6d7b"
+                alt="Venomous snake logo"
+                width="512"
+                height="512"
+                loading="lazy"
+                decoding="async"
+            /></picture>
+          </div>
+          <div class="visual-metrics">
+            <div><small>VERSION</small><b data-release-short>7.0.0</b></div>
+            <div><small>MODULES</small><b data-module-total>124</b></div>
+            <div><small>LANGUAGE</small><b data-language>Java</b></div>
+          </div>
+        </div>
+      </section>
 
-      <div class="install-panel glass-card reveal">
-        <div><span class="eyebrow green">Installation</span><h2>Three steps.</h2></div>
-        <ol><li><span><svg><use href="#i-package"/></svg></span><div><b>01</b><h3>Install Meteor</h3><p>Set up Fabric Loader and Meteor Client for Minecraft 26.2.</p></div></li><li><span><svg><use href="#i-folder"/></svg></span><div><b>02</b><h3>Add the JAR</h3><p>Move Venomous into the <code>mods</code> folder.</p></div></li><li><span><svg><use href="#i-play"/></svg></span><div><b>03</b><h3>Launch</h3><p>Start Fabric. Venomous appears inside Meteor.</p></div></li></ol>
-      </div>
-    </section>
+      <section class="metric-dock venom-metrics shell reveal" aria-label="Live repository status">
+        <div class="glass-card">
+          <span class="metric-icon green"
+            ><svg><use href="#i-star" /></svg></span
+          ><span><small>STARS</small><b data-stars>0</b></span>
+        </div>
+        <div class="glass-card">
+          <span class="metric-icon green"
+            ><svg><use href="#i-fork" /></svg></span
+          ><span><small>FORKS</small><b data-forks>0</b></span>
+        </div>
+        <div class="glass-card">
+          <span class="metric-icon green"
+            ><svg><use href="#i-clock" /></svg></span
+          ><span><small>LAST PUSH</small><b data-last-push>recently</b></span>
+        </div>
+      </section>
 
-    <section class="content-section activity-section">
-      <div class="shell activity-grid">
-        <div class="activity-card glass-card reveal"><header><span><svg><use href="#i-commit"/></svg>Recent activity</span><a href="https://gitlab.com/international-duck-incorporated/Venomous/-/commits/main" target="_blank" rel="noreferrer">All commits <svg><use href="#i-external"/></svg></a></header><div class="commit-list" data-commits><a href="https://gitlab.com/international-duck-incorporated/Venomous/-/commits/main"><i></i><span><b>Loading commits…</b><small>GitLab</small></span><code>•••••••</code></a></div></div>
-        <div class="activity-card glass-card reveal"><header><span><svg><use href="#i-user"/></svg>Contributors</span><a href="https://gitlab.com/international-duck-incorporated/Venomous/-/graphs/main" target="_blank" rel="noreferrer">View graph <svg><use href="#i-external"/></svg></a></header><div class="contributor-list" data-contributors><a href="https://gitlab.com/0xFFshell" target="_blank" rel="noreferrer"><picture><source srcset="/assets/member-0xffshell.webp?v=827f401e" type="image/webp"><img src="/assets/member-0xffshell.png?v=d8a12bec" alt="0xFFshell" loading="lazy" decoding="async"></picture><span><b>0xFFshell</b><small>Writer</small></span><strong>Venomous</strong></a><a href="https://github.com/3spress0" target="_blank" rel="noreferrer"><picture><source srcset="/assets/contributor-3spress0.webp?v=a3c2db19" type="image/webp"><img src="/assets/contributor-3spress0.png?v=1e7edf44" alt="espress0" loading="lazy" decoding="async"></picture><span><b>espress0</b><small>Writer</small></span><strong>Venomous</strong></a></div></div>
-      </div>
-    </section>
-  </main>
+      <section class="content-section shell" id="features">
+        <header class="section-heading reveal">
+          <div>
+            <span class="eyebrow green">Capabilities</span>
+            <h2>Every angle covered.</h2>
+          </div>
+          <p>Purpose-built systems organized around the way you play.</p>
+        </header>
+        <div class="capability-grid">
+          <article class="capability-card glass-card reveal">
+            <span class="capability-icon"
+              ><svg><use href="#i-sword" /></svg
+            ></span>
+            <div>
+              <h3>Combat</h3>
+              <p>CrystalPvP, KillAura, MaceKill, Aimbot, shields, and macros.</p>
+            </div>
+            <b data-category-count="combat">31</b>
+          </article>
+          <article class="capability-card glass-card reveal">
+            <span class="capability-icon"
+              ><svg><use href="#i-zap" /></svg
+            ></span>
+            <div>
+              <h3>Exploits</h3>
+              <p>Packet, timing, portal, movement, and server interaction utilities.</p>
+            </div>
+            <b data-category-count="exploit">24</b>
+          </article>
+          <article class="capability-card glass-card reveal">
+            <span class="capability-icon"
+              ><svg><use href="#i-move" /></svg
+            ></span>
+            <div>
+              <h3>Movement</h3>
+              <p>Fly, Speed, Phase, Blink, BoatPhase, SnapTap, and precise control.</p>
+            </div>
+            <b data-category-count="movement">12</b>
+          </article>
+          <article class="capability-card glass-card reveal">
+            <span class="capability-icon"
+              ><svg><use href="#i-radar" /></svg
+            ></span>
+            <div>
+              <h3>Detection</h3>
+              <p>AntiCheat, staff, vanish, spectator, and player detection.</p>
+            </div>
+            <b data-category-count="detection">5</b>
+          </article>
+          <article class="capability-card glass-card reveal">
+            <span class="capability-icon"
+              ><svg><use href="#i-eye" /></svg
+            ></span>
+            <div>
+              <h3>Visual</h3>
+              <p>Skeleton, light, invisibility, chunk, and visibility enhancements.</p>
+            </div>
+            <b data-category-count="visual">5</b>
+          </article>
+          <article class="capability-card glass-card reveal">
+            <span class="capability-icon"
+              ><svg><use href="#i-box" /></svg
+            ></span>
+            <div>
+              <h3>Utility</h3>
+              <p>Automation, inventory, world, safety, notification, and fun modules.</p>
+            </div>
+            <b data-category-count="utility">47</b>
+          </article>
+        </div>
+      </section>
 
-  <footer class="site-footer">
-    <div class="shell footer-inner"><a class="brand" href="/"><img data-org-avatar src="/assets/org-avatar.webp?v=fff479ce" alt="" width="40" height="40" decoding="async"><span><b>International Duck</b><small>Incorporated</small></span></a><nav><a href="/">Overview</a><a href="/projects">Projects</a><a href="/noosphere">Noosphere</a><a href="/members">Members</a><a href="/activity">Activity</a><a href="/migration">Migration</a><a href="/projects/venomous">Venomous</a><a href="https://gitlab.com/international-duck-incorporated/Venomous" target="_blank" rel="noreferrer">GitLab</a><a href="/glyphsmith">Glyphsmith</a><a href="/changelog">Changelog</a><a href="mailto:0xffshell@duck.com">Contact</a></nav><span class="sync-state"><i></i><span data-sync-text>GitLab data synced live</span></span></div>
-  </footer>
-</body>
+      <section class="content-section module-section" id="modules">
+        <div class="shell">
+          <header class="section-heading reveal">
+            <div>
+              <span class="eyebrow green">Source index</span>
+              <h2>Modules.</h2>
+            </div>
+            <span class="source-chip"
+              ><i></i><span data-module-source>Synced from ModuleRegistry.java</span></span
+            >
+          </header>
+          <div class="module-browser glass-card reveal">
+            <div class="module-toolbar">
+              <div class="module-filters" data-module-filters>
+                <button class="active" type="button" data-filter="all">
+                  All <b data-module-total>124</b>
+                </button>
+                <button type="button" data-filter="combat">Combat <b>31</b></button>
+                <button type="button" data-filter="exploit">Exploit <b>24</b></button>
+                <button type="button" data-filter="movement">Movement <b>12</b></button>
+                <button type="button" data-filter="detection">Detection <b>5</b></button>
+                <button type="button" data-filter="visual">Visual <b>5</b></button>
+                <button type="button" data-filter="utility">Utility <b>47</b></button>
+              </div>
+              <label class="module-search"
+                ><svg><use href="#i-search" /></svg><span class="sr-only">Search modules</span
+                ><input
+                  type="search"
+                  data-module-search
+                  placeholder="Search modules"
+                  autocomplete="off"
+              /></label>
+            </div>
+            <div class="module-result-head">
+              <span data-results-label>All modules</span><b data-results-count>124 results</b>
+            </div>
+            <div class="module-grid" data-module-grid aria-live="polite"></div>
+            <div class="empty-state" data-empty hidden>No modules match this search.</div>
+            <button class="show-all" type="button" data-show-all>
+              Show all modules <svg><use href="#i-arrow" /></svg>
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <section class="content-section shell" id="releases">
+        <header class="section-heading reveal">
+          <div>
+            <span class="eyebrow green">Downloads</span>
+            <h2>Choose a channel.</h2>
+          </div>
+          <p>Release files and metadata come directly from GitLab.</p>
+        </header>
+        <div class="release-grid">
+          <article class="release-card glass-card featured reveal">
+            <span class="release-icon"
+              ><svg><use href="#i-check" /></svg
+            ></span>
+            <div>
+              <span class="card-label">Stable</span>
+              <h3 data-release-version>v7.0.0</h3>
+              <p>Recommended tagged build.</p>
+            </div>
+            <div class="release-info">
+              <span data-stable-date>Latest release</span><span data-stable-size>JAR</span>
+            </div>
+            <a
+              data-stable-download
+              href="https://gitlab.com/international-duck-incorporated/Venomous/-/releases/v7.0.0/downloads/Venomous-7.0.0.jar"
+              aria-label="Download stable release"
+              ><svg><use href="#i-download" /></svg></a
+            ><pixel-canvas
+              data-gap="7"
+              data-speed="35"
+              data-colors="#ddfbe4, #8cf77a, #4caf6d"
+            ></pixel-canvas>
+          </article>
+          <article class="release-card glass-card reveal">
+            <span class="release-icon"
+              ><svg><use href="#i-zap" /></svg
+            ></span>
+            <div>
+              <span class="card-label">Nightly</span>
+              <h3 data-nightly-version>Latest main</h3>
+              <p>Fresh automated build.</p>
+            </div>
+            <div class="release-info">
+              <span data-nightly-date>Automated</span><span data-nightly-size>JAR</span>
+            </div>
+            <a
+              data-nightly-download
+              href="https://gitlab.com/international-duck-incorporated/Venomous/-/tags/nightly"
+              aria-label="Download nightly release"
+              ><svg><use href="#i-download" /></svg></a
+            ><pixel-canvas
+              data-gap="7"
+              data-speed="35"
+              data-colors="#e8edf2, #9aa7b4, #5f6d7c"
+            ></pixel-canvas>
+          </article>
+        </div>
+
+        <div class="install-panel glass-card reveal">
+          <div>
+            <span class="eyebrow green">Installation</span>
+            <h2>Three steps.</h2>
+          </div>
+          <ol>
+            <li>
+              <span
+                ><svg><use href="#i-package" /></svg
+              ></span>
+              <div>
+                <b>01</b>
+                <h3>Install Meteor</h3>
+                <p>Set up Fabric Loader and Meteor Client for Minecraft 26.2.</p>
+              </div>
+            </li>
+            <li>
+              <span
+                ><svg><use href="#i-folder" /></svg
+              ></span>
+              <div>
+                <b>02</b>
+                <h3>Add the JAR</h3>
+                <p>Move Venomous into the <code>mods</code> folder.</p>
+              </div>
+            </li>
+            <li>
+              <span
+                ><svg><use href="#i-play" /></svg
+              ></span>
+              <div>
+                <b>03</b>
+                <h3>Launch</h3>
+                <p>Start Fabric. Venomous appears inside Meteor.</p>
+              </div>
+            </li>
+          </ol>
+        </div>
+      </section>
+
+      <section class="content-section activity-section">
+        <div class="shell activity-grid">
+          <div class="activity-card glass-card reveal">
+            <header>
+              <span
+                ><svg><use href="#i-commit" /></svg>Recent activity</span
+              ><a
+                href="https://gitlab.com/international-duck-incorporated/Venomous/-/commits/main"
+                target="_blank"
+                rel="noreferrer"
+                >All commits <svg><use href="#i-external" /></svg
+              ></a>
+            </header>
+            <div class="commit-list" data-commits>
+              <a href="https://gitlab.com/international-duck-incorporated/Venomous/-/commits/main"
+                ><i></i><span><b>Loading commits…</b><small>GitLab</small></span
+                ><code>•••••••</code></a
+              >
+            </div>
+          </div>
+          <div class="activity-card glass-card reveal">
+            <header>
+              <span
+                ><svg><use href="#i-user" /></svg>Contributors</span
+              ><a
+                href="https://gitlab.com/international-duck-incorporated/Venomous/-/graphs/main"
+                target="_blank"
+                rel="noreferrer"
+                >View graph <svg><use href="#i-external" /></svg
+              ></a>
+            </header>
+            <div class="contributor-list" data-contributors>
+              <a href="https://gitlab.com/0xFFshell" target="_blank" rel="noreferrer"
+                ><picture
+                  ><source srcset="/assets/member-0xffshell.webp?v=827f401e" type="image/webp" />
+                  <img
+                    src="/assets/member-0xffshell.png?v=d8a12bec"
+                    alt="0xFFshell"
+                    loading="lazy"
+                    decoding="async" /></picture
+                ><span><b>0xFFshell</b><small>Writer</small></span
+                ><strong>Venomous</strong></a
+              ><a href="https://gitlab.com/3spress0" target="_blank" rel="noreferrer"
+                ><picture
+                  ><source
+                    srcset="/assets/contributor-3spress0.webp?v=a3c2db19"
+                    type="image/webp" />
+                  <img
+                    src="/assets/contributor-3spress0.png?v=1e7edf44"
+                    alt="espress0"
+                    loading="lazy"
+                    decoding="async" /></picture
+                ><span><b>espress0</b><small>Writer</small></span
+                ><strong>Venomous</strong></a
+              >
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <div class="shell footer-inner">
+        <a class="brand" href="/"
+          ><img
+            data-org-avatar
+            src="/assets/org-avatar.webp?v=fff479ce"
+            alt=""
+            width="40"
+            height="40"
+            decoding="async"
+          /><span><b>International Duck</b><small>Incorporated</small></span></a
+        >
+        <nav>
+          <a href="/">Overview</a><a href="/projects">Projects</a><a href="/noosphere">Noosphere</a
+          ><a href="/members">Members</a><a href="/activity">Activity</a
+          ><a href="/migration">Migration</a><a href="/projects/venomous">Venomous</a
+          ><a
+            href="https://gitlab.com/international-duck-incorporated/Venomous"
+            target="_blank"
+            rel="noreferrer"
+            >GitLab</a
+          ><a href="/glyphsmith">Glyphsmith</a><a href="/changelog">Changelog</a
+          ><a href="mailto:0xffshell@duck.com">Contact</a>
+        </nav>
+        <span class="sync-state"><i></i><span data-sync-text>GitLab data synced live</span></span>
+      </div>
+    </footer>
+  </body>
 </html>

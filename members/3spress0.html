@@ -1,173 +1,408 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-  <script>
-    (() => {
-      const nav = navigator;
-      const connection = nav.connection || nav.mozConnection || nav.webkitConnection;
-      const lowEnd = Boolean(
-        (connection && connection.saveData) ||
-        (connection && /^(slow-2g|2g)$/.test(connection.effectiveType || "")) ||
-        (typeof nav.deviceMemory === "number" && nav.deviceMemory <= 4) ||
-        (typeof nav.hardwareConcurrency === "number" && nav.hardwareConcurrency <= 4)
-      );
-      window.IDI_LOW_END = lowEnd;
-      window.IDI_REDUCED_MOTION = Boolean(
-        window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches
-      );
-      if (lowEnd) document.documentElement.classList.add("low-end");
-    })();
-  </script><meta name="theme-color" content="#07090d">  <meta property="og:image" content="https://idi-official.pages.dev/assets/og-default.png">
-  <title>espress0 - International Duck member profile | IDI</title>
-  <meta name="description" content="espress0 is a backend developer and the backbone of most International Duck projects, working across security research tooling and Minecraft client mods.">
-  <link rel="canonical" href="https://idi-official.pages.dev/members/3spress0">
-  <meta property="og:type" content="website">
-  <meta property="og:title" content="espress0 - International Duck member profile">
-  <meta property="og:description" content="Backend developer and project backbone at International Duck Incorporated.">
-  <meta property="og:url" content="https://idi-official.pages.dev/members/3spress0">
-  <meta property="og:site_name" content="International Duck Incorporated">
-  <meta property="og:locale" content="en_US">
-  <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="espress0 - International Duck member profile">
-  <meta name="twitter:description" content="Backend developer and project backbone at International Duck Incorporated."><link rel="icon" href="/assets/org-avatar.png?v=f3debf20">
-  <link rel="stylesheet" href="/css/bundle.css?v=1f263d21">
-  <script src="/starry-night.js?v=fce6b453" defer></script>
-  <script src="/script.js?v=ffe97c4c" defer></script>
-  <script src="/commit-feed.js?v=bdc09dd1" defer></script>
-  <meta property="og:image:width" content="1200">
-  <meta property="og:image:height" content="630">
-  <meta property="og:image:alt" content="International Duck Incorporated - open-source Minecraft mods, tools and experiments">
-  <meta name="twitter:image" content="https://idi-official.pages.dev/assets/og-default.png">
-  <script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@graph": [
-    {
-      "@type": "Organization",
-      "@id": "https://idi-official.pages.dev/#organization",
-      "name": "International Duck Incorporated",
-      "alternateName": "IDI",
-      "url": "https://idi-official.pages.dev/",
-      "logo": {
-        "@type": "ImageObject",
-        "url": "https://idi-official.pages.dev/assets/org-avatar.png"
-      },
-      "image": "https://idi-official.pages.dev/assets/og-default.png",
-      "description": "Open-source collective building Minecraft mods, tools and experiments in public. GitLab is the active source of truth; the former GitHub organization is currently hidden from public view.",
-      "sameAs": [
-        "https://gitlab.com/international-duck-incorporated"
-      ],
-      "knowsAbout": [
-        "Minecraft mods",
-        "Fabric modding",
-        "Minecraft client utilities",
-        "open source"
-      ]
-    },
-    {
-      "@type": "WebSite",
-      "@id": "https://idi-official.pages.dev/#website",
-      "url": "https://idi-official.pages.dev/",
-      "name": "International Duck Incorporated",
-      "inLanguage": "en",
-      "publisher": {
-        "@id": "https://idi-official.pages.dev/#organization"
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <script>
+      (() => {
+        const nav = navigator;
+        const connection = nav.connection || nav.mozConnection || nav.webkitConnection;
+        const lowEnd = Boolean(
+          (connection && connection.saveData) ||
+            (connection && /^(slow-2g|2g)$/.test(connection.effectiveType || "")) ||
+            (typeof nav.deviceMemory === "number" && nav.deviceMemory <= 4) ||
+            (typeof nav.hardwareConcurrency === "number" && nav.hardwareConcurrency <= 4)
+        );
+        window.IDI_LOW_END = lowEnd;
+        window.IDI_REDUCED_MOTION = Boolean(
+          window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches
+        );
+        if (lowEnd) document.documentElement.classList.add("low-end");
+      })();
+    </script>
+    <meta name="theme-color" content="#07090d" />
+    <meta property="og:image" content="https://idi-official.pages.dev/assets/og-default.png" />
+    <title>espress0 - International Duck member profile | IDI</title>
+    <meta
+      name="description"
+      content="espress0 is a backend developer and the backbone of most International Duck projects, working across security research tooling and Minecraft client mods."
+    />
+    <link rel="canonical" href="https://idi-official.pages.dev/members/3spress0" />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="espress0 - International Duck member profile" />
+    <meta
+      property="og:description"
+      content="Backend developer and project backbone at International Duck Incorporated."
+    />
+    <meta property="og:url" content="https://idi-official.pages.dev/members/3spress0" />
+    <meta property="og:site_name" content="International Duck Incorporated" />
+    <meta property="og:locale" content="en_US" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="espress0 - International Duck member profile" />
+    <meta
+      name="twitter:description"
+      content="Backend developer and project backbone at International Duck Incorporated."
+    />
+    <link rel="icon" href="/assets/org-avatar.png?v=f3debf20" />
+    <link rel="stylesheet" href="/css/bundle.css?v=583143c6" />
+    <script src="/starry-night.js?v=3988ae84" defer></script>
+    <script src="/script.js?v=0443d2ee" defer></script>
+    <script src="/commit-feed.js?v=52be3925" defer></script>
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta
+      property="og:image:alt"
+      content="International Duck Incorporated - open-source Minecraft mods, tools and experiments"
+    />
+    <meta name="twitter:image" content="https://idi-official.pages.dev/assets/og-default.png" />
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@graph": [
+          {
+            "@type": "Organization",
+            "@id": "https://idi-official.pages.dev/#organization",
+            "name": "International Duck Incorporated",
+            "alternateName": "IDI",
+            "url": "https://idi-official.pages.dev/",
+            "logo": {
+              "@type": "ImageObject",
+              "url": "https://idi-official.pages.dev/assets/org-avatar.png"
+            },
+            "image": "https://idi-official.pages.dev/assets/og-default.png",
+            "description": "Open-source collective building Minecraft mods, tools and experiments in public. GitLab is the active source of truth; the former GitHub organization is currently hidden from public view.",
+            "sameAs": ["https://gitlab.com/international-duck-incorporated"],
+            "knowsAbout": [
+              "Minecraft mods",
+              "Fabric modding",
+              "Minecraft client utilities",
+              "open source"
+            ]
+          },
+          {
+            "@type": "WebSite",
+            "@id": "https://idi-official.pages.dev/#website",
+            "url": "https://idi-official.pages.dev/",
+            "name": "International Duck Incorporated",
+            "inLanguage": "en",
+            "publisher": {
+              "@id": "https://idi-official.pages.dev/#organization"
+            }
+          },
+          {
+            "@type": "ProfilePage",
+            "@id": "https://idi-official.pages.dev/members/3spress0#webpage",
+            "url": "https://idi-official.pages.dev/members/3spress0",
+            "name": "espress0 - International Duck",
+            "description": "Backend developer and backbone of most International Duck projects.",
+            "isPartOf": {
+              "@id": "https://idi-official.pages.dev/#website"
+            },
+            "about": {
+              "@id": "https://idi-official.pages.dev/#organization"
+            },
+            "inLanguage": "en",
+            "primaryImageOfPage": {
+              "@type": "ImageObject",
+              "url": "https://idi-official.pages.dev/assets/og-default.png"
+            },
+            "breadcrumb": {
+              "@id": "https://idi-official.pages.dev/members/3spress0#breadcrumb"
+            },
+            "mainEntity": {
+              "@id": "https://idi-official.pages.dev/members/3spress0#person"
+            }
+          },
+          {
+            "@type": "BreadcrumbList",
+            "@id": "https://idi-official.pages.dev/members/3spress0#breadcrumb",
+            "itemListElement": [
+              {
+                "@type": "ListItem",
+                "position": 1,
+                "name": "International Duck Incorporated",
+                "item": "https://idi-official.pages.dev/"
+              },
+              {
+                "@type": "ListItem",
+                "position": 2,
+                "name": "Members",
+                "item": "https://idi-official.pages.dev/members/"
+              },
+              {
+                "@type": "ListItem",
+                "position": 3,
+                "name": "espress0",
+                "item": "https://idi-official.pages.dev/members/3spress0"
+              }
+            ]
+          },
+          {
+            "@type": "Person",
+            "@id": "https://idi-official.pages.dev/members/3spress0#person",
+            "name": "espress0",
+            "description": "Backend developer and backbone of most International Duck projects.",
+            "url": "https://idi-official.pages.dev/members/3spress0",
+            "memberOf": {
+              "@id": "https://idi-official.pages.dev/#organization"
+            },
+            "sameAs": ["https://gitlab.com/3spress0"]
+          }
+        ]
       }
-    },
-    {
-      "@type": "ProfilePage",
-      "@id": "https://idi-official.pages.dev/members/3spress0#webpage",
-      "url": "https://idi-official.pages.dev/members/3spress0",
-      "name": "espress0 - International Duck",
-      "description": "Backend developer and backbone of most International Duck projects.",
-      "isPartOf": {
-        "@id": "https://idi-official.pages.dev/#website"
-      },
-      "about": {
-        "@id": "https://idi-official.pages.dev/#organization"
-      },
-      "inLanguage": "en",
-      "primaryImageOfPage": {
-        "@type": "ImageObject",
-        "url": "https://idi-official.pages.dev/assets/og-default.png"
-      },
-      "breadcrumb": {
-        "@id": "https://idi-official.pages.dev/members/3spress0#breadcrumb"
-      },
-      "mainEntity": {
-        "@id": "https://idi-official.pages.dev/members/3spress0#person"
-      }
-    },
-    {
-      "@type": "BreadcrumbList",
-      "@id": "https://idi-official.pages.dev/members/3spress0#breadcrumb",
-      "itemListElement": [
-        {
-          "@type": "ListItem",
-          "position": 1,
-          "name": "International Duck Incorporated",
-          "item": "https://idi-official.pages.dev/"
-        },
-        {
-          "@type": "ListItem",
-          "position": 2,
-          "name": "Members",
-          "item": "https://idi-official.pages.dev/members/"
-        },
-        {
-          "@type": "ListItem",
-          "position": 3,
-          "name": "espress0",
-          "item": "https://idi-official.pages.dev/members/3spress0"
-        }
-      ]
-    },
-    {
-      "@type": "Person",
-      "@id": "https://idi-official.pages.dev/members/3spress0#person",
-      "name": "espress0",
-      "description": "Backend developer and backbone of most International Duck projects.",
-      "url": "https://idi-official.pages.dev/members/3spress0",
-      "memberOf": {
-        "@id": "https://idi-official.pages.dev/#organization"
-      },
-      "sameAs": [
-        "https://github.com/3spress0"
-      ]
-    }
-  ]
-}
-  </script>
-</head>
-<body data-page="member" data-member="3spress0" class="starry-night-page"><svg class="svg-sprite" aria-hidden="true"><symbol id="i-gitlab" viewBox="0 0 24 24"><path fill="currentColor" stroke="none" d="m23.6004 9.5927-.0337-.0862L20.3.9814a.851.851 0 0 0-.3362-.405.8748.8748 0 0 0-.9997.0539.8748.8748 0 0 0-.29.4399l-2.2055 6.748H7.5375l-2.2057-6.748a.8573.8573 0 0 0-.29-.4412.8748.8748 0 0 0-.9997-.0537.8585.8585 0 0 0-.3362.4049L.4332 9.5015l-.0325.0862a6.0657 6.0657 0 0 0 2.0119 7.0105l.0113.0087.03.0213 4.976 3.7264 2.462 1.8633 1.4995 1.1321a1.0085 1.0085 0 0 0 1.2197 0l1.4995-1.1321 2.4619-1.8633 5.006-3.7489.0125-.01a6.0682 6.0682 0 0 0 2.0094-7.003z"/></symbol><symbol id="i-github" viewBox="0 0 24 24"><path fill="currentColor" stroke="none" d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/></symbol><symbol id="i-menu" viewBox="0 0 24 24"><path d="M4 8h16M4 16h16"/></symbol><symbol id="i-close" viewBox="0 0 24 24"><path d="m5 5 14 14M19 5 5 19"/></symbol><symbol id="i-arrow" viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></symbol></svg><a class="skip-link" href="#main">Skip to content</a><div class="site-glow site-glow-blue" aria-hidden="true"></div><header class="topbar" data-header><div class="shell topbar-inner"><a class="brand" href="/"><img data-org-avatar src="/assets/org-avatar.webp?v=fff479ce" alt="" width="40" height="40" decoding="async"><span><b>International Duck</b><small>Incorporated</small></span></a><nav class="main-nav" id="main-navigation" data-nav aria-label="Primary navigation"><a href="/">Overview</a><a class="" href="/projects">Projects</a><a href="/noosphere">Noosphere</a><a class="active" href="/members">Members</a><a href="/activity">Activity</a><a href="/migration">Migration</a><a class="icon-link" href="https://gitlab.com/international-duck-incorporated" target="_blank" rel="noreferrer" aria-label="International Duck Incorporated on GitLab"><svg><use href="#i-gitlab"/></svg></a></nav><button class="menu-button" type="button" data-menu aria-label="Open navigation" aria-controls="main-navigation" aria-expanded="false"><svg class="menu-open"><use href="#i-menu"/></svg><svg class="menu-close"><use href="#i-close"/></svg></button></div></header><main id="main" class="profile-page member-page"><div class="shell"><div class="breadcrumbs"><a href="/">International Duck</a><span>/</span><a href="/members">Members</a><span>/</span><b>espress0</b></div><div class="account-status account-status-terminated" role="status" aria-label="GitHub account status: blocked"><strong>GitHub account blocked</strong><span>github.com/3spress0 returns 404 while the account is blocked and a reinstatement request is open with GitHub Support. espress0 remains an active International Duck member.</span></div><section class="profile-hero"><article class="profile-intro glass-card reveal"><picture><source srcset="/assets/contributor-3spress0.webp?v=a3c2db19" type="image/webp"><img class="avatar" src="/assets/contributor-3spress0.png?v=1e7edf44" alt="espress0" loading="lazy" decoding="async"></picture><span class="eyebrow">Member profile</span><h1>espress0.</h1><p class="lead">A backend developer and backbone of most International Duck projects, working across security research tooling and Minecraft client projects. Public work includes the Venomous addon and a native Python framework for authorized security research, network assessment, and module development.</p><div class="action-row"><a class="button button-blue" href="https://github.com/3spress0" target="_blank" rel="noreferrer"><svg><use href="#i-github"/></svg>View GitHub</a><a class="button button-glass" href="/migration#appeals">Appeal status <svg><use href="#i-arrow"/></svg></a></div></article><aside class="profile-sidebar glass-card reveal"><div><span class="eyebrow">At a glance</span><div class="fact-list"><div class="fact"><small>Handle</small><b>@3spress0</b></div><div class="fact"><small>GitHub profile</small><b><a href="https://github.com/3spress0" target="_blank" rel="noreferrer">@3spress0 ↗</a></b></div><div class="fact"><small>GitHub status</small><b class="fact-danger">Blocked · profile 404</b></div><div class="fact"><small>GitLab</small><b>No personal account</b></div><div class="fact"><small>Role</small><b>Backend developer &amp; project backbone</b></div><div class="fact"><small>Focus</small><b>Security tooling · Minecraft development</b></div></div></div></aside></section><section class="detail-grid"><article class="detail-panel glass-card reveal"><span class="eyebrow">Work</span><h2>Public focus</h2><ul><li>Maintains and contributes to Java-based Minecraft projects.</li><li>Builds Python security research and assessment tooling.</li><li>Focuses on practical, modular developer tools.</li></ul></article><article class="detail-panel glass-card reveal"><span class="eyebrow">Profile note</span><h2>Source-aware by design</h2><p>This profile is based on publicly available organization information. espress0 has no personal GitLab account - commits land in International Duck repositories under the author name only, and the gitlab.com/espress0 profile belongs to an unrelated person. GitHub data stays limited while the account is blocked.</p></article></section>
-
-<section class="member-contributions" aria-labelledby="contributions-title">
-  <header class="section-heading reveal">
-    <div><span class="eyebrow">Contribution footprint</span><h2 id="contributions-title">Built in public.</h2></div>
-    <p>Recent public work across International Duck repositories, synchronized from GitLab.</p>
-  </header>
-  <div class="member-contribution-metrics">
-    <div class="member-contribution-metric glass-card reveal"><small>ORG COMMITS</small><b data-member-contributions>58</b><span>across International Duck</span></div>
-    <div class="member-contribution-metric glass-card reveal"><small>VENOMOUS</small><b data-member-venomous-contributions>34</b><span>commits to the addon</span></div>
-    <div class="member-contribution-metric glass-card reveal"><small>CHAMPIONSCODE</small><b data-member-champions-contributions>14</b><span>commits to the research mod</span></div>
-  </div>
-  <div class="member-activity-grid">
-    <article class="activity-card glass-card reveal">
-      <header><span>Recent contributions</span><a href="https://gitlab.com/international-duck-incorporated" target="_blank" rel="noreferrer">View organization on GitLab</a></header>
-      <div class="commit-list" data-member-commits>
-        <a href="https://gitlab.com/international-duck-incorporated/ChampionsCode/-/commit/4d2977fd34933abbbbbf3ca06a50338d5cd665e1" target="_blank" rel="noreferrer"><i></i><span><b>Champions Mod 0.1.0-alpha.8</b><small>ChampionsCode · recent</small></span><code>4d2977f</code></a>
-        <a href="https://gitlab.com/international-duck-incorporated/ChampionsCode/-/commit/b93f8ca0ad7a454f8d4ebaa8cdc7b2a94f9a803e" target="_blank" rel="noreferrer"><i></i><span><b>Add in-game target authorization</b><small>ChampionsCode · recent</small></span><code>b93f8ca</code></a>
-        <a href="https://gitlab.com/international-duck-incorporated/Venomous/-/commit/5ae69d0" target="_blank" rel="noreferrer"><i></i><span><b>testing grim</b><small>Venomous · recent</small></span><code>5ae69d0</code></a>
-        <a href="https://gitlab.com/international-duck-incorporated/Venomous/-/commit/d3aa5ff" target="_blank" rel="noreferrer"><i></i><span><b>license added</b><small>Venomous · recent</small></span><code>d3aa5ff</code></a>
+    </script>
+  </head>
+  <body data-page="member" data-member="3spress0" class="starry-night-page">
+    <svg class="svg-sprite" aria-hidden="true">
+      <symbol id="i-gitlab" viewBox="0 0 24 24">
+        <path
+          fill="currentColor"
+          stroke="none"
+          d="m23.6004 9.5927-.0337-.0862L20.3.9814a.851.851 0 0 0-.3362-.405.8748.8748 0 0 0-.9997.0539.8748.8748 0 0 0-.29.4399l-2.2055 6.748H7.5375l-2.2057-6.748a.8573.8573 0 0 0-.29-.4412.8748.8748 0 0 0-.9997-.0537.8585.8585 0 0 0-.3362.4049L.4332 9.5015l-.0325.0862a6.0657 6.0657 0 0 0 2.0119 7.0105l.0113.0087.03.0213 4.976 3.7264 2.462 1.8633 1.4995 1.1321a1.0085 1.0085 0 0 0 1.2197 0l1.4995-1.1321 2.4619-1.8633 5.006-3.7489.0125-.01a6.0682 6.0682 0 0 0 2.0094-7.003z"
+        />
+      </symbol>
+      <symbol id="i-github" viewBox="0 0 24 24">
+        <path
+          fill="currentColor"
+          stroke="none"
+          d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"
+        />
+      </symbol>
+      <symbol id="i-menu" viewBox="0 0 24 24"><path d="M4 8h16M4 16h16" /></symbol>
+      <symbol id="i-close" viewBox="0 0 24 24"><path d="m5 5 14 14M19 5 5 19" /></symbol>
+      <symbol id="i-arrow" viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6" /></symbol></svg
+    ><a class="skip-link" href="#main">Skip to content</a>
+    <div class="site-glow site-glow-blue" aria-hidden="true"></div>
+    <header class="topbar" data-header>
+      <div class="shell topbar-inner">
+        <a class="brand" href="/"
+          ><img
+            data-org-avatar
+            src="/assets/org-avatar.webp?v=fff479ce"
+            alt=""
+            width="40"
+            height="40"
+            decoding="async"
+          /><span><b>International Duck</b><small>Incorporated</small></span></a
+        >
+        <nav class="main-nav" id="main-navigation" data-nav aria-label="Primary navigation">
+          <a href="/">Overview</a><a class="" href="/projects">Projects</a
+          ><a href="/noosphere">Noosphere</a><a class="active" href="/members">Members</a
+          ><a href="/activity">Activity</a><a href="/migration">Migration</a
+          ><a
+            class="icon-link"
+            href="https://gitlab.com/international-duck-incorporated"
+            target="_blank"
+            rel="noreferrer"
+            aria-label="International Duck Incorporated on GitLab"
+            ><svg><use href="#i-gitlab" /></svg
+          ></a>
+        </nav>
+        <button
+          class="menu-button"
+          type="button"
+          data-menu
+          aria-label="Open navigation"
+          aria-controls="main-navigation"
+          aria-expanded="false"
+        >
+          <svg class="menu-open"><use href="#i-menu" /></svg
+          ><svg class="menu-close"><use href="#i-close" /></svg>
+        </button>
       </div>
-    </article>
-    <article class="detail-panel glass-card reveal member-contribution-note">
-      <span class="eyebrow">Project spread</span>
-      <h2>Across the stack.</h2>
-      <ul>
-        <li><b data-member-venomous-contributions>34</b> commits to Venomous, including module work, README updates, and release tooling.</li>
-        <li><b data-member-champions-contributions>14</b> commits to ChampionsCode, including the alpha development line.</li>
-        <li><b data-member-site-contributions>10</b> commits to the International Duck website.</li>
-      </ul>
-    </article>
-  </div>
-</section>
-</div></main><footer class="site-footer"><div class="shell footer-inner"><a class="brand" href="/"><picture><source srcset="/assets/org-avatar.webp?v=fff479ce" type="image/webp"><img src="/assets/org-avatar.png?v=f3debf20" alt="" decoding="async"></picture><span><b>International Duck</b><small>Incorporated</small></span></a><nav><a href="/projects">Projects</a><a href="/noosphere">Noosphere</a><a href="/members">Members</a><a href="/activity">Activity</a><a href="/migration">Migration</a><a href="/glyphsmith">Glyphsmith</a><a href="/changelog">Changelog</a><a href="https://gitlab.com/international-duck-incorporated">GitLab</a><a href="mailto:0xffshell@duck.com">Contact</a></nav><span class="sync-state"><i></i><span data-sync-text>GitLab data synced live</span></span></div></footer></body></html>
+    </header>
+    <main id="main" class="profile-page member-page">
+      <div class="shell">
+        <div class="breadcrumbs">
+          <a href="/">International Duck</a><span>/</span><a href="/members">Members</a
+          ><span>/</span><b>espress0</b>
+        </div>
+        <section class="profile-hero">
+          <article class="profile-intro glass-card reveal">
+            <picture
+              ><source srcset="/assets/contributor-3spress0.webp?v=a3c2db19" type="image/webp" />
+              <img
+                class="avatar"
+                src="/assets/contributor-3spress0.png?v=1e7edf44"
+                alt="espress0"
+                loading="lazy"
+                decoding="async" /></picture
+            ><span class="eyebrow">Member profile</span>
+            <h1>espress0.</h1>
+            <p class="lead">
+              A backend developer and backbone of most International Duck projects, working across
+              security research tooling and Minecraft client projects. Public work includes the
+              Venomous addon and a native Python framework for authorized security research, network
+              assessment, and module development.
+            </p>
+            <div class="action-row">
+              <a
+                class="button button-blue"
+                href="https://gitlab.com/3spress0"
+                target="_blank"
+                rel="noreferrer"
+                ><svg><use href="#i-gitlab" /></svg>View GitLab</a
+              ><a class="button button-glass" href="/migration#appeals"
+                >GitHub appeal history <svg><use href="#i-arrow" /></svg
+              ></a>
+            </div>
+          </article>
+          <aside class="profile-sidebar glass-card reveal">
+            <div>
+              <span class="eyebrow">At a glance</span>
+              <div class="fact-list">
+                <div class="fact"><small>Handle</small><b>@3spress0</b></div>
+                <div class="fact">
+                  <small>GitLab profile</small
+                  ><b
+                    ><a href="https://gitlab.com/3spress0" target="_blank" rel="noreferrer"
+                      >@3spress0 ↗</a
+                    ></b
+                  >
+                </div>
+                <div class="fact"><small>Current platform</small><b>GitLab</b></div>
+                <div class="fact">
+                  <small>Role</small><b>Backend developer &amp; project backbone</b>
+                </div>
+                <div class="fact">
+                  <small>Focus</small><b>Security tooling · Minecraft development</b>
+                </div>
+              </div>
+            </div>
+          </aside>
+        </section>
+        <section class="detail-grid">
+          <article class="detail-panel glass-card reveal">
+            <span class="eyebrow">Work</span>
+            <h2>Public focus</h2>
+            <ul>
+              <li>Maintains and contributes to Java-based Minecraft projects.</li>
+              <li>Builds Python security research and assessment tooling.</li>
+              <li>Focuses on practical, modular developer tools.</li>
+            </ul>
+          </article>
+          <article class="detail-panel glass-card reveal">
+            <span class="eyebrow">Profile note</span>
+            <h2>Source-aware by design</h2>
+            <p>
+              espress0’s public developer profile is now on GitLab. Use the profile link above for
+              the account and the activity feed below for public contributions to International Duck
+              repositories.
+            </p>
+          </article>
+        </section>
+
+        <section class="member-contributions" aria-labelledby="contributions-title">
+          <header class="section-heading reveal">
+            <div>
+              <span class="eyebrow">Contribution footprint</span>
+              <h2 id="contributions-title">Built in public.</h2>
+            </div>
+            <p>
+              Recent public work across International Duck repositories, synchronized from GitLab.
+            </p>
+          </header>
+          <div class="member-contribution-metrics">
+            <div class="member-contribution-metric glass-card reveal">
+              <small>ORG COMMITS</small><b data-member-contributions>58</b
+              ><span>across International Duck</span>
+            </div>
+            <div class="member-contribution-metric glass-card reveal">
+              <small>VENOMOUS</small><b data-member-venomous-contributions>34</b
+              ><span>commits to the addon</span>
+            </div>
+            <div class="member-contribution-metric glass-card reveal">
+              <small>CHAMPIONSCODE</small><b data-member-champions-contributions>14</b
+              ><span>commits to the research mod</span>
+            </div>
+          </div>
+          <div class="member-activity-grid">
+            <article class="activity-card glass-card reveal">
+              <header>
+                <span>Recent contributions</span
+                ><a
+                  href="https://gitlab.com/international-duck-incorporated"
+                  target="_blank"
+                  rel="noreferrer"
+                  >View organization on GitLab</a
+                >
+              </header>
+              <div class="commit-list" data-member-commits>
+                <a
+                  href="https://gitlab.com/international-duck-incorporated/ChampionsCode/-/commit/4d2977fd34933abbbbbf3ca06a50338d5cd665e1"
+                  target="_blank"
+                  rel="noreferrer"
+                  ><i></i
+                  ><span
+                    ><b>Champions Mod 0.1.0-alpha.8</b><small>ChampionsCode · recent</small></span
+                  ><code>4d2977f</code></a
+                >
+                <a
+                  href="https://gitlab.com/international-duck-incorporated/ChampionsCode/-/commit/b93f8ca0ad7a454f8d4ebaa8cdc7b2a94f9a803e"
+                  target="_blank"
+                  rel="noreferrer"
+                  ><i></i
+                  ><span
+                    ><b>Add in-game target authorization</b
+                    ><small>ChampionsCode · recent</small></span
+                  ><code>b93f8ca</code></a
+                >
+                <a
+                  href="https://gitlab.com/international-duck-incorporated/Venomous/-/commit/5ae69d0"
+                  target="_blank"
+                  rel="noreferrer"
+                  ><i></i><span><b>testing grim</b><small>Venomous · recent</small></span
+                  ><code>5ae69d0</code></a
+                >
+                <a
+                  href="https://gitlab.com/international-duck-incorporated/Venomous/-/commit/d3aa5ff"
+                  target="_blank"
+                  rel="noreferrer"
+                  ><i></i><span><b>license added</b><small>Venomous · recent</small></span
+                  ><code>d3aa5ff</code></a
+                >
+              </div>
+            </article>
+            <article class="detail-panel glass-card reveal member-contribution-note">
+              <span class="eyebrow">Project spread</span>
+              <h2>Across the stack.</h2>
+              <ul>
+                <li>
+                  <b data-member-venomous-contributions>34</b> commits to Venomous, including module
+                  work, README updates, and release tooling.
+                </li>
+                <li>
+                  <b data-member-champions-contributions>14</b> commits to ChampionsCode, including
+                  the alpha development line.
+                </li>
+                <li>
+                  <b data-member-site-contributions>10</b> commits to the International Duck
+                  website.
+                </li>
+              </ul>
+            </article>
+          </div>
+        </section>
+      </div>
+    </main>
+    <footer class="site-footer">
+      <div class="shell footer-inner">
+        <a class="brand" href="/"
+          ><picture
+            ><source srcset="/assets/org-avatar.webp?v=fff479ce" type="image/webp" />
+            <img src="/assets/org-avatar.png?v=f3debf20" alt="" decoding="async" /></picture
+          ><span><b>International Duck</b><small>Incorporated</small></span></a
+        >
+        <nav>
+          <a href="/projects">Projects</a><a href="/noosphere">Noosphere</a
+          ><a href="/members">Members</a><a href="/activity">Activity</a
+          ><a href="/migration">Migration</a><a href="/glyphsmith">Glyphsmith</a
+          ><a href="/changelog">Changelog</a
+          ><a href="https://gitlab.com/international-duck-incorporated">GitLab</a
+          ><a href="mailto:0xffshell@duck.com">Contact</a>
+        </nav>
+        <span class="sync-state"><i></i><span data-sync-text>GitLab data synced live</span></span>
+      </div>
+    </footer>
+  </body>
+</html>

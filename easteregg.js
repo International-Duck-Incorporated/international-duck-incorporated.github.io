@@ -19,8 +19,7 @@
  * the script backs out and leaves the stylesheet background in place.
  */
 (() => {
-  const ASSET_REPO =
-    "https://gitlab.com/international-duck-incorporated/idi-assets";
+  const ASSET_REPO = "https://gitlab.com/international-duck-incorporated/idi-assets";
   const ASSET_REF = "main"; // pin to a commit sha or tag for an immutable URL
   const ASSET_DIR = "/assets/website/"; // bundle layout since October 2026
   const EGG_PINNED_FALLBACK =
@@ -215,14 +214,9 @@
     },
   ];
 
-
-
-
   const LAST_KEY = "idi-bg-last";
 
-  const path = (location.pathname || "/")
-    .replace(/\/+$/, "")
-    .replace(/\.html$/, "") || "/";
+  const path = (location.pathname || "/").replace(/\/+$/, "").replace(/\.html$/, "") || "/";
 
   const isEggRoute = path.endsWith("/easteregg");
   const isHome = document.body.dataset.page === "organization" && !isEggRoute;
@@ -400,16 +394,14 @@
     canvas.className = "egg-canvas";
     canvas.setAttribute("aria-hidden", "true");
     body.append(canvas);
-    const handle = window.IDIBlockField && window.IDIBlockField.mount(
-      canvas,
-      { reducedMotion: reducedMotion },
-      () => {
+    const handle =
+      window.IDIBlockField &&
+      window.IDIBlockField.mount(canvas, { reducedMotion: reducedMotion }, () => {
         writeLast(pick.name);
         reveal(canvas, () =>
           console.log(`\u{1F95A} background: ${pick.label} (this visit's pick)`)
         );
-      }
-    );
+      });
     if (!handle) {
       canvas.remove();
       const stills = BACKGROUNDS.filter((item) => item.kind === "image" && !item.rare);

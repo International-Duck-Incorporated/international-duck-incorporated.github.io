@@ -29,6 +29,7 @@ import argparse
 import html
 import re
 import sys
+from html.parser import HTMLParser
 from pathlib import Path
 
 SITE = "https://idi-official.pages.dev"
@@ -183,10 +184,9 @@ PAGES: dict[str, tuple[str, str, str, str]] = {
     ),
     "migration.html": (
         "/migration",
-        "GitHub to GitLab migration, September 2026 | IDI",
-        "Why International Duck moved from GitHub to GitLab in September 2026: a sourced, dated "
-        "timeline of what changed, what moved and what is still unavailable.",
-        "A sourced timeline of the September 2026 move from GitHub to GitLab.",
+        "GitHub to GitLab migration, Sep–Oct 2026 | IDI",
+        "Why International Duck moved to GitLab, plus a dated timeline and the October 20 GitHub Support decision to keep @3spress0 restricted.",
+        "A sourced timeline of the GitHub-to-GitLab move and the October 20 decision to keep @3spress0 restricted.",
     ),
     "noosphere.html": (
         "/noosphere",
@@ -212,12 +212,91 @@ PAGES: dict[str, tuple[str, str, str, str]] = {
 }
 
 OWNED_META = re.compile(
-    r'\s*<meta (?:name="(?:description|twitter:(?:card|title|description))"'
-    r'|property="og:(?:type|title|description|url|site_name|locale)")[^>]*>',
-    re.S,
+    r"""\s*<meta\b
+       (?=
+            [^>]*\bname\s*=\s*["'](?:description|twitter:(?:card|title|description))["']
+          | [^>]*\bproperty\s*=\s*["']og:(?:type|title|description|url|site_name|locale)["']
+       )
+       [^>]*?/?>""",
+    re.S | re.I | re.X,
 )
-TITLE = re.compile(r"<title>.*?</title>", re.S)
-CANONICAL = re.compile(r'\s*<link rel="canonical"[^>]*>')
+TITLE = re.compile(r"<title\b[^>]*>.*?</title\s*>", re.S | re.I)
+CANONICAL = re.compile(
+    r"""\s*<link\b(?=[^>]*\brel\s*=\s*["']canonical["'])[^>]*?/?>""",
+    re.S | re.I | re.X,
+)
+OWNED_META_KEYS = {
+    "description",
+    "og:type",
+    "og:title",
+    "og:description",
+    "og:url",
+    "og:site_name",
+    "og:locale",
+    "twitter:card",
+    "twitter:title",
+    "twitter:description",
+}
+
+
+class HeadMetadataParser(HTMLParser):
+    """Read owned head metadata without depending on its whitespace/layout."""
+
+    def __init__(self) -> None:
+        super().__init__(convert_charrefs=True)
+        self.title_parts: list[str] = []
+        self.title_count = 0
+        self.in_title = False
+        self.meta: dict[str, list[str | None]] = {}
+        self.canonicals: list[str | None] = []
+
+    def handle_starttag(self, tag: str, attrs: list[tuple[str, str | None]]) -> None:
+        tag = tag.lower()
+        attributes = {name.lower(): value for name, value in attrs}
+        if tag == "title":
+            self.title_count += 1
+            self.in_title = True
+        elif tag == "meta":
+            key = attributes.get("name") or attributes.get("property")
+            if key in OWNED_META_KEYS:
+                self.meta.setdefault(key, []).append(attributes.get("content"))
+        elif tag == "link" and "canonical" in (attributes.get("rel") or "").lower().split():
+            self.canonicals.append(attributes.get("href"))
+
+    def handle_endtag(self, tag: str) -> None:
+        if tag.lower() == "title":
+            self.in_title = False
+
+    def handle_data(self, data: str) -> None:
+        if self.in_title:
+            self.title_parts.append(data)
+
+
+def metadata_matches(
+    head: str, url: str, title: str, description: str, og_description: str
+) -> bool:
+    parser = HeadMetadataParser()
+    parser.feed(head)
+    parser.close()
+    share_title = og_title(title)
+    expected = {
+        "description": description,
+        "og:type": "website",
+        "og:title": share_title,
+        "og:description": og_description,
+        "og:url": f"{SITE}{url}",
+        "og:site_name": "International Duck Incorporated",
+        "og:locale": "en_US",
+        "twitter:card": "summary_large_image",
+        "twitter:title": share_title,
+        "twitter:description": og_description,
+    }
+    return (
+        parser.title_count == 1
+        and "".join(parser.title_parts).strip() == title
+        and parser.canonicals == [f"{SITE}{url}"]
+        and parser.meta == {key: [value] for key, value in expected.items()}
+    )
 
 
 def og_title(title: str) -> str:
@@ -246,11 +325,15 @@ def build_block(url: str, title: str, description: str, og_description: str) -> 
     )
 
 
-def apply(page: Path, url: str, title: str, description: str, og_description: str, check: bool) -> bool:
+def apply(
+    page: Path, url: str, title: str, description: str, og_description: str, check: bool
+) -> bool:
     source = page.read_text(encoding="utf-8")
     head_start = source.index("<head>") + len("<head>")
     head_end = source.index("</head>")
     head = source[head_start:head_end]
+    if metadata_matches(head, url, title, description, og_description):
+        return False
 
     head = TITLE.sub(f"<title>{html.escape(title)}</title>", head, count=1)
     head = CANONICAL.sub("", head)
@@ -259,7 +342,7 @@ def apply(page: Path, url: str, title: str, description: str, og_description: st
 
     title_match = TITLE.search(head)
     if title_match:
-        head = head[: title_match.end()] + "\n" + block + head[title_match.end():]
+        head = head[: title_match.end()] + "\n" + block + head[title_match.end() :]
     else:
         head = "\n" + block + head
 

@@ -13,6 +13,7 @@ canonical so both hosts agree on which URL to index).
 Idempotent: pages that already contain rel="canonical" are left alone.
 Run from repo root:  python3 tools/apply_seo_head.py
 """
+
 import re
 from pathlib import Path
 
@@ -55,16 +56,25 @@ def apply(path: Path, url: str) -> bool:
     desc = desc.replace("&amp;", "&")
 
     # 1) preconnect early, right after the viewport meta
-    pre = ['  <link rel="preconnect" href="https://gitlab.com" crossorigin>',
-           '  <link rel="dns-prefetch" href="https://gitlab.com">']
-    src = src.replace('  <meta name="viewport" content="width=device-width, initial-scale=1">',
-                      '  <meta name="viewport" content="width=device-width, initial-scale=1">\n' + "\n".join(pre), 1)
+    pre = [
+        '  <link rel="preconnect" href="https://gitlab.com" crossorigin>',
+        '  <link rel="dns-prefetch" href="https://gitlab.com">',
+    ]
+    src = src.replace(
+        '  <meta name="viewport" content="width=device-width, initial-scale=1">',
+        '  <meta name="viewport" content="width=device-width, initial-scale=1">\n' + "\n".join(pre),
+        1,
+    )
 
     # 2) normalise og:image onto the self-hosted card, wherever it sits
     if re.search(r'<meta property="og:image" content="', src):
-        src = re.sub(r'(<meta property="og:image" content=")[^"]*(")', rf"\g<1>{OG_IMAGE}\g<2>", src, count=1)
+        src = re.sub(
+            r'(<meta property="og:image" content=")[^"]*(")', rf"\g<1>{OG_IMAGE}\g<2>", src, count=1
+        )
     else:
-        src = src.replace("<title>", f'  <meta property="og:image" content="{OG_IMAGE}">\n  <title>', 1)
+        src = src.replace(
+            "<title>", f'  <meta property="og:image" content="{OG_IMAGE}">\n  <title>', 1
+        )
 
     # 3) canonical + remaining share metadata before </head>
     block = [

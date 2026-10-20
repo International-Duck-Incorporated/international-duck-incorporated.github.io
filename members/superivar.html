@@ -1,212 +1,332 @@
 <!doctype html>
 <html lang="en">
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <script>
-    (() => {
-      const nav = navigator;
-      const connection = nav.connection || nav.mozConnection || nav.webkitConnection;
-      const lowEnd = Boolean(
-        (connection && connection.saveData) ||
-        (connection && /^(slow-2g|2g)$/.test(connection.effectiveType || "")) ||
-        (typeof nav.deviceMemory === "number" && nav.deviceMemory <= 4) ||
-        (typeof nav.hardwareConcurrency === "number" && nav.hardwareConcurrency <= 4)
-      );
-      window.IDI_LOW_END = lowEnd;
-      window.IDI_REDUCED_MOTION = Boolean(
-        window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches
-      );
-      if (lowEnd) document.documentElement.classList.add("low-end");
-    })();
-  </script>
-  <link rel="preconnect" href="https://gitlab.com" crossorigin>
-  <link rel="preconnect" href="https://gitlab.com">
-  <link rel="dns-prefetch" href="https://gitlab.com">
-  <meta name="theme-color" content="#07090d">
-    <meta property="og:image" content="https://idi-official.pages.dev/assets/og-default.png">
-  <title>Xx-superIvar-xX - IDI member profile | IDI</title>
-  <meta name="description" content="Xx-superIvar-xX is a public member of International Duck Incorporated and tests the group&#x27;s Fabric client mods and Minecraft releases before they ship.">
-  <link rel="canonical" href="https://idi-official.pages.dev/members/superivar">
-  <meta property="og:type" content="website">
-  <meta property="og:title" content="Xx-superIvar-xX - IDI member profile">
-  <meta property="og:description" content="Product tester at International Duck Incorporated.">
-  <meta property="og:url" content="https://idi-official.pages.dev/members/superivar">
-  <meta property="og:site_name" content="International Duck Incorporated">
-  <meta property="og:locale" content="en_US">
-  <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="Xx-superIvar-xX - IDI member profile">
-  <meta name="twitter:description" content="Product tester at International Duck Incorporated.">
-  <link rel="icon" href="/assets/org-avatar.png?v=f3debf20" type="image/png">
-  <link rel="stylesheet" href="/css/bundle.css?v=1f263d21">
-  <style>
-    /* Full-screen storm background effect (without the window frame). */
-    body.storm-window-page {
-      background: transparent;
-      isolation: isolate;
-    }
-    body.storm-window-page .site-glow { display: none; }
-    /* readability scrim over the storm, under the content */
-    body.storm-window-page::before {
-      content: "";
-      position: fixed;
-      inset: 0;
-      z-index: -1;
-      pointer-events: none;
-      background:
-        linear-gradient(180deg, rgba(7, 9, 13, .55), rgba(7, 9, 13, 0) 300px),
-        linear-gradient(0deg, rgba(7, 9, 13, .55), rgba(7, 9, 13, 0) 240px);
-    }
-  </style>
-  <script src="/storm-window.js?v=31f0e13d" defer></script>
-  <script src="/script.js?v=ffe97c4c" defer></script>
-  <script src="/commit-feed.js?v=bdc09dd1" defer></script>
-  <meta property="og:image:width" content="1200">
-  <meta property="og:image:height" content="630">
-  <meta property="og:image:alt" content="International Duck Incorporated - open-source Minecraft mods, tools and experiments">
-  <meta name="twitter:image" content="https://idi-official.pages.dev/assets/og-default.png">
-  <script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@graph": [
-    {
-      "@type": "Organization",
-      "@id": "https://idi-official.pages.dev/#organization",
-      "name": "International Duck Incorporated",
-      "alternateName": "IDI",
-      "url": "https://idi-official.pages.dev/",
-      "logo": {
-        "@type": "ImageObject",
-        "url": "https://idi-official.pages.dev/assets/org-avatar.png"
-      },
-      "image": "https://idi-official.pages.dev/assets/og-default.png",
-      "description": "Open-source collective building Minecraft mods, tools and experiments in public. GitLab is the active source of truth; the former GitHub organization is currently hidden from public view.",
-      "sameAs": [
-        "https://gitlab.com/international-duck-incorporated"
-      ],
-      "knowsAbout": [
-        "Minecraft mods",
-        "Fabric modding",
-        "Minecraft client utilities",
-        "open source"
-      ]
-    },
-    {
-      "@type": "WebSite",
-      "@id": "https://idi-official.pages.dev/#website",
-      "url": "https://idi-official.pages.dev/",
-      "name": "International Duck Incorporated",
-      "inLanguage": "en",
-      "publisher": {
-        "@id": "https://idi-official.pages.dev/#organization"
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <script>
+      (() => {
+        const nav = navigator;
+        const connection = nav.connection || nav.mozConnection || nav.webkitConnection;
+        const lowEnd = Boolean(
+          (connection && connection.saveData) ||
+            (connection && /^(slow-2g|2g)$/.test(connection.effectiveType || "")) ||
+            (typeof nav.deviceMemory === "number" && nav.deviceMemory <= 4) ||
+            (typeof nav.hardwareConcurrency === "number" && nav.hardwareConcurrency <= 4)
+        );
+        window.IDI_LOW_END = lowEnd;
+        window.IDI_REDUCED_MOTION = Boolean(
+          window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches
+        );
+        if (lowEnd) document.documentElement.classList.add("low-end");
+      })();
+    </script>
+    <link rel="preconnect" href="https://gitlab.com" crossorigin />
+    <link rel="preconnect" href="https://gitlab.com" />
+    <link rel="dns-prefetch" href="https://gitlab.com" />
+    <meta name="theme-color" content="#07090d" />
+    <meta property="og:image" content="https://idi-official.pages.dev/assets/og-default.png" />
+    <title>Xx-superIvar-xX - IDI member profile | IDI</title>
+    <meta
+      name="description"
+      content="Xx-superIvar-xX is a public member of International Duck Incorporated and tests the group&#x27;s Fabric client mods and Minecraft releases before they ship."
+    />
+    <link rel="canonical" href="https://idi-official.pages.dev/members/superivar" />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="Xx-superIvar-xX - IDI member profile" />
+    <meta property="og:description" content="Product tester at International Duck Incorporated." />
+    <meta property="og:url" content="https://idi-official.pages.dev/members/superivar" />
+    <meta property="og:site_name" content="International Duck Incorporated" />
+    <meta property="og:locale" content="en_US" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Xx-superIvar-xX - IDI member profile" />
+    <meta name="twitter:description" content="Product tester at International Duck Incorporated." />
+    <link rel="icon" href="/assets/org-avatar.png?v=f3debf20" type="image/png" />
+    <link rel="stylesheet" href="/css/bundle.css?v=583143c6" />
+    <style>
+      /* Full-screen storm background effect (without the window frame). */
+      body.storm-window-page {
+        background: transparent;
+        isolation: isolate;
       }
-    },
-    {
-      "@type": "ProfilePage",
-      "@id": "https://idi-official.pages.dev/members/superivar#webpage",
-      "url": "https://idi-official.pages.dev/members/superivar",
-      "name": "Xx-superIvar-xX - International Duck",
-      "description": "Xx-superIvar-xX, International Duck product tester.",
-      "isPartOf": {
-        "@id": "https://idi-official.pages.dev/#website"
-      },
-      "about": {
-        "@id": "https://idi-official.pages.dev/#organization"
-      },
-      "inLanguage": "en",
-      "primaryImageOfPage": {
-        "@type": "ImageObject",
-        "url": "https://idi-official.pages.dev/assets/og-default.png"
-      },
-      "breadcrumb": {
-        "@id": "https://idi-official.pages.dev/members/superivar#breadcrumb"
-      },
-      "mainEntity": {
-        "@id": "https://idi-official.pages.dev/members/superivar#person"
+      body.storm-window-page .site-glow {
+        display: none;
       }
-    },
-    {
-      "@type": "BreadcrumbList",
-      "@id": "https://idi-official.pages.dev/members/superivar#breadcrumb",
-      "itemListElement": [
-        {
-          "@type": "ListItem",
-          "position": 1,
-          "name": "International Duck Incorporated",
-          "item": "https://idi-official.pages.dev/"
-        },
-        {
-          "@type": "ListItem",
-          "position": 2,
-          "name": "Members",
-          "item": "https://idi-official.pages.dev/members/"
-        },
-        {
-          "@type": "ListItem",
-          "position": 3,
-          "name": "Xx-superIvar-xX",
-          "item": "https://idi-official.pages.dev/members/superivar"
-        }
-      ]
-    },
-    {
-      "@type": "Person",
-      "@id": "https://idi-official.pages.dev/members/superivar#person",
-      "name": "Xx-superIvar-xX",
-      "description": "Product tester for International Duck Incorporated.",
-      "url": "https://idi-official.pages.dev/members/superivar",
-      "memberOf": {
-        "@id": "https://idi-official.pages.dev/#organization"
-      },
-      "sameAs": [
-        "https://gitlab.com/Xx-superIvar-xX",
-        "https://github.com/Xx-superIvar-xX"
-      ]
-    }
-  ]
-}
-  </script>
-</head>
-<body data-page="member" data-member="superivar" class="storm-window-page">
-  <svg class="svg-sprite" aria-hidden="true"><symbol id="i-gitlab" viewBox="0 0 24 24"><path fill="currentColor" stroke="none" d="m23.6004 9.5927-.0337-.0862L20.3.9814a.851.851 0 0 0-.3362-.405.8748.8748 0 0 0-.9997.0539.8748.8748 0 0 0-.29.4399l-2.2055 6.748H7.5375l-2.2057-6.748a.8573.8573 0 0 0-.29-.4412.8748.8748 0 0 0-.9997-.0537.8585.8585 0 0 0-.3362.4049L.4332 9.5015l-.0325.0862a6.0657 6.0657 0 0 0 2.0119 7.0105l.0113.0087.03.0213 4.976 3.7264 2.462 1.8633 1.4995 1.1321a1.0085 1.0085 0 0 0 1.2197 0l1.4995-1.1321 2.4619-1.8633 5.006-3.7489.0125-.01a6.0682 6.0682 0 0 0 2.0094-7.003z"/></symbol>
-    <symbol id="i-menu" viewBox="0 0 24 24"><path d="M4 8h16M4 16h16"/></symbol>
-    <symbol id="i-close" viewBox="0 0 24 24"><path d="m5 5 14 14M19 5 5 19"/></symbol>
-  <symbol id="i-github" viewBox="0 0 24 24"><path fill="currentColor" stroke="none" d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/></symbol></svg>
+      /* readability scrim over the storm, under the content */
+      body.storm-window-page::before {
+        content: "";
+        position: fixed;
+        inset: 0;
+        z-index: -1;
+        pointer-events: none;
+        background:
+          linear-gradient(180deg, rgba(7, 9, 13, 0.55), rgba(7, 9, 13, 0) 300px),
+          linear-gradient(0deg, rgba(7, 9, 13, 0.55), rgba(7, 9, 13, 0) 240px);
+      }
+    </style>
+    <script src="/storm-window.js?v=f733d499" defer></script>
+    <script src="/script.js?v=0443d2ee" defer></script>
+    <script src="/commit-feed.js?v=52be3925" defer></script>
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta
+      property="og:image:alt"
+      content="International Duck Incorporated - open-source Minecraft mods, tools and experiments"
+    />
+    <meta name="twitter:image" content="https://idi-official.pages.dev/assets/og-default.png" />
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@graph": [
+          {
+            "@type": "Organization",
+            "@id": "https://idi-official.pages.dev/#organization",
+            "name": "International Duck Incorporated",
+            "alternateName": "IDI",
+            "url": "https://idi-official.pages.dev/",
+            "logo": {
+              "@type": "ImageObject",
+              "url": "https://idi-official.pages.dev/assets/org-avatar.png"
+            },
+            "image": "https://idi-official.pages.dev/assets/og-default.png",
+            "description": "Open-source collective building Minecraft mods, tools and experiments in public. GitLab is the active source of truth; the former GitHub organization is currently hidden from public view.",
+            "sameAs": ["https://gitlab.com/international-duck-incorporated"],
+            "knowsAbout": [
+              "Minecraft mods",
+              "Fabric modding",
+              "Minecraft client utilities",
+              "open source"
+            ]
+          },
+          {
+            "@type": "WebSite",
+            "@id": "https://idi-official.pages.dev/#website",
+            "url": "https://idi-official.pages.dev/",
+            "name": "International Duck Incorporated",
+            "inLanguage": "en",
+            "publisher": {
+              "@id": "https://idi-official.pages.dev/#organization"
+            }
+          },
+          {
+            "@type": "ProfilePage",
+            "@id": "https://idi-official.pages.dev/members/superivar#webpage",
+            "url": "https://idi-official.pages.dev/members/superivar",
+            "name": "Xx-superIvar-xX - International Duck",
+            "description": "Xx-superIvar-xX, International Duck product tester.",
+            "isPartOf": {
+              "@id": "https://idi-official.pages.dev/#website"
+            },
+            "about": {
+              "@id": "https://idi-official.pages.dev/#organization"
+            },
+            "inLanguage": "en",
+            "primaryImageOfPage": {
+              "@type": "ImageObject",
+              "url": "https://idi-official.pages.dev/assets/og-default.png"
+            },
+            "breadcrumb": {
+              "@id": "https://idi-official.pages.dev/members/superivar#breadcrumb"
+            },
+            "mainEntity": {
+              "@id": "https://idi-official.pages.dev/members/superivar#person"
+            }
+          },
+          {
+            "@type": "BreadcrumbList",
+            "@id": "https://idi-official.pages.dev/members/superivar#breadcrumb",
+            "itemListElement": [
+              {
+                "@type": "ListItem",
+                "position": 1,
+                "name": "International Duck Incorporated",
+                "item": "https://idi-official.pages.dev/"
+              },
+              {
+                "@type": "ListItem",
+                "position": 2,
+                "name": "Members",
+                "item": "https://idi-official.pages.dev/members/"
+              },
+              {
+                "@type": "ListItem",
+                "position": 3,
+                "name": "Xx-superIvar-xX",
+                "item": "https://idi-official.pages.dev/members/superivar"
+              }
+            ]
+          },
+          {
+            "@type": "Person",
+            "@id": "https://idi-official.pages.dev/members/superivar#person",
+            "name": "Xx-superIvar-xX",
+            "description": "Product tester for International Duck Incorporated.",
+            "url": "https://idi-official.pages.dev/members/superivar",
+            "memberOf": {
+              "@id": "https://idi-official.pages.dev/#organization"
+            },
+            "sameAs": ["https://gitlab.com/Xx-superIvar-xX", "https://github.com/Xx-superIvar-xX"]
+          }
+        ]
+      }
+    </script>
+  </head>
+  <body data-page="member" data-member="superivar" class="storm-window-page">
+    <svg class="svg-sprite" aria-hidden="true">
+      <symbol id="i-gitlab" viewBox="0 0 24 24">
+        <path
+          fill="currentColor"
+          stroke="none"
+          d="m23.6004 9.5927-.0337-.0862L20.3.9814a.851.851 0 0 0-.3362-.405.8748.8748 0 0 0-.9997.0539.8748.8748 0 0 0-.29.4399l-2.2055 6.748H7.5375l-2.2057-6.748a.8573.8573 0 0 0-.29-.4412.8748.8748 0 0 0-.9997-.0537.8585.8585 0 0 0-.3362.4049L.4332 9.5015l-.0325.0862a6.0657 6.0657 0 0 0 2.0119 7.0105l.0113.0087.03.0213 4.976 3.7264 2.462 1.8633 1.4995 1.1321a1.0085 1.0085 0 0 0 1.2197 0l1.4995-1.1321 2.4619-1.8633 5.006-3.7489.0125-.01a6.0682 6.0682 0 0 0 2.0094-7.003z"
+        />
+      </symbol>
+      <symbol id="i-menu" viewBox="0 0 24 24"><path d="M4 8h16M4 16h16" /></symbol>
+      <symbol id="i-close" viewBox="0 0 24 24"><path d="m5 5 14 14M19 5 5 19" /></symbol>
+      <symbol id="i-github" viewBox="0 0 24 24">
+        <path
+          fill="currentColor"
+          stroke="none"
+          d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"
+        />
+      </symbol>
+    </svg>
 
-  <a class="skip-link" href="#main">Skip to content</a>
-  <div class="site-glow site-glow-blue" aria-hidden="true"></div>
-  <header class="topbar" data-header>
-    <div class="shell topbar-inner">
-      <a class="brand" href="/" aria-label="International Duck Incorporated home"><img data-org-avatar src="/assets/org-avatar.webp?v=fff479ce" alt="" width="40" height="40" decoding="async"><span><b>International Duck</b><small>Incorporated</small></span></a>
-      <nav class="main-nav" id="main-navigation" data-nav aria-label="Primary navigation">
-        <a href="/">Overview</a><a href="/projects">Projects</a><a href="/noosphere">Noosphere</a><a class="active" href="/members" aria-current="page">Members</a><a href="/activity">Activity</a><a href="/migration">Migration</a><a class="icon-link" href="https://gitlab.com/international-duck-incorporated" target="_blank" rel="noreferrer" aria-label="International Duck Incorporated on GitLab"><svg><use href="#i-gitlab"/></svg></a>
-      </nav>
-      <button class="menu-button" type="button" data-menu aria-label="Open navigation" aria-controls="main-navigation" aria-expanded="false"><svg class="menu-open"><use href="#i-menu"/></svg><svg class="menu-close"><use href="#i-close"/></svg></button>
-    </div>
-  </header>
+    <a class="skip-link" href="#main">Skip to content</a>
+    <div class="site-glow site-glow-blue" aria-hidden="true"></div>
+    <header class="topbar" data-header>
+      <div class="shell topbar-inner">
+        <a class="brand" href="/" aria-label="International Duck Incorporated home"
+          ><img
+            data-org-avatar
+            src="/assets/org-avatar.webp?v=fff479ce"
+            alt=""
+            width="40"
+            height="40"
+            decoding="async"
+          /><span><b>International Duck</b><small>Incorporated</small></span></a
+        >
+        <nav class="main-nav" id="main-navigation" data-nav aria-label="Primary navigation">
+          <a href="/">Overview</a><a href="/projects">Projects</a><a href="/noosphere">Noosphere</a
+          ><a class="active" href="/members" aria-current="page">Members</a
+          ><a href="/activity">Activity</a><a href="/migration">Migration</a
+          ><a
+            class="icon-link"
+            href="https://gitlab.com/international-duck-incorporated"
+            target="_blank"
+            rel="noreferrer"
+            aria-label="International Duck Incorporated on GitLab"
+            ><svg><use href="#i-gitlab" /></svg
+          ></a>
+        </nav>
+        <button
+          class="menu-button"
+          type="button"
+          data-menu
+          aria-label="Open navigation"
+          aria-controls="main-navigation"
+          aria-expanded="false"
+        >
+          <svg class="menu-open"><use href="#i-menu" /></svg
+          ><svg class="menu-close"><use href="#i-close" /></svg>
+        </button>
+      </div>
+    </header>
 
-  <main id="main" class="profile-page member-page">
-    <div class="shell">
-      <div class="breadcrumbs"><a href="/">International Duck</a><span>/</span><a href="/members">Members</a><span>/</span><b>Xx-superIvar-xX</b></div>
-      <section class="profile-hero">
-        <article class="profile-intro glass-card reveal">
-          <picture><source srcset="/assets/member-xx-superivar-xx.webp?v=1c79d93d" type="image/webp"><img class="avatar" src="/assets/member-xx-superivar-xx.png?v=36a4e373" alt="Xx-superIvar-xX" loading="lazy" decoding="async"></picture>
-          <span class="eyebrow">Member profile</span>
-          <h1>Xx-SuperIvar-xX.</h1>
-          <p class="lead">A public member of International Duck and the team's product tester. This profile only includes information that has been publicly shared through the organization, GitLab and GitHub.</p>
-          <div class="action-row"><a class="button button-blue" href="https://gitlab.com/Xx-superIvar-xX" target="_blank" rel="noreferrer"><svg><use href="#i-gitlab"/></svg>View GitLab</a><a class="button button-glass" href="https://github.com/Xx-superIvar-xX" target="_blank" rel="noreferrer"><svg><use href="#i-github"/></svg>View GitHub</a></div>
-        </article>
-        <aside class="profile-sidebar glass-card reveal">
-          <div><span class="eyebrow">At a glance</span><div class="fact-list"><div class="fact"><small>Handle</small><b>@Xx-superIvar-xX</b></div><div class="fact"><small>Role</small><b>Product tester</b></div><div class="fact"><small>Focus</small><b>International Duck</b></div><div class="fact"><small>GitHub</small><b><a href="https://github.com/Xx-superIvar-xX" target="_blank" rel="noreferrer">@Xx-superIvar-xX ↗</a></b></div><div class="fact"><small>GitLab</small><b>@Xx-superIvar-xX</b></div></div></div>
-        </aside>
-      </section>
-      <section class="detail-grid">
-        <article class="detail-panel glass-card reveal"><span class="eyebrow">Member</span><h2>Super Ultra Cool Epci Member of the IDI!!!!.</h2><p>Xx-SuperIvar-xX is heel super EN ivar wooooooooooooooooooow so epci frfrfrfr.</p></article>
-        <article class="detail-panel glass-card reveal"><span class="eyebrow">Profile note</span><h2>Source-aware by design</h2><p>This profile identifies Xx-SuperIvar-xX as International Duck's product tester; other details remain limited to what has been shared publicly.</p></article>
-      </section>
-    </div>
-  </main>
+    <main id="main" class="profile-page member-page">
+      <div class="shell">
+        <div class="breadcrumbs">
+          <a href="/">International Duck</a><span>/</span><a href="/members">Members</a
+          ><span>/</span><b>Xx-superIvar-xX</b>
+        </div>
+        <section class="profile-hero">
+          <article class="profile-intro glass-card reveal">
+            <picture
+              ><source srcset="/assets/member-xx-superivar-xx.webp?v=1c79d93d" type="image/webp" />
+              <img
+                class="avatar"
+                src="/assets/member-xx-superivar-xx.png?v=36a4e373"
+                alt="Xx-superIvar-xX"
+                loading="lazy"
+                decoding="async"
+            /></picture>
+            <span class="eyebrow">Member profile</span>
+            <h1>Xx-SuperIvar-xX.</h1>
+            <p class="lead">
+              A public member of International Duck and the team's product tester. This profile only
+              includes information that has been publicly shared through the organization, GitLab
+              and GitHub.
+            </p>
+            <div class="action-row">
+              <a
+                class="button button-blue"
+                href="https://gitlab.com/Xx-superIvar-xX"
+                target="_blank"
+                rel="noreferrer"
+                ><svg><use href="#i-gitlab" /></svg>View GitLab</a
+              ><a
+                class="button button-glass"
+                href="https://github.com/Xx-superIvar-xX"
+                target="_blank"
+                rel="noreferrer"
+                ><svg><use href="#i-github" /></svg>View GitHub</a
+              >
+            </div>
+          </article>
+          <aside class="profile-sidebar glass-card reveal">
+            <div>
+              <span class="eyebrow">At a glance</span>
+              <div class="fact-list">
+                <div class="fact"><small>Handle</small><b>@Xx-superIvar-xX</b></div>
+                <div class="fact"><small>Role</small><b>Product tester</b></div>
+                <div class="fact"><small>Focus</small><b>International Duck</b></div>
+                <div class="fact">
+                  <small>GitHub</small
+                  ><b
+                    ><a href="https://github.com/Xx-superIvar-xX" target="_blank" rel="noreferrer"
+                      >@Xx-superIvar-xX ↗</a
+                    ></b
+                  >
+                </div>
+                <div class="fact"><small>GitLab</small><b>@Xx-superIvar-xX</b></div>
+              </div>
+            </div>
+          </aside>
+        </section>
+        <section class="detail-grid">
+          <article class="detail-panel glass-card reveal">
+            <span class="eyebrow">Member</span>
+            <h2>Super Ultra Cool Epci Member of the IDI!!!!.</h2>
+            <p>Xx-SuperIvar-xX is heel super EN ivar wooooooooooooooooooow so epci frfrfrfr.</p>
+          </article>
+          <article class="detail-panel glass-card reveal">
+            <span class="eyebrow">Profile note</span>
+            <h2>Source-aware by design</h2>
+            <p>
+              This profile identifies Xx-SuperIvar-xX as International Duck's product tester; other
+              details remain limited to what has been shared publicly.
+            </p>
+          </article>
+        </section>
+      </div>
+    </main>
 
-  <footer class="site-footer"><div class="shell footer-inner"><a class="brand" href="/"><picture><source srcset="/assets/org-avatar.webp?v=fff479ce" type="image/webp"><img src="/assets/org-avatar.png?v=f3debf20" alt="" decoding="async"></picture><span><b>International Duck</b><small>Incorporated</small></span></a><nav><a href="/projects">Projects</a><a href="/noosphere">Noosphere</a><a href="/members">Members</a><a href="/activity">Activity</a><a href="/migration">Migration</a><a href="/glyphsmith">Glyphsmith</a><a href="/changelog">Changelog</a><a href="https://gitlab.com/international-duck-incorporated">GitLab</a><a href="mailto:0xffshell@duck.com">Contact</a></nav><span class="sync-state"><i></i><span data-sync-text>GitLab data synced live</span></span></div></footer>
-</body>
+    <footer class="site-footer">
+      <div class="shell footer-inner">
+        <a class="brand" href="/"
+          ><picture
+            ><source srcset="/assets/org-avatar.webp?v=fff479ce" type="image/webp" />
+            <img src="/assets/org-avatar.png?v=f3debf20" alt="" decoding="async" /></picture
+          ><span><b>International Duck</b><small>Incorporated</small></span></a
+        >
+        <nav>
+          <a href="/projects">Projects</a><a href="/noosphere">Noosphere</a
+          ><a href="/members">Members</a><a href="/activity">Activity</a
+          ><a href="/migration">Migration</a><a href="/glyphsmith">Glyphsmith</a
+          ><a href="/changelog">Changelog</a
+          ><a href="https://gitlab.com/international-duck-incorporated">GitLab</a
+          ><a href="mailto:0xffshell@duck.com">Contact</a>
+        </nav>
+        <span class="sync-state"><i></i><span data-sync-text>GitLab data synced live</span></span>
+      </div>
+    </footer>
+  </body>
 </html>

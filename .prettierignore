@@ -1,0 +1,18 @@
+# Generated from the formatted CSS source modules by tools/bundle_css.py.
+/css/bundle.css
+
+# Binary, cache and build output.
+/assets/
+*.png
+*.webp
+*.jpg
+*.jpeg
+*.gif
+*.mp4
+*.ttf
+node_modules/
+.cache/
+.venv/
+build/
+dist/
+coverage/

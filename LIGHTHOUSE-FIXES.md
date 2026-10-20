@@ -12,16 +12,16 @@ Lighthouse version and a locally served copy of this repo (gzipped responses to
 stand in for the brotli Cloudflare serves; before/after runs alternate so
 environment noise cancels out).
 
-| | before | after |
-|---|---|---|
-| Performance / Accessibility | 92 / 95 | **99–100 / 100** |
-| LCP (observed) | 912 ms | **192–241 ms** |
-| FCP (simulated) | 1 204 ms | 906 ms |
-| Total Blocking Time | 0–54 ms | 0–32 ms |
-| Cumulative Layout Shift | 0 (masked) | 0 (genuinely) |
-| Render-blocking requests | 8 | **1** |
-| Requests on the homepage | 24 | 17–18 |
-| Image bytes on load | ~209 KiB | ~20 KiB |
+|                             | before     | after            |
+| --------------------------- | ---------- | ---------------- |
+| Performance / Accessibility | 92 / 95    | **99–100 / 100** |
+| LCP (observed)              | 912 ms     | **192–241 ms**   |
+| FCP (simulated)             | 1 204 ms   | 906 ms           |
+| Total Blocking Time         | 0–54 ms    | 0–32 ms          |
+| Cumulative Layout Shift     | 0 (masked) | 0 (genuinely)    |
+| Render-blocking requests    | 8          | **1**            |
+| Requests on the homepage    | 24         | 17–18            |
+| Image bytes on load         | ~209 KiB   | ~20 KiB          |
 
 ## What changed
 
@@ -46,12 +46,12 @@ generates a `.webp` sibling for every raster asset (geometry capped at the
 largest size it is ever displayed at, metadata stripped, animated GIF → animated
 WebP), and `tools/apply_image_sources.py` wires them up:
 
-* `<img>` becomes `<picture>` with the WebP source and the original PNG/JPEG as
+- `<img>` becomes `<picture>` with the WebP source and the original PNG/JPEG as
   fallback — browsers pick one, they never double-download;
-* CSS bitmaps (`background-image`) use `image-set()` with the same fallback;
-* `[data-org-avatar]` images keep their runtime `src` swap to the live GitLab
+- CSS bitmaps (`background-image`) use `image-set()` with the same fallback;
+- `[data-org-avatar]` images keep their runtime `src` swap to the live GitLab
   avatar, so they only get the smaller local fallback file;
-* images created at runtime (`script.js`) now carry `loading="lazy"`.
+- images created at runtime (`script.js`) now carry `loading="lazy"`.
 
 Per-file: `venomous-icon.png` 78.2 → 7.7 KiB, `idi-member-collage.png`
 1 926 → 45 KiB, `homepage-community-background-v4.jpg` 167 → 56 KiB,
@@ -73,7 +73,7 @@ that was already in the first HTML response. It now paints immediately; only the
 media backdrop fades in behind it.
 
 That exposed the real cause of the shift the fade had been hiding: the backdrop
-was picked *after* the first layout, and the hero copy sits top-left for clips
+was picked _after_ the first layout, and the hero copy sits top-left for clips
 and bottom-right for stills, so the copy jumped once `data-frame` was applied
 (CLS 0.21). `index.html`'s head script now makes the pick — with the same pool,
 odds and "never twice in a row" rule — before the first style calculation, and
@@ -105,35 +105,35 @@ the local runs.
 
 ### 6. Housekeeping
 
-* `index.html` (and the pages that talk to the GitLab API) now preconnect to
+- `index.html` (and the pages that talk to the GitLab API) now preconnect to
   `gitlab.com` both with and without `crossorigin`: the CORS API fetches reuse
   the `crossorigin` connection, the plain `<img>`/video requests do not, which is
   what Lighthouse flagged as an unused preconnect.
-* `README.md` documents the generated artifacts and `tools/build.py` runs the
+- `README.md` documents the generated artifacts and `tools/build.py` runs the
   whole pipeline (`bundle_css.py` → `optimize_images.py` →
   `apply_image_sources.py` → `bust_cache.py`).
 
 ## What is deliberately not fixed here
 
-| Finding | Why |
-|---|---|
-| 32 KiB GitLab group avatar (`modern-image-formats`, `uses-responsive-images`) | served straight from `gitlab.com/uploads/...` and swapped in at runtime by `script.js`; the repo cannot re-compress or resize it. The local fallback is now a 10 KiB WebP. |
-| `org-avatar.webp` "9 KiB larger than needed" | it is a 192 px 2x asset for a 136 px slot; shrinking it would soften the panel on retina screens. |
-| `beacon.min.js`, 1-day cache TTL, legacy polyfills | injected by Cloudflare Web Analytics at the edge, not a file in this repo. Disabling it in the Cloudflare dashboard (or proxying it) is the only lever. |
-| `goofy-ahh.gif` (687 KiB animated, midas735's page) | already 81 % smaller as animated WebP; an animated AVIF or a short video would be smaller again, but the page is a member easter egg, not a landing page. |
-| Rotation clips of 4–18 MB | payload lives in the `idi-assets` repository; re-encode there. |
-| Remaining unused CSS (18 KiB gzipped) | the bundle carries every module on every page. Splitting per page type (core + page + overrides) is possible but adds a build dimension for a few kilobytes; noted as a follow-up rather than done here. |
+| Finding                                                                       | Why                                                                                                                                                                                                      |
+| ----------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 32 KiB GitLab group avatar (`modern-image-formats`, `uses-responsive-images`) | served straight from `gitlab.com/uploads/...` and swapped in at runtime by `script.js`; the repo cannot re-compress or resize it. The local fallback is now a 10 KiB WebP.                               |
+| `org-avatar.webp` "9 KiB larger than needed"                                  | it is a 192 px 2x asset for a 136 px slot; shrinking it would soften the panel on retina screens.                                                                                                        |
+| `beacon.min.js`, 1-day cache TTL, legacy polyfills                            | injected by Cloudflare Web Analytics at the edge, not a file in this repo. Disabling it in the Cloudflare dashboard (or proxying it) is the only lever.                                                  |
+| `goofy-ahh.gif` (687 KiB animated, midas735's page)                           | already 81 % smaller as animated WebP; an animated AVIF or a short video would be smaller again, but the page is a member easter egg, not a landing page.                                                |
+| Rotation clips of 4–18 MB                                                     | payload lives in the `idi-assets` repository; re-encode there.                                                                                                                                           |
+| Remaining unused CSS (18 KiB gzipped)                                         | the bundle carries every module on every page. Splitting per page type (core + page + overrides) is possible but adds a build dimension for a few kilobytes; noted as a follow-up rather than done here. |
 
 ## Verification performed
 
-* `python3 tools/build.py` is idempotent (second run: no HTML rewritten).
-* Every local reference in every page resolves (272 checked, 0 missing).
-* Geometry diff against the pre-change build for all 15 pages at 1400×900: the
+- `python3 tools/build.py` is idempotent (second run: no HTML rewritten).
+- Every local reference in every page resolves (272 checked, 0 missing).
+- Geometry diff against the pre-change build for all 15 pages at 1400×900: the
   only differences are the added zero-size `<picture>`/`<source>` nodes. With the
   backdrop pick pinned, the homepage hero is pixel-identical in both layouts
   (clip state and still state).
-* Behaviour checks: normal desktop (clip + still picks), reduced motion, low-power
+- Behaviour checks: normal desktop (clip + still picks), reduced motion, low-power
   device, no head pick (fallback roll), JavaScript disabled (static default
   layout), `/easteregg` low-power branch. No console errors on any route.
-* Layout shift probe: 0 shifts across repeated runs (was 0.105 on still picks
+- Layout shift probe: 0 shifts across repeated runs (was 0.105 on still picks
   once the hero copy became visible).

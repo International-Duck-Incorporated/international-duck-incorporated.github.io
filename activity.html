@@ -1,231 +1,392 @@
 <!doctype html>
 <html lang="en">
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <script>
-    (() => {
-      const nav = navigator;
-      const connection = nav.connection || nav.mozConnection || nav.webkitConnection;
-      const lowEnd = Boolean(
-        (connection && connection.saveData) ||
-        (connection && /^(slow-2g|2g)$/.test(connection.effectiveType || "")) ||
-        (typeof nav.deviceMemory === "number" && nav.deviceMemory <= 4) ||
-        (typeof nav.hardwareConcurrency === "number" && nav.hardwareConcurrency <= 4)
-      );
-      window.IDI_LOW_END = lowEnd;
-      window.IDI_REDUCED_MOTION = Boolean(
-        window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches
-      );
-      if (lowEnd) document.documentElement.classList.add("low-end");
-    })();
-  </script>
-  <link rel="preconnect" href="https://gitlab.com" crossorigin>
-  <link rel="preconnect" href="https://gitlab.com">
-  <link rel="dns-prefetch" href="https://gitlab.com">
-  <meta name="theme-color" content="#07090d">
-  <meta property="og:image" content="https://idi-official.pages.dev/assets/og-default.png">
-  <title>Live GitLab commit activity | International Duck</title>
-  <meta name="description" content="Live commit activity for every International Duck project, read from the public GitLab API: recent commits, authors and which repository each one landed in.">
-  <link rel="canonical" href="https://idi-official.pages.dev/activity">
-  <meta property="og:type" content="website">
-  <meta property="og:title" content="Live GitLab commit activity | International Duck">
-  <meta property="og:description" content="Live GitLab commit activity for every International Duck project.">
-  <meta property="og:url" content="https://idi-official.pages.dev/activity">
-  <meta property="og:site_name" content="International Duck Incorporated">
-  <meta property="og:locale" content="en_US">
-  <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="Live GitLab commit activity | International Duck">
-  <meta name="twitter:description" content="Live GitLab commit activity for every International Duck project.">
-  <link rel="icon" href="/assets/org-avatar.png?v=f3debf20" type="image/png">
-  <link rel="stylesheet" href="/css/bundle.css?v=1f263d21">
-  <script src="/script.js?v=ffe97c4c" defer></script>
-  <script src="/activity.js?v=55bf5dcc" defer></script>
-  <meta property="og:image:width" content="1200">
-  <meta property="og:image:height" content="630">
-  <meta property="og:image:alt" content="International Duck Incorporated - open-source Minecraft mods, tools and experiments">
-  <meta name="twitter:image" content="https://idi-official.pages.dev/assets/og-default.png">
-  <script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@graph": [
-    {
-      "@type": "Organization",
-      "@id": "https://idi-official.pages.dev/#organization",
-      "name": "International Duck Incorporated",
-      "alternateName": "IDI",
-      "url": "https://idi-official.pages.dev/",
-      "logo": {
-        "@type": "ImageObject",
-        "url": "https://idi-official.pages.dev/assets/org-avatar.png"
-      },
-      "image": "https://idi-official.pages.dev/assets/og-default.png",
-      "description": "Open-source collective building Minecraft mods, tools and experiments in public. GitLab is the active source of truth; the former GitHub organization is currently hidden from public view.",
-      "sameAs": [
-        "https://gitlab.com/international-duck-incorporated"
-      ],
-      "knowsAbout": [
-        "Minecraft mods",
-        "Fabric modding",
-        "Minecraft client utilities",
-        "open source"
-      ]
-    },
-    {
-      "@type": "WebSite",
-      "@id": "https://idi-official.pages.dev/#website",
-      "url": "https://idi-official.pages.dev/",
-      "name": "International Duck Incorporated",
-      "inLanguage": "en",
-      "publisher": {
-        "@id": "https://idi-official.pages.dev/#organization"
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <script>
+      (() => {
+        const nav = navigator;
+        const connection = nav.connection || nav.mozConnection || nav.webkitConnection;
+        const lowEnd = Boolean(
+          (connection && connection.saveData) ||
+            (connection && /^(slow-2g|2g)$/.test(connection.effectiveType || "")) ||
+            (typeof nav.deviceMemory === "number" && nav.deviceMemory <= 4) ||
+            (typeof nav.hardwareConcurrency === "number" && nav.hardwareConcurrency <= 4)
+        );
+        window.IDI_LOW_END = lowEnd;
+        window.IDI_REDUCED_MOTION = Boolean(
+          window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches
+        );
+        if (lowEnd) document.documentElement.classList.add("low-end");
+      })();
+    </script>
+    <link rel="preconnect" href="https://gitlab.com" crossorigin />
+    <link rel="preconnect" href="https://gitlab.com" />
+    <link rel="dns-prefetch" href="https://gitlab.com" />
+    <meta name="theme-color" content="#07090d" />
+    <meta property="og:image" content="https://idi-official.pages.dev/assets/og-default.png" />
+    <title>Live GitLab commit activity | International Duck</title>
+    <meta
+      name="description"
+      content="Live commit activity for every International Duck project, read from the public GitLab API: recent commits, authors and which repository each one landed in."
+    />
+    <link rel="canonical" href="https://idi-official.pages.dev/activity" />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="Live GitLab commit activity | International Duck" />
+    <meta
+      property="og:description"
+      content="Live GitLab commit activity for every International Duck project."
+    />
+    <meta property="og:url" content="https://idi-official.pages.dev/activity" />
+    <meta property="og:site_name" content="International Duck Incorporated" />
+    <meta property="og:locale" content="en_US" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Live GitLab commit activity | International Duck" />
+    <meta
+      name="twitter:description"
+      content="Live GitLab commit activity for every International Duck project."
+    />
+    <link rel="icon" href="/assets/org-avatar.png?v=f3debf20" type="image/png" />
+    <link rel="stylesheet" href="/css/bundle.css?v=583143c6" />
+    <script src="/script.js?v=0443d2ee" defer></script>
+    <script src="/activity.js?v=e529ecf9" defer></script>
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta
+      property="og:image:alt"
+      content="International Duck Incorporated - open-source Minecraft mods, tools and experiments"
+    />
+    <meta name="twitter:image" content="https://idi-official.pages.dev/assets/og-default.png" />
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@graph": [
+          {
+            "@type": "Organization",
+            "@id": "https://idi-official.pages.dev/#organization",
+            "name": "International Duck Incorporated",
+            "alternateName": "IDI",
+            "url": "https://idi-official.pages.dev/",
+            "logo": {
+              "@type": "ImageObject",
+              "url": "https://idi-official.pages.dev/assets/org-avatar.png"
+            },
+            "image": "https://idi-official.pages.dev/assets/og-default.png",
+            "description": "Open-source collective building Minecraft mods, tools and experiments in public. GitLab is the active source of truth; the former GitHub organization is currently hidden from public view.",
+            "sameAs": ["https://gitlab.com/international-duck-incorporated"],
+            "knowsAbout": [
+              "Minecraft mods",
+              "Fabric modding",
+              "Minecraft client utilities",
+              "open source"
+            ]
+          },
+          {
+            "@type": "WebSite",
+            "@id": "https://idi-official.pages.dev/#website",
+            "url": "https://idi-official.pages.dev/",
+            "name": "International Duck Incorporated",
+            "inLanguage": "en",
+            "publisher": {
+              "@id": "https://idi-official.pages.dev/#organization"
+            }
+          },
+          {
+            "@type": "WebPage",
+            "@id": "https://idi-official.pages.dev/activity#webpage",
+            "url": "https://idi-official.pages.dev/activity",
+            "name": "Activity - International Duck Incorporated",
+            "description": "Live GitLab commit activity for every International Duck Incorporated project and public member.",
+            "isPartOf": {
+              "@id": "https://idi-official.pages.dev/#website"
+            },
+            "about": {
+              "@id": "https://idi-official.pages.dev/#organization"
+            },
+            "inLanguage": "en",
+            "primaryImageOfPage": {
+              "@type": "ImageObject",
+              "url": "https://idi-official.pages.dev/assets/og-default.png"
+            },
+            "breadcrumb": {
+              "@id": "https://idi-official.pages.dev/activity#breadcrumb"
+            }
+          },
+          {
+            "@type": "BreadcrumbList",
+            "@id": "https://idi-official.pages.dev/activity#breadcrumb",
+            "itemListElement": [
+              {
+                "@type": "ListItem",
+                "position": 1,
+                "name": "International Duck Incorporated",
+                "item": "https://idi-official.pages.dev/"
+              },
+              {
+                "@type": "ListItem",
+                "position": 2,
+                "name": "Activity",
+                "item": "https://idi-official.pages.dev/activity"
+              }
+            ]
+          }
+        ]
       }
-    },
-    {
-      "@type": "WebPage",
-      "@id": "https://idi-official.pages.dev/activity#webpage",
-      "url": "https://idi-official.pages.dev/activity",
-      "name": "Activity - International Duck Incorporated",
-      "description": "Live GitLab commit activity for every International Duck Incorporated project and public member.",
-      "isPartOf": {
-        "@id": "https://idi-official.pages.dev/#website"
-      },
-      "about": {
-        "@id": "https://idi-official.pages.dev/#organization"
-      },
-      "inLanguage": "en",
-      "primaryImageOfPage": {
-        "@type": "ImageObject",
-        "url": "https://idi-official.pages.dev/assets/og-default.png"
-      },
-      "breadcrumb": {
-        "@id": "https://idi-official.pages.dev/activity#breadcrumb"
-      }
-    },
-    {
-      "@type": "BreadcrumbList",
-      "@id": "https://idi-official.pages.dev/activity#breadcrumb",
-      "itemListElement": [
-        {
-          "@type": "ListItem",
-          "position": 1,
-          "name": "International Duck Incorporated",
-          "item": "https://idi-official.pages.dev/"
-        },
-        {
-          "@type": "ListItem",
-          "position": 2,
-          "name": "Activity",
-          "item": "https://idi-official.pages.dev/activity"
-        }
-      ]
-    }
-  ]
-}
-  </script>
-</head>
-<body data-page="activity">
-  <svg class="svg-sprite" aria-hidden="true">
-    <symbol id="i-external" viewBox="0 0 24 24"><path d="M14 5h5v5M19 5l-9 9M18 13v6H5V6h6"/></symbol>
-    <symbol id="i-arrow" viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></symbol>
-    <symbol id="i-commit" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3.2"/><path d="M1.05 12h7.5M15.45 12h7.5"/></symbol>
-    <symbol id="i-user" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2M12 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8Z"/></symbol>
-    <symbol id="i-gitlab" viewBox="0 0 24 24"><path fill="currentColor" stroke="none" d="m23.6004 9.5927-.0337-.0862L20.3.9814a.851.851 0 0 0-.3362-.405.8748.874 0 0 0-.9997.0539.8748.8748 0 0 0-.29.4399l-2.2055 6.748H7.5375l-2.2057-6.748a.8573.8573 0 0 0-.29-.4412.8748.8748 0 0 0-.9997-.0537.8585.8585 0 0 0-.3362.4049L.4332 9.5015l-.0325.0862a6.0657 6.0657 0 0 0 2.0119 7.0105l.0113.0087.03.0213 4.976 3.7264 2.462 1.8633 1.4995 1.1321a1.0085 1.0085 0 0 0 1.2197 0l1.4995-1.1321 2.4619-1.8633 5.006-3.7489.0125-.01a6.0682 6.0682 0 0 0 2.0094-7.003z"/></symbol>
-    <symbol id="i-menu" viewBox="0 0 24 24"><path d="M4 8h16M4 16h16"/></symbol>
-    <symbol id="i-close" viewBox="0 0 24 24"><path d="m5 5 14 14M19 5 5 19"/></symbol>
-  </svg>
+    </script>
+  </head>
+  <body data-page="activity">
+    <svg class="svg-sprite" aria-hidden="true">
+      <symbol id="i-external" viewBox="0 0 24 24">
+        <path d="M14 5h5v5M19 5l-9 9M18 13v6H5V6h6" />
+      </symbol>
+      <symbol id="i-arrow" viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6" /></symbol>
+      <symbol id="i-commit" viewBox="0 0 24 24">
+        <circle cx="12" cy="12" r="3.2" />
+        <path d="M1.05 12h7.5M15.45 12h7.5" />
+      </symbol>
+      <symbol id="i-user" viewBox="0 0 24 24">
+        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2M12 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8Z" />
+      </symbol>
+      <symbol id="i-gitlab" viewBox="0 0 24 24">
+        <path
+          fill="currentColor"
+          stroke="none"
+          d="m23.6004 9.5927-.0337-.0862L20.3.9814a.851.851 0 0 0-.3362-.405.8748.874 0 0 0-.9997.0539.8748.8748 0 0 0-.29.4399l-2.2055 6.748H7.5375l-2.2057-6.748a.8573.8573 0 0 0-.29-.4412.8748.8748 0 0 0-.9997-.0537.8585.8585 0 0 0-.3362.4049L.4332 9.5015l-.0325.0862a6.0657 6.0657 0 0 0 2.0119 7.0105l.0113.0087.03.0213 4.976 3.7264 2.462 1.8633 1.4995 1.1321a1.0085 1.0085 0 0 0 1.2197 0l1.4995-1.1321 2.4619-1.8633 5.006-3.7489.0125-.01a6.0682 6.0682 0 0 0 2.0094-7.003z"
+        />
+      </symbol>
+      <symbol id="i-menu" viewBox="0 0 24 24"><path d="M4 8h16M4 16h16" /></symbol>
+      <symbol id="i-close" viewBox="0 0 24 24"><path d="m5 5 14 14M19 5 5 19" /></symbol>
+    </svg>
 
-  <a class="skip-link" href="#main">Skip to content</a>
-  <div class="site-glow site-glow-blue" aria-hidden="true"></div>
+    <a class="skip-link" href="#main">Skip to content</a>
+    <div class="site-glow site-glow-blue" aria-hidden="true"></div>
 
-  <header class="topbar" data-header>
-    <div class="shell topbar-inner">
-      <a class="brand" href="/" aria-label="International Duck Incorporated home">
-        <img data-org-avatar src="/assets/org-avatar.webp?v=fff479ce" alt="" width="40" height="40" decoding="async">
-        <span><b>International Duck</b><small>Incorporated</small></span>
-      </a>
-      <nav class="main-nav" id="main-navigation" data-nav aria-label="Primary navigation">
-        <a href="/">Overview</a>
-        <a href="/projects">Projects</a>
-        <a href="/members">Members</a>
-        <a class="active" href="/activity" aria-current="page">Activity</a>
-        <a href="/migration">Migration</a>
-        <a class="icon-link" href="https://gitlab.com/international-duck-incorporated" target="_blank" rel="noreferrer" aria-label="International Duck Incorporated on GitLab"><svg><use href="#i-gitlab"/></svg></a>
-        <a href="/noosphere">Noosphere</a>
-      </nav>
-      <button class="menu-button" type="button" data-menu aria-label="Open navigation" aria-controls="main-navigation" aria-expanded="false"><svg class="menu-open"><use href="#i-menu"/></svg><svg class="menu-close"><use href="#i-close"/></svg></button>
-    </div>
-  </header>
-
-  <main id="main" class="subpage-main">
-    <section class="shell">
-      <header class="subpage-heading reveal">
-        <div class="breadcrumbs"><a href="/">International Duck</a><span>/</span><b>Activity</b></div>
-        <span class="eyebrow">Live GitLab commits</span>
-        <h1>Activity.</h1>
-        <p>Commits from every public project and member, pulled live from GitLab. GitLab is IDI's active source of truth for code, releases, issues, and project history.</p>
-        <div class="directory-status">
-          <span class="status-pill green"><i></i><b data-activity-total>…</b>&nbsp;commits tracked</span>
-          <span class="source-chip platform-chip gitlab"><svg><use href="#i-gitlab"/></svg> GitLab · main</span>
-        </div>
-      </header>
-
-      <div class="platform-warning glass-card reveal" role="status">
-        <span class="platform-warning-mark" aria-hidden="true"></span>
-        <div><strong>GitHub data is currently unavailable</strong><p>The International Duck GitHub organization is hidden/private from public view, so GitHub APIs and mirror links may fail. GitHub data is intentionally not fetched here; GitLab is the active source of truth.</p></div>
+    <header class="topbar" data-header>
+      <div class="shell topbar-inner">
+        <a class="brand" href="/" aria-label="International Duck Incorporated home">
+          <img
+            data-org-avatar
+            src="/assets/org-avatar.webp?v=fff479ce"
+            alt=""
+            width="40"
+            height="40"
+            decoding="async"
+          />
+          <span><b>International Duck</b><small>Incorporated</small></span>
+        </a>
+        <nav class="main-nav" id="main-navigation" data-nav aria-label="Primary navigation">
+          <a href="/">Overview</a>
+          <a href="/projects">Projects</a>
+          <a href="/members">Members</a>
+          <a class="active" href="/activity" aria-current="page">Activity</a>
+          <a href="/migration">Migration</a>
+          <a
+            class="icon-link"
+            href="https://gitlab.com/international-duck-incorporated"
+            target="_blank"
+            rel="noreferrer"
+            aria-label="International Duck Incorporated on GitLab"
+            ><svg><use href="#i-gitlab" /></svg
+          ></a>
+          <a href="/noosphere">Noosphere</a>
+        </nav>
+        <button
+          class="menu-button"
+          type="button"
+          data-menu
+          aria-label="Open navigation"
+          aria-controls="main-navigation"
+          aria-expanded="false"
+        >
+          <svg class="menu-open"><use href="#i-menu" /></svg
+          ><svg class="menu-close"><use href="#i-close" /></svg>
+        </button>
       </div>
+    </header>
 
-      <div class="activity-grid activity-orgs">
+    <main id="main" class="subpage-main">
+      <section class="shell">
+        <header class="subpage-heading reveal">
+          <div class="breadcrumbs">
+            <a href="/">International Duck</a><span>/</span><b>Activity</b>
+          </div>
+          <span class="eyebrow">Live GitLab commits</span>
+          <h1>Activity.</h1>
+          <p>
+            Commits from every public project and member, pulled live from GitLab. GitLab is IDI's
+            active source of truth for code, releases, issues, and project history.
+          </p>
+          <div class="directory-status">
+            <span class="status-pill green"
+              ><i></i><b data-activity-total>…</b>&nbsp;commits tracked</span
+            >
+            <span class="source-chip platform-chip gitlab"
+              ><svg><use href="#i-gitlab" /></svg> GitLab · main</span
+            >
+          </div>
+        </header>
+
+        <div class="platform-warning glass-card reveal" role="status">
+          <span class="platform-warning-mark" aria-hidden="true"></span>
+          <div>
+            <strong>GitHub data is currently unavailable</strong>
+            <p>
+              The International Duck GitHub organization is hidden/private from public view, so
+              GitHub APIs and mirror links may fail. GitHub data is intentionally not fetched here;
+              GitLab is the active source of truth.
+            </p>
+          </div>
+        </div>
+
+        <div class="activity-grid activity-orgs">
+          <div class="activity-card glass-card reveal">
+            <header>
+              <span
+                ><svg><use href="#i-gitlab" /></svg>GitLab organization
+                <em class="platform-badge gitlab">main</em></span
+              ><a
+                href="https://gitlab.com/international-duck-incorporated"
+                target="_blank"
+                rel="noreferrer"
+                >Open GitLab <svg><use href="#i-external" /></svg
+              ></a>
+            </header>
+            <div class="repo-list" data-activity-gitlab>
+              <a
+                ><i></i><span><b>Loading repositories…</b><small>GitLab API</small></span
+                ><code>•••••••</code></a
+              >
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="shell activity-section-block">
+        <header class="section-heading reveal">
+          <div>
+            <span class="eyebrow">Members</span>
+            <h2>Who shipped what.</h2>
+          </div>
+          <p>
+            Commits attributed to public members across GitLab, from the newest 100 commits per
+            repository.
+          </p>
+        </header>
+        <div class="member-activity-cards" data-activity-members>
+          <a class="person-card glass-card reveal"
+            ><picture
+              ><source srcset="/assets/org-avatar.webp?v=fff479ce" type="image/webp" />
+              <img
+                src="/assets/org-avatar.png?v=f3debf20"
+                alt=""
+                width="96"
+                height="96"
+                loading="lazy"
+                decoding="async"
+            /></picture>
+            <div>
+              <span>Public member</span>
+              <h3>Loading…</h3>
+              <p>Counting GitLab commits</p>
+            </div>
+            <svg><use href="#i-external" /></svg
+          ></a>
+        </div>
+        <p class="member-activity-summary" data-activity-member-summary></p>
+      </section>
+
+      <section class="shell activity-section-block">
+        <header class="section-heading reveal">
+          <div>
+            <span class="eyebrow">Timeline</span>
+            <h2>Latest commits.</h2>
+          </div>
+          <p>Newest changes across the public GitLab group, merged into one feed.</p>
+        </header>
         <div class="activity-card glass-card reveal">
-          <header><span><svg><use href="#i-gitlab"/></svg>GitLab organization <em class="platform-badge gitlab">main</em></span><a href="https://gitlab.com/international-duck-incorporated" target="_blank" rel="noreferrer">Open GitLab <svg><use href="#i-external"/></svg></a></header>
-          <div class="repo-list" data-activity-gitlab><a><i></i><span><b>Loading repositories…</b><small>GitLab API</small></span><code>•••••••</code></a></div>
+          <header>
+            <span
+              ><svg><use href="#i-commit" /></svg>GitLab feed</span
+            ><a
+              href="https://gitlab.com/international-duck-incorporated"
+              target="_blank"
+              rel="noreferrer"
+              >GitLab group <svg><use href="#i-external" /></svg
+            ></a>
+          </header>
+          <div class="commit-list feed-list" data-activity-feed>
+            <a
+              ><i></i><span><b>Loading commits…</b><small>GitLab · main</small></span
+              ><code>•••••••</code></a
+            >
+          </div>
         </div>
-      </div>
-    </section>
+        <p class="activity-note reveal">
+          Some authors (aurickk, KaPlayz) are historical upstream contributors to OpSec, the project
+          NullTrace forked from - they are collected under "upstream contributors" rather than
+          counted as members. Automation accounts are counted separately.
+        </p>
+      </section>
 
-    <section class="shell activity-section-block">
-      <header class="section-heading reveal">
-        <div><span class="eyebrow">Members</span><h2>Who shipped what.</h2></div>
-        <p>Commits attributed to public members across GitLab, from the newest 100 commits per repository.</p>
-      </header>
-      <div class="member-activity-cards" data-activity-members>
-        <a class="person-card glass-card reveal"><picture><source srcset="/assets/org-avatar.webp?v=fff479ce" type="image/webp"><img src="/assets/org-avatar.png?v=f3debf20" alt="" width="96" height="96" loading="lazy" decoding="async"></picture><div><span>Public member</span><h3>Loading…</h3><p>Counting GitLab commits</p></div><svg><use href="#i-external"/></svg></a>
-      </div>
-      <p class="member-activity-summary" data-activity-member-summary></p>
-    </section>
-
-    <section class="shell activity-section-block">
-      <header class="section-heading reveal">
-        <div><span class="eyebrow">Timeline</span><h2>Latest commits.</h2></div>
-        <p>Newest changes across the public GitLab group, merged into one feed.</p>
-      </header>
-      <div class="activity-card glass-card reveal">
-        <header><span><svg><use href="#i-commit"/></svg>GitLab feed</span><a href="https://gitlab.com/international-duck-incorporated" target="_blank" rel="noreferrer">GitLab group <svg><use href="#i-external"/></svg></a></header>
-        <div class="commit-list feed-list" data-activity-feed>
-          <a><i></i><span><b>Loading commits…</b><small>GitLab · main</small></span><code>•••••••</code></a>
+      <section
+        class="shell activity-section-block reveal"
+        aria-labelledby="activity-about-heading"
+        data-seo-enriched
+      >
+        <header class="section-heading">
+          <div>
+            <span class="eyebrow">Scope</span>
+            <h2 id="activity-about-heading">What this page tracks.</h2>
+          </div>
+          <p>
+            Every public repository in the GitLab group, and the newest 100 commits per repository.
+          </p>
+        </header>
+        <div class="activity-note reveal">
+          <p>
+            The feed covers <a href="/projects/beacon">Beacon</a>,
+            <a href="/projects/venomous">Venomous</a>, <a href="/projects/nulltrace">NullTrace</a>,
+            <a href="/projects/championscode">ChampionsCode</a>,
+            <a href="/projects/bagley">Bagley</a>, <a href="/projects/zonedout">ZonedOut</a> and
+            <a href="/projects/website">this website</a>. Commits are attributed to the six public
+            members where the author identity matches a checked-in alias table; upstream OpSec
+            contributors and automation accounts are bucketed separately.
+          </p>
+          <p>
+            The former GitHub organization is currently hidden/private, so GitHub API and mirror
+            data are intentionally excluded. If GitLab's API is unavailable, this page keeps its
+            checked-in member roster and explanatory content while showing a source-status notice.
+          </p>
         </div>
-      </div>
-      <p class="activity-note reveal">Some authors (aurickk, KaPlayz) are historical upstream contributors to OpSec, the project NullTrace forked from - they are collected under "upstream contributors" rather than counted as members. Automation accounts are counted separately.</p>
-    </section>
+      </section>
+    </main>
 
-    <section class="shell activity-section-block reveal" aria-labelledby="activity-about-heading" data-seo-enriched>
-      <header class="section-heading">
-        <div><span class="eyebrow">Scope</span><h2 id="activity-about-heading">What this page tracks.</h2></div>
-        <p>Every public repository in the GitLab group, and the newest 100 commits per repository.</p>
-      </header>
-      <div class="activity-note reveal">
-        <p>The feed covers <a href="/projects/beacon">Beacon</a>, <a href="/projects/venomous">Venomous</a>, <a href="/projects/nulltrace">NullTrace</a>, <a href="/projects/championscode">ChampionsCode</a>, <a href="/projects/bagley">Bagley</a>, <a href="/projects/zonedout">ZonedOut</a> and <a href="/projects/website">this website</a>. Commits are attributed to the six public members where the author identity matches a checked-in alias table; upstream OpSec contributors and automation accounts are bucketed separately.</p>
-        <p>The former GitHub organization is currently hidden/private, so GitHub API and mirror data are intentionally excluded. If GitLab's API is unavailable, this page keeps its checked-in member roster and explanatory content while showing a source-status notice.</p>
+    <footer class="site-footer">
+      <div class="shell footer-inner">
+        <a class="brand" href="/"
+          ><img
+            data-org-avatar
+            src="/assets/org-avatar.webp?v=fff479ce"
+            alt=""
+            width="40"
+            height="40"
+            decoding="async"
+          /><span><b>International Duck</b><small>Incorporated</small></span></a
+        >
+        <nav>
+          <a href="/">Overview</a><a href="/projects">Projects</a><a href="/members">Members</a
+          ><a class="active" href="/activity">Activity</a><a href="/migration">Migration</a
+          ><a
+            class="icon-link"
+            href="https://gitlab.com/international-duck-incorporated"
+            target="_blank"
+            rel="noreferrer"
+            >GitLab</a
+          ><a href="/noosphere">Noosphere</a><a href="mailto:0xffshell@duck.com">Contact</a
+          ><a href="/glyphsmith">Glyphsmith</a><a href="/changelog">Changelog</a>
+        </nav>
+        <span class="sync-state"><i></i><span data-sync-text>GitLab (main) · syncing…</span></span>
       </div>
-    </section>
-  </main>
-
-  <footer class="site-footer">
-    <div class="shell footer-inner">
-      <a class="brand" href="/"><img data-org-avatar src="/assets/org-avatar.webp?v=fff479ce" alt="" width="40" height="40" decoding="async"><span><b>International Duck</b><small>Incorporated</small></span></a>
-      <nav><a href="/">Overview</a><a href="/projects">Projects</a><a href="/members">Members</a><a class="active" href="/activity">Activity</a><a href="/migration">Migration</a><a class="icon-link" href="https://gitlab.com/international-duck-incorporated" target="_blank" rel="noreferrer">GitLab</a><a href="/noosphere">Noosphere</a><a href="mailto:0xffshell@duck.com">Contact</a><a href="/glyphsmith">Glyphsmith</a><a href="/changelog">Changelog</a></nav>
-      <span class="sync-state"><i></i><span data-sync-text>GitLab (main) · syncing…</span></span>
-    </div>
-  </footer>
-</body>
+    </footer>
+  </body>
 </html>

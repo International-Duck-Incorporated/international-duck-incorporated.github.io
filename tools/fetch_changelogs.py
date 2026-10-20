@@ -44,7 +44,8 @@ DATE = re.compile(r"\b(20\d{2}-\d{2}-\d{2})\b")
 def curl(url: str) -> str | None:
     result = subprocess.run(
         ["curl", "-sS", "--max-time", "60", "-w", "\n%{http_code}", url],
-        capture_output=True, text=True,
+        capture_output=True,
+        text=True,
     )
     if result.returncode != 0:
         raise SystemExit(f"network error fetching {url}: {result.stderr.strip()}")
@@ -77,7 +78,7 @@ def split_heading(text: str) -> tuple[str, str | None, str | None]:
     remainder = text
     bracket = re.match(r"\[[^\]]+\]", remainder)
     if bracket:
-        remainder = remainder[bracket.end():]
+        remainder = remainder[bracket.end() :]
     remainder = DATE.sub("", remainder).strip(" -—–")
     if remainder:
         title = remainder
@@ -90,7 +91,7 @@ def parse_changelog(text: str) -> list[dict]:
     """Parse a markdown changelog into versions with sections and items."""
     versions: list[dict] = []
     sections: list[dict] = []
-    items: list[dict] = []          # stack; only one nesting level is kept
+    items: list[dict] = []  # stack; only one nesting level is kept
     current_section: dict | None = None
     buf: list[str] = []
 
@@ -116,14 +117,16 @@ def parse_changelog(text: str) -> list[dict]:
 
     for raw_line in text.splitlines():
         line = raw_line.rstrip()
-        if re.match(r"^#\s", line):          # document title
+        if re.match(r"^#\s", line):  # document title
             continue
         if re.match(r"^##\s", line):
             flush()
             items = []
             version, when, title = split_heading(line[3:].strip())
             sections = []
-            versions.append({"version": version, "date": when, "title": title, "sections": sections})
+            versions.append(
+                {"version": version, "date": when, "title": title, "sections": sections}
+            )
             current_section = None
             continue
         if re.match(r"^###\s", line):
@@ -172,7 +175,9 @@ def releases_for(project_id: str) -> dict[str, dict]:
         out[normalised] = {
             "tag": tag,
             "date": (release.get("released_at") or "")[:10],
-            "url": f"https://gitlab.com/{release['_links']['self'].split('/projects/')[0]}" if False else None,
+            "url": f"https://gitlab.com/{release['_links']['self'].split('/projects/')[0]}"
+            if False
+            else None,
             "release_url": None,
         }
     return out
@@ -195,8 +200,12 @@ def main() -> int:
             print(f"warning: {name} has no CHANGELOG.md on main - skipped", file=sys.stderr)
             continue
 
-        releases = {r["tag_name"].lstrip("v"): r for r in
-                    api_json(f"https://gitlab.com/api/v4/projects/{project_id}/releases?per_page=100")}
+        releases = {
+            r["tag_name"].lstrip("v"): r
+            for r in api_json(
+                f"https://gitlab.com/api/v4/projects/{project_id}/releases?per_page=100"
+            )
+        }
         versions = parse_changelog(changelog)
         for version in versions:
             release = releases.get(version["version"].lstrip("v"))
@@ -208,7 +217,9 @@ def main() -> int:
                 version["release_url"] = release["_links"]["self"]
                 version["date"] = version["date"] or (release.get("released_at") or "")[:10]
                 version["tag"] = release["tag_name"]
-                version["downloads"] = [a["name"] for a in release.get("assets", {}).get("links", [])]
+                version["downloads"] = [
+                    a["name"] for a in release.get("assets", {}).get("links", [])
+                ]
 
         snapshot_projects.append(
             {
@@ -231,8 +242,10 @@ def main() -> int:
     out = Path(args.out)
     out.parent.mkdir(parents=True, exist_ok=True)
     out.write_text(json.dumps(snapshot, indent=1, ensure_ascii=False) + "\n", encoding="utf-8")
-    print(f"{out}: {sum(len(p['versions']) for p in snapshot_projects)} version sections "
-          f"across {len(snapshot_projects)} projects")
+    print(
+        f"{out}: {sum(len(p['versions']) for p in snapshot_projects)} version sections "
+        f"across {len(snapshot_projects)} projects"
+    )
     return 0
 
 

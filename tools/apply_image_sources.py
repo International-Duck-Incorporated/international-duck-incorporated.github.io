@@ -58,12 +58,10 @@ def rewrite(root: Path, source: str) -> tuple[str, int, int]:
         if "data-org-avatar" in tag:
             swapped += 1
             return tag.replace(found.group(0), f'src="{sibling}"')
-        if WRAPPED.search(source[max(0, match.start() - 200):match.start()]):
+        if WRAPPED.search(source[max(0, match.start() - 200) : match.start()]):
             return tag
         wrapped += 1
-        return (
-            f'<picture><source srcset="{sibling}" type="image/webp">{tag}</picture>'
-        )
+        return f'<picture><source srcset="{sibling}" type="image/webp">{tag}</picture>'
 
     return IMG.sub(fix, source), wrapped, swapped
 

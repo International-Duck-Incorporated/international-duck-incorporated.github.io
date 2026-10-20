@@ -14,7 +14,8 @@
   const ctx = canvas.getContext("2d");
   const reduceMotion = matchMedia("(prefers-reduced-motion: reduce)").matches;
 
-  const glyphs = "アイウエオカキクケコサシスセソタチツテトナニヌネノ0123456789ABCDEF01<>/\\{}[]$#*+=".split("");
+  const glyphs =
+    "アイウエオカキクケコサシスセソタチツテトナニヌネノ0123456789ABCDEF01<>/\\{}[]$#*+=".split("");
   const fontSize = 15;
   const frameMs = 66;
 
@@ -29,7 +30,9 @@
     h = canvas.height = window.innerHeight;
     const columns = Math.ceil(w / fontSize);
     // spread drops across the whole viewport so rain is present immediately
-    drops = Array.from({ length: columns }, () => Math.floor((Math.random() * 3 - 1) * h / fontSize));
+    drops = Array.from({ length: columns }, () =>
+      Math.floor(((Math.random() * 3 - 1) * h) / fontSize)
+    );
     ctx.fillStyle = `rgb(${FADE})`;
     ctx.fillRect(0, 0, w, h);
     ctx.font = `${fontSize}px ui-monospace, Menlo, Consolas, monospace`;
@@ -41,7 +44,11 @@
     reset();
     const rows = Math.ceil(h / fontSize);
     for (let i = 0; i < drops.length; i++) {
-      for (let j = Math.floor(Math.random() * rows * 0.4); j < rows; j += 2 + Math.floor(Math.random() * 5)) {
+      for (
+        let j = Math.floor(Math.random() * rows * 0.4);
+        j < rows;
+        j += 2 + Math.floor(Math.random() * 5)
+      ) {
         ctx.fillStyle = BODY(0.16 + Math.random() * 0.2);
         ctx.fillText(glyphs[(Math.random() * glyphs.length) | 0], i * fontSize, j * fontSize);
       }

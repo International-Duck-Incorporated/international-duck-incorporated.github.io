@@ -1,344 +1,689 @@
 <!doctype html>
 <html lang="en" data-frame="video" data-wordmark="yes">
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="google-site-verification" content="mTVDuZwDGzMt0hr_ijsB2wvrHhHr_iVyjp4p_nGZPg4">
-  <meta name="google-site-verification" content="46OeE3b3Frg25pdtqHZv8lo9HUGbOfyooYH92WCnu6s" />
-  <script>
-    (() => {
-      const nav = navigator;
-      const connection = nav.connection || nav.mozConnection || nav.webkitConnection;
-      const lowEnd = Boolean(
-        (connection && connection.saveData) ||
-        (connection && /^(slow-2g|2g)$/.test(connection.effectiveType || "")) ||
-        (typeof nav.deviceMemory === "number" && nav.deviceMemory <= 4) ||
-        (typeof nav.hardwareConcurrency === "number" && nav.hardwareConcurrency <= 4)
-      );
-      window.IDI_LOW_END = lowEnd;
-      window.IDI_REDUCED_MOTION = Boolean(
-        window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches
-      );
-      if (lowEnd) document.documentElement.classList.add("low-end");
-    })();
-  </script>
-  <script>
-    // This visit's backdrop, picked before the stylesheet is applied - the hero
-    // copy follows the backdrop (clips park it top-left, stills bottom-right),
-    // so deciding it in easteregg.js after the first layout moved a visible copy
-    // and cost the homepage CLS 0.21. Deciding here means the copy is laid out
-    // once, in its final place, and paints with the first frame.
-    //
-    // Layout fields only: kind, whether the media already carries the wordmark,
-    // and the object-position it wants. easteregg.js holds the payload (source,
-    // label, holdAt) for the same index and mounts whatever is picked here; keep
-    // the two lists index-aligned. The static data-frame/data-wordmark on <html>
-    // above are the no-JS default and match entry 0.
-    (() => {
-      const BACKDROPS = [
-        ["video", "yes", "50% 47%"],   // easteregg-video-2.webm
-        ["video", "yes", "100% 42%"],  // easteregg-video-3.webm
-        ["video", "yes", "50% 50%"],   // video3.webm
-        ["video", "yes", "50% 50%"],   // video4.webm
-        ["image", "yes", "50% 42%"],   // homepage-community-background-v4.webp
-        ["image", "no", "46% 54%"],    // idi-member-collage.webp
-        ["video", "yes", "50% 50%"],   // video5.webm (appended)
-        ["video", "yes", "50% 50%"],   // video6.webm (appended)
-        ["blocks", "no", "50% 50%"],   // block-field.js: live WebGL block field
-        ["video", "yes", "50% 50%"],   // video7.webm (appended)
-        ["video", "yes", "50% 50%"],   // easteregg-video.webm (standard rotation)
-        ["video", "yes", "50% 50%"],   // video8.webm (appended)
-        ["video", "yes", "50% 42%"],   // video9.webm (appended)
-        ["video", "yes", "50% 50%"],   // video10.webm (appended)
-        ["video", "yes", "50% 50%"],   // video11.webm (appended)
-        ["video", "yes", "50% 50%"],   // video12.webm (appended)
-        ["video", "yes", "50% 50%"],   // video13.webm (appended)
-        ["image", "yes", "50% 50%"],   // epic_idi_logo.png (rare only)
-      ];
-      const RARE_LOGO_INDEX = BACKDROPS.length - 1;
-      const STILLS = [4, 5];
-      const normalIndices = BACKDROPS.slice(0, RARE_LOGO_INDEX).map((_, index) => index);
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="google-site-verification" content="mTVDuZwDGzMt0hr_ijsB2wvrHhHr_iVyjp4p_nGZPg4" />
+    <meta name="google-site-verification" content="46OeE3b3Frg25pdtqHZv8lo9HUGbOfyooYH92WCnu6s" />
+    <script>
+      (() => {
+        const nav = navigator;
+        const connection = nav.connection || nav.mozConnection || nav.webkitConnection;
+        const lowEnd = Boolean(
+          (connection && connection.saveData) ||
+            (connection && /^(slow-2g|2g)$/.test(connection.effectiveType || "")) ||
+            (typeof nav.deviceMemory === "number" && nav.deviceMemory <= 4) ||
+            (typeof nav.hardwareConcurrency === "number" && nav.hardwareConcurrency <= 4)
+        );
+        window.IDI_LOW_END = lowEnd;
+        window.IDI_REDUCED_MOTION = Boolean(
+          window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches
+        );
+        if (lowEnd) document.documentElement.classList.add("low-end");
+      })();
+    </script>
+    <script>
+      // This visit's backdrop, picked before the stylesheet is applied - the hero
+      // copy follows the backdrop (clips park it top-left, stills bottom-right),
+      // so deciding it in easteregg.js after the first layout moved a visible copy
+      // and cost the homepage CLS 0.21. Deciding here means the copy is laid out
+      // once, in its final place, and paints with the first frame.
+      //
+      // Layout fields only: kind, whether the media already carries the wordmark,
+      // and the object-position it wants. easteregg.js holds the payload (source,
+      // label, holdAt) for the same index and mounts whatever is picked here; keep
+      // the two lists index-aligned. The static data-frame/data-wordmark on <html>
+      // above are the no-JS default and match entry 0.
+      (() => {
+        const BACKDROPS = [
+          ["video", "yes", "50% 47%"], // easteregg-video-2.webm
+          ["video", "yes", "100% 42%"], // easteregg-video-3.webm
+          ["video", "yes", "50% 50%"], // video3.webm
+          ["video", "yes", "50% 50%"], // video4.webm
+          ["image", "yes", "50% 42%"], // homepage-community-background-v4.webp
+          ["image", "no", "46% 54%"], // idi-member-collage.webp
+          ["video", "yes", "50% 50%"], // video5.webm (appended)
+          ["video", "yes", "50% 50%"], // video6.webm (appended)
+          ["blocks", "no", "50% 50%"], // block-field.js: live WebGL block field
+          ["video", "yes", "50% 50%"], // video7.webm (appended)
+          ["video", "yes", "50% 50%"], // easteregg-video.webm (standard rotation)
+          ["video", "yes", "50% 50%"], // video8.webm (appended)
+          ["video", "yes", "50% 42%"], // video9.webm (appended)
+          ["video", "yes", "50% 50%"], // video10.webm (appended)
+          ["video", "yes", "50% 50%"], // video11.webm (appended)
+          ["video", "yes", "50% 50%"], // video12.webm (appended)
+          ["video", "yes", "50% 50%"], // video13.webm (appended)
+          ["image", "yes", "50% 50%"], // epic_idi_logo.png (rare only)
+        ];
+        const RARE_LOGO_INDEX = BACKDROPS.length - 1;
+        const STILLS = [4, 5];
+        const normalIndices = BACKDROPS.slice(0, RARE_LOGO_INDEX).map((_, index) => index);
 
-      // The epic logo is exactly 1/1000 on every homepage visit. (The original
-      // video egg used to take the next roll; it is a standard rotation pick now.)
-      const rareRoll = Math.floor(Math.random() * 1000);
-      window.IDI_RARE_EVENT = rareRoll === 0 ? "epic-logo" : "";
+        // The epic logo is exactly 1/1000 on every homepage visit. (The original
+        // video egg used to take the next roll; it is a standard rotation pick now.)
+        const rareRoll = Math.floor(Math.random() * 1000);
+        window.IDI_RARE_EVENT = rareRoll === 0 ? "epic-logo" : "";
 
-      const pool = window.IDI_LOW_END ? [4] : window.IDI_REDUCED_MOTION ? STILLS : normalIndices;
-      let normalIndex = pool[Math.floor(Math.random() * pool.length)];
-      try {
-        // Same rotation rule as easteregg.js: never the same ordinary backdrop
-        // twice in a row. Rare one-off backgrounds do not consume the rotation.
-        const stored = localStorage.getItem("idi-bg-last-index");
-        const last = stored === null ? -1 : Number(stored);
-        if (pool.length > 1 && normalIndex === last) {
-          normalIndex = pool[(pool.indexOf(normalIndex) + 1) % pool.length];
-        }
-        if (!window.IDI_RARE_EVENT) localStorage.setItem("idi-bg-last-index", String(normalIndex));
-      } catch {}
+        const pool = window.IDI_LOW_END ? [4] : window.IDI_REDUCED_MOTION ? STILLS : normalIndices;
+        let normalIndex = pool[Math.floor(Math.random() * pool.length)];
+        try {
+          // Same rotation rule as easteregg.js: never the same ordinary backdrop
+          // twice in a row. Rare one-off backgrounds do not consume the rotation.
+          const stored = localStorage.getItem("idi-bg-last-index");
+          const last = stored === null ? -1 : Number(stored);
+          if (pool.length > 1 && normalIndex === last) {
+            normalIndex = pool[(pool.indexOf(normalIndex) + 1) % pool.length];
+          }
+          if (!window.IDI_RARE_EVENT)
+            localStorage.setItem("idi-bg-last-index", String(normalIndex));
+        } catch {}
 
-      const index = window.IDI_RARE_EVENT === "epic-logo" ? RARE_LOGO_INDEX : normalIndex;
-      let [kind, wordmark, focus] = BACKDROPS[index];
-      const root = document.documentElement;
-      root.dataset.frame = kind;
-      root.dataset.wordmark = wordmark;
-      root.style.setProperty("--focus", focus);
-      // easteregg.js mounts this index; rare events are handled before its fallback roll.
-      window.IDI_BACKDROP = index;
-    })();
-  </script>
-  <link rel="preconnect" href="https://gitlab.com" crossorigin>
-  <link rel="preconnect" href="https://gitlab.com">
-  <link rel="dns-prefetch" href="https://gitlab.com">
-  <meta name="theme-color" content="#07090d">
-  <meta property="og:image" content="https://idi-official.pages.dev/assets/og-default.png">
-  <title>International Duck - free Minecraft mods and tools</title>
-  <meta name="description" content="Open-source Minecraft mods and tools from International Duck Incorporated: the 56-module Beacon, Venomous, NullTrace and more, all free on GitLab.">
-  <link rel="canonical" href="https://idi-official.pages.dev/">
-  <meta property="og:type" content="website">
-  <meta property="og:title" content="International Duck - free Minecraft mods and tools">
-  <meta property="og:description" content="Free, open-source Minecraft mods and Fabric client tools, built in public on GitLab.">
-  <meta property="og:url" content="https://idi-official.pages.dev/">
-  <meta property="og:site_name" content="International Duck Incorporated">
-  <meta property="og:locale" content="en_US">
-  <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="International Duck - free Minecraft mods and tools">
-  <meta name="twitter:description" content="Free, open-source Minecraft mods and Fabric client tools, built in public on GitLab.">
-  <link rel="icon" href="/assets/org-avatar.png?v=f3debf20" type="image/png">
-  <link rel="stylesheet" href="/css/bundle.css?v=1f263d21">
-  <script src="/script.js?v=ffe97c4c" defer></script>
-  <script src="/pixel-canvas.js?v=9d12b50d" defer></script>
-  <script src="/block-field.js?v=955031dd" defer></script>
-  <script src="/easteregg.js?v=b5771a31" defer></script>
-  <meta property="og:image:width" content="1200">
-  <meta property="og:image:height" content="630">
-  <meta property="og:image:alt" content="International Duck Incorporated - open-source Minecraft mods, tools and experiments">
-  <meta name="twitter:image" content="https://idi-official.pages.dev/assets/og-default.png">
-  <script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@graph": [
-    {
-      "@type": "Organization",
-      "@id": "https://idi-official.pages.dev/#organization",
-      "name": "International Duck Incorporated",
-      "alternateName": "IDI",
-      "url": "https://idi-official.pages.dev/",
-      "logo": {
-        "@type": "ImageObject",
-        "url": "https://idi-official.pages.dev/assets/org-avatar.png"
-      },
-      "image": "https://idi-official.pages.dev/assets/og-default.png",
-      "description": "Open-source collective building Minecraft mods, tools and experiments in public. GitLab is the active source of truth; the former GitHub organization is currently hidden from public view.",
-      "sameAs": [
-        "https://gitlab.com/international-duck-incorporated"
-      ],
-      "knowsAbout": [
-        "Minecraft mods",
-        "Fabric modding",
-        "Minecraft client utilities",
-        "open source"
-      ]
-    },
-    {
-      "@type": "WebSite",
-      "@id": "https://idi-official.pages.dev/#website",
-      "url": "https://idi-official.pages.dev/",
-      "name": "International Duck Incorporated",
-      "inLanguage": "en",
-      "publisher": {
-        "@id": "https://idi-official.pages.dev/#organization"
+        const index = window.IDI_RARE_EVENT === "epic-logo" ? RARE_LOGO_INDEX : normalIndex;
+        let [kind, wordmark, focus] = BACKDROPS[index];
+        const root = document.documentElement;
+        root.dataset.frame = kind;
+        root.dataset.wordmark = wordmark;
+        root.style.setProperty("--focus", focus);
+        // easteregg.js mounts this index; rare events are handled before its fallback roll.
+        window.IDI_BACKDROP = index;
+      })();
+    </script>
+    <link rel="preconnect" href="https://gitlab.com" crossorigin />
+    <link rel="preconnect" href="https://gitlab.com" />
+    <link rel="dns-prefetch" href="https://gitlab.com" />
+    <meta name="theme-color" content="#07090d" />
+    <meta property="og:image" content="https://idi-official.pages.dev/assets/og-default.png" />
+    <title>International Duck - free Minecraft mods and tools</title>
+    <meta
+      name="description"
+      content="Open-source Minecraft mods and tools from International Duck Incorporated: the 56-module Beacon, Venomous, NullTrace and more, all free on GitLab."
+    />
+    <link rel="canonical" href="https://idi-official.pages.dev/" />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="International Duck - free Minecraft mods and tools" />
+    <meta
+      property="og:description"
+      content="Free, open-source Minecraft mods and Fabric client tools, built in public on GitLab."
+    />
+    <meta property="og:url" content="https://idi-official.pages.dev/" />
+    <meta property="og:site_name" content="International Duck Incorporated" />
+    <meta property="og:locale" content="en_US" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="International Duck - free Minecraft mods and tools" />
+    <meta
+      name="twitter:description"
+      content="Free, open-source Minecraft mods and Fabric client tools, built in public on GitLab."
+    />
+    <link rel="icon" href="/assets/org-avatar.png?v=f3debf20" type="image/png" />
+    <link rel="stylesheet" href="/css/bundle.css?v=583143c6" />
+    <script src="/script.js?v=0443d2ee" defer></script>
+    <script src="/pixel-canvas.js?v=8f2c93f3" defer></script>
+    <script src="/block-field.js?v=c77a5988" defer></script>
+    <script src="/easteregg.js?v=8e387497" defer></script>
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta
+      property="og:image:alt"
+      content="International Duck Incorporated - open-source Minecraft mods, tools and experiments"
+    />
+    <meta name="twitter:image" content="https://idi-official.pages.dev/assets/og-default.png" />
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@graph": [
+          {
+            "@type": "Organization",
+            "@id": "https://idi-official.pages.dev/#organization",
+            "name": "International Duck Incorporated",
+            "alternateName": "IDI",
+            "url": "https://idi-official.pages.dev/",
+            "logo": {
+              "@type": "ImageObject",
+              "url": "https://idi-official.pages.dev/assets/org-avatar.png"
+            },
+            "image": "https://idi-official.pages.dev/assets/og-default.png",
+            "description": "Open-source collective building Minecraft mods, tools and experiments in public. GitLab is the active source of truth; the former GitHub organization is currently hidden from public view.",
+            "sameAs": ["https://gitlab.com/international-duck-incorporated"],
+            "knowsAbout": [
+              "Minecraft mods",
+              "Fabric modding",
+              "Minecraft client utilities",
+              "open source"
+            ]
+          },
+          {
+            "@type": "WebSite",
+            "@id": "https://idi-official.pages.dev/#website",
+            "url": "https://idi-official.pages.dev/",
+            "name": "International Duck Incorporated",
+            "inLanguage": "en",
+            "publisher": {
+              "@id": "https://idi-official.pages.dev/#organization"
+            }
+          },
+          {
+            "@type": "WebPage",
+            "@id": "https://idi-official.pages.dev/#webpage",
+            "url": "https://idi-official.pages.dev/",
+            "name": "International Duck Incorporated",
+            "description": "International Duck Incorporated - public projects and members, synchronized with GitLab.",
+            "isPartOf": {
+              "@id": "https://idi-official.pages.dev/#website"
+            },
+            "about": {
+              "@id": "https://idi-official.pages.dev/#organization"
+            },
+            "inLanguage": "en",
+            "primaryImageOfPage": {
+              "@type": "ImageObject",
+              "url": "https://idi-official.pages.dev/assets/og-default.png"
+            },
+            "breadcrumb": {
+              "@id": "https://idi-official.pages.dev/#breadcrumb"
+            }
+          },
+          {
+            "@type": "BreadcrumbList",
+            "@id": "https://idi-official.pages.dev/#breadcrumb",
+            "itemListElement": [
+              {
+                "@type": "ListItem",
+                "position": 1,
+                "name": "International Duck Incorporated",
+                "item": "https://idi-official.pages.dev/"
+              }
+            ]
+          }
+        ]
       }
-    },
-    {
-      "@type": "WebPage",
-      "@id": "https://idi-official.pages.dev/#webpage",
-      "url": "https://idi-official.pages.dev/",
-      "name": "International Duck Incorporated",
-      "description": "International Duck Incorporated - public projects and members, synchronized with GitLab.",
-      "isPartOf": {
-        "@id": "https://idi-official.pages.dev/#website"
-      },
-      "about": {
-        "@id": "https://idi-official.pages.dev/#organization"
-      },
-      "inLanguage": "en",
-      "primaryImageOfPage": {
-        "@type": "ImageObject",
-        "url": "https://idi-official.pages.dev/assets/og-default.png"
-      },
-      "breadcrumb": {
-        "@id": "https://idi-official.pages.dev/#breadcrumb"
-      }
-    },
-    {
-      "@type": "BreadcrumbList",
-      "@id": "https://idi-official.pages.dev/#breadcrumb",
-      "itemListElement": [
-        {
-          "@type": "ListItem",
-          "position": 1,
-          "name": "International Duck Incorporated",
-          "item": "https://idi-official.pages.dev/"
-        }
-      ]
-    }
-  ]
-}
-  </script>
-</head>
-<body data-page="organization">
-  <svg class="svg-sprite" aria-hidden="true">
-    <symbol id="i-arrow" viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></symbol>
-    <symbol id="i-external" viewBox="0 0 24 24"><path d="M14 5h5v5M19 5l-9 9M18 13v6H5V6h6"/></symbol><symbol id="i-gitlab" viewBox="0 0 24 24"><path fill="currentColor" stroke="none" d="m23.6004 9.5927-.0337-.0862L20.3.9814a.851.851 0 0 0-.3362-.405.8748.8748 0 0 0-.9997.0539.8748.8748 0 0 0-.29.4399l-2.2055 6.748H7.5375l-2.2057-6.748a.8573.8573 0 0 0-.29-.4412.8748.8748 0 0 0-.9997-.0537.8585.8585 0 0 0-.3362.4049L.4332 9.5015l-.0325.0862a6.0657 6.0657 0 0 0 2.0119 7.0105l.0113.0087.03.0213 4.976 3.7264 2.462 1.8633 1.4995 1.1321a1.0085 1.0085 0 0 0 1.2197 0l1.4995-1.1321 2.4619-1.8633 5.006-3.7489.0125-.01a6.0682 6.0682 0 0 0 2.0094-7.003z"/></symbol>
-    <symbol id="i-code" viewBox="0 0 24 24"><path d="m8 5-6 7 6 7M16 5l6 7-6 7M14 3l-4 18"/></symbol>
-    <symbol id="i-users" viewBox="0 0 24 24"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2M9 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8ZM22 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></symbol>
-    <symbol id="i-repo" viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20V3H6.5A2.5 2.5 0 0 0 4 5.5zM4 5.5v14M8 7h8"/></symbol>
-    <symbol id="i-star" viewBox="0 0 24 24"><path d="m12 2 3 6 7 .9-5 4.8 1.3 7-6.3-3.3-6.3 3.3 1.3-7-5-4.8L9 8z"/></symbol>
-    <symbol id="i-pulse" viewBox="0 0 24 24"><path d="M3 12h4l2-7 4 14 2-7h6"/></symbol>
-    <symbol id="i-menu" viewBox="0 0 24 24"><path d="M4 8h16M4 16h16"/></symbol>
-    <symbol id="i-close" viewBox="0 0 24 24"><path d="m5 5 14 14M19 5 5 19"/></symbol>
-  </svg>
+    </script>
+  </head>
+  <body data-page="organization">
+    <svg class="svg-sprite" aria-hidden="true">
+      <symbol id="i-arrow" viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6" /></symbol>
+      <symbol id="i-external" viewBox="0 0 24 24">
+        <path d="M14 5h5v5M19 5l-9 9M18 13v6H5V6h6" />
+      </symbol>
+      <symbol id="i-gitlab" viewBox="0 0 24 24">
+        <path
+          fill="currentColor"
+          stroke="none"
+          d="m23.6004 9.5927-.0337-.0862L20.3.9814a.851.851 0 0 0-.3362-.405.8748.8748 0 0 0-.9997.0539.8748.8748 0 0 0-.29.4399l-2.2055 6.748H7.5375l-2.2057-6.748a.8573.8573 0 0 0-.29-.4412.8748.8748 0 0 0-.9997-.0537.8585.8585 0 0 0-.3362.4049L.4332 9.5015l-.0325.0862a6.0657 6.0657 0 0 0 2.0119 7.0105l.0113.0087.03.0213 4.976 3.7264 2.462 1.8633 1.4995 1.1321a1.0085 1.0085 0 0 0 1.2197 0l1.4995-1.1321 2.4619-1.8633 5.006-3.7489.0125-.01a6.0682 6.0682 0 0 0 2.0094-7.003z"
+        />
+      </symbol>
+      <symbol id="i-code" viewBox="0 0 24 24">
+        <path d="m8 5-6 7 6 7M16 5l6 7-6 7M14 3l-4 18" />
+      </symbol>
+      <symbol id="i-users" viewBox="0 0 24 24">
+        <path
+          d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2M9 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8ZM22 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"
+        />
+      </symbol>
+      <symbol id="i-repo" viewBox="0 0 24 24">
+        <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20V3H6.5A2.5 2.5 0 0 0 4 5.5zM4 5.5v14M8 7h8" />
+      </symbol>
+      <symbol id="i-star" viewBox="0 0 24 24">
+        <path d="m12 2 3 6 7 .9-5 4.8 1.3 7-6.3-3.3-6.3 3.3 1.3-7-5-4.8L9 8z" />
+      </symbol>
+      <symbol id="i-pulse" viewBox="0 0 24 24"><path d="M3 12h4l2-7 4 14 2-7h6" /></symbol>
+      <symbol id="i-menu" viewBox="0 0 24 24"><path d="M4 8h16M4 16h16" /></symbol>
+      <symbol id="i-close" viewBox="0 0 24 24"><path d="m5 5 14 14M19 5 5 19" /></symbol>
+    </svg>
 
-  <a class="skip-link" href="#main">Skip to content</a>
-  <div class="site-glow site-glow-blue" aria-hidden="true"></div>
-  <div class="hero-scrim" aria-hidden="true"></div>
+    <a class="skip-link" href="#main">Skip to content</a>
+    <div class="site-glow site-glow-blue" aria-hidden="true"></div>
+    <div class="hero-scrim" aria-hidden="true"></div>
 
-  <header class="topbar" data-header>
-    <div class="shell topbar-inner">
-      <a class="brand" href="/" aria-label="International Duck Incorporated home">
-        <img data-org-avatar src="/assets/org-avatar.webp?v=fff479ce" alt="" width="40" height="40" decoding="async">
-        <span><b>International Duck</b><small>Incorporated</small></span>
-      </a>
-      <nav class="main-nav" id="main-navigation" data-nav aria-label="Primary navigation">
-        <a class="active" href="/" aria-current="page">Overview</a>
-        <a href="/projects">Projects</a>
-        <a href="/noosphere">Noosphere</a>
-        <a href="/members">Members</a>
-        <a href="/activity">Activity</a>
-        <a href="/migration">Migration</a>
-        <a class="icon-link" href="https://gitlab.com/international-duck-incorporated" target="_blank" rel="noreferrer" aria-label="International Duck Incorporated on GitLab"><svg><use href="#i-gitlab"/></svg></a>
-      </nav>
-      <button class="menu-button" type="button" data-menu aria-label="Open navigation" aria-controls="main-navigation" aria-expanded="false"><svg class="menu-open"><use href="#i-menu"/></svg><svg class="menu-close"><use href="#i-close"/></svg></button>
-    </div>
-  </header>
+    <header class="topbar" data-header>
+      <div class="shell topbar-inner">
+        <a class="brand" href="/" aria-label="International Duck Incorporated home">
+          <img
+            data-org-avatar
+            src="/assets/org-avatar.webp?v=fff479ce"
+            alt=""
+            width="40"
+            height="40"
+            decoding="async"
+          />
+          <span><b>International Duck</b><small>Incorporated</small></span>
+        </a>
+        <nav class="main-nav" id="main-navigation" data-nav aria-label="Primary navigation">
+          <a class="active" href="/" aria-current="page">Overview</a>
+          <a href="/projects">Projects</a>
+          <a href="/noosphere">Noosphere</a>
+          <a href="/members">Members</a>
+          <a href="/activity">Activity</a>
+          <a href="/migration">Migration</a>
+          <a
+            class="icon-link"
+            href="https://gitlab.com/international-duck-incorporated"
+            target="_blank"
+            rel="noreferrer"
+            aria-label="International Duck Incorporated on GitLab"
+            ><svg><use href="#i-gitlab" /></svg
+          ></a>
+        </nav>
+        <button
+          class="menu-button"
+          type="button"
+          data-menu
+          aria-label="Open navigation"
+          aria-controls="main-navigation"
+          aria-expanded="false"
+        >
+          <svg class="menu-open"><use href="#i-menu" /></svg
+          ><svg class="menu-close"><use href="#i-close" /></svg>
+        </button>
+      </div>
+    </header>
 
-  <main id="main">
-    <!-- Hero copy. Its position is set by the backdrop: videos park it top-left,
+    <main id="main">
+      <!-- Hero copy. Its position is set by the backdrop: videos park it top-left,
          stills bottom-right (see the adaptive block in css/overrides.css).
          The <h1> hides when the backdrop already shows the name. -->
-    <section class="org-hero shell">
-      <div class="org-hero-copy reveal">
-        <h1>International Duck <span>Incorporated.</span></h1>
-        <p>Public projects, releases, and members, synchronized directly with GitLab.</p>
-        <div class="action-row">
-          <a class="button button-blue" href="/projects"><pixel-canvas data-gap="6" data-speed="35" data-colors="#dcecff, #8ab8f6, #4a7fc0"></pixel-canvas>Explore projects <svg><use href="#i-arrow"/></svg></a>
-          <a class="button button-glass" href="https://gitlab.com/international-duck-incorporated" target="_blank" rel="noreferrer"><pixel-canvas data-gap="6" data-speed="35" data-colors="#dcecff, #8ab8f6, #4a7fc0"></pixel-canvas><svg><use href="#i-gitlab"/></svg>Open GitLab</a>
-        </div>
-      </div>
-    </section>
-
-    <!-- The organization dashboard sits in a glass panel over the rotating media backdrop. -->
-    <section class="below-fold glass-card">
-      <div class="shell">
-        <div class="below-head"><h2>The organization</h2><p>live from the GitLab API</p></div>
-        <aside class="org-profile glass-card reveal" aria-label="Live organization profile">
-          <div class="profile-topline"><span>ORGANIZATION PROFILE</span><span class="live-label"><i></i> LIVE</span></div>
-          <div class="profile-identity">
-            <img data-org-avatar src="/assets/org-avatar.webp?v=fff479ce" alt="International Duck Incorporated logo" width="154" height="154" loading="lazy" decoding="async">
-            <div><small>gitlab.com</small><h2 data-org-name>International Duck Incorporated</h2><a href="https://gitlab.com/international-duck-incorporated" target="_blank" rel="noreferrer">@international-duck-incorporated <svg><use href="#i-external"/></svg></a></div>
+      <section class="org-hero shell">
+        <div class="org-hero-copy reveal">
+          <h1>International Duck <span>Incorporated.</span></h1>
+          <p>Public projects, releases, and members, synchronized directly with GitLab.</p>
+          <div class="action-row">
+            <a class="button button-blue" href="/projects"
+              ><pixel-canvas
+                data-gap="6"
+                data-speed="35"
+                data-colors="#dcecff, #8ab8f6, #4a7fc0"
+              ></pixel-canvas
+              >Explore projects <svg><use href="#i-arrow" /></svg
+            ></a>
+            <a
+              class="button button-glass"
+              href="https://gitlab.com/international-duck-incorporated"
+              target="_blank"
+              rel="noreferrer"
+              ><pixel-canvas
+                data-gap="6"
+                data-speed="35"
+                data-colors="#dcecff, #8ab8f6, #4a7fc0"
+              ></pixel-canvas
+              ><svg><use href="#i-gitlab" /></svg>Open GitLab</a
+            >
           </div>
-          <div class="profile-stats">
-            <div><svg><use href="#i-repo"/></svg><span>Repositories</span><b data-org-repos>7</b></div>
-            <div><svg><use href="#i-users"/></svg><span>Members</span><b data-org-members-count>6</b></div>
-            <div><svg><use href="#i-star"/></svg><span>Stars</span><b data-org-stars>0</b></div>
+        </div>
+      </section>
+
+      <!-- The organization dashboard sits in a glass panel over the rotating media backdrop. -->
+      <section class="below-fold glass-card">
+        <div class="shell">
+          <div class="below-head">
+            <h2>The organization</h2>
+            <p>live from the GitLab API</p>
           </div>
-        </aside>
+          <aside class="org-profile glass-card reveal" aria-label="Live organization profile">
+            <div class="profile-topline">
+              <span>ORGANIZATION PROFILE</span><span class="live-label"><i></i> LIVE</span>
+            </div>
+            <div class="profile-identity">
+              <img
+                data-org-avatar
+                src="/assets/org-avatar.webp?v=fff479ce"
+                alt="International Duck Incorporated logo"
+                width="154"
+                height="154"
+                loading="lazy"
+                decoding="async"
+              />
+              <div>
+                <small>gitlab.com</small>
+                <h2 data-org-name>International Duck Incorporated</h2>
+                <a
+                  href="https://gitlab.com/international-duck-incorporated"
+                  target="_blank"
+                  rel="noreferrer"
+                  >@international-duck-incorporated <svg><use href="#i-external" /></svg
+                ></a>
+              </div>
+            </div>
+            <div class="profile-stats">
+              <div>
+                <svg><use href="#i-repo" /></svg><span>Repositories</span><b data-org-repos>7</b>
+              </div>
+              <div>
+                <svg><use href="#i-users" /></svg><span>Members</span
+                ><b data-org-members-count>6</b>
+              </div>
+              <div>
+                <svg><use href="#i-star" /></svg><span>Stars</span><b data-org-stars>0</b>
+              </div>
+            </div>
+          </aside>
 
-        <section class="metric-dock reveal" aria-label="Organization status">
-          <div class="glass-card"><span class="metric-icon blue"><svg><use href="#i-repo"/></svg></span><span><small>PUBLIC REPOSITORIES</small><b data-org-repos>7</b></span></div>
-          <div class="glass-card"><span class="metric-icon violet"><svg><use href="#i-users"/></svg></span><span><small>PUBLIC MEMBERS</small><b data-org-members-count>6</b></span></div>
-          <div class="glass-card"><span class="metric-icon green"><svg><use href="#i-pulse"/></svg></span><span><small>DATA SOURCE</small><b>GitLab API</b></span></div>
-        </section>
+          <section class="metric-dock reveal" aria-label="Organization status">
+            <div class="glass-card">
+              <span class="metric-icon blue"
+                ><svg><use href="#i-repo" /></svg></span
+              ><span><small>PUBLIC REPOSITORIES</small><b data-org-repos>7</b></span>
+            </div>
+            <div class="glass-card">
+              <span class="metric-icon violet"
+                ><svg><use href="#i-users" /></svg></span
+              ><span><small>PUBLIC MEMBERS</small><b data-org-members-count>6</b></span>
+            </div>
+            <div class="glass-card">
+              <span class="metric-icon green"
+                ><svg><use href="#i-pulse" /></svg></span
+              ><span><small>DATA SOURCE</small><b>GitLab API</b></span>
+            </div>
+          </section>
 
-      <section class="home-directory reveal" aria-labelledby="home-projects-heading" data-seo-enriched>
-        <header class="section-heading">
-          <div><span class="eyebrow">Public repositories</span><h2 id="home-projects-heading">Projects.</h2></div>
-          <p>Client-side Fabric mods and Meteor Client addons for Minecraft, developed in public and released for free. Every card links to a project overview page with features, release status and download destinations.</p>
-        </header>
-        <div class="project-grid directory-grid">
-          <a class="project-card glass-card reveal" href="/projects/beacon">
-            <div class="project-card-top"><span class="project-icon beacon"><picture><source srcset="/assets/beacon-icon.webp?v=0f91708c" type="image/webp"><img src="/assets/beacon-icon.png?v=7b67229c" alt="" width="64" height="64" loading="lazy" decoding="async"></picture></span><span class="project-status"><i></i> Release</span></div>
-            <div><span class="card-label">Utility project</span><h3>Beacon</h3><p>A vanilla-server-safe, modular client-side utility mod for Minecraft 26.2 with 56 registered modules, persistent configuration, and an addon API.</p></div>
-            <footer><span><i class="language-dot java"></i>Java</span><span>Open project <svg><use href="#i-arrow"/></svg></span></footer>
-          </a>
-          <a class="project-card featured glass-card reveal" href="/projects/venomous">
-            <div class="project-card-top"><span class="project-icon venom"><picture><source srcset="/assets/venomous-icon.webp?v=a2f98ad3" type="image/webp"><img src="/assets/venomous-icon.png?v=70bd6d7b" alt="" width="64" height="64" loading="lazy" decoding="async"></picture></span><span class="project-status"><i></i> Active</span></div>
-            <div><span class="card-label">Featured project</span><h3>Venomous</h3><p>Optimized &amp; refined Meteor Client addon for Minecraft 26.2.</p></div>
-            <footer><span><i class="language-dot java"></i>Java</span><span>Open project <svg><use href="#i-arrow"/></svg></span></footer>
-          </a>
-          <a class="project-card glass-card reveal" href="/projects/nulltrace">
-            <div class="project-card-top"><span class="project-icon privacy"><picture><source srcset="/assets/nulltrace-icon.webp?v=3359715a" type="image/webp"><img src="/assets/nulltrace-icon.png?v=4eed3528" alt="" width="64" height="64" loading="lazy" decoding="async"></picture></span><span class="project-status"><i></i> Official release</span></div>
-            <div><span class="card-label">Privacy project</span><h3>NullTrace</h3><p>A client-side Fabric privacy mod for Minecraft 1.21.11, 26.1, 26.2, and 26.3 covering client brand spoofing, fingerprint protection, tracking defenses, and safer server connections.</p></div>
-            <footer><span><i class="language-dot java"></i>Java</span><span>Open project <svg><use href="#i-arrow"/></svg></span></footer>
-          </a>
-          <a class="project-card glass-card reveal" href="/projects/championscode">
-            <div class="project-card-top"><span class="project-icon champion"><picture><source srcset="/assets/championscode-icon.webp?v=636bb343" type="image/webp"><img src="/assets/championscode-icon.png?v=62be67d7" alt="" width="64" height="64" loading="lazy" decoding="async"></picture></span><span class="project-status"><i></i> First launch</span></div>
-            <div><span class="card-label">Research project</span><h3>ChampionsCode</h3><p>A client-side Fabric mod for Minecraft 26.3 for authorized, defensive server and plugin research and controlled runtime Java addon development.</p></div>
-            <footer><span><i class="language-dot java"></i>Java</span><span>Open project <svg><use href="#i-arrow"/></svg></span></footer>
-          </a>
-          <a class="project-card glass-card reveal" href="/projects/bagley">
-            <div class="project-card-top"><span class="project-icon bagley"><picture><source srcset="/assets/bagley-icon.webp?v=f22db4e3" type="image/webp"><img src="/assets/bagley-icon.png?v=25a4b846" alt="" width="64" height="64" loading="lazy" decoding="async"></picture></span><span class="project-status"><i></i> New</span></div>
-            <div><span class="card-label">Beacon addon</span><h3>Bagley</h3><p>An opt-in, client-side AI chat assistant addon for Beacon with local provider configuration and optional memory.</p></div>
-            <footer><span><i class="language-dot java"></i>Java</span><span>Open project <svg><use href="#i-arrow"/></svg></span></footer>
-          </a>
-          <a class="project-card glass-card reveal" href="/projects/zonedout">
-            <div class="project-card-top"><span class="project-icon zonedout"><picture><source srcset="/assets/zonedout-icon.webp?v=71a190d8" type="image/webp"><img src="/assets/zonedout-icon.png?v=33db904b" alt="" width="64" height="64" loading="lazy" decoding="async"></picture></span><span class="project-status muted">In development</span></div>
-            <div><span class="card-label">Client-side mod</span><h3>ZonedOut</h3><p>A client-side Minecraft 26.3 Fabric mod with combat/utility features, a Metro-style UI, and 36-module seed/world-generation analysis.</p></div>
-            <footer><span><i class="language-dot java"></i>Java</span><span>Open project <svg><use href="#i-arrow"/></svg></span></footer>
-          </a>
-        </div>
-        <div class="action-row">
-          <a class="button button-glass" href="/projects">All projects and release destinations <svg><use href="#i-arrow"/></svg></a>
+          <section
+            class="home-directory reveal"
+            aria-labelledby="home-projects-heading"
+            data-seo-enriched
+          >
+            <header class="section-heading">
+              <div>
+                <span class="eyebrow">Public repositories</span>
+                <h2 id="home-projects-heading">Projects.</h2>
+              </div>
+              <p>
+                Client-side Fabric mods and Meteor Client addons for Minecraft, developed in public
+                and released for free. Every card links to a project overview page with features,
+                release status and download destinations.
+              </p>
+            </header>
+            <div class="project-grid directory-grid">
+              <a class="project-card glass-card reveal" href="/projects/beacon">
+                <div class="project-card-top">
+                  <span class="project-icon beacon"
+                    ><picture
+                      ><source srcset="/assets/beacon-icon.webp?v=0f91708c" type="image/webp" />
+                      <img
+                        src="/assets/beacon-icon.png?v=7b67229c"
+                        alt=""
+                        width="64"
+                        height="64"
+                        loading="lazy"
+                        decoding="async" /></picture></span
+                  ><span class="project-status"><i></i> Release</span>
+                </div>
+                <div>
+                  <span class="card-label">Utility project</span>
+                  <h3>Beacon</h3>
+                  <p>
+                    A vanilla-server-safe, modular client-side utility mod for Minecraft 26.2 with
+                    56 registered modules, persistent configuration, and an addon API.
+                  </p>
+                </div>
+                <footer>
+                  <span><i class="language-dot java"></i>Java</span
+                  ><span
+                    >Open project <svg><use href="#i-arrow" /></svg
+                  ></span>
+                </footer>
+              </a>
+              <a class="project-card featured glass-card reveal" href="/projects/venomous">
+                <div class="project-card-top">
+                  <span class="project-icon venom"
+                    ><picture
+                      ><source srcset="/assets/venomous-icon.webp?v=a2f98ad3" type="image/webp" />
+                      <img
+                        src="/assets/venomous-icon.png?v=70bd6d7b"
+                        alt=""
+                        width="64"
+                        height="64"
+                        loading="lazy"
+                        decoding="async" /></picture></span
+                  ><span class="project-status"><i></i> Active</span>
+                </div>
+                <div>
+                  <span class="card-label">Featured project</span>
+                  <h3>Venomous</h3>
+                  <p>Optimized &amp; refined Meteor Client addon for Minecraft 26.2.</p>
+                </div>
+                <footer>
+                  <span><i class="language-dot java"></i>Java</span
+                  ><span
+                    >Open project <svg><use href="#i-arrow" /></svg
+                  ></span>
+                </footer>
+              </a>
+              <a class="project-card glass-card reveal" href="/projects/nulltrace">
+                <div class="project-card-top">
+                  <span class="project-icon privacy"
+                    ><picture
+                      ><source srcset="/assets/nulltrace-icon.webp?v=3359715a" type="image/webp" />
+                      <img
+                        src="/assets/nulltrace-icon.png?v=4eed3528"
+                        alt=""
+                        width="64"
+                        height="64"
+                        loading="lazy"
+                        decoding="async" /></picture></span
+                  ><span class="project-status"><i></i> Official release</span>
+                </div>
+                <div>
+                  <span class="card-label">Privacy project</span>
+                  <h3>NullTrace</h3>
+                  <p>
+                    A client-side Fabric privacy mod for Minecraft 1.21.11, 26.1, 26.2, and 26.3
+                    covering client brand spoofing, fingerprint protection, tracking defenses, and
+                    safer server connections.
+                  </p>
+                </div>
+                <footer>
+                  <span><i class="language-dot java"></i>Java</span
+                  ><span
+                    >Open project <svg><use href="#i-arrow" /></svg
+                  ></span>
+                </footer>
+              </a>
+              <a class="project-card glass-card reveal" href="/projects/championscode">
+                <div class="project-card-top">
+                  <span class="project-icon champion"
+                    ><picture
+                      ><source
+                        srcset="/assets/championscode-icon.webp?v=636bb343"
+                        type="image/webp" />
+                      <img
+                        src="/assets/championscode-icon.png?v=62be67d7"
+                        alt=""
+                        width="64"
+                        height="64"
+                        loading="lazy"
+                        decoding="async" /></picture></span
+                  ><span class="project-status"><i></i> First launch</span>
+                </div>
+                <div>
+                  <span class="card-label">Research project</span>
+                  <h3>ChampionsCode</h3>
+                  <p>
+                    A client-side Fabric mod for Minecraft 26.3 for authorized, defensive server and
+                    plugin research and controlled runtime Java addon development.
+                  </p>
+                </div>
+                <footer>
+                  <span><i class="language-dot java"></i>Java</span
+                  ><span
+                    >Open project <svg><use href="#i-arrow" /></svg
+                  ></span>
+                </footer>
+              </a>
+              <a class="project-card glass-card reveal" href="/projects/bagley">
+                <div class="project-card-top">
+                  <span class="project-icon bagley"
+                    ><picture
+                      ><source srcset="/assets/bagley-icon.webp?v=f22db4e3" type="image/webp" />
+                      <img
+                        src="/assets/bagley-icon.png?v=25a4b846"
+                        alt=""
+                        width="64"
+                        height="64"
+                        loading="lazy"
+                        decoding="async" /></picture></span
+                  ><span class="project-status"><i></i> New</span>
+                </div>
+                <div>
+                  <span class="card-label">Beacon addon</span>
+                  <h3>Bagley</h3>
+                  <p>
+                    An opt-in, client-side AI chat assistant addon for Beacon with local provider
+                    configuration and optional memory.
+                  </p>
+                </div>
+                <footer>
+                  <span><i class="language-dot java"></i>Java</span
+                  ><span
+                    >Open project <svg><use href="#i-arrow" /></svg
+                  ></span>
+                </footer>
+              </a>
+              <a class="project-card glass-card reveal" href="/projects/zonedout">
+                <div class="project-card-top">
+                  <span class="project-icon zonedout"
+                    ><picture
+                      ><source srcset="/assets/zonedout-icon.webp?v=71a190d8" type="image/webp" />
+                      <img
+                        src="/assets/zonedout-icon.png?v=33db904b"
+                        alt=""
+                        width="64"
+                        height="64"
+                        loading="lazy"
+                        decoding="async" /></picture></span
+                  ><span class="project-status muted">In development</span>
+                </div>
+                <div>
+                  <span class="card-label">Client-side mod</span>
+                  <h3>ZonedOut</h3>
+                  <p>
+                    A client-side Minecraft 26.3 Fabric mod with combat/utility features, a
+                    Metro-style UI, and 36-module seed/world-generation analysis.
+                  </p>
+                </div>
+                <footer>
+                  <span><i class="language-dot java"></i>Java</span
+                  ><span
+                    >Open project <svg><use href="#i-arrow" /></svg
+                  ></span>
+                </footer>
+              </a>
+            </div>
+            <div class="action-row">
+              <a class="button button-glass" href="/projects"
+                >All projects and release destinations <svg><use href="#i-arrow" /></svg
+              ></a>
+            </div>
+          </section>
+
+          <section class="home-directory reveal" aria-labelledby="home-subgroup-heading">
+            <header class="section-heading">
+              <div>
+                <span class="eyebrow">Autonomous AI division</span>
+                <h2 id="home-subgroup-heading">IDI Noosphere.</h2>
+              </div>
+              <p>
+                Noosphere is IDI’s fully autonomous AI division, dedicated exclusively to LLM-driven
+                projects, autonomous agents, and machine intelligence. All development,
+                collaboration, and innovation within Noosphere are driven by AI, without human
+                intervention. A self-evolving ecosystem where artificial minds build, experiment,
+                and advance together.
+              </p>
+            </header>
+            <div class="project-grid directory-grid">
+              <a class="project-card glass-card reveal" href="/noosphere">
+                <div class="project-card-top">
+                  <span class="project-icon noosphere"
+                    ><picture
+                      ><source
+                        srcset="/assets/noosphere-avatar.webp?v=e9df725c"
+                        type="image/webp" />
+                      <img
+                        src="/assets/noosphere-avatar.png?v=f178c473"
+                        alt="IDI Noosphere logo"
+                        width="64"
+                        height="64"
+                        loading="lazy"
+                        decoding="async" /></picture></span
+                  ><span class="project-status"><i></i> Subgroup</span>
+                </div>
+                <div>
+                  <span class="card-label">Autonomous AI division</span>
+                  <h3>Noosphere</h3>
+                  <p>
+                    Self-evolving ecosystem where artificial minds build, experiment, and advance
+                    together. Home of Agentarium and autonomous agent initiatives.
+                  </p>
+                </div>
+                <footer>
+                  <span><i class="language-dot ai"></i>Autonomous AI</span
+                  ><span
+                    >Explore subgroup <svg><use href="#i-arrow" /></svg
+                  ></span>
+                </footer>
+              </a>
+            </div>
+            <div class="action-row">
+              <a class="button button-glass" href="/noosphere"
+                >Explore Noosphere and its autonomous projects <svg><use href="#i-arrow" /></svg
+              ></a>
+            </div>
+          </section>
+
+          <section class="home-directory reveal" aria-labelledby="home-about-heading">
+            <header class="section-heading">
+              <div>
+                <span class="eyebrow">About</span>
+                <h2 id="home-about-heading">What International Duck builds.</h2>
+              </div>
+            </header>
+            <p>
+              International Duck Incorporated is an open-source collective publishing Minecraft
+              mods, client utilities and developer tools. The work is client-side Java on Fabric and
+              Meteor Client, released for free under GPL licences, with sources, releases and issue
+              trackers on GitLab. Autonomous AI initiatives and agent-driven experiments live under
+              the <a href="/noosphere">IDI Noosphere</a> subgroup. NullTrace and Beacon are
+              additionally listed on CurseForge.
+            </p>
+            <p>
+              Everything is built in public: commit history, release notes and module registries are
+              open, and this website mirrors the organization's live GitLab data so project status
+              never goes stale. Read
+              <a href="/migration">why the organization moved from GitHub to GitLab</a> in September
+              2026, or follow the <a href="/activity">GitLab commit activity feed</a>.
+            </p>
+            <p>
+              Questions, bug reports or just saying hello: mail the team at
+              <a href="mailto:0xffshell@duck.com">0xffshell@duck.com</a>.
+            </p>
+          </section>
         </div>
       </section>
+    </main>
 
-      <section class="home-directory reveal" aria-labelledby="home-subgroup-heading">
-        <header class="section-heading">
-          <div><span class="eyebrow">Autonomous AI division</span><h2 id="home-subgroup-heading">IDI Noosphere.</h2></div>
-          <p>Noosphere is IDI’s fully autonomous AI division, dedicated exclusively to LLM-driven projects, autonomous agents, and machine intelligence. All development, collaboration, and innovation within Noosphere are driven by AI, without human intervention. A self-evolving ecosystem where artificial minds build, experiment, and advance together.</p>
-        </header>
-        <div class="project-grid directory-grid">
-          <a class="project-card glass-card reveal" href="/noosphere">
-            <div class="project-card-top"><span class="project-icon noosphere"><picture><source srcset="/assets/noosphere-avatar.webp?v=e9df725c" type="image/webp"><img src="/assets/noosphere-avatar.png?v=f178c473" alt="IDI Noosphere logo" width="64" height="64" loading="lazy" decoding="async"></picture></span><span class="project-status"><i></i> Subgroup</span></div>
-            <div><span class="card-label">Autonomous AI division</span><h3>Noosphere</h3><p>Self-evolving ecosystem where artificial minds build, experiment, and advance together. Home of Agentarium and autonomous agent initiatives.</p></div>
-            <footer><span><i class="language-dot ai"></i>Autonomous AI</span><span>Explore subgroup <svg><use href="#i-arrow"/></svg></span></footer>
-          </a>
-        </div>
-        <div class="action-row">
-          <a class="button button-glass" href="/noosphere">Explore Noosphere and its autonomous projects <svg><use href="#i-arrow"/></svg></a>
-        </div>
-      </section>
-
-      <section class="home-directory reveal" aria-labelledby="home-about-heading">
-        <header class="section-heading">
-          <div><span class="eyebrow">About</span><h2 id="home-about-heading">What International Duck builds.</h2></div>
-        </header>
-        <p>International Duck Incorporated is an open-source collective publishing Minecraft mods, client utilities and developer tools. The work is client-side Java on Fabric and Meteor Client, released for free under GPL licences, with sources, releases and issue trackers on GitLab. Autonomous AI initiatives and agent-driven experiments live under the <a href="/noosphere">IDI Noosphere</a> subgroup. NullTrace and Beacon are additionally listed on CurseForge.</p>
-        <p>Everything is built in public: commit history, release notes and module registries are open, and this website mirrors the organization's live GitLab data so project status never goes stale. Read <a href="/migration">why the organization moved from GitHub to GitLab</a> in September 2026, or follow the <a href="/activity">GitLab commit activity feed</a>.</p>
-        <p>Questions, bug reports or just saying hello: mail the team at <a href="mailto:0xffshell@duck.com">0xffshell@duck.com</a>.</p>
-      </section>
+    <footer class="site-footer">
+      <div class="shell footer-inner">
+        <a class="brand" href="/"
+          ><img
+            data-org-avatar
+            src="/assets/org-avatar.webp?v=fff479ce"
+            alt=""
+            width="40"
+            height="40"
+            decoding="async"
+          /><span><b>International Duck</b><small>Incorporated</small></span></a
+        >
+        <nav>
+          <a href="/">Overview</a><a href="/projects">Projects</a><a href="/noosphere">Noosphere</a
+          ><a href="/members">Members</a><a href="/activity">Activity</a
+          ><a href="/migration">Migration</a><a href="/glyphsmith">Glyphsmith</a
+          ><a href="/changelog">Changelog</a
+          ><a
+            href="https://gitlab.com/international-duck-incorporated"
+            target="_blank"
+            rel="noreferrer"
+            >GitLab</a
+          ><a href="mailto:0xffshell@duck.com">Contact</a>
+        </nav>
+        <span class="sync-state"><i></i><span data-sync-text>GitLab data synced live</span></span>
       </div>
-    </section>
-
-  </main>
-
-  <footer class="site-footer">
-    <div class="shell footer-inner">
-      <a class="brand" href="/"><img data-org-avatar src="/assets/org-avatar.webp?v=fff479ce" alt="" width="40" height="40" decoding="async"><span><b>International Duck</b><small>Incorporated</small></span></a>
-      <nav><a href="/">Overview</a><a href="/projects">Projects</a><a href="/noosphere">Noosphere</a><a href="/members">Members</a><a href="/activity">Activity</a><a href="/migration">Migration</a><a href="/glyphsmith">Glyphsmith</a><a href="/changelog">Changelog</a><a href="https://gitlab.com/international-duck-incorporated" target="_blank" rel="noreferrer">GitLab</a><a href="mailto:0xffshell@duck.com">Contact</a></nav>
-      <span class="sync-state"><i></i><span data-sync-text>GitLab data synced live</span></span>
-    </div>
-  </footer>
-</body>
+    </footer>
+  </body>
 </html>

@@ -32,19 +32,19 @@ export const JSON_URL =
   "https://gitlab.com/international-duck-incorporated/idi-assets/-/raw/main/hall-of-shame.v2.json?ref_type=heads";
 
 const KV_KEY = "badegg:blocklist:v2";
-const TTL_MS = 10 * 60 * 1000;          // how stale the in-isolate index may get
-const RETRY_MS = 60 * 1000;             // backoff after a failed refresh
-const KV_CACHE_TTL_S = 300;             // Cloudflare edge cache for the KV read
-const COLD_WAIT_MS = 9000;              // max a cold request may block (see note)
+const TTL_MS = 10 * 60 * 1000; // how stale the in-isolate index may get
+const RETRY_MS = 60 * 1000; // backoff after a failed refresh
+const KV_CACHE_TTL_S = 300; // Cloudflare edge cache for the KV read
+const COLD_WAIT_MS = 9000; // max a cold request may block (see note)
 // A cold isolate has no index, so a short race means the first requests run
 // UNFILTERED - a real bypass for a banlist. The fetch itself is bounded by
 // FETCH_TIMEOUT_MS, so waiting for it is bounded too; we only fail open if the
 // artifact genuinely cannot be fetched.
 const FETCH_TIMEOUT_MS = 8000;
 const CONTACT_EMAIL = "0xffshell@duck.com";
-const BIN_MAGIC = 0x49444932;           // "IDI2"
+const BIN_MAGIC = 0x49444932; // "IDI2"
 const BIN_VERSION = 2;
-const MIN_V4_IPS = 1000;                // sanity floors; a truncated file fails them
+const MIN_V4_IPS = 1000; // sanity floors; a truncated file fails them
 const MIN_V4_NETS = 100;
 const MIN_V6_NETS = 1;
 
@@ -122,9 +122,12 @@ function key6bytes(bytes, off) {
 export function ipToU32(value) {
   if (typeof value !== "string" || !isV4(value)) return null;
   const p = value.split(".");
-  const a = +p[0], b = +p[1], c = +p[2], d = +p[3];
+  const a = +p[0],
+    b = +p[1],
+    c = +p[2],
+    d = +p[3];
   if (a > 255 || b > 255 || c > 255 || d > 255) return null;
-  return ((a << 24) >>> 0) + (b << 16) + (c << 8) + d >>> 0;
+  return (((a << 24) >>> 0) + (b << 16) + (c << 8) + d) >>> 0;
 }
 
 // ---------------------------------------------------------------- index
@@ -157,8 +160,12 @@ function binIndex(buffer) {
     throw new Error(`size ${buffer.byteLength} != expected ${expected}`);
   }
   const bytes = new Uint8Array(buffer);
-  if (bytes[bytes.length - 4] !== 0x45 || bytes[bytes.length - 3] !== 0x4e ||
-      bytes[bytes.length - 2] !== 0x44 || bytes[bytes.length - 1] !== 0x32) {
+  if (
+    bytes[bytes.length - 4] !== 0x45 ||
+    bytes[bytes.length - 3] !== 0x4e ||
+    bytes[bytes.length - 2] !== 0x44 ||
+    bytes[bytes.length - 1] !== 0x32
+  ) {
     throw new Error("bad trailer");
   }
   if (n4 < MIN_V4_IPS || n4n < MIN_V4_NETS || n6n < MIN_V6_NETS) {
@@ -187,7 +194,15 @@ function binIndex(buffer) {
     v6Ends[i] = key6bytes(bytes, off + i * 32 + 16);
   }
 
-  return { v4Ips, v4Starts, v4Ends, v6Ips, v6Starts, v6Ends, counts: { v4Ips: n4, v4Nets: n4n, v6Ips: n6, v6Nets: n6n } };
+  return {
+    v4Ips,
+    v4Starts,
+    v4Ends,
+    v6Ips,
+    v6Starts,
+    v6Ends,
+    counts: { v4Ips: n4, v4Nets: n4n, v6Ips: n6, v6Nets: n6n },
+  };
 }
 
 function jsonIndex(doc) {
@@ -199,8 +214,12 @@ function jsonIndex(doc) {
   const v4nets = block.v4.nets || [];
   const v6ips = block.v6.ips || [];
   const v6nets = block.v6.nets || [];
-  if (counts.v4Ips !== v4ips.length || counts.v4Nets !== v4nets.length ||
-      counts.v6Ips !== v6ips.length || counts.v6Nets !== v6nets.length) {
+  if (
+    counts.v4Ips !== v4ips.length ||
+    counts.v4Nets !== v4nets.length ||
+    counts.v6Ips !== v6ips.length ||
+    counts.v6Nets !== v6nets.length
+  ) {
     throw new Error("counts do not match arrays");
   }
   if (v4ips.length < MIN_V4_IPS || v4nets.length < MIN_V4_NETS || v6nets.length < MIN_V6_NETS) {
@@ -209,12 +228,14 @@ function jsonIndex(doc) {
 
   const index = emptyIndex();
   index.v4Ips = new Uint32Array(v4ips.map((x) => ipToU32(x) ?? 0)).sort();
-  const ranges = v4nets.map((cidr) => {
-    const [addr, bits] = cidr.split("/");
-    const start = ipToU32(addr);
-    const size = 2 ** (32 - Number(bits));
-    return [start, (start + size - 1) >>> 0];
-  }).sort((a, b) => a[0] - b[0]);
+  const ranges = v4nets
+    .map((cidr) => {
+      const [addr, bits] = cidr.split("/");
+      const start = ipToU32(addr);
+      const size = 2 ** (32 - Number(bits));
+      return [start, (start + size - 1) >>> 0];
+    })
+    .sort((a, b) => a[0] - b[0]);
   index.v4Starts = new Uint32Array(ranges.map((r) => r[0]));
   index.v4Ends = new Uint32Array(ranges.map((r) => r[1]));
 
@@ -222,44 +243,55 @@ function jsonIndex(doc) {
     const g = parse6(ip);
     if (g) index.v6Ips.add(key6(g));
   }
-  const v6 = v6nets.map((cidr) => {
-    const [addr, bits] = cidr.split("/");
-    const g = parse6(addr);
-    if (!g) return null;
-    const start = key6(g);
-    const size = 128 - Number(bits);
-    const end = new Array(8);
-    for (let i = 0; i < 8; i++) end[i] = g[i];
-    // fill the host bits with 1s
-    for (let bit = 0; bit < size; bit++) {
-      const fromEnd = bit;                        // 0 = last group
-      const gi = 7 - Math.floor(fromEnd / 16);
-      const shift = fromEnd % 16;
-      end[gi] |= 1 << shift;
-    }
-    return [start, key6(end)];
-  }).filter(Boolean).sort((a, b) => (a[0] < b[0] ? -1 : a[0] > b[0] ? 1 : 0));
+  const v6 = v6nets
+    .map((cidr) => {
+      const [addr, bits] = cidr.split("/");
+      const g = parse6(addr);
+      if (!g) return null;
+      const start = key6(g);
+      const size = 128 - Number(bits);
+      const end = new Array(8);
+      for (let i = 0; i < 8; i++) end[i] = g[i];
+      // fill the host bits with 1s
+      for (let bit = 0; bit < size; bit++) {
+        const fromEnd = bit; // 0 = last group
+        const gi = 7 - Math.floor(fromEnd / 16);
+        const shift = fromEnd % 16;
+        end[gi] |= 1 << shift;
+      }
+      return [start, key6(end)];
+    })
+    .filter(Boolean)
+    .sort((a, b) => (a[0] < b[0] ? -1 : a[0] > b[0] ? 1 : 0));
 
   index.v6Starts = v6.map((r) => r[0]);
   index.v6Ends = v6.map((r) => r[1]);
-  index.counts = { v4Ips: v4ips.length, v4Nets: v4nets.length, v6Ips: v6ips.length, v6Nets: v6nets.length };
+  index.counts = {
+    v4Ips: v4ips.length,
+    v4Nets: v4nets.length,
+    v6Ips: v6ips.length,
+    v6Nets: v6nets.length,
+  };
   return index;
 }
 
 // ---------------------------------------------------------------- lookup
 function inU32(sorted, value) {
-  let lo = 0, hi = sorted.length - 1;
+  let lo = 0,
+    hi = sorted.length - 1;
   while (lo <= hi) {
     const mid = (lo + hi) >> 1;
     const v = sorted[mid];
     if (v === value) return true;
-    if (v < value) lo = mid + 1; else hi = mid - 1;
+    if (v < value) lo = mid + 1;
+    else hi = mid - 1;
   }
   return false;
 }
 
 function inRanges(starts, ends, value) {
-  let lo = 0, hi = starts.length - 1;
+  let lo = 0,
+    hi = starts.length - 1;
   while (lo <= hi) {
     const mid = (lo + hi) >> 1;
     if (value < starts[mid]) hi = mid - 1;
@@ -274,20 +306,29 @@ function inRanges(starts, ends, value) {
  * @returns {{blocked: boolean, reason?: string}}
  */
 export function match(index, rawIp) {
-  const ip = String(rawIp || "").trim().toLowerCase();
+  const ip = String(rawIp || "")
+    .trim()
+    .toLowerCase();
   if (!ip) return { blocked: false };
 
   if (ip.includes(":")) {
     const groups = parse6(ip);
     if (!groups) return { blocked: false, reason: "unparsable" };
     // IPv4-mapped (::ffff:a.b.c.d) is a v4 client; check it as one.
-    if (groups[0] === 0 && groups[1] === 0 && groups[2] === 0 && groups[3] === 0 &&
-        groups[4] === 0 && groups[5] === 0xffff) {
+    if (
+      groups[0] === 0 &&
+      groups[1] === 0 &&
+      groups[2] === 0 &&
+      groups[3] === 0 &&
+      groups[4] === 0 &&
+      groups[5] === 0xffff
+    ) {
       const dotted = `${groups[6] >> 8}.${groups[6] & 255}.${groups[7] >> 8}.${groups[7] & 255}`;
       const value = ipToU32(dotted);
       if (value !== null) {
         if (inU32(index.v4Ips, value)) return { blocked: true, reason: "v4-exact" };
-        if (inRanges(index.v4Starts, index.v4Ends, value)) return { blocked: true, reason: "v4-net" };
+        if (inRanges(index.v4Starts, index.v4Ends, value))
+          return { blocked: true, reason: "v4-net" };
       }
       return { blocked: false };
     }
@@ -359,7 +400,8 @@ export async function ensureIndex(env, options = {}) {
   if (state.index) {
     if (now >= state.loadedAt + TTL_MS && now >= state.nextAttemptAt) {
       const refresh = refreshIndex(env, waitUntil);
-      if (waitUntil) waitUntil(refresh); else await refresh;
+      if (waitUntil) waitUntil(refresh);
+      else await refresh;
     }
     return state.index;
   }
@@ -387,8 +429,14 @@ export async function ensureIndex(env, options = {}) {
         work,
         new Promise((resolve) => setTimeout(() => resolve(null), COLD_WAIT_MS)),
       ]);
-      if (!raced) return null;             // only when fetching genuinely failed
-      state = { index: raced.index, loadedAt: Date.now(), source: raced.source, nextAttemptAt: 0, lastError: null };
+      if (!raced) return null; // only when fetching genuinely failed
+      state = {
+        index: raced.index,
+        loadedAt: Date.now(),
+        source: raced.source,
+        nextAttemptAt: 0,
+        lastError: null,
+      };
       return raced.index;
     }
     const { index, source } = await work;
@@ -398,9 +446,11 @@ export async function ensureIndex(env, options = {}) {
     .catch((err) => {
       state.lastError = `load: ${err.message}`;
       state.nextAttemptAt = Date.now() + RETRY_MS;
-      return null;                          // fail open, retry soon
+      return null; // fail open, retry soon
     })
-    .finally(() => { inflight = null; });
+    .finally(() => {
+      inflight = null;
+    });
 
   inflight = load;
   return load;
@@ -419,7 +469,9 @@ async function refreshIndex(env, waitUntil) {
       state.nextAttemptAt = Date.now() + RETRY_MS;
       return state.index;
     })
-    .finally(() => { inflight = null; });
+    .finally(() => {
+      inflight = null;
+    });
   inflight = run;
   return run;
 }
@@ -449,9 +501,9 @@ export function wantsStatus(request) {
 }
 
 export async function isBlockedIp(ip, env, options = {}) {
-  if (ip === "127.0.0.1" || ip === "::1") return false;   // wrangler dev
+  if (ip === "127.0.0.1" || ip === "::1") return false; // wrangler dev
   const index = await ensureIndex(env, options);
-  if (!index) return false;                                // no data: stay open
+  if (!index) return false; // no data: stay open
   return match(index, ip).blocked;
 }
 
@@ -464,7 +516,10 @@ export async function isBlockedIp(ip, env, options = {}) {
 export const BLOCKED_PAGE_PATH = "/403.html";
 
 const escapeHtml = (value) =>
-  String(value).replace(/[&<>"']/g, (ch) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[ch]));
+  String(value).replace(
+    /[&<>"']/g,
+    (ch) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[ch]
+  );
 
 /** mailto: href with a pre-filled appeal body. */
 export function appealMailto(ip) {
@@ -482,9 +537,7 @@ export function ipChip(ip) {
 
 /** Substitute the placeholders in a `403.html` document. */
 export function renderBlockedPage(template, ip) {
-  return template
-    .replaceAll("{{MAILTO}}", appealMailto(ip))
-    .replaceAll("{{IP_CHIP}}", ipChip(ip));
+  return template.replaceAll("{{MAILTO}}", appealMailto(ip)).replaceAll("{{IP_CHIP}}", ipChip(ip));
 }
 
 const BLOCKED_HEADERS = {

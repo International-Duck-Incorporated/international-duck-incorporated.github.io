@@ -8,6 +8,7 @@ the viewport plus console/page errors.
 
 Usage: python3 tools/shot_blocks.py <repo-root> <out.png> [wait_seconds]
 """
+
 import sys, os, threading, functools, time
 from http.server import ThreadingHTTPServer, SimpleHTTPRequestHandler
 from playwright.sync_api import sync_playwright
@@ -24,10 +25,13 @@ threading.Thread(target=httpd.serve_forever, daemon=True).start()
 
 errors = []
 with sync_playwright() as p:
-    browser = p.chromium.launch(headless=True, args=[
-        "--enable-unsafe-swiftshader",
-        "--disable-lcd-text",
-    ])
+    browser = p.chromium.launch(
+        headless=True,
+        args=[
+            "--enable-unsafe-swiftshader",
+            "--disable-lcd-text",
+        ],
+    )
     ctx = browser.new_context(viewport={"width": 1600, "height": 900}, device_scale_factor=1)
     ctx.add_init_script("""
         Math.random = () => 0.95;
@@ -38,7 +42,9 @@ with sync_playwright() as p:
     """)
     page = ctx.new_page()
     page.on("pageerror", lambda e: errors.append("pageerror: " + str(e)))
-    page.on("console", lambda m: errors.append(m.type + ": " + m.text) if m.type in ("error",) else None)
+    page.on(
+        "console", lambda m: errors.append(m.type + ": " + m.text) if m.type in ("error",) else None
+    )
     page.goto(f"http://127.0.0.1:{PORT}/index.html", wait_until="domcontentloaded")
     frame = page.evaluate("document.documentElement.dataset.frame")
     backdrop = page.evaluate("window.IDI_BACKDROP")

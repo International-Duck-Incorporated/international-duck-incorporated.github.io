@@ -49,19 +49,23 @@ def main() -> None:
         missing = [name for name in referenced - defined if name in library]
         unknown = sorted((referenced - defined) - set(library))
         if unknown:
-            print(f"  note: {page.relative_to(root)} references {', '.join('#' + u for u in unknown)} "
-                  f"(no definition anywhere in the repo)")
+            print(
+                f"  note: {page.relative_to(root)} references {', '.join('#' + u for u in unknown)} "
+                f"(no definition anywhere in the repo)"
+            )
         if not missing:
             continue
         # Keep a stable, predictable order in the appended tail.
         additions = "".join(library[name] for name in sorted(missing))
         new_sprite = sprite.group(0).replace("</svg>", additions + "</svg>", 1)
-        new_source = source[:sprite.start()] + new_sprite + source[sprite.end():]
+        new_source = source[: sprite.start()] + new_sprite + source[sprite.end() :]
         page.write_text(new_source, encoding="utf-8")
         updated_pages += 1
         added_total += len(missing)
 
-    print(f"symbols in library: {len(library)}; added {added_total} symbol(s) to {updated_pages} page(s)")
+    print(
+        f"symbols in library: {len(library)}; added {added_total} symbol(s) to {updated_pages} page(s)"
+    )
 
 
 if __name__ == "__main__":

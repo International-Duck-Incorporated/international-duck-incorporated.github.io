@@ -11,6 +11,18 @@ and the two CurseForge references on the Beacon page point at the public
 listing (Beacon QoL, project 1720579); the URL and name live in
 `tools/gen_module_page.py` as `CURSEFORGE_URL` / `CURSEFORGE_NAME`.
 
+## Code formatting
+
+HTML, CSS, JavaScript, JSON/JSONC, YAML and Markdown use Prettier 3.6.2; Python tools use Ruff's formatter. XML (including the generated sitemap) is excluded because Prettier has no XML parser here. The checked-in settings are `.editorconfig`, `.prettierrc.json` and `pyproject.toml`.
+
+Install Ruff once with `python3 -m pip install ruff`. After editing sources, run the formatting/build script:
+
+```sh
+tools/format_code.sh
+```
+
+The script formats source files, rebuilds committed outputs, and formats generated HTML afterward. `css/bundle.css` is intentionally excluded from Prettier: it is generated from the formatted `css/*.css` source modules.
+
 ## Build steps
 
 Handwritten sources are the page HTML, the `css/*.css` modules (in cascade
@@ -34,10 +46,10 @@ re-run the build.
 
 Two pages are generated from committed data rather than hand-written:
 
-| Page | Generator | Data |
-|---|---|---|
-| `/projects/beacon/modules` | `tools/gen_module_page.py` | `data/beacon-modules.json` |
-| `/changelog` | `tools/gen_changelog_page.py` | `data/changelogs.json` |
+| Page                       | Generator                     | Data                       |
+| -------------------------- | ----------------------------- | -------------------------- |
+| `/projects/beacon/modules` | `tools/gen_module_page.py`    | `data/beacon-modules.json` |
+| `/changelog`               | `tools/gen_changelog_page.py` | `data/changelogs.json`     |
 
 The snapshots come from the projects themselves and are refreshed on demand (they
 need network access to the public GitLab API):

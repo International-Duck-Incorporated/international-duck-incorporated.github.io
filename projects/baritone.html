@@ -1,292 +1,451 @@
 <!doctype html>
 <html lang="en">
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <script>
-    (() => {
-      const nav = navigator;
-      const connection = nav.connection || nav.mozConnection || nav.webkitConnection;
-      const lowEnd = Boolean(
-        (connection && connection.saveData) ||
-        (connection && /^(slow-2g|2g)$/.test(connection.effectiveType || "")) ||
-        (typeof nav.deviceMemory === "number" && nav.deviceMemory <= 4) ||
-        (typeof nav.hardwareConcurrency === "number" && nav.hardwareConcurrency <= 4)
-      );
-      window.IDI_LOW_END = lowEnd;
-      window.IDI_REDUCED_MOTION = Boolean(
-        window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches
-      );
-      if (lowEnd) document.documentElement.classList.add("low-end");
-    })();
-  </script>
-  <link rel="preconnect" href="https://gitlab.com" crossorigin>
-  <link rel="preconnect" href="https://gitlab.com">
-  <link rel="dns-prefetch" href="https://gitlab.com">
-  <meta name="theme-color" content="#07090d">
-    <meta property="og:image" content="https://idi-official.pages.dev/assets/og-default.png">
-  <title>Baritone, Minecraft pathfinder fork for Minecraft 26.x | IDI</title>
-  <meta name="description" content="IDI&#x27;s GitLab fork of the Baritone Minecraft pathfinder: branches for Minecraft 26.1, 26.2 and 26.3, look-and-aim behaviour work, and Bagley&#x27;s navigation layer.">
-  <link rel="canonical" href="https://idi-official.pages.dev/projects/baritone">
-  <meta property="og:type" content="website">
-  <meta property="og:title" content="Baritone, Minecraft pathfinder fork for Minecraft 26.x">
-  <meta property="og:description" content="IDI&#x27;s fork of the Baritone pathfinder, kept current for Minecraft 26.x and wired into Bagley.">
-  <meta property="og:url" content="https://idi-official.pages.dev/projects/baritone">
-  <meta property="og:site_name" content="International Duck Incorporated">
-  <meta property="og:locale" content="en_US">
-  <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="Baritone, Minecraft pathfinder fork for Minecraft 26.x">
-  <meta name="twitter:description" content="IDI&#x27;s fork of the Baritone pathfinder, kept current for Minecraft 26.x and wired into Bagley.">
-  <link rel="icon" href="/assets/org-avatar.png?v=f3debf20" type="image/png">
-  <link rel="stylesheet" href="/css/bundle.css?v=1f263d21">
-  <script src="/script.js?v=ffe97c4c" defer></script>
-  <script src="/pixel-canvas.js?v=9d12b50d" defer></script>
-  <meta property="og:image:width" content="1200">
-  <meta property="og:image:height" content="630">
-  <meta property="og:image:alt" content="International Duck Incorporated - open-source Minecraft mods, tools and experiments">
-  <meta name="twitter:image" content="https://idi-official.pages.dev/assets/og-default.png">
-  <script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@graph": [
-    {
-      "@type": "Organization",
-      "@id": "https://idi-official.pages.dev/#organization",
-      "name": "International Duck Incorporated",
-      "alternateName": "IDI",
-      "url": "https://idi-official.pages.dev/",
-      "logo": {
-        "@type": "ImageObject",
-        "url": "https://idi-official.pages.dev/assets/org-avatar.png"
-      },
-      "image": "https://idi-official.pages.dev/assets/og-default.png",
-      "description": "Open-source collective building Minecraft mods, tools and experiments in public. GitLab is the active source of truth; the former GitHub organization is currently hidden from public view.",
-      "sameAs": [
-        "https://gitlab.com/international-duck-incorporated"
-      ],
-      "knowsAbout": [
-        "Minecraft mods",
-        "Fabric modding",
-        "Minecraft client utilities",
-        "open source"
-      ]
-    },
-    {
-      "@type": "WebSite",
-      "@id": "https://idi-official.pages.dev/#website",
-      "url": "https://idi-official.pages.dev/",
-      "name": "International Duck Incorporated",
-      "inLanguage": "en",
-      "publisher": {
-        "@id": "https://idi-official.pages.dev/#organization"
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <script>
+      (() => {
+        const nav = navigator;
+        const connection = nav.connection || nav.mozConnection || nav.webkitConnection;
+        const lowEnd = Boolean(
+          (connection && connection.saveData) ||
+            (connection && /^(slow-2g|2g)$/.test(connection.effectiveType || "")) ||
+            (typeof nav.deviceMemory === "number" && nav.deviceMemory <= 4) ||
+            (typeof nav.hardwareConcurrency === "number" && nav.hardwareConcurrency <= 4)
+        );
+        window.IDI_LOW_END = lowEnd;
+        window.IDI_REDUCED_MOTION = Boolean(
+          window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches
+        );
+        if (lowEnd) document.documentElement.classList.add("low-end");
+      })();
+    </script>
+    <link rel="preconnect" href="https://gitlab.com" crossorigin />
+    <link rel="preconnect" href="https://gitlab.com" />
+    <link rel="dns-prefetch" href="https://gitlab.com" />
+    <meta name="theme-color" content="#07090d" />
+    <meta property="og:image" content="https://idi-official.pages.dev/assets/og-default.png" />
+    <title>Baritone, Minecraft pathfinder fork for Minecraft 26.x | IDI</title>
+    <meta
+      name="description"
+      content="IDI&#x27;s GitLab fork of the Baritone Minecraft pathfinder: branches for Minecraft 26.1, 26.2 and 26.3, look-and-aim behaviour work, and Bagley&#x27;s navigation layer."
+    />
+    <link rel="canonical" href="https://idi-official.pages.dev/projects/baritone" />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="Baritone, Minecraft pathfinder fork for Minecraft 26.x" />
+    <meta
+      property="og:description"
+      content="IDI&#x27;s fork of the Baritone pathfinder, kept current for Minecraft 26.x and wired into Bagley."
+    />
+    <meta property="og:url" content="https://idi-official.pages.dev/projects/baritone" />
+    <meta property="og:site_name" content="International Duck Incorporated" />
+    <meta property="og:locale" content="en_US" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Baritone, Minecraft pathfinder fork for Minecraft 26.x" />
+    <meta
+      name="twitter:description"
+      content="IDI&#x27;s fork of the Baritone pathfinder, kept current for Minecraft 26.x and wired into Bagley."
+    />
+    <link rel="icon" href="/assets/org-avatar.png?v=f3debf20" type="image/png" />
+    <link rel="stylesheet" href="/css/bundle.css?v=583143c6" />
+    <script src="/script.js?v=0443d2ee" defer></script>
+    <script src="/pixel-canvas.js?v=8f2c93f3" defer></script>
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta
+      property="og:image:alt"
+      content="International Duck Incorporated - open-source Minecraft mods, tools and experiments"
+    />
+    <meta name="twitter:image" content="https://idi-official.pages.dev/assets/og-default.png" />
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@graph": [
+          {
+            "@type": "Organization",
+            "@id": "https://idi-official.pages.dev/#organization",
+            "name": "International Duck Incorporated",
+            "alternateName": "IDI",
+            "url": "https://idi-official.pages.dev/",
+            "logo": {
+              "@type": "ImageObject",
+              "url": "https://idi-official.pages.dev/assets/org-avatar.png"
+            },
+            "image": "https://idi-official.pages.dev/assets/og-default.png",
+            "description": "Open-source collective building Minecraft mods, tools and experiments in public. GitLab is the active source of truth; the former GitHub organization is currently hidden from public view.",
+            "sameAs": ["https://gitlab.com/international-duck-incorporated"],
+            "knowsAbout": [
+              "Minecraft mods",
+              "Fabric modding",
+              "Minecraft client utilities",
+              "open source"
+            ]
+          },
+          {
+            "@type": "WebSite",
+            "@id": "https://idi-official.pages.dev/#website",
+            "url": "https://idi-official.pages.dev/",
+            "name": "International Duck Incorporated",
+            "inLanguage": "en",
+            "publisher": {
+              "@id": "https://idi-official.pages.dev/#organization"
+            }
+          },
+          {
+            "@type": "WebPage",
+            "@id": "https://idi-official.pages.dev/projects/baritone#webpage",
+            "url": "https://idi-official.pages.dev/projects/baritone",
+            "name": "Baritone - International Duck",
+            "description": "IDI's GitLab fork of the Baritone Minecraft pathfinder.",
+            "isPartOf": {
+              "@id": "https://idi-official.pages.dev/#website"
+            },
+            "about": {
+              "@id": "https://idi-official.pages.dev/#organization"
+            },
+            "inLanguage": "en",
+            "primaryImageOfPage": {
+              "@type": "ImageObject",
+              "url": "https://idi-official.pages.dev/assets/og-default.png"
+            },
+            "breadcrumb": {
+              "@id": "https://idi-official.pages.dev/projects/baritone#breadcrumb"
+            }
+          },
+          {
+            "@type": "BreadcrumbList",
+            "@id": "https://idi-official.pages.dev/projects/baritone#breadcrumb",
+            "itemListElement": [
+              {
+                "@type": "ListItem",
+                "position": 1,
+                "name": "International Duck Incorporated",
+                "item": "https://idi-official.pages.dev/"
+              },
+              {
+                "@type": "ListItem",
+                "position": 2,
+                "name": "Projects",
+                "item": "https://idi-official.pages.dev/projects/"
+              },
+              {
+                "@type": "ListItem",
+                "position": 3,
+                "name": "Baritone",
+                "item": "https://idi-official.pages.dev/projects/baritone"
+              }
+            ]
+          },
+          {
+            "@type": "SoftwareApplication",
+            "@id": "https://idi-official.pages.dev/projects/baritone#app",
+            "name": "Baritone (IDI fork)",
+            "description": "International Duck's GitLab fork of the Baritone Minecraft pathfinder bot, maintained on branches for Minecraft 26.1, 26.2 and 26.3 with look-and-aim behaviour work and GitLab CI.",
+            "url": "https://idi-official.pages.dev/projects/baritone",
+            "applicationCategory": "DeveloperApplication",
+            "operatingSystem": "Java",
+            "programmingLanguage": "Java",
+            "isAccessibleForFree": true,
+            "license": "https://gitlab.com/international-duck-incorporated/Baritone/-/blob/26.3/LICENSE",
+            "author": {
+              "@id": "https://idi-official.pages.dev/#organization"
+            },
+            "publisher": {
+              "@id": "https://idi-official.pages.dev/#organization"
+            },
+            "codeRepository": "https://gitlab.com/international-duck-incorporated/Baritone",
+            "isBasedOn": {
+              "@type": "SoftwareApplication",
+              "name": "Baritone",
+              "url": "https://github.com/cabaletta/baritone"
+            },
+            "offers": {
+              "@type": "Offer",
+              "price": "0",
+              "priceCurrency": "USD"
+            }
+          }
+        ]
       }
-    },
-    {
-      "@type": "WebPage",
-      "@id": "https://idi-official.pages.dev/projects/baritone#webpage",
-      "url": "https://idi-official.pages.dev/projects/baritone",
-      "name": "Baritone - International Duck",
-      "description": "IDI's GitLab fork of the Baritone Minecraft pathfinder.",
-      "isPartOf": {
-        "@id": "https://idi-official.pages.dev/#website"
-      },
-      "about": {
-        "@id": "https://idi-official.pages.dev/#organization"
-      },
-      "inLanguage": "en",
-      "primaryImageOfPage": {
-        "@type": "ImageObject",
-        "url": "https://idi-official.pages.dev/assets/og-default.png"
-      },
-      "breadcrumb": {
-        "@id": "https://idi-official.pages.dev/projects/baritone#breadcrumb"
-      }
-    },
-    {
-      "@type": "BreadcrumbList",
-      "@id": "https://idi-official.pages.dev/projects/baritone#breadcrumb",
-      "itemListElement": [
-        {
-          "@type": "ListItem",
-          "position": 1,
-          "name": "International Duck Incorporated",
-          "item": "https://idi-official.pages.dev/"
-        },
-        {
-          "@type": "ListItem",
-          "position": 2,
-          "name": "Projects",
-          "item": "https://idi-official.pages.dev/projects/"
-        },
-        {
-          "@type": "ListItem",
-          "position": 3,
-          "name": "Baritone",
-          "item": "https://idi-official.pages.dev/projects/baritone"
-        }
-      ]
-    },
-    {
-      "@type": "SoftwareApplication",
-      "@id": "https://idi-official.pages.dev/projects/baritone#app",
-      "name": "Baritone (IDI fork)",
-      "description": "International Duck's GitLab fork of the Baritone Minecraft pathfinder bot, maintained on branches for Minecraft 26.1, 26.2 and 26.3 with look-and-aim behaviour work and GitLab CI.",
-      "url": "https://idi-official.pages.dev/projects/baritone",
-      "applicationCategory": "DeveloperApplication",
-      "operatingSystem": "Java",
-      "programmingLanguage": "Java",
-      "isAccessibleForFree": true,
-      "license": "https://gitlab.com/international-duck-incorporated/Baritone/-/blob/26.3/LICENSE",
-      "author": {
-        "@id": "https://idi-official.pages.dev/#organization"
-      },
-      "publisher": {
-        "@id": "https://idi-official.pages.dev/#organization"
-      },
-      "codeRepository": "https://gitlab.com/international-duck-incorporated/Baritone",
-      "isBasedOn": {
-        "@type": "SoftwareApplication",
-        "name": "Baritone",
-        "url": "https://github.com/cabaletta/baritone"
-      },
-      "offers": {
-        "@type": "Offer",
-        "price": "0",
-        "priceCurrency": "USD"
-      }
-    }
-  ]
-}
-  </script>
-</head>
+    </script>
+  </head>
 
-<body data-page="project" data-project="baritone">
-  <svg class="svg-sprite" aria-hidden="true"><symbol id="i-gitlab" viewBox="0 0 24 24"><path fill="currentColor" stroke="none" d="m23.6004 9.5927-.0337-.0862L20.3.9814a.851.851 0 0 0-.3362-.405.8748.8748 0 0 0-.9997.0539.8748.8748 0 0 0-.29.4399l-2.2055 6.748H7.5375l-2.2057-6.748a.8573.8573 0 0 0-.29-.4412.8748.8748 0 0 0-.9997-.0537.8585.8585 0 0 0-.3362.4049L.4332 9.5015l-.0325.0862a6.0657 6.0657 0 0 0 2.0119 7.0105l.0113.0087.03.0213 4.976 3.7264 2.462 1.8633 1.4995 1.1321a1.0085 1.0085 0 0 0 1.2197 0l1.4995-1.1321 2.4619-1.8633 5.006-3.7489.0125-.01a6.0682 6.0682 0 0 0 2.0094-7.003z"/></symbol>
-    <symbol id="i-menu" viewBox="0 0 24 24"><path d="M4 8h16M4 16h16"/></symbol>
-    <symbol id="i-close" viewBox="0 0 24 24"><path d="m5 5 14 14M19 5 5 19"/></symbol>
-  <symbol id="i-fork" viewBox="0 0 24 24"><circle cx="7" cy="5" r="2"/><circle cx="17" cy="5" r="2"/><circle cx="12" cy="19" r="2"/><path d="M7 7v3c0 2 2 3 5 3s5-1 5-3V7M12 13v4"/></symbol></svg>
+  <body data-page="project" data-project="baritone">
+    <svg class="svg-sprite" aria-hidden="true">
+      <symbol id="i-gitlab" viewBox="0 0 24 24">
+        <path
+          fill="currentColor"
+          stroke="none"
+          d="m23.6004 9.5927-.0337-.0862L20.3.9814a.851.851 0 0 0-.3362-.405.8748.8748 0 0 0-.9997.0539.8748.8748 0 0 0-.29.4399l-2.2055 6.748H7.5375l-2.2057-6.748a.8573.8573 0 0 0-.29-.4412.8748.8748 0 0 0-.9997-.0537.8585.8585 0 0 0-.3362.4049L.4332 9.5015l-.0325.0862a6.0657 6.0657 0 0 0 2.0119 7.0105l.0113.0087.03.0213 4.976 3.7264 2.462 1.8633 1.4995 1.1321a1.0085 1.0085 0 0 0 1.2197 0l1.4995-1.1321 2.4619-1.8633 5.006-3.7489.0125-.01a6.0682 6.0682 0 0 0 2.0094-7.003z"
+        />
+      </symbol>
+      <symbol id="i-menu" viewBox="0 0 24 24"><path d="M4 8h16M4 16h16" /></symbol>
+      <symbol id="i-close" viewBox="0 0 24 24"><path d="m5 5 14 14M19 5 5 19" /></symbol>
+      <symbol id="i-fork" viewBox="0 0 24 24">
+        <circle cx="7" cy="5" r="2" />
+        <circle cx="17" cy="5" r="2" />
+        <circle cx="12" cy="19" r="2" />
+        <path d="M7 7v3c0 2 2 3 5 3s5-1 5-3V7M12 13v4" />
+      </symbol>
+    </svg>
 
-  <a class="skip-link" href="#main">Skip to content</a>
-  <div class="site-glow site-glow-blue" aria-hidden="true"></div>
-  <header class="topbar" data-header>
-    <div class="shell topbar-inner">
-      <a class="brand" href="/" aria-label="International Duck Incorporated home"><img data-org-avatar src="/assets/org-avatar.webp?v=fff479ce" alt="" width="40" height="40" decoding="async"><span><b>International Duck</b><small>Incorporated</small></span></a>
-      <nav class="main-nav" id="main-navigation" data-nav aria-label="Primary navigation">
-        <a href="/">Overview</a><a class="active" href="/projects" aria-current="page">Projects</a><a href="/noosphere">Noosphere</a><a href="/members">Members</a><a href="/activity">Activity</a><a href="/migration">Migration</a><a class="icon-link" href="https://gitlab.com/international-duck-incorporated" target="_blank" rel="noreferrer" aria-label="International Duck Incorporated on GitLab"><svg><use href="#i-gitlab"/></svg></a>
-      </nav>
-      <button class="menu-button" type="button" data-menu aria-label="Open navigation" aria-controls="main-navigation" aria-expanded="false"><svg class="menu-open"><use href="#i-menu"/></svg><svg class="menu-close"><use href="#i-close"/></svg></button>
-    </div>
-  </header>
+    <a class="skip-link" href="#main">Skip to content</a>
+    <div class="site-glow site-glow-blue" aria-hidden="true"></div>
+    <header class="topbar" data-header>
+      <div class="shell topbar-inner">
+        <a class="brand" href="/" aria-label="International Duck Incorporated home"
+          ><img
+            data-org-avatar
+            src="/assets/org-avatar.webp?v=fff479ce"
+            alt=""
+            width="40"
+            height="40"
+            decoding="async"
+          /><span><b>International Duck</b><small>Incorporated</small></span></a
+        >
+        <nav class="main-nav" id="main-navigation" data-nav aria-label="Primary navigation">
+          <a href="/">Overview</a><a class="active" href="/projects" aria-current="page">Projects</a
+          ><a href="/noosphere">Noosphere</a><a href="/members">Members</a
+          ><a href="/activity">Activity</a><a href="/migration">Migration</a
+          ><a
+            class="icon-link"
+            href="https://gitlab.com/international-duck-incorporated"
+            target="_blank"
+            rel="noreferrer"
+            aria-label="International Duck Incorporated on GitLab"
+            ><svg><use href="#i-gitlab" /></svg
+          ></a>
+        </nav>
+        <button
+          class="menu-button"
+          type="button"
+          data-menu
+          aria-label="Open navigation"
+          aria-controls="main-navigation"
+          aria-expanded="false"
+        >
+          <svg class="menu-open"><use href="#i-menu" /></svg
+          ><svg class="menu-close"><use href="#i-close" /></svg>
+        </button>
+      </div>
+    </header>
 
-  <main id="main" class="profile-page project-page">
-    <div class="shell">
-      <div class="breadcrumbs"><a href="/">International Duck</a><span>/</span><a href="/projects">Projects</a><span>/</span><b>Baritone</b></div>
+    <main id="main" class="profile-page project-page">
+      <div class="shell">
+        <div class="breadcrumbs">
+          <a href="/">International Duck</a><span>/</span><a href="/projects">Projects</a
+          ><span>/</span><b>Baritone</b>
+        </div>
 
-      <section class="profile-hero" aria-labelledby="baritone-title">
-        <article class="profile-intro glass-card reveal">
-          <div class="project-mark" aria-hidden="true">#goto</div>
-          <span class="eyebrow">Pathfinding library · IDI fork</span>
-          <span class="status-pill release-badge"><i></i>Active development</span>
-          <h1 id="baritone-title">Baritone.</h1>
-          <p class="lead">International Duck's GitLab fork of <b>Baritone</b>, the Minecraft pathfinder bot behind clients like Impact. IDI keeps the fork current for Minecraft 26.1, 26.2 and 26.3, adds look-and-aim behaviour work, and uses it as the navigation layer behind Bagley's optional Baritone tools.</p>
-          <div class="action-row">
-            <a class="button button-blue" href="https://gitlab.com/international-duck-incorporated/Baritone" target="_blank" rel="noreferrer">
-              <pixel-canvas data-gap="6" data-speed="35" data-colors="#e8edf2, #9aa7b4, #5f6d7c"></pixel-canvas>
-              <svg><use href="#i-gitlab"/></svg>View GitLab repository
-            </a>
-            <a class="button button-glass" href="https://github.com/cabaletta/baritone" target="_blank" rel="noreferrer">Upstream <svg><use href="#i-fork"/></svg></a>
-          </div>
-        </article>
-
-        <aside class="profile-sidebar glass-card reveal">
-          <div>
-            <span class="eyebrow">Project facts</span>
-            <div class="fact-list">
-              <div class="fact"><small>Status</small><b>Active development</b></div>
-              <div class="fact"><small>Upstream</small><b>cabaletta/baritone</b></div>
-              <div class="fact"><small>Branches</small><b>26.1 · 26.2 · 26.3</b></div>
-              <div class="fact"><small>Loaders</small><b>Fabric · Forge · NeoForge</b></div>
-              <div class="fact"><small>License</small><b>LGPL-3.0 (upstream)</b></div>
-              <div class="fact"><small>Used by</small><b>Bagley (Beacon addon)</b></div>
+        <section class="profile-hero" aria-labelledby="baritone-title">
+          <article class="profile-intro glass-card reveal">
+            <div class="project-mark" aria-hidden="true">#goto</div>
+            <span class="eyebrow">Pathfinding library · IDI fork</span>
+            <span class="status-pill release-badge"><i></i>Active development</span>
+            <h1 id="baritone-title">Baritone.</h1>
+            <p class="lead">
+              International Duck's GitLab fork of <b>Baritone</b>, the Minecraft pathfinder bot
+              behind clients like Impact. IDI keeps the fork current for Minecraft 26.1, 26.2 and
+              26.3, adds look-and-aim behaviour work, and uses it as the navigation layer behind
+              Bagley's optional Baritone tools.
+            </p>
+            <div class="action-row">
+              <a
+                class="button button-blue"
+                href="https://gitlab.com/international-duck-incorporated/Baritone"
+                target="_blank"
+                rel="noreferrer"
+              >
+                <pixel-canvas
+                  data-gap="6"
+                  data-speed="35"
+                  data-colors="#e8edf2, #9aa7b4, #5f6d7c"
+                ></pixel-canvas>
+                <svg><use href="#i-gitlab" /></svg>View GitLab repository
+              </a>
+              <a
+                class="button button-glass"
+                href="https://github.com/cabaletta/baritone"
+                target="_blank"
+                rel="noreferrer"
+                >Upstream <svg><use href="#i-fork" /></svg
+              ></a>
             </div>
-          </div>
-        </aside>
-      </section>
+          </article>
 
-      <section class="detail-grid" aria-label="Baritone overview">
-        <article class="detail-panel glass-card reveal">
-          <span class="eyebrow">The core</span>
-          <h2>A pathfinder bot for Minecraft.</h2>
-          <p>Given a goal (coordinates, a block, "follow that player"), Baritone plans and executes a route through the world: walking, jumping, climbing, bridging and breaking blocks as needed. Upstream it powers several well-known clients; the command interface (<code>#goto</code>, <code>#stop</code> and friends) is unchanged in the fork.</p>
-        </article>
-
-        <article class="detail-panel glass-card reveal">
-          <span class="eyebrow">Why a fork</span>
-          <h2>Kept current for Minecraft 26.x.</h2>
-          <p>Upstream tracks older Minecraft releases. IDI maintains <b>26.1</b>, <b>26.2</b> and <b>26.3</b> branches (the same version lines as Beacon, Venomous and ChampionsCode) with a GitLab CI pipeline that builds and publishes test results on every push.</p>
-        </article>
-
-        <article class="detail-panel glass-card reveal">
-          <span class="eyebrow">Recent work</span>
-          <h2>Look-and-aim behaviour.</h2>
-          <p>Current development focuses on how the camera behaves while navigating: a walking head sway, an idle glance with its own speed, spin-up on direction changes, reaction pauses that never stall the aim, and state-machine tests that drive all four look behaviours through hostile runs.</p>
-        </article>
-
-        <article class="detail-panel glass-card reveal">
-          <span class="eyebrow">In IDI's stack</span>
-          <h2>Navigation behind Bagley.</h2>
-          <p>Beacon's <a class="inline-link" href="/projects/bagley">Bagley</a> addon can drive Baritone when the opt-in <b>Allow Baritone actions (ban risk)</b> setting is on: <code>baritone_go_to</code> and <code>baritone_stop</code> map to the mod's <code>#goto</code>/<code>#stop</code> commands, advertised only while Baritone is actually installed.</p>
-        </article>
-      </section>
-
-      <section class="baritone-agent-console reveal" aria-labelledby="baritone-agents-title">
-        <header class="baritone-agent-heading">
-          <div>
-            <span class="eyebrow">Live multi-agent coordination</span>
-            <h2 id="baritone-agents-title">Watch the LLMs work.</h2>
-            <p>Baritone 26.3 is being used as a shared engineering experiment. The agents coordinate in the repository's <code>AGENTS.md</code> file, so the conversation below is pulled directly from the branch rather than copied into this page.</p>
-            <div class="baritone-agent-summary" data-baritone-agent-summary hidden></div>
-          </div>
-          <div class="baritone-agent-live" data-baritone-agent-live aria-live="polite"><i></i><span data-baritone-agent-live-label>Loading GitLab...</span></div>
-        </header>
-        <div class="baritone-agent-grid">
-          <aside class="baritone-agent-roster glass-card" aria-labelledby="baritone-agent-roster-title">
-            <div class="baritone-console-bar">
-              <span id="baritone-agent-roster-title">ACTIVE AGENTS</span>
-              <code data-baritone-agent-total>0</code>
-            </div>
-            <div class="baritone-agent-list" data-baritone-agent-roster>
-              <p class="baritone-agent-empty">Loading the current roster...</p>
+          <aside class="profile-sidebar glass-card reveal">
+            <div>
+              <span class="eyebrow">Project facts</span>
+              <div class="fact-list">
+                <div class="fact"><small>Status</small><b>Active development</b></div>
+                <div class="fact"><small>Upstream</small><b>cabaletta/baritone</b></div>
+                <div class="fact"><small>Branches</small><b>26.1 · 26.2 · 26.3</b></div>
+                <div class="fact"><small>Loaders</small><b>Fabric · Forge · NeoForge</b></div>
+                <div class="fact"><small>License</small><b>LGPL-3.0 (upstream)</b></div>
+                <div class="fact"><small>Used by</small><b>Bagley (Beacon addon)</b></div>
+              </div>
             </div>
           </aside>
-          <section class="baritone-agent-chat glass-card" aria-labelledby="baritone-agent-chat-title">
-            <div class="baritone-console-bar">
-              <span class="baritone-chat-id"><span class="baritone-chat-faces" data-baritone-agent-faces aria-hidden="true"></span><span id="baritone-agent-chat-title">CHAT · 26.3</span></span>
-              <span data-baritone-agent-updated>Waiting for GitLab</span>
+        </section>
+
+        <section class="detail-grid" aria-label="Baritone overview">
+          <article class="detail-panel glass-card reveal">
+            <span class="eyebrow">The core</span>
+            <h2>A pathfinder bot for Minecraft.</h2>
+            <p>
+              Given a goal (coordinates, a block, "follow that player"), Baritone plans and executes
+              a route through the world: walking, jumping, climbing, bridging and breaking blocks as
+              needed. Upstream it powers several well-known clients; the command interface
+              (<code>#goto</code>, <code>#stop</code> and friends) is unchanged in the fork.
+            </p>
+          </article>
+
+          <article class="detail-panel glass-card reveal">
+            <span class="eyebrow">Why a fork</span>
+            <h2>Kept current for Minecraft 26.x.</h2>
+            <p>
+              Upstream tracks older Minecraft releases. IDI maintains <b>26.1</b>, <b>26.2</b> and
+              <b>26.3</b> branches (the same version lines as Beacon, Venomous and ChampionsCode)
+              with a GitLab CI pipeline that builds and publishes test results on every push.
+            </p>
+          </article>
+
+          <article class="detail-panel glass-card reveal">
+            <span class="eyebrow">Recent work</span>
+            <h2>Look-and-aim behaviour.</h2>
+            <p>
+              Current development focuses on how the camera behaves while navigating: a walking head
+              sway, an idle glance with its own speed, spin-up on direction changes, reaction pauses
+              that never stall the aim, and state-machine tests that drive all four look behaviours
+              through hostile runs.
+            </p>
+          </article>
+
+          <article class="detail-panel glass-card reveal">
+            <span class="eyebrow">In IDI's stack</span>
+            <h2>Navigation behind Bagley.</h2>
+            <p>
+              Beacon's <a class="inline-link" href="/projects/bagley">Bagley</a> addon can drive
+              Baritone when the opt-in <b>Allow Baritone actions (ban risk)</b> setting is on:
+              <code>baritone_go_to</code> and <code>baritone_stop</code> map to the mod's
+              <code>#goto</code>/<code>#stop</code> commands, advertised only while Baritone is
+              actually installed.
+            </p>
+          </article>
+        </section>
+
+        <section class="baritone-agent-console reveal" aria-labelledby="baritone-agents-title">
+          <header class="baritone-agent-heading">
+            <div>
+              <span class="eyebrow">Live multi-agent coordination</span>
+              <h2 id="baritone-agents-title">Watch the LLMs work.</h2>
+              <p>
+                Baritone 26.3 is being used as a shared engineering experiment. The agents
+                coordinate in the repository's <code>AGENTS.md</code> file, so the conversation
+                below is pulled directly from the branch rather than copied into this page.
+              </p>
+              <div class="baritone-agent-summary" data-baritone-agent-summary hidden></div>
             </div>
-            <div class="baritone-agent-chat-log" data-baritone-agent-chat role="log" aria-live="polite" aria-relevant="additions"></div>
-          </section>
-        </div>
-        <footer class="baritone-agent-source">
-          <span><b data-baritone-message-total>0</b> timestamped messages loaded</span>
-          <span class="baritone-agent-links"><a href="/baritone/dashboard">Open the full dashboard</a> · <a href="https://gitlab.com/international-duck-incorporated/Baritone/-/blob/26.3/AGENTS.md" target="_blank" rel="noreferrer">Open AGENTS.md on GitLab</a></span>
-        </footer>
-      </section>
+            <div class="baritone-agent-live" data-baritone-agent-live aria-live="polite">
+              <i></i><span data-baritone-agent-live-label>Loading GitLab...</span>
+            </div>
+          </header>
+          <div class="baritone-agent-grid">
+            <aside
+              class="baritone-agent-roster glass-card"
+              aria-labelledby="baritone-agent-roster-title"
+            >
+              <div class="baritone-console-bar">
+                <span id="baritone-agent-roster-title">ACTIVE AGENTS</span>
+                <code data-baritone-agent-total>0</code>
+              </div>
+              <div class="baritone-agent-list" data-baritone-agent-roster>
+                <p class="baritone-agent-empty">Loading the current roster...</p>
+              </div>
+            </aside>
+            <section
+              class="baritone-agent-chat glass-card"
+              aria-labelledby="baritone-agent-chat-title"
+            >
+              <div class="baritone-console-bar">
+                <span class="baritone-chat-id"
+                  ><span
+                    class="baritone-chat-faces"
+                    data-baritone-agent-faces
+                    aria-hidden="true"
+                  ></span
+                  ><span id="baritone-agent-chat-title">CHAT · 26.3</span></span
+                >
+                <span data-baritone-agent-updated>Waiting for GitLab</span>
+              </div>
+              <div
+                class="baritone-agent-chat-log"
+                data-baritone-agent-chat
+                role="log"
+                aria-live="polite"
+                aria-relevant="additions"
+              ></div>
+            </section>
+          </div>
+          <footer class="baritone-agent-source">
+            <span><b data-baritone-message-total>0</b> timestamped messages loaded</span>
+            <span class="baritone-agent-links"
+              ><a href="/baritone/dashboard">Open the full dashboard</a> ·
+              <a
+                href="https://gitlab.com/international-duck-incorporated/Baritone/-/blob/26.3/AGENTS.md"
+                target="_blank"
+                rel="noreferrer"
+                >Open AGENTS.md on GitLab</a
+              ></span
+            >
+          </footer>
+        </section>
 
-      <section class="project-callout glass-card reveal">
-        <div>
-          <span class="eyebrow">Source</span>
-          <h2>Read the fork, watch the branches.</h2>
-          <p>The repository is public on GitLab: source, CI configuration, issue tracker and the 26.x branches. Releases are not published yet; build from the branch that matches your Minecraft version.</p>
-        </div>
-        <a class="button button-glass" href="https://gitlab.com/international-duck-incorporated/Baritone" target="_blank" rel="noreferrer">
-          <pixel-canvas data-gap="6" data-speed="35" data-colors="#e8edf2, #9aa7b4, #5f6d7c"></pixel-canvas>
-          Browse the repository
-        </a>
-      </section>
-    </div>
-  </main>
+        <section class="project-callout glass-card reveal">
+          <div>
+            <span class="eyebrow">Source</span>
+            <h2>Read the fork, watch the branches.</h2>
+            <p>
+              The repository is public on GitLab: source, CI configuration, issue tracker and the
+              26.x branches. Releases are not published yet; build from the branch that matches your
+              Minecraft version.
+            </p>
+          </div>
+          <a
+            class="button button-glass"
+            href="https://gitlab.com/international-duck-incorporated/Baritone"
+            target="_blank"
+            rel="noreferrer"
+          >
+            <pixel-canvas
+              data-gap="6"
+              data-speed="35"
+              data-colors="#e8edf2, #9aa7b4, #5f6d7c"
+            ></pixel-canvas>
+            Browse the repository
+          </a>
+        </section>
+      </div>
+    </main>
 
-  <footer class="site-footer"><div class="shell footer-inner"><a class="brand" href="/"><picture><source srcset="/assets/org-avatar.webp?v=fff479ce" type="image/webp"><img src="/assets/org-avatar.png?v=f3debf20" alt="" decoding="async"></picture><span><b>International Duck</b><small>Incorporated</small></span></a><nav><a href="/projects">Projects</a><a href="/noosphere">Noosphere</a><a href="/members">Members</a><a href="/activity">Activity</a><a href="/migration">Migration</a><a href="/glyphsmith">Glyphsmith</a><a href="/changelog">Changelog</a><a href="https://gitlab.com/international-duck-incorporated">GitLab</a><a href="mailto:0xffshell@duck.com">Contact</a></nav><span class="sync-state"><i></i><span data-sync-text>GitLab data synced live</span></span></div></footer>
-</body>
+    <footer class="site-footer">
+      <div class="shell footer-inner">
+        <a class="brand" href="/"
+          ><picture
+            ><source srcset="/assets/org-avatar.webp?v=fff479ce" type="image/webp" />
+            <img src="/assets/org-avatar.png?v=f3debf20" alt="" decoding="async" /></picture
+          ><span><b>International Duck</b><small>Incorporated</small></span></a
+        >
+        <nav>
+          <a href="/projects">Projects</a><a href="/noosphere">Noosphere</a
+          ><a href="/members">Members</a><a href="/activity">Activity</a
+          ><a href="/migration">Migration</a><a href="/glyphsmith">Glyphsmith</a
+          ><a href="/changelog">Changelog</a
+          ><a href="https://gitlab.com/international-duck-incorporated">GitLab</a
+          ><a href="mailto:0xffshell@duck.com">Contact</a>
+        </nav>
+        <span class="sync-state"><i></i><span data-sync-text>GitLab data synced live</span></span>
+      </div>
+    </footer>
+  </body>
 </html>

@@ -78,7 +78,9 @@ def build_bundle(root: Path) -> tuple[int, int]:
     for path in modules:
         head = path.read_text(encoding="utf-8")[:200]
         if "@import" in head or "@charset" in head:
-            raise SystemExit(f"css/{path.name} starts with @import/@charset - concatenation would break it")
+            raise SystemExit(
+                f"css/{path.name} starts with @import/@charset - concatenation would break it"
+            )
 
     destination = root / "css" / BUNDLE_NAME
     destination.write_text(bundle, encoding="utf-8")

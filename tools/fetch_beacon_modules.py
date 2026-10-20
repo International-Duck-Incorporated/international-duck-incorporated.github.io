@@ -71,7 +71,9 @@ def slugify(name: str) -> str:
 
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--ref", default="main", help="branch, tag or commit to read (default: main)")
+    parser.add_argument(
+        "--ref", default="main", help="branch, tag or commit to read (default: main)"
+    )
     parser.add_argument("--out", default="data/beacon-modules.json")
     args = parser.parse_args()
 
@@ -98,9 +100,7 @@ def main() -> int:
             continue
         source = raw(args.ref, path)
         # super("Name", "One-line description", Category.X)
-        match = re.search(
-            r'super\(\s*([^,]+?)\s*,\s*"([^"]+)"\s*,\s*Category\.(\w+)', source, re.S
-        )
+        match = re.search(r'super\(\s*([^,]+?)\s*,\s*"([^"]+)"\s*,\s*Category\.(\w+)', source, re.S)
         if not match:
             unresolved.append(class_name)
             continue
@@ -142,7 +142,9 @@ def main() -> int:
         "registration_url": f"https://gitlab.com/{PROJECT}/-/blob/{args.ref}/{MANAGER}",
         "count": len(modules),
         "categories": {c: counts[c] for c in CATEGORY_ORDER if c in counts},
-        "modules": sorted(modules, key=lambda m: (CATEGORY_ORDER.index(m["category"]), m["name"].lower())),
+        "modules": sorted(
+            modules, key=lambda m: (CATEGORY_ORDER.index(m["category"]), m["name"].lower())
+        ),
     }
 
     out = Path(args.out)

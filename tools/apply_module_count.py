@@ -40,15 +40,21 @@ def main() -> None:
 
                 def fix(match: re.Match, replacement: str = replacement) -> str:
                     # "All 56 modules" must not come back lowercase.
-                    return replacement[0].upper() + replacement[1:] if match.group(0)[:1].isupper() else replacement
+                    return (
+                        replacement[0].upper() + replacement[1:]
+                        if match.group(0)[:1].isupper()
+                        else replacement
+                    )
 
                 updated = regex.sub(fix, updated)
             if updated != source:
                 path.write_text(updated, encoding="utf-8")
                 touched.append(path.relative_to(root).as_posix())
 
-    print(f"module count {count} across {categories} categories; updated: "
-          f"{', '.join(touched) if touched else 'nothing (already in sync)'}")
+    print(
+        f"module count {count} across {categories} categories; updated: "
+        f"{', '.join(touched) if touched else 'nothing (already in sync)'}"
+    )
 
 
 if __name__ == "__main__":

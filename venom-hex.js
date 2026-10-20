@@ -37,10 +37,10 @@
   };
 
   const offScreenMult = 4; // how far past the edge lines travel before resetting
-  let dieX = w / 2 / opts.len * offScreenMult;
-  let dieY = h / 2 / opts.len * offScreenMult;
+  let dieX = (w / 2 / opts.len) * offScreenMult;
+  let dieY = (h / 2 / opts.len) * offScreenMult;
 
-  const baseRad = Math.PI * 2 / 6;
+  const baseRad = (Math.PI * 2) / 6;
   const lines = [];
 
   const FADE = "7, 9, 13";
@@ -59,12 +59,18 @@
     this.rad = 0;
 
     // pick one of the 4 screen corners as this line's origin
-    const corners = [[0, 0], [w, 0], [0, h], [w, h]];
-    const corner = corners[Math.random() * 4 | 0];
+    const corners = [
+      [0, 0],
+      [w, 0],
+      [0, h],
+      [w, h],
+    ];
+    const corner = corners[(Math.random() * 4) | 0];
     this.cx = corner[0];
     this.cy = corner[1];
 
-    this.lightInputMultiplier = opts.baseLightInputMultiplier + opts.addedLightInputMultiplier * Math.random();
+    this.lightInputMultiplier =
+      opts.baseLightInputMultiplier + opts.addedLightInputMultiplier * Math.random();
 
     this.color = "hsl(120, 100%, light%)"; // 120 = venom green
     this.cumulativeTime = 0;
@@ -76,24 +82,29 @@
     this.y += this.addedY;
 
     this.time = 0;
-    this.targetTime = opts.baseTime + opts.addedTime * Math.random() | 0;
+    this.targetTime = (opts.baseTime + opts.addedTime * Math.random()) | 0;
 
     this.rad += baseRad * (Math.random() < 0.5 ? 1 : -1);
     this.addedX = Math.cos(this.rad);
     this.addedY = Math.sin(this.rad);
 
-    if (Math.random() < opts.dieChance || this.x > dieX || this.x < -dieX || this.y > dieY || this.y < -dieY)
+    if (
+      Math.random() < opts.dieChance ||
+      this.x > dieX ||
+      this.x < -dieX ||
+      this.y > dieY ||
+      this.y < -dieY
+    )
       this.reset();
   };
   Line.prototype.step = function () {
     ++this.time;
     ++this.cumulativeTime;
 
-    if (this.time >= this.targetTime)
-      this.beginPhase();
+    if (this.time >= this.targetTime) this.beginPhase();
 
     const prop = this.time / this.targetTime;
-    const wave = Math.sin(prop * Math.PI / 2);
+    const wave = Math.sin((prop * Math.PI) / 2);
     const x = this.addedX * wave;
     const y = this.addedY * wave;
     const px = this.cx + (this.x + x) * opts.len;
@@ -122,8 +133,7 @@
     ctx.fillRect(0, 0, w, h);
     ctx.globalCompositeOperation = "lighter";
 
-    if (lines.length < opts.count && Math.random() < opts.spawnChance)
-      lines.push(new Line());
+    if (lines.length < opts.count && Math.random() < opts.spawnChance) lines.push(new Line());
 
     for (const line of lines) line.step();
   }
@@ -147,8 +157,8 @@
     ctx.fillStyle = `rgb(${FADE})`;
     ctx.fillRect(0, 0, w, h);
 
-    dieX = w / 2 / opts.len * offScreenMult;
-    dieY = h / 2 / opts.len * offScreenMult;
+    dieX = (w / 2 / opts.len) * offScreenMult;
+    dieY = (h / 2 / opts.len) * offScreenMult;
 
     // Respawn walkers so corner origins track the new viewport.
     lines.length = 0;

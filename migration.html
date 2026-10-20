@@ -1,221 +1,585 @@
 <!doctype html>
 <html lang="en">
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <script>
-    (() => {
-      const nav = navigator;
-      const connection = nav.connection || nav.mozConnection || nav.webkitConnection;
-      const lowEnd = Boolean(
-        (connection && connection.saveData) ||
-        (connection && /^(slow-2g|2g)$/.test(connection.effectiveType || "")) ||
-        (typeof nav.deviceMemory === "number" && nav.deviceMemory <= 4) ||
-        (typeof nav.hardwareConcurrency === "number" && nav.hardwareConcurrency <= 4)
-      );
-      window.IDI_LOW_END = lowEnd;
-      window.IDI_REDUCED_MOTION = Boolean(
-        window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches
-      );
-      if (lowEnd) document.documentElement.classList.add("low-end");
-    })();
-  </script>
-  <link rel="preconnect" href="https://gitlab.com" crossorigin>
-  <link rel="preconnect" href="https://gitlab.com">
-  <link rel="dns-prefetch" href="https://gitlab.com">
-  <meta name="theme-color" content="#07090d">
-    <meta property="og:image" content="https://idi-official.pages.dev/assets/og-default.png">
-  <title>GitHub to GitLab migration, September 2026 | IDI</title>
-  <meta name="description" content="Why International Duck moved from GitHub to GitLab in September 2026: a sourced, dated timeline of what changed, what moved and what is still unavailable.">
-  <link rel="canonical" href="https://idi-official.pages.dev/migration">
-  <meta property="og:type" content="website">
-  <meta property="og:title" content="GitHub to GitLab migration, September 2026">
-  <meta property="og:description" content="A sourced timeline of the September 2026 move from GitHub to GitLab.">
-  <meta property="og:url" content="https://idi-official.pages.dev/migration">
-  <meta property="og:site_name" content="International Duck Incorporated">
-  <meta property="og:locale" content="en_US">
-  <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="GitHub to GitLab migration, September 2026">
-  <meta name="twitter:description" content="A sourced timeline of the September 2026 move from GitHub to GitLab.">
-  <link rel="icon" href="/assets/org-avatar.png?v=f3debf20" type="image/png">
-  <link rel="stylesheet" href="/css/bundle.css?v=1f263d21">
-  <script src="/script.js?v=ffe97c4c" defer></script>
-  <meta property="og:image:width" content="1200">
-  <meta property="og:image:height" content="630">
-  <meta property="og:image:alt" content="International Duck Incorporated - open-source Minecraft mods, tools and experiments">
-  <meta name="twitter:image" content="https://idi-official.pages.dev/assets/og-default.png">
-  <script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@graph": [
-    {
-      "@type": "Organization",
-      "@id": "https://idi-official.pages.dev/#organization",
-      "name": "International Duck Incorporated",
-      "alternateName": "IDI",
-      "url": "https://idi-official.pages.dev/",
-      "logo": {
-        "@type": "ImageObject",
-        "url": "https://idi-official.pages.dev/assets/org-avatar.png"
-      },
-      "image": "https://idi-official.pages.dev/assets/og-default.png",
-      "description": "Open-source collective building Minecraft mods, tools and experiments in public. GitLab is the active source of truth; the former GitHub organization is currently hidden from public view.",
-      "sameAs": [
-        "https://gitlab.com/international-duck-incorporated"
-      ],
-      "knowsAbout": [
-        "Minecraft mods",
-        "Fabric modding",
-        "Minecraft client utilities",
-        "open source"
-      ]
-    },
-    {
-      "@type": "WebSite",
-      "@id": "https://idi-official.pages.dev/#website",
-      "url": "https://idi-official.pages.dev/",
-      "name": "International Duck Incorporated",
-      "inLanguage": "en",
-      "publisher": {
-        "@id": "https://idi-official.pages.dev/#organization"
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <script>
+      (() => {
+        const nav = navigator;
+        const connection = nav.connection || nav.mozConnection || nav.webkitConnection;
+        const lowEnd = Boolean(
+          (connection && connection.saveData) ||
+            (connection && /^(slow-2g|2g)$/.test(connection.effectiveType || "")) ||
+            (typeof nav.deviceMemory === "number" && nav.deviceMemory <= 4) ||
+            (typeof nav.hardwareConcurrency === "number" && nav.hardwareConcurrency <= 4)
+        );
+        window.IDI_LOW_END = lowEnd;
+        window.IDI_REDUCED_MOTION = Boolean(
+          window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches
+        );
+        if (lowEnd) document.documentElement.classList.add("low-end");
+      })();
+    </script>
+    <link rel="preconnect" href="https://gitlab.com" crossorigin />
+    <link rel="preconnect" href="https://gitlab.com" />
+    <link rel="dns-prefetch" href="https://gitlab.com" />
+    <meta name="theme-color" content="#07090d" />
+    <meta property="og:image" content="https://idi-official.pages.dev/assets/og-default.png" />
+    <title>GitHub to GitLab migration, Sep–Oct 2026 | IDI</title>
+    <meta
+      name="description"
+      content="Why International Duck moved to GitLab, plus a dated timeline and the October 20 GitHub Support decision to keep @3spress0 restricted."
+    />
+    <link rel="canonical" href="https://idi-official.pages.dev/migration" />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="GitHub to GitLab migration, Sep–Oct 2026" />
+    <meta
+      property="og:description"
+      content="A sourced timeline of the GitHub-to-GitLab move and the October 20 decision to keep @3spress0 restricted."
+    />
+    <meta property="og:url" content="https://idi-official.pages.dev/migration" />
+    <meta property="og:site_name" content="International Duck Incorporated" />
+    <meta property="og:locale" content="en_US" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="GitHub to GitLab migration, Sep–Oct 2026" />
+    <meta
+      name="twitter:description"
+      content="A sourced timeline of the GitHub-to-GitLab move and the October 20 decision to keep @3spress0 restricted."
+    />
+    <link rel="icon" href="/assets/org-avatar.png?v=f3debf20" type="image/png" />
+    <link rel="stylesheet" href="/css/bundle.css?v=583143c6" />
+    <script src="/script.js?v=0443d2ee" defer></script>
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta
+      property="og:image:alt"
+      content="International Duck Incorporated - open-source Minecraft mods, tools and experiments"
+    />
+    <meta name="twitter:image" content="https://idi-official.pages.dev/assets/og-default.png" />
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@graph": [
+          {
+            "@type": "Organization",
+            "@id": "https://idi-official.pages.dev/#organization",
+            "name": "International Duck Incorporated",
+            "alternateName": "IDI",
+            "url": "https://idi-official.pages.dev/",
+            "logo": {
+              "@type": "ImageObject",
+              "url": "https://idi-official.pages.dev/assets/org-avatar.png"
+            },
+            "image": "https://idi-official.pages.dev/assets/og-default.png",
+            "description": "Open-source collective building Minecraft mods, tools and experiments in public. GitLab is the active source of truth; the former GitHub organization is currently hidden from public view.",
+            "sameAs": ["https://gitlab.com/international-duck-incorporated"],
+            "knowsAbout": [
+              "Minecraft mods",
+              "Fabric modding",
+              "Minecraft client utilities",
+              "open source"
+            ]
+          },
+          {
+            "@type": "WebSite",
+            "@id": "https://idi-official.pages.dev/#website",
+            "url": "https://idi-official.pages.dev/",
+            "name": "International Duck Incorporated",
+            "inLanguage": "en",
+            "publisher": {
+              "@id": "https://idi-official.pages.dev/#organization"
+            }
+          },
+          {
+            "@type": "WebPage",
+            "@id": "https://idi-official.pages.dev/migration#webpage",
+            "url": "https://idi-official.pages.dev/migration",
+            "name": "GitLab Migration - International Duck Incorporated",
+            "description": "A fact-checked record of International Duck Incorporated's September–October 2026 move from GitHub to GitLab, including team-reported support developments.",
+            "isPartOf": {
+              "@id": "https://idi-official.pages.dev/#website"
+            },
+            "about": {
+              "@id": "https://idi-official.pages.dev/#organization"
+            },
+            "inLanguage": "en",
+            "primaryImageOfPage": {
+              "@type": "ImageObject",
+              "url": "https://idi-official.pages.dev/assets/og-default.png"
+            },
+            "breadcrumb": {
+              "@id": "https://idi-official.pages.dev/migration#breadcrumb"
+            }
+          },
+          {
+            "@type": "BreadcrumbList",
+            "@id": "https://idi-official.pages.dev/migration#breadcrumb",
+            "itemListElement": [
+              {
+                "@type": "ListItem",
+                "position": 1,
+                "name": "International Duck Incorporated",
+                "item": "https://idi-official.pages.dev/"
+              },
+              {
+                "@type": "ListItem",
+                "position": 2,
+                "name": "Migration",
+                "item": "https://idi-official.pages.dev/migration"
+              }
+            ]
+          }
+        ]
       }
-    },
-    {
-      "@type": "WebPage",
-      "@id": "https://idi-official.pages.dev/migration#webpage",
-      "url": "https://idi-official.pages.dev/migration",
-      "name": "GitLab Migration - International Duck Incorporated",
-      "description": "A fact-checked record of International Duck Incorporated's September 2026 move from GitHub to GitLab, separating public platform evidence from team-reported support details.",
-      "isPartOf": {
-        "@id": "https://idi-official.pages.dev/#website"
-      },
-      "about": {
-        "@id": "https://idi-official.pages.dev/#organization"
-      },
-      "inLanguage": "en",
-      "primaryImageOfPage": {
-        "@type": "ImageObject",
-        "url": "https://idi-official.pages.dev/assets/og-default.png"
-      },
-      "breadcrumb": {
-        "@id": "https://idi-official.pages.dev/migration#breadcrumb"
-      }
-    },
-    {
-      "@type": "BreadcrumbList",
-      "@id": "https://idi-official.pages.dev/migration#breadcrumb",
-      "itemListElement": [
-        {
-          "@type": "ListItem",
-          "position": 1,
-          "name": "International Duck Incorporated",
-          "item": "https://idi-official.pages.dev/"
-        },
-        {
-          "@type": "ListItem",
-          "position": 2,
-          "name": "Migration",
-          "item": "https://idi-official.pages.dev/migration"
-        }
-      ]
-    }
-  ]
-}
-  </script>
-</head>
-<body data-page="migration">
-  <svg class="svg-sprite" aria-hidden="true">
-    <symbol id="i-gitlab" viewBox="0 0 24 24"><path fill="currentColor" stroke="none" d="m23.6004 9.5927-.0337-.0862L20.3.9814a.851.851 0 0 0-.3362-.405.8748.8748 0 0 0-.9997.0539.8748.8748 0 0 0-.29.4399l-2.2055 6.748H7.5375l-2.2057-6.748a.8573.8573 0 0 0-.29-.4412.8748.8748 0 0 0-.9997-.0537.8585.8585 0 0 0-.3362.4049L.4332 9.5015l-.0325.0862a6.0657 6.0657 0 0 0 2.0119 7.0105l.0113.0087.03.0213 4.976 3.7264 2.462 1.8633 1.4995 1.1321a1.0085 1.0085 0 0 0 1.2197 0l1.4995-1.1321 2.4619-1.8633 5.006-3.7489.0125-.01a6.0682 6.0682 0 0 0 2.0094-7.003z"/></symbol>
-    <symbol id="i-arrow" viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></symbol>
-    <symbol id="i-menu" viewBox="0 0 24 24"><path d="M4 8h16M4 16h16"/></symbol>
-    <symbol id="i-close" viewBox="0 0 24 24"><path d="m5 5 14 14M19 5 5 19"/></symbol>
-  </svg>
+    </script>
+  </head>
+  <body data-page="migration">
+    <svg class="svg-sprite" aria-hidden="true">
+      <symbol id="i-gitlab" viewBox="0 0 24 24">
+        <path
+          fill="currentColor"
+          stroke="none"
+          d="m23.6004 9.5927-.0337-.0862L20.3.9814a.851.851 0 0 0-.3362-.405.8748.8748 0 0 0-.9997.0539.8748.8748 0 0 0-.29.4399l-2.2055 6.748H7.5375l-2.2057-6.748a.8573.8573 0 0 0-.29-.4412.8748.8748 0 0 0-.9997-.0537.8585.8585 0 0 0-.3362.4049L.4332 9.5015l-.0325.0862a6.0657 6.0657 0 0 0 2.0119 7.0105l.0113.0087.03.0213 4.976 3.7264 2.462 1.8633 1.4995 1.1321a1.0085 1.0085 0 0 0 1.2197 0l1.4995-1.1321 2.4619-1.8633 5.006-3.7489.0125-.01a6.0682 6.0682 0 0 0 2.0094-7.003z"
+        />
+      </symbol>
+      <symbol id="i-arrow" viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6" /></symbol>
+      <symbol id="i-menu" viewBox="0 0 24 24"><path d="M4 8h16M4 16h16" /></symbol>
+      <symbol id="i-close" viewBox="0 0 24 24"><path d="m5 5 14 14M19 5 5 19" /></symbol>
+    </svg>
 
-  <a class="skip-link" href="#main">Skip to content</a>
-  <div class="site-glow site-glow-blue" aria-hidden="true"></div>
+    <a class="skip-link" href="#main">Skip to content</a>
+    <div class="site-glow site-glow-blue" aria-hidden="true"></div>
 
-  <header class="topbar" data-header>
-    <div class="shell topbar-inner">
-      <a class="brand" href="/" aria-label="International Duck Incorporated home"><img data-org-avatar src="/assets/org-avatar.webp?v=fff479ce" alt="" width="40" height="40" decoding="async"><span><b>International Duck</b><small>Incorporated</small></span></a>
-      <nav class="main-nav" id="main-navigation" data-nav aria-label="Primary navigation">
-        <a href="/">Overview</a><a href="/projects">Projects</a><a href="/noosphere">Noosphere</a><a href="/members">Members</a><a href="/activity">Activity</a><a class="active" href="/migration" aria-current="page">Migration</a><a class="icon-link" href="https://gitlab.com/international-duck-incorporated" target="_blank" rel="noreferrer" aria-label="International Duck Incorporated on GitLab"><svg><use href="#i-gitlab"/></svg></a>
-      </nav>
-      <button class="menu-button" type="button" data-menu aria-label="Open navigation" aria-controls="main-navigation" aria-expanded="false"><svg class="menu-open"><use href="#i-menu"/></svg><svg class="menu-close"><use href="#i-close"/></svg></button>
-    </div>
-  </header>
+    <header class="topbar" data-header>
+      <div class="shell topbar-inner">
+        <a class="brand" href="/" aria-label="International Duck Incorporated home"
+          ><img
+            data-org-avatar
+            src="/assets/org-avatar.webp?v=fff479ce"
+            alt=""
+            width="40"
+            height="40"
+            decoding="async"
+          /><span><b>International Duck</b><small>Incorporated</small></span></a
+        >
+        <nav class="main-nav" id="main-navigation" data-nav aria-label="Primary navigation">
+          <a href="/">Overview</a><a href="/projects">Projects</a><a href="/noosphere">Noosphere</a
+          ><a href="/members">Members</a><a href="/activity">Activity</a
+          ><a class="active" href="/migration" aria-current="page">Migration</a
+          ><a
+            class="icon-link"
+            href="https://gitlab.com/international-duck-incorporated"
+            target="_blank"
+            rel="noreferrer"
+            aria-label="International Duck Incorporated on GitLab"
+            ><svg><use href="#i-gitlab" /></svg
+          ></a>
+        </nav>
+        <button
+          class="menu-button"
+          type="button"
+          data-menu
+          aria-label="Open navigation"
+          aria-controls="main-navigation"
+          aria-expanded="false"
+        >
+          <svg class="menu-open"><use href="#i-menu" /></svg
+          ><svg class="menu-close"><use href="#i-close" /></svg>
+        </button>
+      </div>
+    </header>
 
-  <main id="main" class="migration-page">
-    <section class="shell migration-hero">
-      <div class="breadcrumbs"><a href="/">International Duck</a><span>/</span><b>Migration</b></div>
-      <div class="migration-heading reveal">
-        <div>
-          <span class="eyebrow">September–October 2026</span>
-          <h1>Why we moved<br>to GitLab.</h1>
+    <main id="main" class="migration-page">
+      <section class="shell migration-hero">
+        <div class="breadcrumbs">
+          <a href="/">International Duck</a><span>/</span><b>Migration</b>
         </div>
-        <p>International Duck Incorporated says it moved active development to GitLab after GitHub access disruptions affected its organization and member accounts. Public checks confirm that the GitHub organization, its repository pages, and the affected member profiles remain unavailable, while the GitLab group is public and active. The public roster now also includes <strong>@midas735</strong>, whose GitLab profile says “Member since October 05, 2026.” Support-ticket states were last shared by the team on October 7, 2026. This page separates team-reported support details from independently visible platform records.</p>
-      </div>
-      <div class="migration-status glass-card reveal" role="status">
-        <span class="migration-status-mark" aria-hidden="true"></span>
-        <div><small>CURRENT STATUS · OCTOBER 7, 2026</small><strong>Three support tickets in flight; GitLab active</strong><p>Public checks still return 404 for IDI’s GitHub organization and repository pages, and for the <b>@0xFFshell</b> and <b>@3spress0</b> profiles. GitLab’s group, now nine public projects, remains the verifiable source of record. Per the team’s support dashboard on October 7, 2026: the <b>@3spress0</b> visibility appeal <b>#4776851</b> is <b>open</b>, the organization reinstatement request <b>#4828005</b> (opened October 6) is <b>pending</b>, and the <b>@0xFFshell</b> suspension appeal <b>#4788849</b> is <b>archived</b> after the team closed it by mistake. GitHub Support has replied on the two live tickets asking how the accounts and the organization are used; the team has answered both.</p></div>
-      </div>
-    </section>
+        <div class="migration-heading reveal">
+          <div>
+            <span class="eyebrow">September–October 2026</span>
+            <h1>Why we moved<br />to GitLab.</h1>
+          </div>
+          <p>
+            International Duck Incorporated says it moved active development to GitLab after GitHub
+            access disruptions affected its organization and member accounts. Public checks recorded
+            in this timeline found the GitHub organization, repository pages, and affected member
+            profiles unavailable; no newer public-access check accompanies this update, while the
+            GitLab group remains public and active. In a GitHub Support email dated October 20,
+            <strong>@3spress0</strong> was told the account would remain restricted. The latest
+            reported states for two other support tickets are from October 7. This page separates
+            account-holder-reported support details from independently visible platform records.
+          </p>
+        </div>
+        <div class="migration-status glass-card reveal" role="status">
+          <span class="migration-status-mark" aria-hidden="true"></span>
+          <div>
+            <small>CURRENT STATUS · OCTOBER 20, 2026</small
+            ><strong>GitHub says @3spress0 will remain restricted; GitLab is active</strong>
+            <p>
+              In a message dated October 20 at 01:29 UTC (03:29 CEST), GitHub Support said it had
+              reviewed the account flags and decided the account should remain restricted, citing
+              its
+              <a
+                href="https://docs.github.com/en/site-policy/github-terms/github-terms-of-service"
+                target="_blank"
+                rel="noreferrer"
+                >Terms of Service</a
+              >
+              and/or
+              <a
+                href="https://docs.github.com/en/site-policy/acceptable-use-policies/github-acceptable-use-policies"
+                target="_blank"
+                rel="noreferrer"
+                >Acceptable Use Policies</a
+              >. It did not identify the specific flagged activity or say whether the appeal ticket
+              is closed. The latest reported states of tickets <b>#4828005</b> (pending) and
+              <b>#4788849</b> (archived) are from October 7; no newer update is available here. The
+              public-access findings in this timeline predate the October 20 support email.
+            </p>
+          </div>
+        </div>
+      </section>
 
-    <section class="shell migration-section" aria-labelledby="timeline-title">
-      <header class="section-heading reveal"><div><span class="eyebrow">Timeline</span><h2 id="timeline-title">What happened.</h2></div><p>Times below use Central European Summer Time, UTC+2.</p></header>
-      <ol class="migration-timeline">
-        <li class="reveal"><time datetime="2026-09-21T09:30:00+02:00">Sep 21, 2026 · 09:30</time><span class="timeline-dot"><b>01</b></span><div class="timeline-content glass-card"><h3>Visibility appeal opened</h3><p>According to the team’s support record, ticket <b>#4776851</b> requested restoration of the <strong>@3spress0</strong> profile after it reportedly stopped appearing publicly. A public check on September 29 still returns 404 for that profile; the ticket itself and GitHub’s reason are not public.</p><span class="ticket-state">Team-reported ticket · profile currently unavailable</span></div></li>
-        <li class="reveal"><time datetime="2026-09-21T13:30:00+02:00">Sep 21, 2026 · 13:30</time><span class="timeline-dot"><b>02</b></span><div class="timeline-content glass-card"><h3>GitHub access disrupted</h3><p>The team reported losing dependable access to its shared GitHub organization. GitHub’s <a href="https://www.githubstatus.com/history" target="_blank" rel="noreferrer">public status history</a> lists no platform-wide incident on September 21, so the cause is not independently established. As of September 29 at 11:14 CEST, the organization page, all four direct repository pages, and the former GitHub Pages site still return 404, while Git clone checks fail. GitHub’s aggregate organization endpoints continue to expose limited metadata, but direct access remains unavailable.</p><span class="ticket-state">Organization and repositories still unavailable</span></div></li>
-        <li class="reveal"><time datetime="2026-09-24T09:43:00+02:00">Sep 24, 2026 · 09:43</time><span class="timeline-dot"><b>03</b></span><div class="timeline-content glass-card"><h3>0xFF GitHub ban appealed</h3><p>According to the team’s support record, ticket <b>#4788849</b> was opened after GitHub banned the <strong>@0xFFshell</strong> account. Public checks confirm that the GitHub profile returns 404, but cannot confirm the reason. GitHub account-ID chronology places its creation on <strong>September 23, 2026</strong>; the active GitLab profile publicly states “Member since <strong>September 24, 2026</strong>.”</p><span class="ticket-state">Ban is team-reported · public status: GitHub 404, GitLab active</span></div></li>
-        <li class="reveal"><time datetime="2026-09-24T14:20:34+02:00">Sep 24, 2026 · 14:20</time><span class="timeline-dot"><b>04</b></span><div class="timeline-content glass-card"><h3>The GitLab group went live</h3><p>GitLab’s public API timestamps the group at 14:20:34 CEST and Venomous one second later. The website followed at 14:54, NullTrace at 15:29, and ChampionsCode at 15:35. All four projects remain public and non-archived.</p><span class="ticket-state">Verified through GitLab’s public API</span></div></li>
-        <li class="reveal"><time datetime="2026-09-28T00:00:00+02:00">Sep 28, 2026</time><span class="timeline-dot"><b>05</b></span><div class="timeline-content glass-card"><h3>Xx-superIvar-xX joined GitLab</h3><p>GitLab’s public profile for <strong>@Xx-superIvar-xX</strong> states “Member since September 28, 2026,” one day before this update. No GitHub disruption or appeal has been reported for this member; the join appears to be a direct GitLab signup rather than a migration case.</p><span class="ticket-state">Verified through GitLab’s public profile</span></div></li>
-        <li class="reveal"><time datetime="2026-09-29T11:14:00+02:00">Sep 29, 2026 · 11:14</time><span class="timeline-dot"><b>06</b></span><div class="timeline-content glass-card"><h3>No response from GitHub yet</h3><p>According to the team’s support records, no response had been received for either appeal. At this update, ticket <b>#4776851</b> had been pending for 8 days and 1 hour, and ticket <b>#4788849</b> for 5 days and 1 hour. Ticket contents and response status are private and cannot be independently verified.</p><span class="ticket-state">Team-reported · 2 appeals pending</span></div></li>
-        <li class="reveal"><time datetime="2026-10-05">Oct 5, 2026</time><span class="timeline-dot"><b>07</b></span><div class="timeline-content glass-card"><h3>Midas735 joined GitLab; GitHub still silent</h3><p>GitLab’s public profile for <strong>@midas735</strong> now states “Member since October 05, 2026.” This adds another public member account on IDI’s active platform. According to the team’s latest update, no response has been received from GitHub for either appeal.</p><span class="ticket-state">GitLab profile verified · team-reported · 2 appeals pending</span></div></li>
-        <li class="reveal"><time datetime="2026-10-06T14:09:00+02:00">Oct 6, 2026 · 14:09</time><span class="timeline-dot"><b>08</b></span><div class="timeline-content glass-card"><h3>Organization reinstatement requested</h3><p>According to the team’s support record, ticket <b>#4828005</b> asked GitHub to reinstate the <strong>International-Duck-Incorporated</strong> organization, whose page still returns 404 when logged out. The filing describes the organization as a collaborative home where several people develop Minecraft mods, share the source code online, and publish the mods to forums such as CurseForge.</p><span class="ticket-state">Team-reported ticket · status: pending</span></div></li>
-        <li class="reveal"><time datetime="2026-10-07">Oct 7, 2026</time><span class="timeline-dot"><b>09</b></span><div class="timeline-content glass-card"><h3>GitHub answers the live tickets</h3><p>GitHub Support replied on both live tickets asking how the account and the organization plan to be used. On <b>#4776851</b> the team explained the flagged traffic (an AI benchmarking tool that cloned the Venomous repository roughly 303 times in 14 days), said the repeated cloning has stopped and local copies are reused instead, and pointed at upcoming Firefox addon development. On <b>#4828005</b> the team described the organization’s mod-development and publishing workflow.</p><span class="ticket-state">Team-reported · responses sent on #4776851 and #4828005</span></div></li>
-        <li class="reveal"><time datetime="2026-10-07">Oct 7, 2026</time><span class="timeline-dot"><b>10</b></span><div class="timeline-content glass-card"><h3>The 0xFFshell appeal was archived</h3><p>Ticket <b>#4788849</b>, the appeal of the <strong>@0xFFshell</strong> suspension, is now archived. The team reports the ticket was closed by mistake (“didnt mean to close it”) and that the thread can only continue through a follow-up ticket. No reinstatement decision has been reported.</p><span class="ticket-state">Team-reported · archived without a reported decision</span></div></li>
-      </ol>
-    </section>
+      <section class="shell migration-section" aria-labelledby="timeline-title">
+        <header class="section-heading reveal">
+          <div>
+            <span class="eyebrow">Timeline</span>
+            <h2 id="timeline-title">What happened.</h2>
+          </div>
+          <p>Times below use Central European Summer Time, UTC+2.</p>
+        </header>
+        <ol class="migration-timeline">
+          <li class="reveal">
+            <time datetime="2026-09-21T09:30:00+02:00">Sep 21, 2026 · 09:30</time
+            ><span class="timeline-dot"><b>01</b></span>
+            <div class="timeline-content glass-card">
+              <h3>Visibility appeal opened</h3>
+              <p>
+                According to the team’s support record, ticket <b>#4776851</b> requested restoration
+                of the <strong>@3spress0</strong> profile after it reportedly stopped appearing
+                publicly. The September 29 public check returned 404 for that profile; the ticket
+                itself and GitHub’s reason are not public.
+              </p>
+              <span class="ticket-state">Team-reported · profile returned 404 in Sep 29 check</span>
+            </div>
+          </li>
+          <li class="reveal">
+            <time datetime="2026-09-21T13:30:00+02:00">Sep 21, 2026 · 13:30</time
+            ><span class="timeline-dot"><b>02</b></span>
+            <div class="timeline-content glass-card">
+              <h3>GitHub access disrupted</h3>
+              <p>
+                The team reported losing dependable access to its shared GitHub organization.
+                GitHub’s
+                <a href="https://www.githubstatus.com/history" target="_blank" rel="noreferrer"
+                  >public status history</a
+                >
+                lists no platform-wide incident on September 21, so the cause is not independently
+                established. As of September 29 at 11:14 CEST, the organization page, all four
+                direct repository pages, and the former GitHub Pages site returned 404, while Git
+                clone checks failed. GitHub’s aggregate organization endpoints exposed limited
+                metadata, but direct access was unavailable.
+              </p>
+              <span class="ticket-state"
+                >Sep 29 check · organization and repositories unavailable</span
+              >
+            </div>
+          </li>
+          <li class="reveal">
+            <time datetime="2026-09-24T09:43:00+02:00">Sep 24, 2026 · 09:43</time
+            ><span class="timeline-dot"><b>03</b></span>
+            <div class="timeline-content glass-card">
+              <h3>0xFF GitHub ban appealed</h3>
+              <p>
+                According to the team’s support record, ticket <b>#4788849</b> was opened after
+                GitHub banned the <strong>@0xFFshell</strong> account. The public check recorded
+                here found the GitHub profile returned 404, but cannot confirm the reason. GitHub
+                account-ID chronology places its creation on <strong>September 23, 2026</strong>;
+                the active GitLab profile publicly states “Member since
+                <strong>September 24, 2026</strong>.”
+              </p>
+              <span class="ticket-state"
+                >Ban is team-reported · public status: GitHub 404, GitLab active</span
+              >
+            </div>
+          </li>
+          <li class="reveal">
+            <time datetime="2026-09-24T14:20:34+02:00">Sep 24, 2026 · 14:20</time
+            ><span class="timeline-dot"><b>04</b></span>
+            <div class="timeline-content glass-card">
+              <h3>The GitLab group went live</h3>
+              <p>
+                GitLab’s public API timestamps the group at 14:20:34 CEST and Venomous one second
+                later. The website followed at 14:54, NullTrace at 15:29, and ChampionsCode at
+                15:35. All four projects remain public and non-archived.
+              </p>
+              <span class="ticket-state">Verified through GitLab’s public API</span>
+            </div>
+          </li>
+          <li class="reveal">
+            <time datetime="2026-09-28T00:00:00+02:00">Sep 28, 2026</time
+            ><span class="timeline-dot"><b>05</b></span>
+            <div class="timeline-content glass-card">
+              <h3>Xx-superIvar-xX joined GitLab</h3>
+              <p>
+                GitLab’s public profile for <strong>@Xx-superIvar-xX</strong> states “Member since
+                September 28, 2026,” one day before this update. No GitHub disruption or appeal has
+                been reported for this member; the join appears to be a direct GitLab signup rather
+                than a migration case.
+              </p>
+              <span class="ticket-state">Verified through GitLab’s public profile</span>
+            </div>
+          </li>
+          <li class="reveal">
+            <time datetime="2026-09-29T11:14:00+02:00">Sep 29, 2026 · 11:14</time
+            ><span class="timeline-dot"><b>06</b></span>
+            <div class="timeline-content glass-card">
+              <h3>No response from GitHub yet</h3>
+              <p>
+                According to the team’s support records, no response had been received for either
+                appeal. At this update, ticket <b>#4776851</b> had been pending for 8 days and 1
+                hour, and ticket <b>#4788849</b> for 5 days and 1 hour. Ticket contents and response
+                status are private and cannot be independently verified.
+              </p>
+              <span class="ticket-state">Team-reported · 2 appeals pending</span>
+            </div>
+          </li>
+          <li class="reveal">
+            <time datetime="2026-10-05">Oct 5, 2026</time
+            ><span class="timeline-dot"><b>07</b></span>
+            <div class="timeline-content glass-card">
+              <h3>Midas735 joined GitLab; GitHub still silent</h3>
+              <p>
+                GitLab’s public profile for <strong>@midas735</strong> now states “Member since
+                October 05, 2026.” This adds another public member account on IDI’s active platform.
+                According to the team’s latest update, no response has been received from GitHub for
+                either appeal.
+              </p>
+              <span class="ticket-state"
+                >GitLab profile verified · team-reported · 2 appeals pending</span
+              >
+            </div>
+          </li>
+          <li class="reveal">
+            <time datetime="2026-10-06T14:09:00+02:00">Oct 6, 2026 · 14:09</time
+            ><span class="timeline-dot"><b>08</b></span>
+            <div class="timeline-content glass-card">
+              <h3>Organization reinstatement requested</h3>
+              <p>
+                According to the team’s support record, ticket <b>#4828005</b> asked GitHub to
+                reinstate the <strong>International-Duck-Incorporated</strong> organization, whose
+                page was reported as returning 404 when logged out. The filing describes the
+                organization as a collaborative home where several people develop Minecraft mods,
+                share the source code online, and publish the mods to forums such as CurseForge.
+              </p>
+              <span class="ticket-state">Team-reported ticket · last reported pending Oct 7</span>
+            </div>
+          </li>
+          <li class="reveal">
+            <time datetime="2026-10-07">Oct 7, 2026</time
+            ><span class="timeline-dot"><b>09</b></span>
+            <div class="timeline-content glass-card">
+              <h3>GitHub answers the live tickets</h3>
+              <p>
+                GitHub Support replied on both live tickets asking how the account and organization
+                would be used. On <b>#4776851</b>, the account holder reported 303 clones and 113
+                unique cloners of Venomous over 14 days from an automated development/benchmarking
+                workflow, said repeated cloning had stopped and local copies would be reused, and
+                noted planned Firefox add-on development. On <b>#4828005</b>, the team described its
+                mod-development and publishing workflow.
+              </p>
+              <span class="ticket-state"
+                >Team-reported · responses sent on #4776851 and #4828005</span
+              >
+            </div>
+          </li>
+          <li class="reveal">
+            <time datetime="2026-10-07">Oct 7, 2026</time
+            ><span class="timeline-dot"><b>10</b></span>
+            <div class="timeline-content glass-card">
+              <h3>The 0xFFshell appeal was archived</h3>
+              <p>
+                Ticket <b>#4788849</b>, the appeal of the <strong>@0xFFshell</strong> suspension, is
+                now archived. The team reports the ticket was closed by mistake (“didnt mean to
+                close it”) and that the thread can only continue through a follow-up ticket. As of
+                October 7, the team had not reported a reinstatement decision.
+              </p>
+              <span class="ticket-state"
+                >Team-reported · archived without a reported decision as of Oct 7</span
+              >
+            </div>
+          </li>
+          <li class="reveal">
+            <time datetime="2026-10-20T03:29:00+02:00">Oct 20, 2026 · 03:29</time
+            ><span class="timeline-dot"><b>11</b></span>
+            <div class="timeline-content glass-card">
+              <h3>GitHub Support kept the restriction in place</h3>
+              <p>
+                In a response dated October 20 at 01:29 UTC (03:29 CEST), GitHub Support said the
+                <strong>@3spress0</strong> account had been flagged for activity that violates its
+                Terms of Service and/or Acceptable Use Policies. After reviewing the flags, it
+                decided the account must remain restricted. The message did not identify the
+                specific activity or say whether the appeal ticket was closed.
+              </p>
+              <span class="ticket-state"
+                >Account holder-provided email · restriction remains · ticket closure not
+                stated</span
+              >
+            </div>
+          </li>
+        </ol>
+      </section>
 
-    <section class="shell migration-section" aria-labelledby="appeals-title" id="appeals">
-      <header class="section-heading reveal"><div><span class="eyebrow">State of appeals</span><h2 id="appeals-title">Three tickets, three states.</h2></div><p>Ticket numbers, subjects, opened dates, priorities and statuses come from the team’s GitHub Support dashboard as shared on October 7, 2026. Ticket threads themselves are private; everything below is team-reported.</p></header>
-      <div class="appeals-grid">
-        <article class="glass-card reveal appeal-card appeal-open">
-          <div class="appeal-head"><b>#4776851</b><span class="appeal-chip">Open</span></div>
-          <h3>Request for reinstatement of @3spress0 profile visibility</h3>
-          <p>Opened September 21, 2026 at 09:30 CEST · priority Normal. GitHub asked how the account is used; the team explained the automated clone traffic behind the flag, confirmed the cloning stopped, and noted Firefox addon work that depends on the profile.</p>
-          <span class="ticket-state">Reinstatement request · profile still 404 in public checks</span>
-        </article>
-        <article class="glass-card reveal appeal-card appeal-pending">
-          <div class="appeal-head"><b>#4828005</b><span class="appeal-chip">Pending</span></div>
-          <h3>Reinstatement for the GitHub org International-Duck-Incorporated</h3>
-          <p>Opened October 6, 2026 at 14:09 CEST · priority Normal. GitHub Support asked about the organization’s intended use; the team answered that it is a collaborative Minecraft-mod development org publishing to forums such as CurseForge.</p>
-          <span class="ticket-state">Reinstatement request · organization still 404 in public checks</span>
-        </article>
-        <article class="glass-card reveal appeal-card appeal-archived">
-          <div class="appeal-head"><b>#4788849</b><span class="appeal-chip">Archived</span></div>
-          <h3>Appeal of suspension - GitHub account 0xFFshell</h3>
-          <p>Opened September 24, 2026 at 09:43 CEST · priority Normal. The team reports closing the ticket by mistake; the archived thread accepts no further comments and can only continue as a follow-up ticket.</p>
-          <span class="ticket-state">Reinstatement request · closed without a reported decision</span>
-        </article>
+      <section class="shell migration-section" aria-labelledby="appeals-title" id="appeals">
+        <header class="section-heading reveal">
+          <div>
+            <span class="eyebrow">State of appeals</span>
+            <h2 id="appeals-title">Latest known outcomes for three tickets.</h2>
+          </div>
+          <p>
+            The @3spress0 outcome is based on a GitHub Support email dated October 20, 2026,
+            supplied by the account holder. The other ticket statuses are the team’s last reported
+            states from October 7; private ticket threads cannot be independently verified, and no
+            newer status was provided for them.
+          </p>
+        </header>
+        <div class="appeals-grid">
+          <article class="glass-card reveal appeal-card appeal-restricted">
+            <div class="appeal-head">
+              <b>#4776851</b><span class="appeal-chip">Restricted</span>
+            </div>
+            <h3>Request for reinstatement of @3spress0 profile visibility</h3>
+            <p>
+              Opened September 21, 2026 at 09:30 CEST · priority Normal. The account holder said an
+              automated development/benchmarking workflow generated 303 clones and 113 unique
+              cloners of Venomous over 14 days; they stopped the repeated cloning and planned to
+              reuse local copies. On October 20, GitHub Support said the account must remain
+              restricted after review, citing its Terms of Service and/or Acceptable Use Policies.
+              The reply did not identify the specific activity or say whether the ticket was closed.
+            </p>
+            <span class="ticket-state">Decision received Oct 20 · account remains restricted</span>
+          </article>
+          <article class="glass-card reveal appeal-card appeal-pending">
+            <div class="appeal-head">
+              <b>#4828005</b><span class="appeal-chip">Pending · Oct 7</span>
+            </div>
+            <h3>Reinstatement for the GitHub org International-Duck-Incorporated</h3>
+            <p>
+              Opened October 6, 2026 at 14:09 CEST · priority Normal. Last reported as pending on
+              October 7. GitHub Support asked how the organization planned to use GitHub; the team
+              described its collaborative Minecraft-mod development and publishing workflow. No
+              newer status was included in the update supplied here.
+            </p>
+            <span class="ticket-state">Last reported pending · Oct 7, 2026</span>
+          </article>
+          <article class="glass-card reveal appeal-card appeal-archived">
+            <div class="appeal-head">
+              <b>#4788849</b><span class="appeal-chip">Archived · Oct 7</span>
+            </div>
+            <h3>Appeal of suspension - GitHub account 0xFFshell</h3>
+            <p>
+              Opened September 24, 2026 at 09:43 CEST · priority Normal. Last reported as archived
+              on October 7 after the team says it closed the ticket by mistake; the archived thread
+              was said to require a follow-up ticket to continue. No newer status was included in
+              the update supplied here.
+            </p>
+            <span class="ticket-state">Last reported archived · Oct 7, 2026</span>
+          </article>
+        </div>
+      </section>
+
+      <section class="migration-band">
+        <div class="shell migration-grid">
+          <article class="glass-card reveal">
+            <span class="eyebrow">The decision</span>
+            <h2>Continuity over uncertainty.</h2>
+            <p>
+              The team says the move allowed development, releases, issue tracking, and
+              collaboration to continue while support requests were unresolved. On October 20,
+              GitHub Support said @3spress0 should remain restricted. Public GitLab records confirm
+              continued project activity after the move; they do not reveal GitHub’s internal
+              rationale or the status of the other support cases.
+            </p>
+          </article>
+          <article class="glass-card reveal">
+            <span class="eyebrow">What remains on GitHub</span>
+            <h2>Metadata, not dependable access.</h2>
+            <p>
+              At the September 29 fact-check, GitHub’s aggregate organization API listed four
+              repositories and five public members; the organization page, direct repository pages,
+              individual repository API endpoints, and unauthenticated Git access were unavailable.
+              GitLab publicly hosts all nine current, non-archived group projects and should be
+              treated as IDI’s source of record.
+            </p>
+          </article>
+        </div>
+      </section>
+
+      <section class="shell migration-section migration-next">
+        <div class="glass-card reveal">
+          <div>
+            <span class="eyebrow">Primary home</span>
+            <h2>Development continues on GitLab.</h2>
+            <p>
+              GitLab’s public API lists nine non-archived group projects (most recently the Baritone
+              fork and the idi-assets media bundle, both added in October 2026) and records project
+              activity through October 6, 2026. In the latest public-access check recorded here
+              (September 29, 2026), direct GitHub access returned 404; GitLab is the currently
+              verifiable source for code, releases, issues, and project history.
+            </p>
+          </div>
+          <a
+            class="button button-blue"
+            href="https://gitlab.com/international-duck-incorporated"
+            target="_blank"
+            rel="noreferrer"
+            ><svg><use href="#i-gitlab" /></svg>Open the GitLab group</a
+          >
+        </div>
+        <p class="migration-note">
+          Initial fact-check completed September 29, 2026 at 11:17 CEST using GitHub web pages,
+          public aggregate and direct REST API endpoints, unauthenticated HTTPS Git checks, and
+          GitLab web/API records. This page was updated October 5 after <b>@midas735</b> appeared on
+          GitLab, October 7 with ticket states reported by the team (<b>#4776851</b> open,
+          <b>#4828005</b> pending, <b>#4788849</b> archived), and October 20 with a GitHub Support
+          email supplied by <b>@3spress0</b> saying the account would remain restricted. The October
+          20 message cites the Terms of Service and/or Acceptable Use Policies but does not identify
+          the specific activity or state whether the ticket was closed. The other two ticket
+          statuses are last reported as of October 7 and may have changed; private ticket threads
+          and current ticket states are not independently verifiable. The @3spress0 profile was last
+          recorded returning 404 in the September 29 public check; its September 23 account-creation
+          date is reconstructed from GitHub account-ID chronology. The September 24 GitLab date is
+          displayed publicly on the active profile.
+        </p>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <div class="shell footer-inner">
+        <a class="brand" href="/"
+          ><img
+            data-org-avatar
+            src="/assets/org-avatar.webp?v=fff479ce"
+            alt=""
+            width="40"
+            height="40"
+            decoding="async"
+          /><span><b>International Duck</b><small>Incorporated</small></span></a
+        >
+        <nav>
+          <a href="/">Overview</a><a href="/projects">Projects</a><a href="/noosphere">Noosphere</a
+          ><a href="/members">Members</a><a href="/activity">Activity</a
+          ><a href="/migration">Migration</a><a href="/glyphsmith">Glyphsmith</a
+          ><a href="/changelog">Changelog</a
+          ><a
+            href="https://gitlab.com/international-duck-incorporated"
+            target="_blank"
+            rel="noreferrer"
+            >GitLab</a
+          ><a href="mailto:0xffshell@duck.com">Contact</a>
+        </nav>
+        <span class="sync-state"><i></i><span data-sync-text>GitLab data synced live</span></span>
       </div>
-    </section>
-
-    <section class="migration-band">
-      <div class="shell migration-grid">
-        <article class="glass-card reveal"><span class="eyebrow">The decision</span><h2>Continuity over uncertainty.</h2><p>The team says the move allowed development, releases, issue tracking, and collaboration to continue while the appeals remained open. Public GitLab records confirm continued project activity after the move; public records do not reveal GitHub’s internal rationale or review status.</p></article>
-        <article class="glass-card reveal"><span class="eyebrow">What remains on GitHub</span><h2>Metadata, not dependable access.</h2><p>At the September 29 fact-check, GitHub’s aggregate organization API listed four repositories and five public members; the organization page, direct repository pages, individual repository API endpoints, and unauthenticated Git access were unavailable. GitLab publicly hosts all nine current, non-archived group projects and should be treated as IDI’s source of record.</p></article>
-      </div>
-    </section>
-
-    <section class="shell migration-section migration-next">
-      <div class="glass-card reveal">
-        <div><span class="eyebrow">Primary home</span><h2>Development continues on GitLab.</h2><p>GitLab’s public API lists nine non-archived group projects (most recently the Baritone fork and the idi-assets media bundle, both added in October 2026) and records project activity through October 6, 2026. With direct GitHub access still returning 404, GitLab is the currently verifiable source for code, releases, issues, and project history.</p></div>
-        <a class="button button-blue" href="https://gitlab.com/international-duck-incorporated" target="_blank" rel="noreferrer"><svg><use href="#i-gitlab"/></svg>Open the GitLab group</a>
-      </div>
-      <p class="migration-note">Initial fact-check completed September 29, 2026 at 11:17 CEST using GitHub web pages, public aggregate and direct REST API endpoints, unauthenticated HTTPS Git checks, and GitLab web/API records; this page was updated October 5, 2026 after <b>@midas735</b> appeared on GitLab, and again on October 7, 2026 with the team’s current support-ticket states: <b>#4776851</b> open, <b>#4828005</b> pending and <b>#4788849</b> archived. Ticket numbers, ticket contents, response status, and the reported ban reason come from the team and are not independently public. The team’s October 7 update records GitHub Support replies on both live tickets and reports that the archived suspension appeal was closed by mistake. Because the GitHub profile is unavailable, its September 23 join date is reconstructed from GitHub account-ID chronology; the September 24 GitLab date is displayed publicly on the active profile.</p>
-    </section>
-  </main>
-
-  <footer class="site-footer"><div class="shell footer-inner"><a class="brand" href="/"><img data-org-avatar src="/assets/org-avatar.webp?v=fff479ce" alt="" width="40" height="40" decoding="async"><span><b>International Duck</b><small>Incorporated</small></span></a><nav><a href="/">Overview</a><a href="/projects">Projects</a><a href="/noosphere">Noosphere</a><a href="/members">Members</a><a href="/activity">Activity</a><a href="/migration">Migration</a><a href="/glyphsmith">Glyphsmith</a><a href="/changelog">Changelog</a><a href="https://gitlab.com/international-duck-incorporated" target="_blank" rel="noreferrer">GitLab</a><a href="mailto:0xffshell@duck.com">Contact</a></nav><span class="sync-state"><i></i><span data-sync-text>GitLab data synced live</span></span></div></footer>
-</body>
+    </footer>
+  </body>
 </html>

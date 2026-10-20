@@ -37,7 +37,6 @@ PROFILES: dict[str, tuple[int, int]] = {
     # Subgroup and agent project icons.
     "noosphere-avatar.png": (192, 85),
     "agentarium-icon.png": (256, 82),
-
     # Project icons, rendered at 59-64 CSS px in cards.
     "venomous-icon.png": (256, 82),
     "nulltrace-icon.png": (256, 82),
@@ -122,7 +121,15 @@ def main() -> None:
         ):
             before_total += source.stat().st_size
             after_total += destination_path.stat().st_size
-            rows.append((source.name, destination, source.stat().st_size, destination_path.stat().st_size, "cached"))
+            rows.append(
+                (
+                    source.name,
+                    destination,
+                    source.stat().st_size,
+                    destination_path.stat().st_size,
+                    "cached",
+                )
+            )
             continue
         before, after = convert(source, assets / destination, long_edge, quality)
         before_total += before

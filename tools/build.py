@@ -43,7 +43,7 @@ STEPS = [
     # projects/beacon/index.html, so the sprite pass runs after them, not before.
     "gen_module_page.py",
     "gen_changelog_page.py",
-    "apply_svg_sprite.py",      # every page gets the icons it references
+    "apply_svg_sprite.py",  # every page gets the icons it references
     # Site-wide passes, in this order: copy -> metadata -> links -> sitemap.
     "apply_module_count.py",
     "apply_page_seo.py",
@@ -51,7 +51,7 @@ STEPS = [
     "gen_sitemap.py",
     "bust_cache.py",
     "apply_image_sources.py",  # a no-op second pass: keeps the pair pass honest
-    "bust_cache.py",           # after every rewrite, hashes are recomputed
+    "bust_cache.py",  # after every rewrite, hashes are recomputed
 ]
 
 

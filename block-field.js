@@ -29,7 +29,8 @@
   function mulberry(seed) {
     let s = seed >>> 0;
     return function () {
-      s |= 0; s = (s + 0x6d2b79f5) | 0;
+      s |= 0;
+      s = (s + 0x6d2b79f5) | 0;
       let t = Math.imul(s ^ (s >>> 15), 1 | s);
       t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
       return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
@@ -37,43 +38,63 @@
   }
   function seedOf(id) {
     let h = 2166136261;
-    for (let i = 0; i < id.length; i++) { h ^= id.charCodeAt(i); h = Math.imul(h, 16777619); }
+    for (let i = 0; i < id.length; i++) {
+      h ^= id.charCodeAt(i);
+      h = Math.imul(h, 16777619);
+    }
     return h >>> 0;
   }
 
   /* ---------------------------------------------- 16x16 pixel painters */
   function tile() {
     const c = document.createElement("canvas");
-    c.width = 16; c.height = 16;
+    c.width = 16;
+    c.height = 16;
     const x = c.getContext("2d");
     x.imageSmoothingEnabled = false;
     return [c, x];
   }
-  function rect(x, px, py, w, h, fill) { x.fillStyle = fill; x.fillRect(px, py, w, h); }
+  function rect(x, px, py, w, h, fill) {
+    x.fillStyle = fill;
+    x.fillRect(px, py, w, h);
+  }
   function valueNoise(r, scale) {
     const n = Math.ceil(16 / scale) + 2;
     const g = [];
-    for (let i = 0; i < n; i++) { const row = []; for (let j = 0; j < n; j++) row.push(r()); g.push(row); }
+    for (let i = 0; i < n; i++) {
+      const row = [];
+      for (let j = 0; j < n; j++) row.push(r());
+      g.push(row);
+    }
     return (x, y) => {
-      const gx = x / scale, gy = y / scale;
-      const x0 = Math.min(Math.floor(gx), n - 2), y0 = Math.min(Math.floor(gy), n - 2);
-      const fx = gx - x0, fy = gy - y0;
-      const sx = fx * fx * (3 - 2 * fx), sy = fy * fy * (3 - 2 * fy);
-      const a = g[y0][x0], b = g[y0][x0 + 1], c = g[y0 + 1][x0], d = g[y0 + 1][x0 + 1];
+      const gx = x / scale,
+        gy = y / scale;
+      const x0 = Math.min(Math.floor(gx), n - 2),
+        y0 = Math.min(Math.floor(gy), n - 2);
+      const fx = gx - x0,
+        fy = gy - y0;
+      const sx = fx * fx * (3 - 2 * fx),
+        sy = fy * fy * (3 - 2 * fy);
+      const a = g[y0][x0],
+        b = g[y0][x0 + 1],
+        c = g[y0 + 1][x0],
+        d = g[y0 + 1][x0 + 1];
       return a + (b - a) * sx + (c - a) * sy + (a - b - c + d) * sx * sy;
     };
   }
   function shade(x, r, pal, scale) {
     const f = valueNoise(r, scale || 4);
-    for (let y = 0; y < 16; y++) for (let px = 0; px < 16; px++) {
-      x.fillStyle = pal[Math.min(pal.length - 1, Math.floor(f(px, y) * pal.length))];
-      x.fillRect(px, y, 1, 1);
-    }
+    for (let y = 0; y < 16; y++)
+      for (let px = 0; px < 16; px++) {
+        x.fillStyle = pal[Math.min(pal.length - 1, Math.floor(f(px, y) * pal.length))];
+        x.fillRect(px, y, 1, 1);
+      }
   }
   const noise = (pal, scale) => (x, r) => shade(x, r, pal, scale);
   function blobs(x, r, colors, count, size) {
     for (let i = 0; i < count; i++) {
-      const px = Math.floor(r() * 16), py = Math.floor(r() * 16);
+      const px = Math.floor(r() * 16),
+        py = Math.floor(r() * 16);
       x.fillStyle = colors[Math.floor(r() * colors.length)];
       x.fillRect(px, py, size, size);
       if (r() < 0.6) x.fillRect((px + 1) % 16, py, size - 1 > 0 ? size - 1 : 1, size);
@@ -128,13 +149,16 @@
   };
   const paintCraftingTop = (x, r) => {
     paintPlanks(x, r);
-    rect(x, 0, 0, 16, 2, "#6d5637"); rect(x, 0, 0, 2, 16, "#6d5637");
-    rect(x, 7, 2, 2, 14, "#57432a"); rect(x, 2, 7, 14, 2, "#57432a");
+    rect(x, 0, 0, 16, 2, "#6d5637");
+    rect(x, 0, 0, 2, 16, "#6d5637");
+    rect(x, 7, 2, 2, 14, "#57432a");
+    rect(x, 2, 7, 14, 2, "#57432a");
   };
   const paintCraftingSide = (x, r) => {
     paintPlanks(x, r);
     rect(x, 0, 0, 16, 3, "#6d5637");
-    rect(x, 2, 3, 5, 5, "#57432a"); rect(x, 9, 3, 5, 5, "#57432a");
+    rect(x, 2, 3, 5, 5, "#57432a");
+    rect(x, 9, 3, 5, 5, "#57432a");
   };
   const paintFurnaceSide = noise(["#6e6e6e", "#7a7a7a", "#616161", "#848484"], 3);
   const paintFurnaceFront = (x, r) => {
@@ -145,12 +169,17 @@
   };
   const paintGlass = (x, r) => {
     x.clearRect(0, 0, 16, 16);
-    x.fillStyle = "rgba(210,235,245,0.16)"; x.fillRect(0, 0, 16, 16);
+    x.fillStyle = "rgba(210,235,245,0.16)";
+    x.fillRect(0, 0, 16, 16);
     x.fillStyle = "rgba(222,242,250,0.9)";
-    x.fillRect(0, 0, 16, 1); x.fillRect(0, 15, 16, 1); x.fillRect(0, 0, 1, 16); x.fillRect(15, 0, 1, 16);
+    x.fillRect(0, 0, 16, 1);
+    x.fillRect(0, 15, 16, 1);
+    x.fillRect(0, 0, 1, 16);
+    x.fillRect(15, 0, 1, 16);
     for (let i = 0; i < 5; i++) {
       const p = 3 + Math.floor(r() * 9);
-      x.fillStyle = "rgba(255,255,255,0.35)"; x.fillRect(p, 12 - p + 3, 1, 1);
+      x.fillStyle = "rgba(255,255,255,0.35)";
+      x.fillRect(p, 12 - p + 3, 1, 1);
     }
   };
   const paintBricks = (x, r) => {
@@ -178,7 +207,8 @@
   };
   const paintTntTop = (x, r) => {
     shade(x, r, ["#c0392b", "#a93226"], 5);
-    rect(x, 6, 6, 4, 4, "#e8e2d8"); rect(x, 7, 7, 2, 2, "#2b2b2b");
+    rect(x, 6, 6, 4, 4, "#e8e2d8");
+    rect(x, 7, 7, 2, 2, "#2b2b2b");
   };
   const paintPumpkinSide = (x, r) => {
     shade(x, r, ["#d07818", "#c06d12", "#db8420"], 6);
@@ -186,7 +216,8 @@
   };
   const paintPumpkinFront = (x, r) => {
     paintPumpkinSide(x, r);
-    rect(x, 3, 5, 3, 3, "#1d130a"); rect(x, 10, 5, 3, 3, "#1d130a");
+    rect(x, 3, 5, 3, 3, "#1d130a");
+    rect(x, 10, 5, 3, 3, "#1d130a");
     rect(x, 2, 10, 12, 2, "#1d130a");
     for (let px = 3; px < 14; px += 3) rect(x, px, 9, 1, 1, "#1d130a");
   };
@@ -202,32 +233,44 @@
   const paintMelonTop = (x, r) => {
     shade(x, r, ["#7fb241", "#6da339"], 5);
     x.strokeStyle = "#4f7d2c";
-    for (let d = 0; d < 3; d++) x.strokeRect(d * 2 + 0.5, d * 2 + 0.5, 16 - 4 * d - 1, 16 - 4 * d - 1);
+    for (let d = 0; d < 3; d++)
+      x.strokeRect(d * 2 + 0.5, d * 2 + 0.5, 16 - 4 * d - 1, 16 - 4 * d - 1);
   };
   const metal = (pal) => (x, r) => {
     shade(x, r, pal, 3);
-    for (let i = 0; i < 6; i++) rect(x, Math.floor(r() * 15), Math.floor(r() * 15), 2, 1, pal[pal.length - 1]);
-    rect(x, 1, 1, 14, 1, pal[0]); rect(x, 1, 14, 14, 1, pal[0]);
+    for (let i = 0; i < 6; i++)
+      rect(x, Math.floor(r() * 15), Math.floor(r() * 15), 2, 1, pal[pal.length - 1]);
+    rect(x, 1, 1, 14, 1, pal[0]);
+    rect(x, 1, 14, 14, 1, pal[0]);
   };
   const SOUL_PAL = ["#5c4a3a", "#4e3e30", "#6a5644"];
   const paintSoulSand = (x, r) => {
     shade(x, r, SOUL_PAL, 3);
     for (let i = 0; i < 3; i++) {
-      const px = 1 + Math.floor(r() * 12), py = 1 + Math.floor(r() * 12);
-      rect(x, px, py, 3, 2, "#33261c"); rect(x, px + 1, py + 2, 1, 1, "#33261c");
+      const px = 1 + Math.floor(r() * 12),
+        py = 1 + Math.floor(r() * 12);
+      rect(x, px, py, 3, 2, "#33261c");
+      rect(x, px + 1, py + 2, 1, 1, "#33261c");
     }
   };
 
   /* roster: id, painters (side, top, bottom, front), flags.
    * faces are stored in geometry slot order: side, front, top, bottom. */
   const R = (id, side, top, bottom, front, flags) =>
-    Object.assign({ id, faces: [side, front || side, top || side, bottom || top || side] }, flags || {});
+    Object.assign(
+      { id, faces: [side, front || side, top || side, bottom || top || side] },
+      flags || {}
+    );
   const PAINT_ROSTER = [
     R("grass", paintGrassSide, paintGrassTop, paintDirt),
     R("dirt", paintDirt),
     R("stone", noise(STONE_PAL, 4)),
-    R("cobblestone", (x, r) => { shade(x, r, ["#7d7d7d", "#616161", "#8b8b8b", "#4f4f4f"], 2); }),
-    R("mossy_cobblestone", (x, r) => { shade(x, r, ["#7d7d7d", "#616161", "#6d8a5c", "#4f6b41"], 2); }),
+    R("cobblestone", (x, r) => {
+      shade(x, r, ["#7d7d7d", "#616161", "#8b8b8b", "#4f4f4f"], 2);
+    }),
+    R("mossy_cobblestone", (x, r) => {
+      shade(x, r, ["#7d7d7d", "#616161", "#6d8a5c", "#4f6b41"], 2);
+    }),
     R("planks", paintPlanks),
     R("log", paintLogSide, paintLogTop),
     R("bookshelf", paintBookshelf, paintPlanks),
@@ -241,7 +284,11 @@
     R("soul_sand", paintSoulSand),
     R("gravel", noise(["#8a8380", "#7a7370", "#9a9390", "#6a6360"], 2)),
     R("snow", noise(["#f4fbfd", "#e8f4f8", "#ffffff", "#dceef4"], 4)),
-    R("ice", (x, r) => { shade(x, r, ["#9db8e8", "#8fadde", "#aec6f0"], 5); for (let i = 0; i < 4; i++) rect(x, Math.floor(r() * 12), Math.floor(r() * 16), 3, 1, "#c4d6f6"); }),
+    R("ice", (x, r) => {
+      shade(x, r, ["#9db8e8", "#8fadde", "#aec6f0"], 5);
+      for (let i = 0; i < 4; i++)
+        rect(x, Math.floor(r() * 12), Math.floor(r() * 16), 3, 1, "#c4d6f6");
+    }),
     R("melon", paintMelonSide, paintMelonTop),
     R("pumpkin", paintPumpkinSide, paintPumpkinTop, paintPumpkinTop, paintPumpkinFront),
     R("tnt", paintTntSide, paintTntTop),
@@ -255,7 +302,9 @@
     R("iron_block", metal(["#d8d8d8", "#c4c4c4", "#ececec", "#b0b0b0"])),
     R("diamond_block", metal(["#6bf0e0", "#57dccd", "#8ff7ea", "#45c9ba"])),
     R("emerald_block", metal(["#41d97c", "#35c46d", "#63e694", "#2bad5f"])),
-    R("glowstone", noise(["#ffbc4c", "#f2a83c", "#ffd479", "#e0912c"], 2), null, null, null, { emissive: true }),
+    R("glowstone", noise(["#ffbc4c", "#f2a83c", "#ffd479", "#e0912c"], 2), null, null, null, {
+      emissive: true,
+    }),
     R("obsidian", noise(["#1a1221", "#241a2e", "#120c18", "#2e2238"], 3)),
     R("bedrock", noise(["#565656", "#3d3d3d", "#6b6b6b", "#2b2b2b"], 2)),
   ];
@@ -275,16 +324,29 @@
    * flecked medium-green tile at (8,6) is the pack's cactus side, not the
    * melon's; everything else stays uniform. */
   const T = (id, tile, flags) =>
-    Object.assign({ id, faces: Array.isArray(tile[0]) ? tile : [tile, tile, tile, tile] }, flags || {});
+    Object.assign(
+      { id, faces: Array.isArray(tile[0]) ? tile : [tile, tile, tile, tile] },
+      flags || {}
+    );
   const TILE_ROSTER = [
-    T("grass", [[3, 0], [3, 0], [0, 0], [2, 0]]),
+    T("grass", [
+      [3, 0],
+      [3, 0],
+      [0, 0],
+      [2, 0],
+    ]),
     T("dirt", [2, 0]),
     T("stone", [1, 0]),
     T("cobblestone", [0, 1]),
     T("mossy_cobblestone", [1, 1]),
     T("sand", [2, 1]),
     T("gravel", [3, 1]),
-    T("log", [[4, 1], [4, 1], [5, 1], [5, 1]]),
+    T("log", [
+      [4, 1],
+      [4, 1],
+      [5, 1],
+      [5, 1],
+    ]),
     T("leaves", [6, 1], { cutout: true }),
     T("glass", [1, 3], { alpha: true }),
     T("wool_white", [7, 1]),
@@ -298,21 +360,56 @@
     T("wool_pink", [11, 4]),
     T("gold_block", [8, 1]),
     T("diamond_block", [11, 1]),
-    T("sandstone", [[9, 1], [9, 1], [10, 1], [10, 1]]),
+    T("sandstone", [
+      [9, 1],
+      [9, 1],
+      [10, 1],
+      [10, 1],
+    ]),
     T("smooth_stone", [6, 0]),
     T("bricks", [7, 0]),
     T("stone_bricks", [4, 3]),
     T("planks", [7, 5]),
     T("obsidian", [5, 2]),
-    T("bookshelf", [[3, 2], [3, 2], [7, 5], [7, 5]]),
-    T("crafting_table", [[11, 3], [11, 3], [11, 2], [7, 5]]),
-    T("chest", [[8, 5], [9, 5], [15, 5], [8, 5]]),
-    T("furnace", [[13, 2], [13, 3], [13, 2], [13, 2]]),
+    T("bookshelf", [
+      [3, 2],
+      [3, 2],
+      [7, 5],
+      [7, 5],
+    ]),
+    T("crafting_table", [
+      [11, 3],
+      [11, 3],
+      [11, 2],
+      [7, 5],
+    ]),
+    T("chest", [
+      [8, 5],
+      [9, 5],
+      [15, 5],
+      [8, 5],
+    ]),
+    T("furnace", [
+      [13, 2],
+      [13, 3],
+      [13, 2],
+      [13, 2],
+    ]),
     T("glowstone", [3, 6], { emissive: true }),
     T("netherrack", [1, 6]),
     T("magma", [6, 5]),
-    T("melon", [[12, 6], [12, 6], [13, 6], [13, 6]]),
-    T("pumpkin", [[0, 7], [2, 7], [0, 7], [0, 7]]),
+    T("melon", [
+      [12, 6],
+      [12, 6],
+      [13, 6],
+      [13, 6],
+    ]),
+    T("pumpkin", [
+      [0, 7],
+      [2, 7],
+      [0, 7],
+      [0, 7],
+    ]),
     T("diamond_ore", [5, 7]),
     T("redstone_ore", [6, 7]),
     T("coal_ore", [2, 2]),
@@ -327,19 +424,30 @@
   const CAM_POS = [0, 0.9, 15.5];
   const CAM_TARGET = [0, 0.45, 0];
   const FOV = 48;
-  const NEAR_Z = 9, FAR_Z = -17;
+  const NEAR_Z = 9,
+    FAR_Z = -17;
 
   function buildAtlas(roster, img) {
     const c = document.createElement("canvas");
-    c.width = 64; c.height = 16 * roster.length;
+    c.width = 64;
+    c.height = 16 * roster.length;
     const x = c.getContext("2d");
     x.imageSmoothingEnabled = false;
     roster.forEach((def, row) => {
       const r = mulberry(seedOf(def.id));
       def.faces.forEach((face, slot) => {
         if (img) {
-          x.drawImage(img, face[0] * ATLAS_TILE, face[1] * ATLAS_TILE, ATLAS_TILE, ATLAS_TILE,
-            slot * 16, row * 16, 16, 16);
+          x.drawImage(
+            img,
+            face[0] * ATLAS_TILE,
+            face[1] * ATLAS_TILE,
+            ATLAS_TILE,
+            ATLAS_TILE,
+            slot * 16,
+            row * 16,
+            16,
+            16
+          );
           return;
         }
         const [tc, tx] = tile();
@@ -359,14 +467,15 @@
     }
     const n = order.length;
     const slotH = (NEAR_Z - FAR_Z) / n;
-    const halfTan = Math.tan((FOV * Math.PI / 180) / 2);
+    const halfTan = Math.tan((FOV * Math.PI) / 180 / 2);
     return order.map((bi, slot) => {
       const def = roster[bi];
       const z = NEAR_Z - (slot + 0.5) * slotH + (r() - 0.5) * slotH * 0.8;
       const dist = CAM_POS[2] - z;
       const halfH = halfTan * dist;
       const halfW = halfH * aspect;
-      const spanX = halfW * 0.55, spanY = halfH * 0.52;
+      const spanX = halfW * 0.55,
+        spanY = halfH * 0.52;
       const TAU = Math.PI * 2;
       return {
         def,
@@ -400,15 +509,32 @@
         const a = entries[i].pos;
         for (let j = i + 1; j < n; j++) {
           const b = entries[j].pos;
-          const dx = b[0] - a[0], dy = b[1] - a[1], dz = b[2] - a[2];
+          const dx = b[0] - a[0],
+            dy = b[1] - a[1],
+            dz = b[2] - a[2];
           const d2 = dx * dx + dy * dy + dz * dz;
           if (d2 >= MIN2) continue;
-          let d = Math.sqrt(d2), ux, uy, uz;
-          if (d < 1e-5) { ux = 1; uy = 0.3; uz = 0; d = 1; }
-          else { ux = dx / d; uy = dy / d; uz = dz / d; }
+          let d = Math.sqrt(d2),
+            ux,
+            uy,
+            uz;
+          if (d < 1e-5) {
+            ux = 1;
+            uy = 0.3;
+            uz = 0;
+            d = 1;
+          } else {
+            ux = dx / d;
+            uy = dy / d;
+            uz = dz / d;
+          }
           const push = (MIN_DIST - d) * 0.5;
-          a[0] -= ux * push; a[1] -= uy * push; a[2] -= uz * push;
-          b[0] += ux * push; b[1] += uy * push; b[2] += uz * push;
+          a[0] -= ux * push;
+          a[1] -= uy * push;
+          a[2] -= uz * push;
+          b[0] += ux * push;
+          b[1] += uy * push;
+          b[2] += uz * push;
         }
       }
     }
@@ -422,21 +548,55 @@
 
   /* ------------------------------------------------------- matrix math */
   function perspective(out, fovy, aspect, near, far) {
-    const f = 1 / Math.tan(fovy / 2), nf = 1 / (near - far);
-    out[0] = f / aspect; out[1] = 0; out[2] = 0; out[3] = 0;
-    out[4] = 0; out[5] = f; out[6] = 0; out[7] = 0;
-    out[8] = 0; out[9] = 0; out[10] = (far + near) * nf; out[11] = -1;
-    out[12] = 0; out[13] = 0; out[14] = 2 * far * near * nf; out[15] = 0;
+    const f = 1 / Math.tan(fovy / 2),
+      nf = 1 / (near - far);
+    out[0] = f / aspect;
+    out[1] = 0;
+    out[2] = 0;
+    out[3] = 0;
+    out[4] = 0;
+    out[5] = f;
+    out[6] = 0;
+    out[7] = 0;
+    out[8] = 0;
+    out[9] = 0;
+    out[10] = (far + near) * nf;
+    out[11] = -1;
+    out[12] = 0;
+    out[13] = 0;
+    out[14] = 2 * far * near * nf;
+    out[15] = 0;
   }
   function lookAt(out, eye, target) {
-    let zx = eye[0] - target[0], zy = eye[1] - target[1], zz = eye[2] - target[2];
-    let l = 1 / Math.hypot(zx, zy, zz); zx *= l; zy *= l; zz *= l;
-    let xx = zz, xy = 0, xz = -zx; // x = cross(up, z) with up = (0,1,0)
-    l = 1 / (Math.hypot(xx, xy, xz) || 1); xx *= l; xy *= l; xz *= l;
-    const yx = zy * xz - zz * xy, yy = zz * xx - zx * xz, yz = zx * xy - zy * xx;
-    out[0] = xx; out[1] = yx; out[2] = zx; out[3] = 0;
-    out[4] = xy; out[5] = yy; out[6] = zy; out[7] = 0;
-    out[8] = xz; out[9] = yz; out[10] = zz; out[11] = 0;
+    let zx = eye[0] - target[0],
+      zy = eye[1] - target[1],
+      zz = eye[2] - target[2];
+    let l = 1 / Math.hypot(zx, zy, zz);
+    zx *= l;
+    zy *= l;
+    zz *= l;
+    let xx = zz,
+      xy = 0,
+      xz = -zx; // x = cross(up, z) with up = (0,1,0)
+    l = 1 / (Math.hypot(xx, xy, xz) || 1);
+    xx *= l;
+    xy *= l;
+    xz *= l;
+    const yx = zy * xz - zz * xy,
+      yy = zz * xx - zx * xz,
+      yz = zx * xy - zy * xx;
+    out[0] = xx;
+    out[1] = yx;
+    out[2] = zx;
+    out[3] = 0;
+    out[4] = xy;
+    out[5] = yy;
+    out[6] = zy;
+    out[7] = 0;
+    out[8] = xz;
+    out[9] = yz;
+    out[10] = zz;
+    out[11] = 0;
     out[12] = -(xx * eye[0] + xy * eye[1] + xz * eye[2]);
     out[13] = -(yx * eye[0] + yy * eye[1] + yz * eye[2]);
     out[14] = -(zx * eye[0] + zy * eye[1] + zz * eye[2]);
@@ -444,17 +604,38 @@
   }
   /* column-major model = translate * Rz * Ry * Rx */
   function model(out, p, a) {
-    const cx = Math.cos(a[0]), sx = Math.sin(a[0]);
-    const cy = Math.cos(a[1]), sy = Math.sin(a[1]);
-    const cz = Math.cos(a[2]), sz = Math.sin(a[2]);
+    const cx = Math.cos(a[0]),
+      sx = Math.sin(a[0]);
+    const cy = Math.cos(a[1]),
+      sy = Math.sin(a[1]);
+    const cz = Math.cos(a[2]),
+      sz = Math.sin(a[2]);
     // R = Rz*Ry*Rx
-    const r00 = cz * cy, r01 = cz * sy * sx - sz * cx, r02 = cz * sy * cx + sz * sx;
-    const r10 = sz * cy, r11 = sz * sy * sx + cz * cx, r12 = sz * sy * cx - cz * sx;
-    const r20 = -sy, r21 = cy * sx, r22 = cy * cx;
-    out[0] = r00; out[1] = r10; out[2] = r20; out[3] = 0;
-    out[4] = r01; out[5] = r11; out[6] = r21; out[7] = 0;
-    out[8] = r02; out[9] = r12; out[10] = r22; out[11] = 0;
-    out[12] = p[0]; out[13] = p[1]; out[14] = p[2]; out[15] = 1;
+    const r00 = cz * cy,
+      r01 = cz * sy * sx - sz * cx,
+      r02 = cz * sy * cx + sz * sx;
+    const r10 = sz * cy,
+      r11 = sz * sy * sx + cz * cx,
+      r12 = sz * sy * cx - cz * sx;
+    const r20 = -sy,
+      r21 = cy * sx,
+      r22 = cy * cx;
+    out[0] = r00;
+    out[1] = r10;
+    out[2] = r20;
+    out[3] = 0;
+    out[4] = r01;
+    out[5] = r11;
+    out[6] = r21;
+    out[7] = 0;
+    out[8] = r02;
+    out[9] = r12;
+    out[10] = r22;
+    out[11] = 0;
+    out[12] = p[0];
+    out[13] = p[1];
+    out[14] = p[2];
+    out[15] = 1;
     return out;
   }
 
@@ -575,9 +756,12 @@
   }
   function program(gl, vs, fs) {
     const p = gl.createProgram();
-    const a = compile(gl, gl.VERTEX_SHADER, vs), b = compile(gl, gl.FRAGMENT_SHADER, fs);
+    const a = compile(gl, gl.VERTEX_SHADER, vs),
+      b = compile(gl, gl.FRAGMENT_SHADER, fs);
     if (!a || !b) return null;
-    gl.attachShader(p, a); gl.attachShader(p, b); gl.linkProgram(p);
+    gl.attachShader(p, a);
+    gl.attachShader(p, b);
+    gl.linkProgram(p);
     if (!gl.getProgramParameter(p, gl.LINK_STATUS)) {
       console.log("🦆 block-field link: " + gl.getProgramInfoLog(p));
       return null;
@@ -595,24 +779,82 @@
      * degrees on the z faces and flipped them vertically, which only became
      * visible once the anisotropic pack tiles replaced the noise painters. */
     const faces = [
-      { n: [1, 0, 0], slot: 0, uv: (p) => [(p[2] + 1) / 2, (1 - p[1]) / 2],
-        v: [[1, -1, -1], [1, 1, -1], [1, 1, 1], [1, -1, 1]] },
-      { n: [-1, 0, 0], slot: 0, uv: (p) => [(1 - p[2]) / 2, (1 - p[1]) / 2],
-        v: [[-1, -1, 1], [-1, 1, 1], [-1, 1, -1], [-1, -1, -1]] },
-      { n: [0, 1, 0], slot: 2, uv: (p) => [(1 - p[0]) / 2, (p[2] + 1) / 2],
-        v: [[-1, 1, 1], [1, 1, 1], [1, 1, -1], [-1, 1, -1]] },
-      { n: [0, -1, 0], slot: 3, uv: (p) => [(1 - p[0]) / 2, (1 - p[2]) / 2],
-        v: [[-1, -1, -1], [1, -1, -1], [1, -1, 1], [-1, -1, 1]] },
-      { n: [0, 0, 1], slot: 1, uv: (p) => [(1 - p[0]) / 2, (1 - p[1]) / 2],
-        v: [[-1, -1, 1], [1, -1, 1], [1, 1, 1], [-1, 1, 1]] },
-      { n: [0, 0, -1], slot: 0, uv: (p) => [(p[0] + 1) / 2, (1 - p[1]) / 2],
-        v: [[1, -1, -1], [-1, -1, -1], [-1, 1, -1], [1, 1, -1]] },
+      {
+        n: [1, 0, 0],
+        slot: 0,
+        uv: (p) => [(p[2] + 1) / 2, (1 - p[1]) / 2],
+        v: [
+          [1, -1, -1],
+          [1, 1, -1],
+          [1, 1, 1],
+          [1, -1, 1],
+        ],
+      },
+      {
+        n: [-1, 0, 0],
+        slot: 0,
+        uv: (p) => [(1 - p[2]) / 2, (1 - p[1]) / 2],
+        v: [
+          [-1, -1, 1],
+          [-1, 1, 1],
+          [-1, 1, -1],
+          [-1, -1, -1],
+        ],
+      },
+      {
+        n: [0, 1, 0],
+        slot: 2,
+        uv: (p) => [(1 - p[0]) / 2, (p[2] + 1) / 2],
+        v: [
+          [-1, 1, 1],
+          [1, 1, 1],
+          [1, 1, -1],
+          [-1, 1, -1],
+        ],
+      },
+      {
+        n: [0, -1, 0],
+        slot: 3,
+        uv: (p) => [(1 - p[0]) / 2, (1 - p[2]) / 2],
+        v: [
+          [-1, -1, -1],
+          [1, -1, -1],
+          [1, -1, 1],
+          [-1, -1, 1],
+        ],
+      },
+      {
+        n: [0, 0, 1],
+        slot: 1,
+        uv: (p) => [(1 - p[0]) / 2, (1 - p[1]) / 2],
+        v: [
+          [-1, -1, 1],
+          [1, -1, 1],
+          [1, 1, 1],
+          [-1, 1, 1],
+        ],
+      },
+      {
+        n: [0, 0, -1],
+        slot: 0,
+        uv: (p) => [(p[0] + 1) / 2, (1 - p[1]) / 2],
+        v: [
+          [1, -1, -1],
+          [-1, -1, -1],
+          [-1, 1, -1],
+          [1, 1, -1],
+        ],
+      },
     ];
-    const pos = [], uv = [], slot = [], nor = [], idx = [];
+    const pos = [],
+      uv = [],
+      slot = [],
+      nor = [],
+      idx = [];
     faces.forEach((f, fi) => {
       const base = fi * 4;
       f.v.forEach((p) => {
-        pos.push(p[0] * CUBE / 2, p[1] * CUBE / 2, p[2] * CUBE / 2);
+        pos.push((p[0] * CUBE) / 2, (p[1] * CUBE) / 2, (p[2] * CUBE) / 2);
         const t = f.uv(p);
         uv.push(t[0], t[1]);
         slot.push(f.slot);
@@ -629,13 +871,24 @@
     const ib = gl.createBuffer();
     gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, ib);
     gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(idx), gl.STATIC_DRAW);
-    return { pos: buf(pos), uv: buf(uv), slot: buf(slot), nor: buf(nor), indices: ib, count: idx.length };
+    return {
+      pos: buf(pos),
+      uv: buf(uv),
+      slot: buf(slot),
+      nor: buf(nor),
+      indices: ib,
+      count: idx.length,
+    };
   }
 
   /* ------------------------------------------------------------- mount */
   function mount(canvas, opts, onFirstFrame) {
-    const gl = canvas.getContext("webgl", { antialias: true, alpha: false, powerPreference: "high-performance" })
-      || canvas.getContext("experimental-webgl");
+    const gl =
+      canvas.getContext("webgl", {
+        antialias: true,
+        alpha: false,
+        powerPreference: "high-performance",
+      }) || canvas.getContext("experimental-webgl");
     if (!gl) return false;
 
     const cubeProg = program(gl, CUBE_VS, CUBE_FS);
@@ -690,25 +943,44 @@
       return { tex, fb, rb, w, h, ok };
     }
     function freeTarget(t) {
-      if (t) { gl.deleteFramebuffer(t.fb); gl.deleteTexture(t.tex); if (t.rb) gl.deleteRenderbuffer(t.rb); }
+      if (t) {
+        gl.deleteFramebuffer(t.fb);
+        gl.deleteTexture(t.tex);
+        if (t.rb) gl.deleteRenderbuffer(t.rb);
+      }
     }
-    let sceneT = null, bloomA = null, bloomB = null, postOk = true;
+    let sceneT = null,
+      bloomA = null,
+      bloomB = null,
+      postOk = true;
     function makeTargets() {
-      freeTarget(sceneT); freeTarget(bloomA); freeTarget(bloomB);
+      freeTarget(sceneT);
+      freeTarget(bloomA);
+      freeTarget(bloomB);
       sceneT = makeTarget(canvas.width, canvas.height, true);
-      const hw = Math.max(1, canvas.width >> 1), hh = Math.max(1, canvas.height >> 1);
+      const hw = Math.max(1, canvas.width >> 1),
+        hh = Math.max(1, canvas.height >> 1);
       bloomA = makeTarget(hw, hh, false);
       bloomB = makeTarget(hw, hh, false);
       postOk = sceneT.ok && bloomA.ok && bloomB.ok;
-      if (!postOk) console.log("🦆 block-field: framebuffer incomplete, drawing direct without post.");
+      if (!postOk)
+        console.log("🦆 block-field: framebuffer incomplete, drawing direct without post.");
     }
-    const bU = { tex: gl.getUniformLocation(brightProg, "uTex"), threshold: gl.getUniformLocation(brightProg, "uThreshold") };
+    const bU = {
+      tex: gl.getUniformLocation(brightProg, "uTex"),
+      threshold: gl.getUniformLocation(brightProg, "uThreshold"),
+    };
     const bA = { pos: gl.getAttribLocation(brightProg, "aPos") };
-    const lU = { tex: gl.getUniformLocation(blurProg, "uTex"), dir: gl.getUniformLocation(blurProg, "uDir") };
+    const lU = {
+      tex: gl.getUniformLocation(blurProg, "uTex"),
+      dir: gl.getUniformLocation(blurProg, "uDir"),
+    };
     const lA = { pos: gl.getAttribLocation(blurProg, "aPos") };
     const kU = {
-      scene: gl.getUniformLocation(compProg, "uScene"), bloom: gl.getUniformLocation(compProg, "uBloom"),
-      strength: gl.getUniformLocation(compProg, "uStrength"), vignette: gl.getUniformLocation(compProg, "uVignette"),
+      scene: gl.getUniformLocation(compProg, "uScene"),
+      bloom: gl.getUniformLocation(compProg, "uBloom"),
+      strength: gl.getUniformLocation(compProg, "uStrength"),
+      vignette: gl.getUniformLocation(compProg, "uVignette"),
     };
     const kA = { pos: gl.getAttribLocation(compProg, "aPos") };
 
@@ -754,17 +1026,22 @@
     }
 
     /* stars + dust */
-    const STARS = 700, DUST = 220;
-    const starPos = new Float32Array(STARS * 3), starSeed = new Float32Array(STARS);
+    const STARS = 700,
+      DUST = 220;
+    const starPos = new Float32Array(STARS * 3),
+      starSeed = new Float32Array(STARS);
     const rs = mulberry(0x51a5);
     for (let i = 0; i < STARS; i++) {
-      const th = rs() * Math.PI * 2, ph = Math.acos(2 * rs() - 1), rad = 55 + rs() * 35;
+      const th = rs() * Math.PI * 2,
+        ph = Math.acos(2 * rs() - 1),
+        rad = 55 + rs() * 35;
       starPos[i * 3] = rad * Math.sin(ph) * Math.cos(th);
       starPos[i * 3 + 1] = rad * Math.cos(ph) * 0.6;
       starPos[i * 3 + 2] = -20 + rad * Math.sin(ph) * Math.sin(th) * 0.4;
       starSeed[i] = rs();
     }
-    const dustPos = new Float32Array(DUST * 3), dustSeed = new Float32Array(DUST);
+    const dustPos = new Float32Array(DUST * 3),
+      dustSeed = new Float32Array(DUST);
     for (let i = 0; i < DUST; i++) {
       dustPos[i * 3] = (Math.random() - 0.5) * 30;
       dustPos[i * 3 + 1] = (Math.random() - 0.5) * 16;
@@ -777,31 +1054,63 @@
       gl.bufferData(gl.ARRAY_BUFFER, data, gl.DYNAMIC_DRAW);
       return b;
     };
-    const starBuf = fbuf(starPos), starSeedBuf = fbuf(starSeed);
-    const dustBuf = fbuf(dustPos), dustSeedBuf = fbuf(dustSeed);
+    const starBuf = fbuf(starPos),
+      starSeedBuf = fbuf(starSeed);
+    const dustBuf = fbuf(dustPos),
+      dustSeedBuf = fbuf(dustSeed);
 
     /* uniform locations */
     const cu = (n) => gl.getUniformLocation(cubeProg, n);
     const cU = {
-      proj: cu("uProj"), view: cu("uView"), model: cu("uModel"), normal: cu("uNormal"),
-      cam: cu("uCam"), atlas: cu("uAtlas"), row: cu("uRow"), rows: cu("uRows"),
-      emissive: cu("uEmissive"), cutout: cu("uCutout"), fogColor: cu("uFogColor"), fogNear: cu("uFogNear"), fogFar: cu("uFogFar"),
+      proj: cu("uProj"),
+      view: cu("uView"),
+      model: cu("uModel"),
+      normal: cu("uNormal"),
+      cam: cu("uCam"),
+      atlas: cu("uAtlas"),
+      row: cu("uRow"),
+      rows: cu("uRows"),
+      emissive: cu("uEmissive"),
+      cutout: cu("uCutout"),
+      fogColor: cu("uFogColor"),
+      fogNear: cu("uFogNear"),
+      fogFar: cu("uFogFar"),
     };
     const cA = {
-      pos: gl.getAttribLocation(cubeProg, "aPos"), uv: gl.getAttribLocation(cubeProg, "aUV"),
-      slot: gl.getAttribLocation(cubeProg, "aSlot"), normal: gl.getAttribLocation(cubeProg, "aNormal"),
+      pos: gl.getAttribLocation(cubeProg, "aPos"),
+      uv: gl.getAttribLocation(cubeProg, "aUV"),
+      slot: gl.getAttribLocation(cubeProg, "aSlot"),
+      normal: gl.getAttribLocation(cubeProg, "aNormal"),
     };
     const pu = (n) => gl.getUniformLocation(pointProg, n);
-    const pU = { proj: pu("uProj"), view: pu("uView"), time: pu("uTime"), dpr: pu("uDpr"), size: pu("uSize"), color: pu("uColor"), alpha: pu("uAlpha") };
-    const pA = { pos: gl.getAttribLocation(pointProg, "aPos"), seed: gl.getAttribLocation(pointProg, "aSeed") };
+    const pU = {
+      proj: pu("uProj"),
+      view: pu("uView"),
+      time: pu("uTime"),
+      dpr: pu("uDpr"),
+      size: pu("uSize"),
+      color: pu("uColor"),
+      alpha: pu("uAlpha"),
+    };
+    const pA = {
+      pos: gl.getAttribLocation(pointProg, "aPos"),
+      seed: gl.getAttribLocation(pointProg, "aSeed"),
+    };
 
-    const proj = new Float32Array(16), view = new Float32Array(16);
-    const mdl = new Float32Array(16), nrm = new Float32Array(9);
+    const proj = new Float32Array(16),
+      view = new Float32Array(16);
+    const mdl = new Float32Array(16),
+      nrm = new Float32Array(9);
     lookAt(view, CAM_POS, CAM_TARGET);
 
     let entries = [];
-    let width = 1, height = 1, dpr = 1;
-    let running = false, rafId = 0, first = true, disposed = false;
+    let width = 1,
+      height = 1,
+      dpr = 1;
+    let running = false,
+      rafId = 0,
+      first = true,
+      disposed = false;
     const reduced = Boolean(opts && opts.reducedMotion);
 
     function resize() {
@@ -812,7 +1121,7 @@
       canvas.height = Math.round(height * dpr);
       makeTargets();
       gl.viewport(0, 0, canvas.width, canvas.height);
-      perspective(proj, FOV * Math.PI / 180, width / Math.max(1, height), 0.1, 120);
+      perspective(proj, (FOV * Math.PI) / 180, width / Math.max(1, height), 0.1, 120);
       entries = makeField(width / Math.max(1, height));
     }
 
@@ -878,9 +1187,15 @@
       const drawCube = (e) => {
         model(mdl, e.pos, e.angle);
         // normal matrix: rotation part (columns 0,1,2 rows 0,1,2)
-        nrm[0] = mdl[0]; nrm[1] = mdl[1]; nrm[2] = mdl[2];
-        nrm[3] = mdl[4]; nrm[4] = mdl[5]; nrm[5] = mdl[6];
-        nrm[6] = mdl[8]; nrm[7] = mdl[9]; nrm[8] = mdl[10];
+        nrm[0] = mdl[0];
+        nrm[1] = mdl[1];
+        nrm[2] = mdl[2];
+        nrm[3] = mdl[4];
+        nrm[4] = mdl[5];
+        nrm[5] = mdl[6];
+        nrm[6] = mdl[8];
+        nrm[7] = mdl[9];
+        nrm[8] = mdl[10];
         gl.uniformMatrix4fv(cU.model, false, mdl);
         gl.uniformMatrix3fv(cU.normal, false, nrm);
         gl.uniform1f(cU.row, roster.indexOf(e.def));

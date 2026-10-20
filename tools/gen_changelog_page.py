@@ -51,14 +51,18 @@ def version_block(project: dict, version: dict, index: int) -> str:
     else:
         meta.append(f'<span class="changelog-unreleased">no tagged release yet</span>')
     if version["downloads"]:
-        meta.append(f'{len(version["downloads"])} artifact{"" if len(version["downloads"]) == 1 else "s"}')
+        meta.append(
+            f"{len(version['downloads'])} artifact{'' if len(version['downloads']) == 1 else 's'}"
+        )
 
     sections = []
     for section in version["sections"]:
         items = sitegen.render_items(section["items"], base_url=f"{project['url']}/-/blob/main/")
         # NB: do not reassign `heading` here - it holds the version label used by
         # the <summary> below.
-        section_heading = f'<h3>{html.escape(section["heading"])}</h3>' if section["heading"] else ""
+        section_heading = (
+            f"<h3>{html.escape(section['heading'])}</h3>" if section["heading"] else ""
+        )
         sections.append(f"{section_heading}{items}")
 
     anchor = f"{project['key']}-{version_label.lower().replace('.', '-').replace(' ', '-')}-{index}"
@@ -67,10 +71,10 @@ def version_block(project: dict, version: dict, index: int) -> str:
     return f"""        <details class="changelog-version" id="{anchor}"{tag_open}>
           <summary>
             <span class="changelog-version-name">{html.escape(heading)}</span>
-            <span class="changelog-meta">{' · '.join(meta)}</span>
+            <span class="changelog-meta">{" · ".join(meta)}</span>
           </summary>
           <div class="changelog-body">
-{''.join(sections)}
+{"".join(sections)}
           </div>
         </details>"""
 
@@ -83,18 +87,18 @@ def project_section(project: dict) -> str:
     latest = project["versions"][0]
     latest_label = html.escape(latest["version"])
     latest_date = latest["date"] or "unreleased"
-    return f"""      <section class="changelog-project glass-card reveal" id="{project['key']}" aria-labelledby="changelog-{project['key']}">
+    return f"""      <section class="changelog-project glass-card reveal" id="{project["key"]}" aria-labelledby="changelog-{project["key"]}">
         <header class="changelog-head">
           <div>
             <span class="eyebrow">Changelog</span>
-            <h2 id="changelog-{project['key']}">{html.escape(project['name'])}</h2>
+            <h2 id="changelog-{project["key"]}">{html.escape(project["name"])}</h2>
           </div>
-          <p class="changelog-summary">{len(project['versions'])} version sections · {entries} entries · latest <b>{latest_label}</b> ({latest_date})</p>
+          <p class="changelog-summary">{len(project["versions"])} version sections · {entries} entries · latest <b>{latest_label}</b> ({latest_date})</p>
         </header>
         <p class="changelog-links">
-          <a href="{project['changelog_url']}" target="_blank" rel="noreferrer">CHANGELOG.md on GitLab <svg><use href="#i-external"/></svg></a>
-          <a href="{project['releases_url']}" target="_blank" rel="noreferrer">All releases <svg><use href="#i-external"/></svg></a>
-          <a href="{project['url']}" target="_blank" rel="noreferrer">Repository <svg><use href="#i-external"/></svg></a>
+          <a href="{project["changelog_url"]}" target="_blank" rel="noreferrer">CHANGELOG.md on GitLab <svg><use href="#i-external"/></svg></a>
+          <a href="{project["releases_url"]}" target="_blank" rel="noreferrer">All releases <svg><use href="#i-external"/></svg></a>
+          <a href="{project["url"]}" target="_blank" rel="noreferrer">Repository <svg><use href="#i-external"/></svg></a>
         </p>
 {versions}
       </section>"""
@@ -105,7 +109,9 @@ def main() -> int:
     data = json.loads((root / "data/changelogs.json").read_text(encoding="utf-8"))
     projects = data["projects"]
     total_versions = sum(len(p["versions"]) for p in projects)
-    total_entries = sum(len(s["items"]) for p in projects for v in p["versions"] for s in v["sections"])
+    total_entries = sum(
+        len(s["items"]) for p in projects for v in p["versions"] for s in v["sections"]
+    )
 
     shells = sitegen.read_shell(root)
     sections = "\n".join(project_section(project) for project in projects)
@@ -123,48 +129,63 @@ def main() -> int:
         <h1>Changelog.</h1>
         <p class="lead">Everything each International Duck project has shipped: {total_versions} version sections and {total_entries} individual entries, transcribed from the <code>CHANGELOG.md</code> each repository maintains, in the order that file lists them, and linked back to the matching GitLab release.</p>
         <div class="chip-row">{jump}</div>
-        <p class="directory-note">Snapshot taken {data['fetched']} from {html.escape(data['source'])}. Where a version has no tagged release the entry says so rather than guessing a date.</p>
+        <p class="directory-note">Snapshot taken {data["fetched"]} from {html.escape(data["source"])}. Where a version has no tagged release the entry says so rather than guessing a date.</p>
       </section>
 
 {sections}
     </div>
   </main>"""
 
-    jsonld = json.dumps({
-        "@context": "https://schema.org",
-        "@graph": [
-            {
-                "@type": "BreadcrumbList",
-                "@id": f"{SITE}{URL_PATH}#breadcrumb",
-                "itemListElement": [
-                    {"@type": "ListItem", "position": 1, "name": "International Duck Incorporated", "item": f"{SITE}/"},
-                    {"@type": "ListItem", "position": 2, "name": "Changelog", "item": f"{SITE}{URL_PATH}"},
-                ],
-            },
-            {
-                "@type": "CollectionPage",
-                "@id": f"{SITE}{URL_PATH}#changelog",
-                "name": "International Duck Incorporated changelog",
-                "description": (
-                    f"Release history for every International Duck project: {total_versions} version "
-                    f"sections across {len(projects)} projects, straight from each repository's CHANGELOG.md."
-                ),
-                "about": [
-                    {
-                        "@type": "SoftwareApplication",
-                        "name": project["name"],
-                        "applicationCategory": "GameApplication",
-                        "operatingSystem": "Windows, macOS, Linux",
-                        "url": f"{SITE}/projects/{project['key']}" if project["key"] != "bagley" else f"{SITE}/projects/bagley",
-                        "softwareVersion": project["versions"][0]["version"],
-                        "releaseNotes": project["changelog_url"],
-                        "sameAs": project["url"],
-                    }
-                    for project in projects
-                ],
-            },
-        ],
-    }, indent=2)
+    jsonld = json.dumps(
+        {
+            "@context": "https://schema.org",
+            "@graph": [
+                {
+                    "@type": "BreadcrumbList",
+                    "@id": f"{SITE}{URL_PATH}#breadcrumb",
+                    "itemListElement": [
+                        {
+                            "@type": "ListItem",
+                            "position": 1,
+                            "name": "International Duck Incorporated",
+                            "item": f"{SITE}/",
+                        },
+                        {
+                            "@type": "ListItem",
+                            "position": 2,
+                            "name": "Changelog",
+                            "item": f"{SITE}{URL_PATH}",
+                        },
+                    ],
+                },
+                {
+                    "@type": "CollectionPage",
+                    "@id": f"{SITE}{URL_PATH}#changelog",
+                    "name": "International Duck Incorporated changelog",
+                    "description": (
+                        f"Release history for every International Duck project: {total_versions} version "
+                        f"sections across {len(projects)} projects, straight from each repository's CHANGELOG.md."
+                    ),
+                    "about": [
+                        {
+                            "@type": "SoftwareApplication",
+                            "name": project["name"],
+                            "applicationCategory": "GameApplication",
+                            "operatingSystem": "Windows, macOS, Linux",
+                            "url": f"{SITE}/projects/{project['key']}"
+                            if project["key"] != "bagley"
+                            else f"{SITE}/projects/bagley",
+                            "softwareVersion": project["versions"][0]["version"],
+                            "releaseNotes": project["changelog_url"],
+                            "sameAs": project["url"],
+                        }
+                        for project in projects
+                    ],
+                },
+            ],
+        },
+        indent=2,
+    )
 
     page = sitegen.assemble(
         shells=shells,
@@ -183,7 +204,9 @@ def main() -> int:
 
     out = root / "changelog.html"
     out.write_text(page, encoding="utf-8")
-    print(f"wrote {out.relative_to(root)}: {total_versions} versions, {total_entries} entries, {len(projects)} projects")
+    print(
+        f"wrote {out.relative_to(root)}: {total_versions} versions, {total_entries} entries, {len(projects)} projects"
+    )
     return 0
 
 
