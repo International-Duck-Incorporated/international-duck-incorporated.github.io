@@ -136,23 +136,23 @@ PAGES: dict[str, tuple[str, str, str, str]] = {
     "members/0xffshell.html": (
         "/members/0xffshell",
         "0xFFshell - International Duck member profile | IDI",
-        "0xFFshell is the main writer at International Duck Incorporated, contributing to the "
-        "Venomous Meteor addon and the group's other Minecraft projects on GitLab.",
+        "0xFFshell is the main writer at International Duck Incorporated, working on the "
+        "Venomous Meteor addon, ChampionsCode and the group's website.",
         "Main writer at International Duck Incorporated.",
     ),
     "members/3spress0.html": (
         "/members/3spress0",
         "espress0 - International Duck member profile | IDI",
-        "espress0 is a backend developer and the backbone of most International Duck projects, "
-        "working across security research tooling and Minecraft client mods.",
+        "espress0 is the backend developer and backbone of most International Duck projects, "
+        "writing Java for Minecraft work and Python for security tooling.",
         "Backend developer and project backbone at International Duck Incorporated.",
     ),
     "members/e-vdv-hu.html": (
         "/members/e-vdv-hu",
         "E-VDV-HU - International Duck member profile | IDI",
-        "E-VDV-HU is a public member of International Duck Incorporated, handling backend "
-        "services and hosting for the group's Minecraft mod projects on GitLab.",
-        "Backend and hosting at International Duck Incorporated.",
+        "E-VDV-HU handles backend services and hosting for International Duck Incorporated and "
+        "writes mainly in Python; public work is on GitHub.",
+        "Backend, hosting and Python at International Duck Incorporated.",
     ),
     "members/superivar.html": (
         "/members/superivar",
@@ -171,8 +171,8 @@ PAGES: dict[str, tuple[str, str, str, str]] = {
     "members/jojo-8002.html": (
         "/members/jojo-8002",
         "Jojo-8002 - International Duck member profile | IDI",
-        "Jojo-8002 is a public member of International Duck Incorporated, active around the "
-        "group's free Minecraft mod projects on GitLab.",
+        "Jojo-8002 is a public member of International Duck Incorporated; he codes in C# and "
+        "publishes his work on GitHub.",
         "Public member of International Duck Incorporated.",
     ),
     "activity.html": (
@@ -185,8 +185,10 @@ PAGES: dict[str, tuple[str, str, str, str]] = {
     "migration.html": (
         "/migration",
         "GitHub to GitLab migration, Sep–Oct 2026 | IDI",
-        "Why International Duck moved to GitLab, plus a dated timeline and the October 20 GitHub Support decision to keep @3spress0 restricted.",
-        "A sourced timeline of the GitHub-to-GitLab move and the October 20 decision to keep @3spress0 restricted.",
+        "Why International Duck moved to GitLab: a dated timeline, the October 20 decision to "
+        "keep @3spress0 restricted, and the open appeal asking GitHub for specifics.",
+        "A sourced timeline of the GitHub-to-GitLab move, the October 20 restriction, and the "
+        "pending appeal for specifics.",
     ),
     "noosphere.html": (
         "/noosphere",

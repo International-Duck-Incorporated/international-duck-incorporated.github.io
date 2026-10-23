@@ -15,7 +15,7 @@ activity. Content is synchronized live from the GitLab API.
 - [Projects](https://idi-official.pages.dev/projects/): directory of all public repositories with status, language, and descriptions.
 - [Members](https://idi-official.pages.dev/members/): the public member roster with per-member profile pages.
 - [Activity](https://idi-official.pages.dev/activity): live GitLab commit feed for every project, with a warning that the private GitHub organization is unavailable.
-- [Migration](https://idi-official.pages.dev/migration): a sourced timeline of IDI's September–October 2026 move from GitHub to GitLab.
+- [Migration](https://idi-official.pages.dev/migration): a sourced timeline of IDI's September–October 2026 move from GitHub to GitLab; three appeals archived, a fourth pending.
 - [Changelog](https://idi-official.pages.dev/changelog): every release from every project, transcribed from each repository's CHANGELOG.md and linked to the matching GitLab release.
 - [Glyphsmith](https://idi-official.pages.dev/glyphsmith): a 100% client-side Unicode transformation lab - homoglyph substitution, zero-width injection, bidi controls, normalization, and a Minecraft chat mode.
 
@@ -32,12 +32,12 @@ activity. Content is synchronized live from the GitLab API.
 
 ## Members
 
-- [0xFFshell](https://idi-official.pages.dev/members/0xffshell): main writer. GitHub account banned.
-- [espress0](https://idi-official.pages.dev/members/3spress0): backend developer and backbone of most projects; active GitLab profile: https://gitlab.com/3spress0.
-- [E-VDV-HU](https://idi-official.pages.dev/members/e-vdv-hu): backend and hosting manager; Utrecht / Hogeschool Utrecht.
-- [Xx-superIvar-xX](https://idi-official.pages.dev/members/superivar): product tester.
+- [0xFFshell](https://idi-official.pages.dev/members/0xffshell): main writer; works on the Venomous Meteor addon, ChampionsCode and the website. GitHub account banned; active on GitLab.
+- [espress0](https://idi-official.pages.dev/members/3spress0): backend developer and backbone of most projects; writes Java for Minecraft work and Python for security tooling; active GitLab profile: https://gitlab.com/3spress0.
+- [E-VDV-HU](https://idi-official.pages.dev/members/e-vdv-hu): backend and hosting manager; writes mainly in Python; Utrecht / Hogeschool Utrecht; public GitHub profile: https://github.com/E-VDV-HU.
+- [Xx-superIvar-xX](https://idi-official.pages.dev/members/superivar): product tester; checks Fabric client mods and Minecraft releases before they ship.
 - [midas735](https://idi-official.pages.dev/members/midas735): just happy to be here; GitLab profile.
-- [Jojo-8002](https://idi-official.pages.dev/members/jojo-8002): here for shit n giggles; no active public platform link is asserted.
+- [Jojo-8002](https://idi-official.pages.dev/members/jojo-8002): here for shit n giggles; codes in C#; public GitHub profile: https://github.com/Jojo-8002.
 
 ## Source repositories
 

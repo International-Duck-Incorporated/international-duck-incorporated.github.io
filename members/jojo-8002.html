@@ -28,7 +28,7 @@
     <title>Jojo-8002 - International Duck member profile | IDI</title>
     <meta
       name="description"
-      content="Jojo-8002 is a public member of International Duck Incorporated, active around the group&#x27;s free Minecraft mod projects on GitLab."
+      content="Jojo-8002 is a public member of International Duck Incorporated; he codes in C# and publishes his work on GitHub."
     />
     <link rel="canonical" href="https://idi-official.pages.dev/members/jojo-8002" />
     <meta property="og:type" content="website" />
@@ -41,9 +41,35 @@
     <meta name="twitter:title" content="Jojo-8002 - International Duck member profile" />
     <meta name="twitter:description" content="Public member of International Duck Incorporated." />
     <link rel="icon" href="/assets/org-avatar.png?v=f3debf20" type="image/png" />
-    <link rel="stylesheet" href="/css/bundle.css?v=583143c6" />
+    <link rel="stylesheet" href="/css/bundle.css?v=d4c14665" />
+
+    <style>
+      /* C# code-rain background. The canvas is the page background, so the solid
+         body colour is cleared here (html still supplies the base colour). */
+      body.csharp-page {
+        background: transparent;
+        isolation: isolate;
+      }
+      body.csharp-page .site-glow {
+        display: none;
+      }
+      /* Readability scrim over the rain, under the content: darkens the header
+         and footer zones only. Sits above the canvas because it comes later in
+         the document and shares the same negative z-index. */
+      .csharp-scrim {
+        position: fixed;
+        inset: 0;
+        z-index: -1;
+        pointer-events: none;
+        background:
+          linear-gradient(180deg, rgba(7, 9, 13, 0.62), rgba(7, 9, 13, 0) 300px),
+          linear-gradient(0deg, rgba(7, 9, 13, 0.62), rgba(7, 9, 13, 0) 240px);
+      }
+    </style>
+
     <script src="/script.js?v=0443d2ee" defer></script>
-    <script src="/commit-feed.js?v=52be3925" defer></script>
+    <script src="/commit-feed.js?v=25ae221a" defer></script>
+    <script src="/csharp-rain.js?v=3dcb8d6d" defer></script>
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
     <meta
@@ -137,7 +163,7 @@
             "@type": "Person",
             "@id": "https://idi-official.pages.dev/members/jojo-8002#person",
             "name": "Jojo-8002",
-            "description": "Here for shit n giggles at International Duck Incorporated.",
+            "description": "Here for shit n giggles at International Duck Incorporated; codes in C#.",
             "url": "https://idi-official.pages.dev/members/jojo-8002",
             "memberOf": {
               "@id": "https://idi-official.pages.dev/#organization"
@@ -148,7 +174,10 @@
       }
     </script>
   </head>
-  <body data-page="member" data-member="jojo-8002">
+  <body data-page="member" data-member="jojo-8002" class="csharp-page">
+    <canvas id="csharp-rain" class="effect-background" aria-hidden="true"></canvas>
+    <div class="csharp-scrim" aria-hidden="true"></div>
+
     <svg class="svg-sprite" aria-hidden="true">
       <symbol id="i-gitlab" viewBox="0 0 24 24">
         <path
@@ -235,10 +264,10 @@
             <span class="eyebrow">Member profile</span>
             <h1>Jojo-8002.</h1>
             <p class="lead">
-              A public member of International Duck Incorporated, here for shit n giggles. Jojo-8002
-              keeps a single public account on GitHub; there is no GitLab profile for this member.
+              A public member of International Duck Incorporated, here for shit n giggles and
+              happiest when writing C#. His public work lives on GitHub under @Jojo-8002.
             </p>
-            <div class="action-row">
+            <div class="account-bar">
               <a
                 class="button button-blue"
                 href="https://github.com/Jojo-8002"
@@ -246,17 +275,18 @@
                 rel="noreferrer"
                 ><svg><use href="#i-github" /></svg>View GitHub</a
               >
-            </div>
-            <div
-              class="account-status account-status-neutral"
-              role="status"
-              aria-label="Account platforms"
-            >
-              <strong>GitHub-only member</strong
-              ><span
-                >No GitLab account on record; the GitHub profile is Jojo-8002's only public
-                account.</span
+
+              <div
+                class="account-status account-status-neutral"
+                role="status"
+                aria-label="Account platforms"
               >
+                <strong>GitHub-only member</strong
+                ><span
+                  >No GitLab account on record; the GitHub profile is Jojo-8002's only public
+                  account.</span
+                >
+              </div>
             </div>
           </article>
           <aside class="profile-sidebar glass-card reveal">
@@ -273,6 +303,7 @@
                   >
                 </div>
                 <div class="fact"><small>GitLab</small><b>No account</b></div>
+                <div class="fact"><small>Codes in</small><b>C#</b></div>
                 <div class="fact"><small>Role</small><b>Here for shit n giggles</b></div>
                 <div class="fact"><small>Organization</small><b>International Duck</b></div>
               </div>

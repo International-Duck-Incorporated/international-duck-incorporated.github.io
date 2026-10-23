@@ -11,7 +11,13 @@
     "0xffshell": { label: "0xFFshell", gitlab: "0xFFshell" },
     // espress0 now has a public GitLab profile; load activity from that account.
     "3spress0": { label: "espress0", gitlab: "3spress0" },
-    "e-vdv-hu": { label: "E-VDV-HU", gitlab: null },
+    // E-VDV-HU's personal GitHub account is public; only the IDI organization is hidden.
+    "e-vdv-hu": {
+      label: "E-VDV-HU",
+      gitlab: null,
+      github: "E-VDV-HU",
+      githubNote: "GitHub is E-VDV-HU's only public account.",
+    },
     midas735: { label: "midas735", gitlab: "midas735", github: "midas735" },
     "jojo-8002": {
       label: "Jojo-8002",

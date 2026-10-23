@@ -17,6 +17,8 @@
   Cache-Control: public, max-age=31536000, immutable
 /commit-feed.js
   Cache-Control: public, max-age=31536000, immutable
+/csharp-rain.js
+  Cache-Control: public, max-age=31536000, immutable
 /easteregg.js
   Cache-Control: public, max-age=31536000, immutable
 /glyphsmith.js

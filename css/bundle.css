@@ -2419,6 +2419,44 @@ body[data-project="nulltrace"] footer {
   font-size: 0.68rem;
   line-height: 1.35;
 }
+/* Account bar: the platform button and the platform note share one padded box,
+   button on the left and note beside it. The note drops its own chrome because
+   the bar already supplies the surface. Pages that only have one or the other
+   (or put the pill above the h1, like 0xFFshell) are unaffected. */
+.account-bar {
+  display: flex;
+  width: 100%;
+  margin: 1.35rem 0 1rem;
+  padding: 1.5rem 1.6rem;
+  gap: 1.5rem;
+  align-items: center;
+  flex-wrap: wrap;
+  background: linear-gradient(135deg, rgba(90, 155, 242, 0.14), rgba(45, 78, 122, 0.1));
+  border: 1px solid rgba(90, 155, 242, 0.3);
+  border-radius: 14px;
+  box-shadow: inset 0 1px 0 rgba(214, 230, 255, 0.07);
+}
+.account-bar .button {
+  flex: 0 0 auto;
+}
+/* Two selectors so this also outranks .account-status.account-status-neutral,
+   which would otherwise paint its own panel inside the bar. */
+.account-bar .account-status,
+.account-bar .account-status.account-status-neutral {
+  flex: 1 1 15rem;
+  width: auto;
+  margin: 0;
+  padding: 0;
+  background: none;
+  border: 0;
+  box-shadow: none;
+}
+@media (max-width: 560px) {
+  .account-bar {
+    padding: 1.2rem 1.15rem;
+    gap: 1.1rem;
+  }
+}
 .account-status::before {
   content: "";
   width: 7px;
