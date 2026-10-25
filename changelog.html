@@ -24,8 +24,8 @@
     <link rel="preconnect" href="https://gitlab.com" />
     <link rel="dns-prefetch" href="https://gitlab.com" />
     <meta name="theme-color" content="#071015" />
-    <link rel="icon" href="/assets/beacon-icon.png?v=7b67229c" type="image/png" />
-    <link rel="stylesheet" href="/css/bundle.css?v=d4c14665" />
+    <link rel="icon" href="/assets/org-avatar.png?v=f3debf20" type="image/png" />
+    <link rel="stylesheet" href="/css/bundle.css?v=05d51123" />
     <meta
       property="og:image:alt"
       content="International Duck Incorporated - open-source Minecraft mods, tools and experiments"
@@ -78,7 +78,7 @@
             "@type": "CollectionPage",
             "@id": "https://idi-official.pages.dev/changelog#changelog",
             "name": "International Duck Incorporated changelog",
-            "description": "Release history for every International Duck project: 36 version sections across 5 projects, straight from each repository's CHANGELOG.md.",
+            "description": "Release history for every International Duck project: 49 version sections across 5 projects, straight from each repository's CHANGELOG.md.",
             "about": [
               {
                 "@type": "SoftwareApplication",
@@ -86,7 +86,7 @@
                 "applicationCategory": "GameApplication",
                 "operatingSystem": "Windows, macOS, Linux",
                 "url": "https://idi-official.pages.dev/projects/beacon",
-                "softwareVersion": "2.0.0-prerelease",
+                "softwareVersion": "2.0.1",
                 "releaseNotes": "https://gitlab.com/international-duck-incorporated/Beacon/-/blob/main/CHANGELOG.md",
                 "sameAs": "https://gitlab.com/international-duck-incorporated/Beacon"
               },
@@ -96,7 +96,7 @@
                 "applicationCategory": "GameApplication",
                 "operatingSystem": "Windows, macOS, Linux",
                 "url": "https://idi-official.pages.dev/projects/venomous",
-                "softwareVersion": "Unreleased",
+                "softwareVersion": "7.18.8",
                 "releaseNotes": "https://gitlab.com/international-duck-incorporated/Venomous/-/blob/main/CHANGELOG.md",
                 "sameAs": "https://gitlab.com/international-duck-incorporated/Venomous"
               },
@@ -106,7 +106,7 @@
                 "applicationCategory": "GameApplication",
                 "operatingSystem": "Windows, macOS, Linux",
                 "url": "https://idi-official.pages.dev/projects/nulltrace",
-                "softwareVersion": "Unreleased",
+                "softwareVersion": "2.1.1",
                 "releaseNotes": "https://gitlab.com/international-duck-incorporated/NullTrace/-/blob/main/CHANGELOG.md",
                 "sameAs": "https://gitlab.com/international-duck-incorporated/NullTrace"
               },
@@ -116,7 +116,7 @@
                 "applicationCategory": "GameApplication",
                 "operatingSystem": "Windows, macOS, Linux",
                 "url": "https://idi-official.pages.dev/projects/championscode",
-                "softwareVersion": "Unreleased",
+                "softwareVersion": "0.1.0-beta.4",
                 "releaseNotes": "https://gitlab.com/international-duck-incorporated/ChampionsCode/-/blob/main/CHANGELOG.md",
                 "sameAs": "https://gitlab.com/international-duck-incorporated/ChampionsCode"
               },
@@ -126,7 +126,7 @@
                 "applicationCategory": "GameApplication",
                 "operatingSystem": "Windows, macOS, Linux",
                 "url": "https://idi-official.pages.dev/projects/bagley",
-                "softwareVersion": "1.0.0",
+                "softwareVersion": "1.1.0",
                 "releaseNotes": "https://gitlab.com/international-duck-incorporated/beacon-bagley/-/blob/main/CHANGELOG.md",
                 "sameAs": "https://gitlab.com/international-duck-incorporated/beacon-bagley"
               }
@@ -135,8 +135,8 @@
         ]
       }
     </script>
-    <link rel="stylesheet" href="/css/bundle.css?v=d4c14665" />
-    <script src="/script.js?v=0443d2ee" defer></script>
+    <link rel="stylesheet" href="/css/bundle.css?v=05d51123" />
+    <script src="/script.js?v=88885632" defer></script>
   </head>
   <body data-page="changelog">
     <svg class="svg-sprite" aria-hidden="true">
@@ -179,8 +179,7 @@
         </a>
         <nav class="main-nav" id="main-navigation" data-nav aria-label="Primary navigation">
           <a href="/">Overview</a>
-          <a class="active" href="/projects" aria-current="page">Projects</a
-          ><a href="/noosphere">Noosphere</a>
+          <a href="/projects">Projects</a><a href="/noosphere">Noosphere</a>
           <a href="/members">Members</a>
           <a href="/activity">Activity</a>
           <a href="/migration">Migration</a>
@@ -216,20 +215,20 @@
           <span class="eyebrow">Release history</span>
           <h1>Changelog.</h1>
           <p class="lead">
-            Everything each International Duck project has shipped: 36 version sections and 302
+            Everything each International Duck project has shipped: 49 version sections and 397
             individual entries, transcribed from the <code>CHANGELOG.md</code> each repository
             maintains, in the order that file lists them, and linked back to the matching GitLab
             release.
           </p>
           <div class="chip-row">
-            <a class="chip" href="#beacon">Beacon <b>5</b></a
-            ><a class="chip" href="#venomous">Venomous <b>5</b></a
+            <a class="chip" href="#beacon">Beacon <b>6</b></a
+            ><a class="chip" href="#venomous">Venomous <b>16</b></a
             ><a class="chip" href="#nulltrace">NullTrace <b>5</b></a
             ><a class="chip" href="#championscode">ChampionsCode <b>20</b></a
-            ><a class="chip" href="#bagley">Bagley <b>1</b></a>
+            ><a class="chip" href="#bagley">Bagley <b>2</b></a>
           </div>
           <p class="directory-note">
-            Snapshot taken 2026-10-05 from CHANGELOG.md + GitLab releases API. Where a version has
+            Snapshot taken 2026-10-25 from CHANGELOG.md + GitLab releases API. Where a version has
             no tagged release the entry says so rather than guessing a date.
           </p>
         </section>
@@ -245,7 +244,7 @@
               <h2 id="changelog-beacon">Beacon</h2>
             </div>
             <p class="changelog-summary">
-              5 version sections · 70 entries · latest <b>2.0.0-prerelease</b> (unreleased)
+              6 version sections · 74 entries · latest <b>2.0.1</b> (unreleased)
             </p>
           </header>
           <p class="changelog-links">
@@ -268,9 +267,31 @@
               >Repository <svg><use href="#i-external" /></svg
             ></a>
           </p>
-          <details class="changelog-version" id="beacon-2-0-0-prerelease-0" open>
+          <details class="changelog-version" id="beacon-2-0-1-0" open>
             <summary>
-              <span class="changelog-version-name">2.0.0-prerelease — Module fixes</span>
+              <span class="changelog-version-name">2.0.1 - Updates</span>
+              <span class="changelog-meta"
+                ><span class="changelog-unreleased">no tagged release yet</span></span
+              >
+            </summary>
+            <div class="changelog-body">
+              <ul>
+                <li>Bumped the mod version to <strong>2.0.1</strong>.</li>
+                <li>
+                  New module: <strong>SkipTutorial</strong> - skips the vanilla first-time tutorial
+                  hints.
+                </li>
+                <li>
+                  <strong>AFKNotifier</strong>: documents the
+                  <code>@afknotify &lt;words&gt;</code> route for custom nicknames.
+                </li>
+                <li><strong>ItemSearch</strong>: improved command/autocomplete guidance.</li>
+              </ul>
+            </div>
+          </details>
+          <details class="changelog-version" id="beacon-2-0-0-prerelease-1" open>
+            <summary>
+              <span class="changelog-version-name">2.0.0-prerelease - Module fixes</span>
               <span class="changelog-meta"
                 ><span class="changelog-unreleased">no tagged release yet</span></span
               >
@@ -279,7 +300,7 @@
               <ul>
                 <li>
                   <strong>Confetti on Advancement is an actual celebration now.</strong> The burst
-                  was ~40 dust particles at scale 0.7-1.3 in a single uniform spread — close to
+                  was ~40 dust particles at scale 0.7-1.3 in a single uniform spread - close to
                   invisible in daylight. It now opens with a centre pop, splits into three bands
                   (fast outward ring, slow drift, and a fountain that arcs and falls), doubles the
                   dust scale to 1.2-2.4, and trails <code>FIREWORK</code> shimmer behind the
@@ -295,7 +316,7 @@
                   throwing registry lookup looked identical to "you are not inside a structure".
                   Failures are now logged once per session, and a new
                   <strong>Debug Log</strong> setting reports how many structure starts each chunk
-                  actually carries — which is the real question, since a multiplayer server does not
+                  actually carries - which is the real question, since a multiplayer server does not
                   send structure starts to clients at all.
                 </li>
                 <li>
@@ -308,7 +329,7 @@
                 </li>
                 <li>
                   <strong>Build fix:</strong> <code>AFKFisher</code> referenced
-                  <code>FishingBobberEntity</code>, which does not exist in these mappings — the
+                  <code>FishingBobberEntity</code>, which does not exist in these mappings - the
                   class is <code>net.minecraft.world.entity.projectile.FishingHook</code> (see
                   <code>FishingHookAccessor</code>). All four references corrected; the code never
                   compiled as shipped.
@@ -319,7 +340,7 @@
                   <em>empty</em> <code>if</code> body, so <code>maxCombo()</code>/<code
                     >counterColor()</code
                   >
-                  were never called and enabling the module changed nothing — the only collapsing
+                  were never called and enabling the module changed nothing - the only collapsing
                   came from BetterChat's separate anti-spam. CompactMessages owns its duplicate
                   detection now and appends a coloured <code>x N</code> badge, capped by
                   <strong>Max Combo</strong>. New <strong>Scan Depth</strong> and
@@ -330,14 +351,14 @@
                   <code>TabListPlusMixin</code> rewrote <em>every</em> <code>13</code>,
                   <code>11</code> and <code>9</code> in
                   <code>PlayerTabOverlay.extractRenderState</code> to <code>40</code> to make room
-                  for numeric latency — but those literals are row metrics and padding, so the whole
+                  for numeric latency - but those literals are row metrics and padding, so the whole
                   tab list inflated several times over. The wide layout is now opt-in via
                   <strong>Wide Ping Column</strong> (off by default).
                 </li>
                 <li>
                   <strong>SoundMuter's mute no longer sticks.</strong> Enabling it used to walk the
                   entire sound registry and <code>stop()</code> every matching identifier, killing
-                  portal/beacon hums mid-loop that nothing ever restarted — so disabling could not
+                  portal/beacon hums mid-loop that nothing ever restarted - so disabling could not
                   bring them back. Muting is preventive only now: the mixin rejects new matching
                   plays, and disabling takes effect immediately with no state to undo.
                 </li>
@@ -354,7 +375,7 @@
                 <li>
                   <strong>AFK Fisher:</strong> the description no longer credits Meteor, the bite
                   <code>pling</code> is gone (with the now-meaningless Bite Alert setting), and a
-                  catch is counted once per bobber instead of once per catch path — the "Caught N
+                  catch is counted once per bobber instead of once per catch path - the "Caught N
                   fish" tally was inflated.
                 </li>
                 <li>
@@ -366,7 +387,7 @@
                   <em>before</em> attempting to open the page, so if that one open failed the setup
                   was dropped for the whole launch with nothing logged. The retry budget now covers
                   both waits (Chromium downloading, and browser-registered-but-won't-take-the-page),
-                  the setup only disarms once the page actually opened, and every branch logs — so
+                  the setup only disarms once the page actually opened, and every branch logs - so
                   the next launch's log says exactly whether the reset was written or the show path
                   failed.
                 </li>
@@ -377,9 +398,9 @@
               </ul>
             </div>
           </details>
-          <details class="changelog-version" id="beacon-2-0-0-prerelease-1" open>
+          <details class="changelog-version" id="beacon-2-0-0-prerelease-2">
             <summary>
-              <span class="changelog-version-name">2.0.0-prerelease — Boot intro polish</span>
+              <span class="changelog-version-name">2.0.0-prerelease - Boot intro polish</span>
               <span class="changelog-meta"
                 ><span class="changelog-unreleased">no tagged release yet</span></span
               >
@@ -395,7 +416,7 @@
                 </li>
                 <li>
                   The <strong>3D boot intro now preloads before it plays</strong>: the first frames
-                  — which compile every shader — are drawn invisibly, so the opening no longer
+                  - which compile every shader - are drawn invisibly, so the opening no longer
                   hitches.
                 </li>
                 <li>
@@ -445,7 +466,7 @@
                   embedded browser uses: the idle backdrop drops to a lower resolution/24 fps, the
                   cinematic drops MSAA, and the always-on animated atmosphere no longer runs
                   full-screen <code>filter: blur()</code> (the two big glows are unblurred radial
-                  gradients; Mist/Aurora particle blurs are much lighter) — smoother intro and
+                  gradients; Mist/Aurora particle blurs are much lighter) - smoother intro and
                   faster menu opens.
                 </li>
                 <li>
@@ -458,7 +479,7 @@
                   The intro's
                   <strong>soundtrack now starts with the first visible frame</strong> rather than at
                   mount: it used to run a second or so ahead of the picture during the hidden
-                  warm-up, and the opening then snapped forward to catch up — the stall-and-jump at
+                  warm-up, and the opening then snapped forward to catch up - the stall-and-jump at
                   the start.
                 </li>
                 <li>
@@ -482,7 +503,7 @@
                   <strong
                     >GUI key (<code>K</code> by default) now also opens Beacon from the main
                     menu</strong
-                  >, not just in-game — module keybinds still win if one of them is bound to the
+                  >, not just in-game - module keybinds still win if one of them is bound to the
                   same key.
                 </li>
                 <li>
@@ -491,7 +512,7 @@
                     again.</strong
                   >
                   It cleared <code>onboardingSeen</code> but not <code>introSeen</code>, and the
-                  page gates the 3D cinematic on the second flag — so the wizard came back with no
+                  page gates the 3D cinematic on the second flag - so the wizard came back with no
                   intro at all, which is what made the button look dead.
                 </li>
                 <li>
@@ -517,9 +538,9 @@
               </ul>
             </div>
           </details>
-          <details class="changelog-version" id="beacon-1-9-0-2">
+          <details class="changelog-version" id="beacon-1-9-0-3">
             <summary>
-              <span class="changelog-version-name">1.9.0 — Bagley addon extraction</span>
+              <span class="changelog-version-name">1.9.0 - Bagley addon extraction</span>
               <span class="changelog-meta"
                 ><span class="changelog-unreleased">no tagged release yet</span></span
               >
@@ -559,9 +580,9 @@
               </ul>
             </div>
           </details>
-          <details class="changelog-version" id="beacon-unreleased-3">
+          <details class="changelog-version" id="beacon-unreleased-4">
             <summary>
-              <span class="changelog-version-name">Unreleased — in development</span>
+              <span class="changelog-version-name">Unreleased - in development</span>
               <span class="changelog-meta"
                 ><span class="changelog-unreleased">no tagged release yet</span></span
               >
@@ -572,7 +593,7 @@
                 <li>
                   <strong>The first-run onboarding intro is now a real 3D cinematic.</strong>
                   <code>webui/onboarding.html</code> opens on a fullscreen WebGL scene that renders
-                  the Minecraft beacon from <code>assets/models/beacon.glb</code> — the centrepiece,
+                  the Minecraft beacon from <code>assets/models/beacon.glb</code> - the centrepiece,
                   <code>GLBConverted</code>, CC-BY-4.0 by owencroft0, attributed in
                   <code>THIRD_PARTY_NOTICES.txt</code>. Blue energy bands and motes arrive from
                   off-screen, spiral in on a drifting helix, are pulled through the beacon's glass
@@ -582,7 +603,7 @@
                   for the reveal. The reference clip was used as the
                   <strong>audio</strong> reference only (it is never rendered): its audio track is
                   the intro's soundtrack, its ~1.1 s of leading silence is skipped, and its measured
-                  beats drive the cue table — <code>webui/generate_intro_cues.py</code> re-measures
+                  beats drive the cue table - <code>webui/generate_intro_cues.py</code> re-measures
                   the clip with ffmpeg and writes <code>assets/audio/beacon-intro.cues.json</code>,
                   which <code>webui/intro3d_verify.py</code> cross-checks against the module. The
                   whole cinematic is one pure function of a single visual time
@@ -591,8 +612,8 @@
                   frame-rate independent and tunable in one table. Rendering never waits on audio:
                   if autoplay is refused the scene still initialises, animates and finishes, and the
                   first tap starts the sound without skipping the shot (<code>Esc</code> or the Skip
-                  button skips). Every failure — no WebGL, missing module, missing/broken model,
-                  failed init, a stall — disposes the scene and hands the screen to the existing
+                  button skips). Every failure - no WebGL, missing module, missing/broken model,
+                  failed init, a stall - disposes the scene and hands the screen to the existing
                   onboarding welcome screen, and the intro is never allowed to block onboarding.
                   three.js r180 and the post-processing addons are vendored locally under
                   <code>webui/assets/vendor/</code> (no CDN), with the rationale in
@@ -606,7 +627,7 @@
                   game in progress, and stays pending if Chromium is unavailable so it is not
                   silently consumed. <code>@onboarding</code> (alias <code>@setup</code>) re-opens
                   it at any time, which is how the page is re-tested without deleting
-                  <code>beacon.json</code>. Finishing — or skipping — posts
+                  <code>beacon.json</code>. Finishing - or skipping - posts
                   <code>onboarding.complete</code> over the typed bridge and persists the theme,
                   accent, sound toggle, sound volume and favourite modules into
                   <code>beacon.json</code> (<code>uiTheme</code>, <code>accent</code>,
@@ -634,7 +655,7 @@
                   (default 32, max 128 blocks). With
                   <strong>Allow Baritone actions (ban risk)</strong> enabled,
                   <code>baritone_go_to</code>/<code>baritone_stop</code> let the model navigate via
-                  the installed Baritone mod's <code>#goto</code>/<code>#stop</code> commands —
+                  the installed Baritone mod's <code>#goto</code>/<code>#stop</code> commands -
                   advertised only when the mod is actually installed, with the model instructed to
                   navigate only to player-provided coordinates. Both were previously stranded in the
                   <code>Beacon-complete-7700335-…</code> bundle and never reached the compiled
@@ -655,7 +676,7 @@
                   <strong>The 3D onboarding intro could never actually run in a build.</strong>
                   Beacon's loopback origin sent <code>connect-src 'none'</code> in its
                   Content-Security-Policy, and three.js downloads <code>beacon.glb</code> with
-                  <code>fetch()</code> — which is what that directive governs, not
+                  <code>fetch()</code> - which is what that directive governs, not
                   <code>media-src</code> or <code>script-src</code>. Chromium therefore refused the
                   model request before it left the browser, <code>GLTFLoader</code> reported a
                   failure and the cinematic skipped straight to the welcome screen. The development
@@ -669,15 +690,15 @@
                 </li>
                 <li>
                   <strong>HTML UI console output now reaches the game log.</strong> Page-side
-                  warnings and errors — including
+                  warnings and errors - including
                   <code>[Beacon] 3D boot intro unavailable (&lt;reason&gt;)</code> and Chromium's
-                  own blocked-subresource reports — are forwarded as
+                  own blocked-subresource reports - are forwarded as
                   <code>[Beacon][HTML UI] …</code>, so a page that degrades no longer leaves the log
                   silent about why.
                 </li>
                 <li>
                   <strong
-                    >The intro's beacon is textured again — it is no longer a bare grey
+                    >The intro's beacon is textured again - it is no longer a bare grey
                     cube.</strong
                   >
                   <code>beacon.glb</code> stores its three textures in bufferViews;
@@ -697,8 +718,8 @@
                   >
                   The page kept the "seen" flag only in <code>localStorage</code>, but the loopback
                   origin is a fresh random port and token on every launch, so the store was empty
-                  each time. <code>onboarding.intro-seen</code> — which the page already posts but
-                  the bridge previously rejected as unknown — now persists a durable
+                  each time. <code>onboarding.intro-seen</code> - which the page already posts but
+                  the bridge previously rejected as unknown - now persists a durable
                   <code>introSeen</code> flag in <code>beacon.json</code>, the state snapshot
                   exposes it, and the page asks for the snapshot before deciding whether to play
                   (with a short fallback so a dead bridge cannot strand the player).
@@ -768,7 +789,7 @@
                 </li>
                 <li>
                   Chat autocomplete cast every suggestion <code>String</code> to
-                  <code>java.lang.invoke.CallSite</code> — compiled fine, ClassCastException the
+                  <code>java.lang.invoke.CallSite</code> - compiled fine, ClassCastException the
                   moment the <code>@</code> menu opened.
                 </li>
                 <li>
@@ -786,7 +807,7 @@
               <ul>
                 <li>
                   The Click GUI HTML prototype (<code>docs/beacon-ui.html</code>) and its two
-                  dedicated checkers — a second implementation of the GUI that only existed to be
+                  dedicated checkers - a second implementation of the GUI that only existed to be
                   kept in sync. See <code>docs/CLICK-GUI-HTML-REMOVAL.md</code>.
                 </li>
                 <li>
@@ -841,7 +862,7 @@
               <h3>Added</h3>
               <ul>
                 <li>
-                  <strong>Bagley</strong> — an opt-in, OpenAI Chat Completions-compatible assistant
+                  <strong>Bagley</strong> - an opt-in, OpenAI Chat Completions-compatible assistant
                   that replies in public chat when someone says <code>Bagley</code>. It sends only
                   the triggering message and keeps endpoint credentials in the separate,
                   non-shareable <code>config/beacon-bagley.json</code>; see the standalone
@@ -853,13 +874,13 @@
                   >.
                 </li>
                 <li>
-                  <code>Setting.visibleIf(guard, test)</code> — settings can declare they only make
+                  <code>Setting.visibleIf(guard, test)</code> - settings can declare they only make
                   sense while another setting's value passes a predicate; the GUI honours it in
                   render, hit-testing and height.
                 </li>
                 <li>
                   Config share codes: <code>@config export</code> /
-                  <code>@config import &lt;code&gt;</code> — the whole <code>beacon.json</code> as
+                  <code>@config import &lt;code&gt;</code> - the whole <code>beacon.json</code> as
                   one pasteable string (gzip + URL-safe base64).
                 </li>
                 <li>
@@ -868,7 +889,7 @@
                   fires.
                 </li>
                 <li>
-                  <code>@bug</code> — a clickable link to a GitLab issue form prefilled from the
+                  <code>@bug</code> - a clickable link to a GitLab issue form prefilled from the
                   Bug.md template (versions, OS, reproduce/expect skeleton).
                 </li>
                 <li>
@@ -879,9 +900,9 @@
               </ul>
             </div>
           </details>
-          <details class="changelog-version" id="beacon-1-8-17-4">
+          <details class="changelog-version" id="beacon-1-8-17-5">
             <summary>
-              <span class="changelog-version-name">1.8.17 — and earlier</span>
+              <span class="changelog-version-name">1.8.17 - and earlier</span>
               <span class="changelog-meta"
                 ><span class="changelog-unreleased">no tagged release yet</span></span
               >
@@ -896,7 +917,7 @@
                     rel="noreferrer"
                     ><code>releases/</code></a
                   >
-                  — one file per version, kept as a historical record.
+                  - one file per version, kept as a historical record.
                 </li>
               </ul>
             </div>
@@ -913,7 +934,7 @@
               <h2 id="changelog-venomous">Venomous</h2>
             </div>
             <p class="changelog-summary">
-              5 version sections · 40 entries · latest <b>Unreleased</b> (unreleased)
+              16 version sections · 102 entries · latest <b>7.18.8</b> (2026-10-23)
             </p>
           </header>
           <p class="changelog-links">
@@ -936,15 +957,699 @@
               >Repository <svg><use href="#i-external" /></svg
             ></a>
           </p>
-          <details class="changelog-version" id="venomous-unreleased-0" open>
+          <details class="changelog-version" id="venomous-7-18-8-0" open>
             <summary>
-              <span class="changelog-version-name">Unreleased — in development</span>
+              <span class="changelog-version-name">7.18.8</span>
               <span class="changelog-meta"
-                ><span class="changelog-unreleased">no tagged release yet</span></span
+                ><time datetime="2026-10-23">2026-10-23</time> ·
+                <a
+                  href="https://gitlab.com/international-duck-incorporated/Venomous/-/releases/v7.18.8"
+                  target="_blank"
+                  rel="noreferrer"
+                  >release v7.18.8</a
+                >
+                · 1 artifact</span
               >
             </summary>
             <div class="changelog-body">
               <ul>
+                <li>
+                  New movement module <code>no-slow</code>: decides for itself how much the item in
+                  use slows you down. 26.2 keeps the slowdown on the item itself - the
+                  <code>USE_EFFECTS</code> data component, read through one seam the client consults
+                  every tick it is eating, drinking, drawing or blocking - and the new
+                  <code>LocalPlayerUseSlowMixin</code> hands that decision to
+                  <code>NoSlowRules</code>, a pure decision table covered by
+                  <code>UseSlowRulesTest</code>. Ported from Raven B4's <code>NoSlow</code> with the
+                  same filter set (sword-only, disable-bow, disable-potions with thrown potions
+                  still overridable) and its one-way range: the slider only ever moves the
+                  multiplier up from vanilla's 0.2, and the default of 80% is exact vanilla parity.
+                  The description states the cost the way the desync family's does: a simulating
+                  server predicts 0.2, so the useful range is the server's to allow, not the
+                  module's.
+                </li>
+                <li>
+                  New combat module <code>keep-sprint</code>: softens the price your own swings
+                  charge you. Vanilla multiplies the attacker's horizontal motion by 0.6 and drops
+                  sprint after every hit; <code>AttackEntityEvent</code> captures the motion going
+                  into the swing - the only moment the un-punished motion exists - and a tail mixin
+                  on <code>Player.attack</code> puts it back scaled by the slider, sprint re-raised.
+                  The default 40% restores exact vanilla motion, which makes the module's real
+                  function the kept sprint; the one-way range is Raven's, and the original's
+                  stop-sprint toggle is replaced by an explicit keep-sprint switch, since the
+                  knockback-module plumbing it served has no counterpart here. Two new mixins
+                  (<code>LocalPlayerUseSlowMixin</code>, <code>PlayerAttackMixin</code>) bring the
+                  config to nine entries and the per-class load guard covers them. Both descriptions
+                  carry the same honesty as the desync family: on Grim these are Simulation flags by
+                  design, on non-simulating servers they are free.
+                </li>
+              </ul>
+            </div>
+          </details>
+          <details class="changelog-version" id="venomous-7-18-7-1" open>
+            <summary>
+              <span class="changelog-version-name">7.18.7</span>
+              <span class="changelog-meta"
+                ><time datetime="2026-10-23">2026-10-23</time> ·
+                <span class="changelog-unreleased">no tagged release yet</span></span
+              >
+            </summary>
+            <div class="changelog-body">
+              <ul>
+                <li>
+                  New network module <code>fake-lag</code>: holds the connection's own packets for a
+                  configurable delay - outbound (everything you send), inbound (everything the
+                  server sends), or both - releasing by age with hard flushes on teleport, damage
+                  and disconnect. Ported from Raven B4's <code>FakeLag</code>, whose delay engine is
+                  a shared request/handler/timeout subsystem; here each module owns its queue
+                  outright, the convention the rest of the addon already runs on. Connection-keeping
+                  packets (keep-alives, pings, chunk-batch traffic, bundles) always pass through
+                  untouched, so the hold cannot starve the world or read as a dying connection. The
+                  cost is stated in the description: released bursts read as timer anomalies on
+                  servers that count packets.
+                </li>
+                <li>
+                  New network module <code>lag-range</code>: the same hold, but conditional -
+                  engaged only while closing on a target inside the reach band, or right after a hit
+                  landed inside the three-block minimum, and flushed the moment the exchange changes
+                  shape: a hit of your own, taking damage, a sprint restart, raising your sword,
+                  throwing a splash, opening a screen, the target leaving the band. Ported from
+                  Raven B4's <code>LagRange</code> with the engage shape intact; the 1.8 hurt-window
+                  hit-marking and the first-person indicator are not carried over, and the closest
+                  target scan replaces the original's targeting helper.
+                </li>
+                <li>
+                  New network module <code>backtrack</code>: holds one target's movement packets
+                  while the withheld position is the better one to swing at - further along your aim
+                  ray than the position this client still shows, inside the reach band, on the stale
+                  side of the exchange - and releases them by age, damage, teleport or target
+                  change. The geometry lives in <code>BacktrackMath</code> (ray/box entry distance,
+                  the hold decision table), unit tested in <code>BacktrackMathTest</code> including
+                  the border-grown box edge cases. Ported from Raven B4's
+                  <code>Backtrack</code> with three deliberate deviations: the hold is scoped to one
+                  entity's movement packets rather than everything-but-a-whitelist (a held session
+                  cannot starve the world of chunks), the 1.8 ghost rendering is dropped, and the
+                  release clock is wall-clock milliseconds rather than tick counts. Against a
+                  lag-compensating server the effect is bounded by what it already grants; the
+                  description says so.
+                </li>
+              </ul>
+            </div>
+          </details>
+          <details class="changelog-version" id="venomous-7-18-6-2">
+            <summary>
+              <span class="changelog-version-name">7.18.6</span>
+              <span class="changelog-meta"
+                ><time datetime="2026-10-23">2026-10-23</time> ·
+                <span class="changelog-unreleased">no tagged release yet</span></span
+              >
+            </summary>
+            <div class="changelog-body">
+              <ul>
+                <li>
+                  New combat module <code>rod-aimbot</code>: a right click with an uncast rod is
+                  intercepted, the closest valid player inside the cone is picked, and the cast is
+                  staged against where they will be when the hook arrives -
+                  <code>predicted-ticks</code> projects their observed motion through vanilla's own
+                  per-tick constants (air drag 0.91, gravity 0.08 with 0.98 drag, ground friction
+                  0.546). Ported from Raven B4's <code>RodAimbot</code> with the same gates (cone,
+                  distance, invisibility, bots, teammates) and its deviations stated: the camera is
+                  never taken - the cast rotation is spoofed server-side through
+                  <code>PreRotate</code>, so the interaction departs before the movement packet from
+                  a rotation the server acknowledged, and the aim keeps refreshing every tick until
+                  the cast lands rather than only when the original's motion event fires. Both
+                  rotation axes are snapped onto the sensitivity grid with the 7.18.4 machinery - a
+                  cast angle no mouse could produce is exactly what the rotation checks read. The
+                  reel-in is deliberately left to the player: the hook is where it is, and a second
+                  interception would fight the hand that cast it. The projection and the angle
+                  conventions live in <code>EntityPredict</code> and <code>RodAimMath</code>, unit
+                  tested in <code>RodAimMathTest</code> (fall and friction shapes, yaw/pitch
+                  conventions, cone wrap).
+                </li>
+              </ul>
+            </div>
+          </details>
+          <details class="changelog-version" id="venomous-7-18-5-3">
+            <summary>
+              <span class="changelog-version-name">7.18.5</span>
+              <span class="changelog-meta"
+                ><time datetime="2026-10-23">2026-10-23</time> ·
+                <span class="changelog-unreleased">no tagged release yet</span></span
+              >
+            </summary>
+            <div class="changelog-body">
+              <ul>
+                <li>
+                  Fixed the quit hang. Clicking Quit used to freeze the client for twenty seconds
+                  and end in a <code>ClientShutdownWatchdog</code> crash report with exit code -8.
+                  The cause: Baritone's cache workers are non-daemon threads parked forever in a
+                  <code>LinkedBlockingQueue.take()</code> inside a loop that catches
+                  <code>InterruptedException</code> and <code>Throwable</code> and keeps parking -
+                  so neither an interrupt nor a <code>shutdownNow()</code> can release a worker that
+                  is already parked there, and once <code>main()</code> returns the JVM waits on
+                  them until vanilla's watchdog force-kills the process. The fix is a shutdown
+                  reaper: a daemon thread started at addon init that watches the main thread, and
+                  the moment <code>main()</code> has returned invokes <code>System.exit(0)</code> -
+                  shutdown hooks run, the halt takes the parked threads with it, and quitting is
+                  clean and immediate. When every thread is well behaved the natural shutdown wins
+                  the race and the forced exit is a no-op on an already-halting JVM. Covered by
+                  <code>ShutdownReaperTest</code> (fires on death, stays quiet while watched, daemon
+                  by construction).
+                </li>
+                <li>
+                  Removed fourteen dead modules after grading every one of them against the 26.2
+                  server model. Twelve were 1.8-era packet relics that cannot function against a
+                  server-side simulation and only ever produced flags:
+                  <code>more-carry</code> (crafting-slot carry - servers repopulate containers on
+                  close), <code>bungeecord-spoof</code> (forwarding data is proxy-side; a client
+                  injection just fingerprints), <code>kick</code> (ESC menu exists),
+                  <code>portal-exploits</code> (with its two serving mixins,
+                  <code>NetherPortalBlockMixin</code> and <code>ScreenMixin</code>),
+                  <code>reset-vl</code> (modern anticheats do not keep reloggable violation levels),
+                  <code>sleep-walker</code> (the server ejects a moving sleeper),
+                  <code>chorus-exploit</code> (the teleport is server-authoritative),
+                  <code>v-click-tp</code> (client setPos rubber-bands without permission),
+                  <code>vehicle-one-hit</code> (vehicle health is server-side),
+                  <code>v-ghost-hand</code> (server raycasts), <code>time-shift</code> and
+                  <code>v-anti-hunger</code>. The other two were worse than dead: the repo's own
+                  <code>OrphanModuleTest</code> audit had already established that
+                  <code>text-field-protect</code>, <code>extended-firework</code> and
+                  <code>v-ghost-hand</code> were wired to nothing - their advertised features never
+                  ran because the mixins they waited on were never written - so those settings took
+                  space in the GUI while doing literally nothing. The orphan and inert allowlists
+                  are empty now, and the drift assertions keep them that way.
+                </li>
+              </ul>
+            </div>
+          </details>
+          <details class="changelog-version" id="venomous-7-18-4-4">
+            <summary>
+              <span class="changelog-version-name">7.18.4</span>
+              <span class="changelog-meta"
+                ><time datetime="2026-10-23">2026-10-23</time> ·
+                <span class="changelog-unreleased">no tagged release yet</span></span
+              >
+            </summary>
+            <div class="changelog-body">
+              <ul>
+                <li>
+                  Fixed V Scaffold sending pitch steps no mouse can produce. The shared
+                  <code>RotationGcd</code> grid was verified against the 26.2 client bytecode and is
+                  correct: <code>MouseHandler.turnPlayer</code> multiplies mouse counts by
+                  <code>f³ × 8</code> and <code>Entity.turn</code> scales that by <code>0.15</code>,
+                  so the real grid step is <code>f³ × 1.2</code> - exactly what the utility
+                  computes, and exactly what the network interceptor's duplicate of the formula
+                  computes. The scaffold was the fault: it imported the utility and never called it,
+                  so the staged pitch went out as the raw <code>smoothed + wobble</code> float, and
+                  the delta between consecutive rotations - the thing Grim's
+                  <code>RotationPlace</code> reachability test actually validates - landed between
+                  the grid lines (the session's two <code>RotationPlace</code> flags). The pitch
+                  handed to the server is now snapped onto the grid at both staging sites, measured
+                  from the rotation the server already holds, since what is validated is the step,
+                  not the absolute angle. The yaw is deliberately untouched: it is the camera's own,
+                  so its step is a real mouse turn by construction.
+                </li>
+                <li>
+                  The snap never rounds a requested movement away. The pitch wobble is smaller than
+                  one grid step at most sensitivities, and a naive round-to-nearest would erase it,
+                  leaving the rotation repeating exactly - the fingerprint the wobble exists to
+                  avoid (<code>AimDuplicateLook</code>). A real but sub-grid step now becomes one
+                  whole grid step in the requested direction, the smallest movement a real mouse can
+                  make; a genuinely zero step still invents nothing. The smoothing and wobble
+                  constructs are untouched - the grid is applied where the aim is handed to Meteor,
+                  in the new <code>RotationGcd.quantizeFrom</code>, covered by four new
+                  <code>RotationGcdTest</code> cases: relative snapping, the sub-grid bump, two
+                  hundred ticks of hold oscillation staying on-grid and near the aim, and degenerate
+                  sensitivities passing the target through unchanged.
+                </li>
+                <li>
+                  The Simulation flag wall from the same session is not explained by anything this
+                  codebase writes: the scaffold's whole path was checked and there is not a single
+                  velocity write in it - the module stages rotations and clicks, and applies no
+                  motion of its own. The steady <code>.054600</code> repeat is one 0.1/tick step of
+                  velocity re-injected and ground-frictioned (0.6 × 0.91) every tick, which is a
+                  physics-versus-prediction mismatch, not a motion hack. Retest on Grim after this
+                  build; if the rotation-side flags are gone and Simulation remains, the next
+                  suspect is the just-placed-block confirmation window, isolable with a live A/B -
+                  module on while standing still, then while walking, then while bridging.
+                </li>
+              </ul>
+            </div>
+          </details>
+          <details class="changelog-version" id="venomous-7-18-3-5">
+            <summary>
+              <span class="changelog-version-name">7.18.3</span>
+              <span class="changelog-meta"
+                ><time datetime="2026-10-23">2026-10-23</time> ·
+                <span class="changelog-unreleased">no tagged release yet</span></span
+              >
+            </summary>
+            <div class="changelog-body">
+              <ul>
+                <li>
+                  Debug round: a head-to-head reread of the 7.18.x additions against their sources -
+                  the pause masks, the damage and knockback bookkeeping, the state resets, the
+                  registration and the version sync - shipping the fixes the reread found. Three
+                  real ones:
+                </li>
+                <li>
+                  Fixed <code>latency-alerts</code> limbo carve-out losing half of the original's
+                  test: Raven's limbo is The End dimension AND an empty scoreboard sidebar, and the
+                  port had kept only the dimension half, so the module went silent inside any The
+                  End world - actually hiding genuine packet-loss alerts in minigames played there.
+                  Now the exact conjunction in <code>inLimbo()</code>: the
+                  <code>DisplaySlot.SIDEBAR</code> objective absent, or present with zero scored
+                  rows, and the dimension The End.
+                </li>
+                <li>
+                  Fixed <code>latency-alerts</code> first-alert timing: the original zeroes its
+                  last-alert stamp on disable and stamps only the packet clock on enable, so the
+                  first stall raises at the earliest legal moment; the port's reset-both-on-activate
+                  delayed every first alert by a full alert interval after toggling. Enable and
+                  disable mirror the original now, and the disable and no-player legs clear the
+                  last-packet name the way the original's branches do.
+                </li>
+                <li>
+                  Fixed two <code>hit-select</code> parity breaks: the tick clock is cleared on
+                  enable (the original does; the wait-first window measures exchange age, not addon
+                  uptime), and <code>item-blacklist</code> is now hidden until
+                  <code>filter-blacklisted-items</code> is on - the original's guiUpdate behavior,
+                  riding the addon's existing <code>.visible</code> precedent.
+                  <code>missed-swings-cancel-rate</code>'s description now tells the truth about the
+                  packet level: it filters attack packets on non-player entities, and air swings are
+                  out of reach there because vanilla never sends an attack packet for an empty
+                  crosshair - Raven's 1.8 build could intercept them, a packet filter cannot.
+                </li>
+                <li>
+                  Reread, no fault found everywhere else: <code>hit-select</code>'s
+                  pause/mask/criticals logic matches the original step-for-step (including the
+                  strict pause release clock and the raw-mask write on server confirmation),
+                  <code>jump-reset</code>, <code>no-jump-delay</code> and
+                  <code>auto-requeue</code> hold their shapes and their state resets, the
+                  <code>noJumpDelay</code> accessor targets the javap-verified field, and
+                  <code>ItemListSetting</code>'s builder seeds a non-null empty-list default
+                  (bytecode-checked), so building <code>item-blacklist</code> without
+                  <code>defaultValue</code> was already safe. The skipped suite member is
+                  <code>BuildScriptsTest</code>'s <code>@DisabledOnOs(WINDOWS)</code> case, idle on
+                  this machine on purpose.
+                </li>
+              </ul>
+            </div>
+          </details>
+          <details class="changelog-version" id="venomous-7-18-2-6">
+            <summary>
+              <span class="changelog-version-name">7.18.2</span>
+              <span class="changelog-meta"
+                ><time datetime="2026-10-23">2026-10-23</time> ·
+                <span class="changelog-unreleased">no tagged release yet</span></span
+              >
+            </summary>
+            <div class="changelog-body">
+              <ul>
+                <li>
+                  New combat module <code>hit-select</code>: filters clicks the server would ignore
+                  anyway - a hit that lands inside a target's invulnerability window is voided by
+                  every server, while the click still spends the attacker's weapon cooldown and the
+                  momentum of the exchange. Ported from Raven B4's <code>HitSelect</code> with its
+                  decision extracted into <code>HitSelectRules</code> (bursts predicted from the
+                  attacker's own hit, the optional server-timing gate, the sticky pause holding any
+                  block reason for its duration, the wait-for-first-hit hold, the criticals gate,
+                  the three-block reach, the percent cancel rates), with unit tests in
+                  <code>HitSelectRulesTest</code>. Two ports findings shipped with the port: Raven's
+                  hurt-window sync and its <code>maxHurtTime</code> fallback are unwired in the
+                  original - the live path only ever starts ten-tick windows from a passed hit,
+                  which is what the port keeps and every one of them is exclusive-end-tested; and
+                  26.2 gives attacks their own <code>ServerboundAttackPacket</code>, so the filter
+                  runs there and the rejected click's vanilla swing packet still leaves the client -
+                  the visible behaviour Raven's "fake swing" option bought, without the option. The
+                  mouse-over-first/else-closest target precedence and the eye-to-nearest-box-face
+                  reach are Raven's own; Raven's friends list and bot list carve-outs have no
+                  equivalent here and are dropped; <code>ignore-teammates</code> rides on vanilla
+                  <code>isAlliedTo</code>; weapon detection rides on the repo's
+                  <code>McCompat.isWeapon</code> (the same check the other combat modules hold to),
+                  since 26.2 swords carry a weapon data component instead of a
+                  <code>SwordItem</code> class and there is no sword class to instanceof.
+                </li>
+                <li>
+                  New misc module <code>latency-alerts</code>: the gap since the last packet the
+                  server sent is measured every tick, and once it crosses the
+                  <code>high-latency</code> threshold an alert prints with the gap and the last
+                  packet seen - at most once per <code>alert-interval</code> so a stall does not
+                  flood the chat. Ported from Raven B4's <code>LatencyAlerts</code> with the same
+                  measurement, interval guard and its limbo carve-out (measured the same way, on The
+                  End dimension); the hover component it hung the details on is replaced by the
+                  details printed inline.
+                </li>
+                <li>
+                  Graded-and-rejected for this increment: larpclient's
+                  <code>HoverTotem</code> (already inside <code>auto-inv-totem</code> - it ships the
+                  "merged with HoverTotem" description) and Raven's <code>HitBox</code> (needs a
+                  pick-interception mixin at the current <code>GameRendererMixin</code>'s cost, for
+                  a reach that Grim's player-attack-range check refuses to honour beyond three
+                  blocks anyway).
+                </li>
+              </ul>
+            </div>
+          </details>
+          <details class="changelog-version" id="venomous-7-18-1-7">
+            <summary>
+              <span class="changelog-version-name">7.18.1</span>
+              <span class="changelog-meta"
+                ><time datetime="2026-10-23">2026-10-23</time> ·
+                <span class="changelog-unreleased">no tagged release yet</span></span
+              >
+            </summary>
+            <div class="changelog-body">
+              <ul>
+                <li>
+                  New movement module <code>no-jump-delay</code>: the vanilla jump cooldown
+                  (<code>LivingEntity.noJumpDelay</code>, ticked down from ten after every jump) is
+                  clamped each tick to the <code>jump-delay</code> setting, so the default of 0 lets
+                  the jump be taken again the grounded tick after the last one. The port clamps
+                  instead of writing zero a decision the 26.2-era source it was transcribed from got
+                  right: a constant zero would defeat the countdown itself, and a jump would never
+                  be allowed again. The field is reached through a new
+                  <code>LivingEntityAccessor</code> mixin (the addon's first accessor into an entity
+                  class, registered in <code>venomous.mixins.json</code>).
+                </li>
+                <li>
+                  New misc module <code>auto-requeue</code>: runs the command behind a game's
+                  play-again chat button, held until the <code>delay</code> has passed. Ported from
+                  Raven B4's <code>AutoRequeue</code> with its shape kept - a message whose text
+                  matches the <code>trigger-text</code> is scanned for a command click event, the
+                  command is held until it is run, and a fresh world join discards what was held,
+                  because requeueing belongs to the game the message was sent in. Two deliberate
+                  deviations: Raven matched the server's own button wording ("Click here"), where
+                  the port takes the first run-command click event wherever it sits in the component
+                  tree and matches the trigger text somewhat; and Raven routed the click value
+                  through 1.8.9's single send method, where the port splits on the leading slash -
+                  <code>sendCommand</code> for a <code>/queue</code>,
+                  <code>sendChat</code> otherwise.
+                </li>
+                <li>
+                  Surveyed further archive ports for this increment and rejected them for cause:
+                  Raven's <code>AntiDebuff</code> is 1.8.9 render plumbing already covered by
+                  <code>anti-blind</code>; <code>InstantStop</code> and <code>NullMove</code> need
+                  an input-injection event Meteor does not expose (<code>PrePlayerInputEvent</code>
+                  is Raven-internal) for a small payoff; <code>StopMotion</code> zeroes vertical
+                  velocity mid-air, which is a predictable gravity mismatch on the servers this
+                  addon is tuned for; <code>KeepSprint</code>'s 1.8.9 logic is attack-slowdown math
+                  that does not exist in modern code, and its modern descendant is partially covered
+                  by <code>super-kb</code>'s W-TAP; larpclient's
+                  <code>PanicSlot</code> force-selects a hotbar slot. The bigger ports
+                  (<code>HitSelect</code>, the lag-queue trio, <code>Clutch</code>,
+                  <code>HitBox</code>) stay queued for their own increments.
+                </li>
+              </ul>
+            </div>
+          </details>
+          <details class="changelog-version" id="venomous-7-18-0-8">
+            <summary>
+              <span class="changelog-version-name">7.18.0</span>
+              <span class="changelog-meta"
+                ><time datetime="2026-10-23">2026-10-23</time> ·
+                <span class="changelog-unreleased">no tagged release yet</span></span
+              >
+            </summary>
+            <div class="changelog-body">
+              <ul>
+                <li>
+                  New combat module <code>jump-reset</code>: pressing the jump key on the tick a hit
+                  lands, so the knockback multiplies into the jump and lands a fraction of its
+                  range. Ported from Raven B4's <code>JumpReset</code> module and its gate list, one
+                  boolean at a time: only a fresh growth of the hurt window counts as a hit (a
+                  drained window mid-combo is the same hit, not a new one), the player must be
+                  grounded ("a jump can only start from the ground"), the window may not be burning
+                  or jump-boost/poison/wither-tinted (<code>MobEffects</code> reads, Raven's own
+                  three), the movement direction must line up with the facing, and the three
+                  optional gates ship with Raven's defaults - attack key waived, walking-forward
+                  required, crosshair-on-player required.
+                </li>
+                <li>
+                  The port keeps Raven's landing guard: hurt time that arrives while standing on
+                  ground after falling further than three blocks is the fall's own damage, not a
+                  hit, and is suppressed once. The one-tick press is Meteor-native: the module
+                  presses <code>keyJump</code> in <code>TickEvent.Pre</code> only when the player
+                  was not already holding it, and releases its own press before the next tick's
+                  decision, so the tap covers exactly one input window. The module only ever
+                  releases a press it made itself - the key mapping is shared with the game's own
+                  events, so an unconditional release would clobber a jump the player is holding.
+                </li>
+                <li>
+                  Raven's knockback arc check is shipped honestly rather than copied: its
+                  <code>inFov(GetDirection, 330, ...)</code> halves its argument to a ±165 degree
+                  tolerance and therefore passes everything except a movement within fifteen degrees
+                  of exactly backwards - a no-op in practice. <code>JumpResetRules</code> carries
+                  the wrap-aware <code>withinArc</code> with the same full-arc semantics and the
+                  same 330 default behind the <code>motion-arc</code> setting (documented as such),
+                  so lowering it actually rejects sideways and rear hits; standing still on the hurt
+                  tick - before the knockback is applied - waives the gate instead of being judged
+                  against yaw zero. The decision lives in <code>JumpResetRules</code> (<code
+                    >motionYawOf</code
+                  >
+                  follows Minecraft's yaw convention: +Z is 0, +X is -90) with unit tests in
+                  <code>JumpResetRulesTest</code>; every new setting is read.
+                </li>
+              </ul>
+            </div>
+          </details>
+          <details class="changelog-version" id="venomous-7-17-2-9">
+            <summary>
+              <span class="changelog-version-name">7.17.2</span>
+              <span class="changelog-meta"
+                ><time datetime="2026-10-23">2026-10-23</time> ·
+                <span class="changelog-unreleased">no tagged release yet</span></span
+              >
+            </summary>
+            <div class="changelog-body">
+              <ul>
+                <li>
+                  <code>v-scaffold</code> keeps the rotation the server is told on the camera's own
+                  yaw across every tick of a bridging run, not only on the ticks the staging loop
+                  had a target to aim at. Meteor consumes each rotation it is handed in the same
+                  tick, but it also keeps the last one and re-sends it for up to
+                  <code>rotation-hold</code> ticks (default 4) whenever no fresh rotation is staged
+                  - writing the player's own rotation to that staged angle for the length of each
+                  packet, while the position delta in those packets was integrated by physics that
+                  ran on the live camera. Every degree the mouse moved since the staging is
+                  therefore a walk the server did not predict, and Grim's
+                  <code>Simulation</code> reports it: the 7.17.1 run collected 119
+                  one-millimetre-scale flags in exactly that shape - decaying clusters that
+                  restarted with each staging gap. The gap came from the ticks that early-return out
+                  of every loop (no supporting face for the cell mid-jump, no block in the hotbar,
+                  no cell underfoot), which are precisely the ticks that skipped
+                  <code>Rotations.rotate()</code>. <code>PreRotate.followCameraYaw</code> now
+                  re-stages the rotation on those ticks - from each no-target return in
+                  <code>tickGrim</code>, <code>tickStandardMode</code> and
+                  <code>aimAndPlace</code> - with the camera's yaw read fresh that tick, the held
+                  aim pitch (<code>stagedPitch</code>) and its wobble, pending an aim within a
+                  one-second linger of the last staging. The queue is untouched, the age-out clock
+                  keeps running, nothing is written to the camera, there is no new setting, and the
+                  crouch is unchanged.
+                </li>
+                <li>
+                  <code>PreRotate.isServerReady</code> now honours the <code>yawMatters</code> flag
+                  it already records, whose documented contract ("the action waits only for the
+                  pitch to be sent") was silently ignored - a moving mouse held every placement back
+                  a tick, and a staged rotation was judged against a frozen staging yaw with a 1.5
+                  degree tolerance, which is exactly the mouse being measured rather than the
+                  rotation. The readiness decision now lives in <code>RotationReadiness</code> (yaw
+                  comparison wraps around the 0/360 seam, tolerance inclusive on both axes) with
+                  unit tests (<code>RotationReadinessTest</code>, <code>CameraFollowTest</code>, and
+                  <code>find</code> coverage in <code>DeferredActionsTest</code>).
+                </li>
+              </ul>
+            </div>
+          </details>
+          <details class="changelog-version" id="venomous-7-17-1-10">
+            <summary>
+              <span class="changelog-version-name">7.17.1</span>
+              <span class="changelog-meta"
+                ><time datetime="2026-10-22">2026-10-22</time> ·
+                <span class="changelog-unreleased">no tagged release yet</span></span
+              >
+            </summary>
+            <div class="changelog-body">
+              <ul>
+                <li>
+                  Ported two timing ideas from Raven B4's scaffold, with the derivations behind
+                  each, to <code>v-scaffold</code>: wall-clock time since the last placement before
+                  it presses, instead of squeezing the edge crouch back on the tick after a
+                  placement leaves. Holding is not pressing - an already-down key is left alone -
+                  and releases are never delayed, because a crouch held past its point is a
+                  walking-into-air bug. Together with <code>SneakTiming</code> this turns the
+                  sneak-toggle cadence from one toggle per placement into bursts at the places a
+                  real hand would squeeze the crouch. performed the last placement - 710ms while
+                  sprinting, 110ms while walking, 460ms idle, Raven's numbers - instead of drifting
+                  along with the walk between placements. A staged placement turns the hold off
+                  entirely, because that is when the server's ray has to reach the face; the pitch
+                  wobble keeps running either way so the rotation never repeats exactly for
+                  <code>AimDuplicateLook</code>.
+                  <ul>
+                    <li>
+                      <strong>Sneak re-press delay</strong> (<code>SneakRepress</code>): a crouch
+                      that is not already down now waits 90ms of
+                    </li>
+                    <li>
+                      <strong>Aim hold after a placement</strong> (<code>AimHold</code>): the
+                      smoothed pitch now rests on the angle that
+                    </li>
+                  </ul>
+                </li>
+                <li>
+                  Both decisions are pure static functions with unit tests
+                  (<code>SneakRepressTest</code>, <code>AimHoldTest</code>), no new mixins, no
+                  camera writes, and no change to packet ordering.
+                </li>
+              </ul>
+            </div>
+          </details>
+          <details class="changelog-version" id="venomous-7-1-0-11">
+            <summary>
+              <span class="changelog-version-name">7.1.0</span>
+              <span class="changelog-meta"
+                ><time datetime="2026-10-18">2026-10-18</time> ·
+                <span class="changelog-unreleased">no tagged release yet</span></span
+              >
+            </summary>
+            <div class="changelog-body">
+              <ul>
+                <li>
+                  Fixed <code>v-scaffold</code> placing on POST - the anticheat named it directly:
+                  <code
+                    >Looks like you are currently attacking/placing on POST, this is a very common
+                    check on most anti-cheats</code
+                  >. Meteor's <code>BlockUtils.place(..., rotate = true, ...)</code> calls
+                  <code>Rotations.rotate(yaw, pitch, runnable)</code>, whose callback Meteor runs
+                  from <code>SendMovementPacketsEvent.Post</code>, so the interaction left
+                  <em>after</em> the movement packet. Only GrimScaffold and NCP were routed through
+                  <code>PreRotate</code>; every other path passed
+                  <code>rotate = true</code> straight to <code>BlockUtils</code>. Rotation-and-place
+                  is now always <code>aimAndPlace</code>, and the rotating
+                  <code>place(pos, shouldRotate)</code> overload has been deleted so no call site
+                  can reintroduce it.
+                </li>
+                <li>
+                  Removed the <code>expand</code>, <code>vulcan-expand</code> and
+                  <code>vulcan-sprint</code> techniques from <code>v-scaffold</code>, along with the
+                  <code>Expand</code> and <code>Vulcan</code> setting groups and every setting that
+                  belonged to them. They placed extra blocks per tick, which no placement cadence
+                  survives and which the anticheat's straight-line minimum punishes hardest. Nine
+                  techniques remain: GrimScaffold, AutoSneak, BridgeMacro, VapeBridge, NCPNormal and
+                  Normal.
+                </li>
+                <li>
+                  Added activity guards across the combat modules, ported from a decompile of Vape
+                  v4.10. Each one stops the client doing something a person would not:
+                  <code>aimbot</code> gained <code>click-aim</code> (only aim while the attack key
+                  is held), <code>check-block-break</code> (do not aim while mining) and
+                  <code>limit-to-items</code> - the first two close a real inconsistency, because
+                  <code>auto-clicker-plus</code> already refused to click unless the attack key was
+                  down while the aimer tracked anyone unconditionally.
+                  <code>auto-clicker-plus</code> gained <code>require-entity</code>, since nothing
+                  stopped it firing on empty air. <code>velocity-plus</code> gained
+                  <code>chance</code>, <code>water-check</code> and
+                  <code>only-when-targeting</code>; reducing every knockback in every situation is
+                  itself a pattern. <code>v-scaffold</code> gained
+                  <code>block-whitelist</code>/<code>block-blacklist</code> and
+                  <code>pitch-check</code>/ <code>pitch-threshold</code>. All default to off or
+                  permissive so existing behaviour is unchanged.
+                </li>
+                <li>
+                  Removed the <code>god-bridge</code> and <code>breezily</code> techniques from
+                  <code>v-scaffold</code>. Both drove the camera directly, which is the behaviour
+                  this release exists to undo: <code>god-bridge</code> jumped, looked back and down,
+                  placed beneath the jump and eased the view forward again, while
+                  <code>breezily</code> pulsed the player sideways at the edge and placed on each
+                  pulse. Neither survived a real bridge. Removing them took out the last callers of
+                  the camera slew, so <code>smoothAimAt</code>, <code>smoothViewTo</code>,
+                  <code>applyLook</code>, <code>aimNoise</code>, the per-axis aim velocities,
+                  <code>CAPTURE_DEGREES</code>, and the <code>AimEase</code>/<code
+                    >RotationGcd</code
+                  >
+                  imports went with them - all of which existed only to write a GCD-quantised look
+                  change to the camera, and none of which is reachable now that nothing drives the
+                  view. <code>v-scaffold</code> is down 127 lines.
+                </li>
+                <li>
+                  <code>v-scaffold</code> no longer snaps out of its crouch the instant a bridge
+                  edge clears. All four auto-sneak sites were a bare
+                  <code>if (edge) crouch(); else stand();</code>, so the crouch came up 50ms after
+                  it went down. That is the exact shape AntiCheat-Addition's
+                  <code>Scaffold.parts.Safewalk.Timing</code> flags for 20 VL - moved within 355ms,
+                  stopped within 175ms, and not held sneaking for more than 148ms - and it is also
+                  simply how a human does not move, since nobody lands on a new block and stands
+                  straight back up. The crouch is now held for a configurable
+                  <code>sneak-delay</code> (default 200ms, the middle of Vape's 100/200/500 presets)
+                  with a 30ms floor so a one-tick edge blip cannot produce a zero-length crouch. The
+                  decision lives in the pure, unit-tested <code>SneakTiming</code>. GodBridge and
+                  Breezily manage their own crouch phase-by-phase and were left alone deliberately.
+                </li>
+                <li>
+                  Removed the last GitHub references now that the project lives on GitLab.
+                  <code>fabric.mod.json</code>'s <code>contact.sources</code> pointed at a dead
+                  <code>github.com</code> repository, and <code>VenomousAddon.getRepo()</code> still
+                  declared one - Meteor's addon API can only describe GitHub (<code
+                    >GithubRepo</code
+                  >
+                  is a <code>final record</code> with no host field), so the honest value is
+                  <code>null</code>, which is Meteor's own default and is null-checked before use.
+                  The cost is that the title screen no longer offers a commit link;
+                  <code>contact.sources</code> is now the only source pointer and points at the
+                  GitLab group. The credited author is derived from that URL rather than hardcoded,
+                  so the two cannot drift apart again.
+                </li>
+                <li>
+                  Corrected the mod's credited author. <code>fabric.mod.json</code> still named a
+                  personal handle while the repository and the changelog had both moved to
+                  International Duck Incorporated, so anything reading the mod listing was told the
+                  wrong owner. The two are now asserted to agree, against the packaged resource
+                  rather than the source file, so the shipped jar is what gets checked.
+                </li>
+                <li>
+                  Fixed <code>v-scaffold</code>'s default placement cadence being detectable on its
+                  own, independent of rotation. AntiCheat-Addition's
+                  <code>ScaffoldAverageBatchProcessor</code> averages the real gaps between
+                  placements on one straight line and flags anything faster than its
+                  <code>placement_delay</code> default of 238ms, and a straight bridge is the
+                  <em>strict</em> case - diagonal building is allowed 138ms. The default
+                  <code>place-delay</code> of 3 produced <code>3 + random(0..2)</code> ticks, a
+                  200ms mean, so it was under the floor by construction. Observed on
+                  AntiCheat-Addition as <code>failed scaffold x15</code> then <code>x20</code>;
+                  decoding its <code>1.1 * (238 - actual) + 5</code> puts the measured average at
+                  ~229ms and ~224ms, which is the 200ms nominal plus tick scheduling. The default is
+                  now 5 and the invariant lives in the pure, unit-tested
+                  <code>ScaffoldCadence</code> so the setting and its guard cannot drift apart.
+                </li>
+                <li>
+                  <code>v-scaffold</code> no longer drags the player's view onto the server's
+                  rotation. Both the GrimScaffold and the NCP placement paths snapped the camera to
+                  whatever the block needed, so bridging overrode where you were looking and the
+                  mouse fought the client. They now hand the rotation to Meteor and defer the
+                  placement to <code>SendMovementPacketsEvent.Pre</code> through
+                  <code>PreRotate</code>, so the server is aimed correctly while your camera stays
+                  exactly where you put it. The <code>rotate</code> setting gates both paths; with
+                  it off, placement happens immediately as before. GodBridge still drives the camera
+                  deliberately - looking back and down is the whole point of that mode.
+                </li>
+                <li>
+                  Fixed <code>v-scaffold</code> sweeping absurdly slowly, and only in one direction.
+                  <code>AimEase.step</code> treats velocity as a magnitude, but
+                  <code>nextVelocity</code> handed back the <em>signed</em> step. A leftward sweep
+                  therefore compared a negative velocity against a positive target and the
+                  acceleration ramp collapsed, crawling toward the ceiling instead of reaching it.
+                  Rightward sweeps looked correct, which is why this read as a general sluggishness
+                  rather than a sign bug. <code>nextVelocity</code> now returns
+                  <code>Math.abs(step(...))</code>.
+                </li>
+                <li>
+                  Fixed the startup banner advertising the wrong version.
+                  <code>VenomousAddon.VERSION</code> was maintained by hand while the build numbered
+                  the jar from <code>libs.versions.toml</code>, so 7.0.1 shipped printing
+                  <code>V7.0.0</code>. The two are now asserted equal, the version may be written
+                  down exactly once in the addon class, and the banner reads the constant.
+                  <code>AddonMetadataTest</code> fails the build otherwise.
+                </li>
                 <li>
                   Continued development and maintenance following the migration from GitHub to
                   GitLab.
@@ -953,10 +1658,179 @@
                   Improved project documentation and clarified the project's work-in-progress
                   status.
                 </li>
+                <li>
+                  Reindented the recovered sources from 3-space to 4-space, matching the
+                  hand-written files. The recovered tree carried Vineflower's 3-space output, so 122
+                  of 150 Java files were formatted differently from the rest; the change is
+                  whitespace-only and leaves compiled output byte-identical.
+                </li>
+                <li>
+                  Moved <code>ServerAnalyzer</code> from <code>modules/detection</code> to
+                  <code>utils</code>. It is a helper owned by <code>AntiCheatDetect</code> rather
+                  than a registrable module, so <code>modules/</code> now contains only modules and
+                  the registry tests no longer need to special-case it.
+                </li>
+                <li>
+                  Narrowed <code>ServerAnalyzer.getServerIp</code>'s undocumented
+                  <code>catch (Throwable)</code> to <code>catch (LinkageError)</code> and documented
+                  why: <code>MeteorClient</code>'s static initialiser throws
+                  <code>ExceptionInInitializerError</code> outside a running game, which is an
+                  <code>Error</code>, so a <code>RuntimeException</code> catch silently stops
+                  covering it. Genuine <code>Error</code>s now propagate.
+                </li>
+                <li>
+                  <code>v-ghost-hand</code> no longer leaves Meteor's
+                  <code>StorageESP</code> running forever after it is switched off, and now only
+                  disables an ESP it enabled itself.
+                </li>
+                <li>
+                  <code>pearl-wind-macro</code> no longer fires its queued rotation actions after
+                  being disabled, which threw items at stale hotbar slots from an inactive module.
+                </li>
+                <li>
+                  Implemented the advertised humanlike timing in <code>middle-click-action</code>.
+                  Its <code>technique</code>, <code>min-cps</code> and <code>max-cps</code> settings
+                  were decorative - the module acted instantly on the middle-click down-edge and
+                  never read them. Timing now lives in the pure, unit-tested
+                  <code>ClickTiming</code> helper, and the target is resolved on the press so the
+                  delay cannot act on a different entity than the one clicked.
+                </li>
+                <li>
+                  Every <code>PreRotate</code> consumer kept running its deferred action after being
+                  switched off, because nothing re-checked that the action was still wanted.
+                  <code>PreRotate</code> now takes a mandatory guard -
+                  <code>rotateThen(this, …)</code> for modules, or any <code>Guard</code> for
+                  non-modules - and the unguarded overloads are gone, so the compiler enforces it.
+                </li>
+                <li>
+                  <code>v-auto-city</code> and <code>auto-break-selected</code> captured a mutable
+                  field in their deferred action, so the rotation was computed for one block while
+                  the action ran against another. Both now capture the target by value.
+                  <code>auto-break-selected</code> additionally dereferenced a target that its own
+                  <code>resetMining()</code> teardown had just nulled, which could throw.
+                </li>
+                <li>
+                  Deferred actions no longer pile up. A module that re-requested its action every
+                  tick while the rotation was settling queued one entry per tick, and every copy
+                  fired in the same tick once the rotation landed - repeated
+                  <code>START</code>/<code>STOP</code> destroy packets for a single block. Queueing
+                  now supersedes the caller's own earlier entry, expressing current intent instead
+                  of a backlog.
+                </li>
+                <li>
+                  Fixed ready actions running in reverse queue order. They were collected
+                  back-to-front so entries could be removed while iterating, and were never put back
+                  in order. A macro queuing two actions on one aim would have run them backwards.
+                </li>
+                <li>
+                  Added <code>PreRotate.rotateThenSequence</code> for macros that must run every
+                  step, such as <code>pearl-wind-macro</code> throwing an item and then using a
+                  charge on the same aim.
+                </li>
+                <li>
+                  Made <code>v-scaffold</code> actually human-shaped. Its camera moved at a fixed
+                  7°/tick for the whole sweep and stopped dead on the target, which no hand
+                  produces; edge thresholds fired at identical distances every time; and placements
+                  landed exactly <code>place-delay</code> ticks apart, forever. Aim now eases in,
+                  decelerates into the target and carries per-tick noise, thresholds and cadence are
+                  jittered, and - most importantly - rotation deltas are quantised to the
+                  sensitivity GCD grid. A real mouse emits only whole multiples of that grid, so the
+                  old unquantised <code>setYRot</code> sweep produced angles no human could
+                  generate. That is what <code>Aimbot</code> and <code>KillAura</code> already did
+                  via their <code>gcd-fix</code> settings; scaffold had neither.
+                </li>
+                <li>
+                  Extracted the sensitivity GCD formula into <code>RotationGcd</code> and the easing
+                  curve into <code>AimEase</code>, both free of Minecraft types so they unit-test on
+                  a plain JVM. The GCD formula had been copy-pasted into <code>Aimbot</code>,
+                  <code>KillAura</code> and <code>GlobalNetworkInterceptor</code>.
+                </li>
+                <li>
+                  Implemented fifteen settings that were registered in the GUI but never read, so
+                  they silently did nothing. <code>invis-esp</code> passed a hardcoded
+                  <code>0</code> for line width; <code>no-fall-plus</code> never consulted
+                  <code>grim-save-ticks</code>; <code>new-chunks</code> only ever rendered the
+                  new-chunk colour; <code>auto-ez</code> tracked a streak it never reported;
+                  <code>teams</code> ignored <code>armor-color</code>; <code>tickbase</code> banked
+                  a burst while idle regardless of <code>only-on-attack</code>;
+                  <code>targetlock</code> never checked <code>combat-only</code>;
+                  <code>lethality</code> ignored <code>hurt-time-check</code>;
+                  <code>autochatgame</code> had no unscramble solver at all despite detecting the
+                  game type; <code>v-blink</code>'s <code>dummy</code> setting had no renderer
+                  behind it.
+                </li>
+                <li>
+                  Removed <code>skeleton-esp</code>'s <code>line-width</code> setting instead of
+                  implementing it: <code>Renderer3D.line</code> takes no width argument, so there is
+                  no call that could honour it.
+                </li>
+                <li>
+                  Removed dead code in <code>auto-farm</code>: <code>rotateTo</code>,
+                  <code>isLookingAt</code> and <code>wrapDegrees</code> had no callers.
+                  <code>rotateTo</code> was a verbatim copy of the constant-rate, un-quantised
+                  rotation logic just removed from scaffold, so leaving it in place invited that bug
+                  being reintroduced.
+                </li>
+                <li>
+                  Added <code>DeadSettingTest</code>, which fails the build if a module registers a
+                  setting it never reads. It carries a self-test asserting the detector can still
+                  fire.
+                </li>
+                <li>
+                  Wrote the four modules that were settings-only shells, and gave each real
+                  behaviour. teleport request, distinguished from ordinary position packets by a
+                  grace window around outbound accept-teleport packets. Reports session and recent
+                  counts. server-acceptable position increments and returning afterwards, with
+                  optional eased, GCD-quantised camera rotation. nearest player in range.
+                  <ul>
+                    <li>
+                      <code>flagcheck</code> now detects anticheat setbacks: a position packet
+                      arriving with no matching
+                    </li>
+                    <li>
+                      <code>freecam-mining</code> now mines from the freecam viewpoint, walking the
+                      break to the target in
+                    </li>
+                    <li>
+                      <code>inventorytracker</code> now records container contents and slot changes,
+                      attributing them to the
+                    </li>
+                  </ul>
+                </li>
+                <li>
+                  Deferred every remaining <code>toggle()</code> called synchronously from
+                  <code>onActivate</code> (11 sites across <code>Damage</code>, <code>Kick</code>,
+                  <code>NameCollector</code>, <code>WindPearlMacro</code>, <code>AutoPearl</code>,
+                  <code>MovementDebug</code>) via <code>mc.execute()</code> with an
+                  <code>isActive()</code> guard, so activation is never interleaved with its own
+                  teardown.
+                </li>
+                <li>
+                  <code>tnt-timer</code> draws a fuse marker whose height scales with the remaining
+                  fuse, so the danger is readable in world space. The old
+                  <code>text-scale</code> setting was removed rather than implemented: the numeric
+                  counters cannot be drawn on this Minecraft version's renderer, and a control that
+                  still did nothing was the original problem.
+                </li>
+                <li>
+                  Removed <code>hide-scoreboard</code>'s <code>hide-numbers</code> setting and its
+                  uncalled <code>shouldHideNumbers()</code>. <code>HudMixin</code> cancels
+                  <code>extractScoreboardSidebar</code> outright whenever the module is on, so the
+                  sidebar was already hidden in full and the setting could not change anything.
+                </li>
+                <li>
+                  Added <code>OrphanModuleTest</code>, which fails the build when a module exposes a
+                  public API that nothing calls, or defines neither an event handler nor activation
+                  work while being referenced nowhere. Four such cases are recorded in an allowlist
+                  with a drift check: <code>TextFieldProtect</code> and
+                  <code>ExtendedFirework</code> are inert shells, and
+                  <code>VGhostHand.isTargeted</code> is the unhooked interact-through-walls feature.
+                  All three await a mixin that was never written.
+                </li>
               </ul>
             </div>
           </details>
-          <details class="changelog-version" id="venomous-7-0-0-1" open>
+          <details class="changelog-version" id="venomous-7-0-0-12">
             <summary>
               <span class="changelog-version-name">7.0.0</span>
               <span class="changelog-meta"
@@ -1045,7 +1919,7 @@
               </ul>
             </div>
           </details>
-          <details class="changelog-version" id="venomous-6-2-6-2">
+          <details class="changelog-version" id="venomous-6-2-6-13">
             <summary>
               <span class="changelog-version-name">6.2.6</span>
               <span class="changelog-meta"
@@ -1086,7 +1960,7 @@
               </ul>
             </div>
           </details>
-          <details class="changelog-version" id="venomous-6-1-6-3">
+          <details class="changelog-version" id="venomous-6-1-6-14">
             <summary>
               <span class="changelog-version-name">6.1.6</span>
               <span class="changelog-meta"
@@ -1119,7 +1993,7 @@
               </ul>
             </div>
           </details>
-          <details class="changelog-version" id="venomous-0-1-0-4">
+          <details class="changelog-version" id="venomous-0-1-0-15">
             <summary>
               <span class="changelog-version-name">0.1.0</span>
               <span class="changelog-meta"
@@ -1133,7 +2007,9 @@
                 <li>Created the Venomous project.</li>
                 <li>
                   Added the initial project README and project documentation. [Unreleased]:
-                  https://gitlab.com/international-duck-incorporated/Venomous/-/compare/v7.0.0...main
+                  https://gitlab.com/international-duck-incorporated/Venomous/-/compare/v7.1.0...main
+                  [7.1.0]:
+                  https://gitlab.com/international-duck-incorporated/Venomous/-/releases/v7.1.0
                   [7.0.0]:
                   https://gitlab.com/international-duck-incorporated/Venomous/-/releases/v7.0.0
                   [6.2.6]:
@@ -1158,7 +2034,7 @@
               <h2 id="changelog-nulltrace">NullTrace</h2>
             </div>
             <p class="changelog-summary">
-              5 version sections · 57 entries · latest <b>Unreleased</b> (unreleased)
+              5 version sections · 79 entries · latest <b>2.1.1</b> (2026-10-17)
             </p>
           </header>
           <p class="changelog-links">
@@ -1181,16 +2057,38 @@
               >Repository <svg><use href="#i-external" /></svg
             ></a>
           </p>
-          <details class="changelog-version" id="nulltrace-unreleased-0" open>
+          <details class="changelog-version" id="nulltrace-2-1-1-0" open>
             <summary>
-              <span class="changelog-version-name">Unreleased — in development</span>
+              <span class="changelog-version-name">2.1.1</span>
               <span class="changelog-meta"
-                ><span class="changelog-unreleased">no tagged release yet</span></span
+                ><time datetime="2026-10-17">2026-10-17</time> ·
+                <span class="changelog-unreleased">no tagged release yet</span></span
               >
             </summary>
             <div class="changelog-body">
+              <ul>
+                <li>
+                  Version note: an earlier build was published as 2.1.0 before the proxy manager,
+                  the redesigned connection warning and the test suite landed. 2.1.1 supersedes it,
+                  and installations on 2.1.0 are offered 2.1.1 normally - the updater only prompts
+                  when the published version is newer.
+                </li>
+              </ul>
               <h3>Added</h3>
               <ul>
+                <li>
+                  Added unit tests for the warning decision (<code>WarningAssessment</code>), the
+                  per-server policy profiles, the audit ledger and the local-address guard, plus a
+                  standalone proxy harness (54 expectations) that runs in CI. The previous
+                  "adversarial fixture" asserted only that a hardcoded list of probe names was
+                  stable and never executed NullTrace code.
+                </li>
+                <li>
+                  Added proxy management on a new <strong>Advanced</strong> config tab: paste an
+                  endpoint, keep a list, select the active one, reorder or remove entries, and probe
+                  the selected endpoint for reachability
+                  (<code>docs/design/proxy-management.md</code>).
+                </li>
                 <li>
                   Added the central <code>ConnectionContext</code> / <code>PrivacyPolicy</code> /
                   <code>AuditLedger</code> model with explainable <code>ALLOW</code>,
@@ -1202,7 +2100,11 @@
                   <code>CUSTOM</code> profiles.
                 </li>
                 <li>
-                  Added a pre-connection privacy warning with Cancel and Connect Anyway actions.
+                  Added a pre-connection privacy warning. It now reports each surface as
+                  shown/hidden in plain language, offers <code>Connect</code> and
+                  <code>Protect &amp; connect</code>, a details panel with the raw counters, a
+                  settings shortcut, and a per-server warning mute (see
+                  <code>docs/design/privacy-warning-redesign.md</code>).
                 </li>
                 <li>
                   Added configurable client-information normalization for language, view distance,
@@ -1222,9 +2124,27 @@
                   Added regression tests for release metadata, Minecraft-version filtering, and
                   semantic version comparison.
                 </li>
+                <li>
+                  Release publishing refuses a tag that disagrees with <code>mod_version</code> in
+                  <code>gradle.properties</code> (a mismatch makes the release invisible to the
+                  updater, which only offers strictly newer versions), warns when
+                  <code>CHANGELOG.md</code> has no section for the tag, and asserts that every
+                  shipped jar reports the tag's version before uploading.
+                </li>
+                <li>
+                  Release inspection (<code>security_audit</code>) now fails the pipeline when a
+                  mixin config names a refmap file the jar does not contain - the packaging drift
+                  that made the 26.x builds log a Mixin warning on every startup.
+                </li>
               </ul>
               <h3>Security</h3>
               <ul>
+                <li>
+                  Removed the offline ("cracked") account path. The account switcher now only swaps
+                  in authenticated Microsoft sessions, and stored entries written by older versions
+                  with <code>type: "cracked"</code> are dropped instead of restored. Do not publish
+                  JARs built from older revisions for CurseForge or any other distribution.
+                </li>
                 <li>
                   Removed the redirect-limit raw <code>Socket</code> side effect; rejected redirect
                   hops are now checked and never opened.
@@ -1241,21 +2161,115 @@
               <h3>Changed</h3>
               <ul>
                 <li>
+                  The startup update check and jar-integrity check now use the configured proxy
+                  instead of a direct connection, and both can be switched off (Advanced → Network).
+                  Previously a player who routed the game through a proxy still had their real
+                  address sent to GitLab and the CurseForge metadata API on every launch.
+                </li>
+                <li>
+                  The jar-integrity screen no longer claims the client may be "compromised". It
+                  reports packaging drift in plain language ("this jar is not the official release
+                  build"), explains what that usually means, and is skipped automatically for
+                  non-release versions.
+                </li>
+                <li>
+                  The pre-connection warning's decision logic moved into a Minecraft-free class so
+                  it is covered by unit tests rather than only reachable from a running client.
+                </li>
+                <li>
+                  Replaced the "Play through proxy" boolean with a tri-state proxy mode (<code
+                    >Direct</code
+                  >
+                  / <code>Launcher</code> / <code>Selected</code>). Configurations written by older
+                  versions migrate automatically (<code>true</code> → <code>Launcher</code>), and
+                  the proxy list lives outside <code>SpoofSettings</code> so Reset cannot delete
+                  saved endpoints.
+                </li>
+                <li>
                   Updated the roadmap and release pipeline to describe the GitLab repository and all
-                  four supported targets.
+                  four supported targets; the roadmap's warning-screen and proxy entries now match
+                  the shipped behaviour.
+                </li>
+                <li>
+                  The README documents the <strong>Advanced</strong> tab (proxy modes, endpoint list
+                  and tester, update/integrity toggles) and states explicitly what the proxy does
+                  not cover: the game-server connection. The line claiming the update checks bypass
+                  the proxy, and the offer of offline accounts, are both gone.
                 </li>
                 <li>
                   Rewrote the README with official CurseForge and GitLab downloads, current
                   configuration behavior, build/test instructions, and update-check network
                   disclosure.
                 </li>
+                <li>
+                  The pre-connection warning now derives its rows from the effective per-server
+                  <code>PrivacyPolicy</code> instead of raw counters, so the screen can no longer
+                  disagree with what the protections actually do.
+                </li>
               </ul>
               <h3>Fixed</h3>
               <ul>
                 <li>
+                  The 26.x builds no longer declare a Mixin refmap that the jar does not contain.
+                  Minecraft 26.1+ ships unobfuscated, so Loom generates no refmap for those targets
+                  and the leftover declaration made Mixin log
+                  <code
+                    >Reference map 'client-nulltrace.refmap.json' for nulltrace.client.mixins.json
+                    could not be read ... this may be a bug</code
+                  >
+                  on every 26.x startup. In obfuscated targets (1.21.11) the declaration is kept and
+                  the refmap is still shipped.
+                </li>
+                <li>
+                  The <code>proxy_probe_harness</code> CI job fetched its gson dependency with
+                  <code>curl</code>, which the <code>eclipse-temurin</code> image does not provide,
+                  so the job could not have passed in the pipeline even though the harness itself is
+                  green. The jar is now fetched with the JDK itself (single-file source execution),
+                  with no extra packages.
+                </li>
+                <li>
+                  Whitelist channel entries are trimmed before being stored, so an id pasted with
+                  surrounding whitespace no longer silently fails to match at runtime.
+                </li>
+                <li>
+                  The audit ledger's counters (<code>/nulltrace audit</code>) are cumulative instead
+                  of being read out of the bounded 2048-event window, so a flooding server no longer
+                  makes every reported number freeze at 2048. <code>remainingExposure()</code> now
+                  counts allowed events and is documented as such;
+                  <code>allowedSurfaceCount()</code> reports distinct exposed surfaces.
+                </li>
+                <li>
+                  The local/private address guard now also rejects IPv6 unique-local
+                  (<code>fc00::/7</code>), CGNAT (<code>100.64.0.0/10</code>),
+                  <code>0.0.0.0/8</code>, multicast/reserved space and IPv4-mapped IPv6 forms such
+                  as <code>::ffff:127.0.0.1</code>.
+                </li>
+                <li>
                   Prevented older published releases from triggering update notifications or marking
                   the configuration version label as outdated.
                 </li>
+                <li>
+                  The pre-connection warning no longer interrupts a join that has no remaining
+                  exposure (<code>WarningMode.EXPOSURE_ONLY</code>, the new default;
+                  <code>WarningMode.ALWAYS</code> restores the always-show behaviour for users who
+                  want a receipt every time).
+                </li>
+                <li>
+                  The pre-connection warning no longer claims installed mods are "potentially
+                  identifiable" when it only counted installed mods, and no longer presents
+                  reassuring numbers ("0 exposed", "remaining exposure: 0") in the same voice as
+                  actual exposure.
+                </li>
+                <li>
+                  The pre-connection warning resolves its strings through the private
+                  <code>NullTraceLang</code> table, so the other bundled locales are used and server
+                  resource packs cannot rewrite the text.
+                </li>
+                <li>
+                  Escape on the pre-connection warning now returns to the server list instead of
+                  dropping the player on an unrelated screen.
+                </li>
+                <li>Updated the project version metadata to 2.1.1.</li>
               </ul>
             </div>
           </details>
@@ -1393,7 +2407,7 @@
               <h2 id="changelog-championscode">ChampionsCode</h2>
             </div>
             <p class="changelog-summary">
-              20 version sections · 131 entries · latest <b>Unreleased</b> (unreleased)
+              20 version sections · 133 entries · latest <b>0.1.0-beta.4</b> (2026-10-06)
             </p>
           </header>
           <p class="changelog-links">
@@ -1416,11 +2430,18 @@
               >Repository <svg><use href="#i-external" /></svg
             ></a>
           </p>
-          <details class="changelog-version" id="championscode-unreleased-0" open>
+          <details class="changelog-version" id="championscode-0-1-0-beta-4-0" open>
             <summary>
-              <span class="changelog-version-name">Unreleased — in development</span>
+              <span class="changelog-version-name">0.1.0-beta.4</span>
               <span class="changelog-meta"
-                ><span class="changelog-unreleased">no tagged release yet</span></span
+                ><time datetime="2026-10-06">2026-10-06</time> ·
+                <a
+                  href="https://gitlab.com/international-duck-incorporated/ChampionsCode/-/releases/v0.1.0-beta.4"
+                  target="_blank"
+                  rel="noreferrer"
+                  >release v0.1.0-beta.4</a
+                >
+                · 3 artifacts</span
               >
             </summary>
             <div class="changelog-body">
@@ -1478,6 +2499,26 @@
                   or the whole buffer. Reads are incremental and bounded (newest 4 000 lines, one
                   short poll per 400 ms), survive log rotation, and the window keeps its geometry
                   like the others.
+                </li>
+              </ul>
+              <h3>Changed</h3>
+              <ul>
+                <li>
+                  Public project links now point at the International Duck Incorporated website: the
+                  README install and update sections and <code>PUBLISHING.md</code> link
+                  &lt;https://idi-official.pages.dev/projects/championscode&gt;, and the clickable
+                  startup update notice opens that page instead of the GitLab release list.
+                  <code>fabric.mod.json</code> gained a <code>contact</code> block (<code
+                    >homepage</code
+                  >
+                  on the website, <code>sources</code> and <code>issues</code> on GitLab).
+                </li>
+                <li>
+                  The update system itself is unchanged and still reads the GitLab releases feed and
+                  downloads JARs and <code>SHA256SUMS.txt</code> from GitLab: the website hosts no
+                  release assets and no update feed. <code>GitLabUpdateService</code> keeps its
+                  gitlab.com-only URL allowlist, and the F8 <code>update check</code> command still
+                  prints the release's own page URL from the feed.
                 </li>
               </ul>
             </div>
@@ -2270,7 +3311,7 @@
               <h2 id="changelog-bagley">Bagley</h2>
             </div>
             <p class="changelog-summary">
-              1 version sections · 4 entries · latest <b>1.0.0</b> (unreleased)
+              2 version sections · 9 entries · latest <b>1.1.0</b> (unreleased)
             </p>
           </header>
           <p class="changelog-links">
@@ -2293,7 +3334,61 @@
               >Repository <svg><use href="#i-external" /></svg
             ></a>
           </p>
-          <details class="changelog-version" id="bagley-1-0-0-0" open>
+          <details class="changelog-version" id="bagley-1-1-0-0" open>
+            <summary>
+              <span class="changelog-version-name">1.1.0</span>
+              <span class="changelog-meta"
+                ><span class="changelog-unreleased">no tagged release yet</span></span
+              >
+            </summary>
+            <div class="changelog-body">
+              <ul>
+                <li>
+                  <strong>Works against current Beacon again.</strong> Bagley now builds against
+                  Beacon <code>2.0.0-prerelease</code> (the current <code>main</code>, including the
+                  new Chromium web UI and onboarding work) as well as <code>1.9.0</code>. No addon
+                  API used by Bagley changed between the two, so no module code was touched.
+                </li>
+                <li>
+                  <strong>Fixed the build failure that broke CI.</strong> Beacon's published POM
+                  advertises its own bundled runtime libraries - the MCEF Chromium bridge
+                  (<code>net.ccbluex:mcef</code>, published only on <code>maven.ccbluex.net</code>),
+                  OkHttp and Kotlin - so resolving
+                  <code>net.beacon:beacon-&lt;mc&gt;:&lt;version&gt;</code> pulled in artifacts
+                  Bagley has no repository for and every Gradle configuration failed with
+                  <code>Could not find net.ccbluex:mcef:...</code>. The Beacon API is now consumed
+                  as a non-transitive <code>compileOnly</code> dependency: addons compile against
+                  Beacon's classes only, and Fabric Loader supplies Beacon's nested libraries at
+                  runtime from the installed Beacon jar.
+                </li>
+                <li>
+                  <strong
+                    ><code>BEACON_REF</code> and the Beacon version can no longer drift.</strong
+                  >
+                  CI used to clone Beacon <code>main</code> and publish it to Maven Local while
+                  <code>gradle.properties</code> still pinned <code>beacon_version=1.9.0</code>, so
+                  the build only worked as long as the ref happened to be that release. The pipeline
+                  now reads <code>mod_version</code> out of the Beacon checkout it just cloned and
+                  exports it as <code>BEACON_VERSION</code>, so whichever Beacon ref is selected,
+                  the artifact Bagley compiles against is the one that checkout produced.
+                  <code>beacon_version</code> stays as the local-development default and is
+                  <code>2.0.0-prerelease</code>.
+                </li>
+                <li>
+                  Accepts Beacon <code>&gt;=1.9.0 &lt;3.0.0</code> at runtime
+                  (<code>fabric.mod.json</code>), so the current
+                  <code>2.0.0-prerelease</code> builds and the next 2.x releases load instead of
+                  being rejected by the old <code>&lt;2.0.0</code> range.
+                </li>
+                <li>
+                  Documented that Beacon does not publish its API to the Maven package registry yet,
+                  so builds resolve it from Maven Local or <code>-Pbeacon_api_jar</code>; the README
+                  previously pointed at a registry copy that does not exist.
+                </li>
+              </ul>
+            </div>
+          </details>
+          <details class="changelog-version" id="bagley-1-0-0-1" open>
             <summary>
               <span class="changelog-version-name">1.0.0</span>
               <span class="changelog-meta"
@@ -2346,7 +3441,7 @@
             target="_blank"
             rel="noreferrer"
             >GitLab</a
-          ><a href="mailto:0xffshell@duck.com">Contact</a>
+          ><a href="/license">License</a><a href="mailto:0xffshell@duck.com">Contact</a>
         </nav>
         <span class="sync-state"><i></i><span data-sync-text>GitLab data synced live</span></span>
       </div>

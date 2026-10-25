@@ -2,18 +2,18 @@
   "project": "international-duck-incorporated/Beacon",
   "project_url": "https://gitlab.com/international-duck-incorporated/Beacon",
   "ref": "main",
-  "commit": "62d569a23c37cd9c90cd6d338e5409ad9d4bedfc",
-  "commit_short": "62d569a2",
-  "commit_date": "2026-10-05",
-  "fetched": "2026-10-05",
+  "commit": "ccfaba40a4e0e33aac0d862ea5baf9345272448f",
+  "commit_short": "ccfaba40",
+  "commit_date": "2026-10-17",
+  "fetched": "2026-10-25",
   "registration_source": "src/main/java/net/beacon/module/ModuleManager.java",
   "registration_url": "https://gitlab.com/international-duck-incorporated/Beacon/-/blob/main/src/main/java/net/beacon/module/ModuleManager.java",
-  "count": 56,
+  "count": 57,
   "categories": {
     "Utility": 21,
     "Render": 16,
     "World": 6,
-    "Misc": 10,
+    "Misc": 11,
     "Fun": 3
   },
   "modules": [
@@ -183,7 +183,7 @@
       "id": "recipebook",
       "name": "RecipeBook+",
       "class": "RecipeBookPlus",
-      "description": "Enhanced recipe book with search/filter",
+      "description": "Recipe book helpers (search/filter WIP)",
       "category": "Utility",
       "source_path": "src/main/java/net/beacon/modules/utility/RecipeBookPlus.java",
       "source_url": "https://gitlab.com/international-duck-incorporated/Beacon/-/blob/main/src/main/java/net/beacon/modules/utility/RecipeBookPlus.java"
@@ -408,7 +408,7 @@
       "id": "afknotifier",
       "name": "AFKNotifier",
       "class": "AFKNotifier",
-      "description": "Username mention chime while AFK",
+      "description": "Username mention chime while AFK. Use @afknotify <words> to add nicknames.",
       "category": "Misc",
       "source_path": "src/main/java/net/beacon/modules/misc/AFKNotifier.java",
       "source_url": "https://gitlab.com/international-duck-incorporated/Beacon/-/blob/main/src/main/java/net/beacon/modules/misc/AFKNotifier.java"
@@ -466,6 +466,15 @@
       "category": "Misc",
       "source_path": "src/main/java/net/beacon/modules/misc/LagNotifier.java",
       "source_url": "https://gitlab.com/international-duck-incorporated/Beacon/-/blob/main/src/main/java/net/beacon/modules/misc/LagNotifier.java"
+    },
+    {
+      "id": "skiptutorial",
+      "name": "SkipTutorial",
+      "class": "SkipTutorial",
+      "description": "Skips the vanilla first-time tutorial hints",
+      "category": "Misc",
+      "source_path": "src/main/java/net/beacon/modules/misc/SkipTutorial.java",
+      "source_url": "https://gitlab.com/international-duck-incorporated/Beacon/-/blob/main/src/main/java/net/beacon/modules/misc/SkipTutorial.java"
     },
     {
       "id": "teams",

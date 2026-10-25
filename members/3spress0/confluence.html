@@ -1,0 +1,513 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <script>
+      (() => {
+        const nav = navigator;
+        const connection = nav.connection || nav.mozConnection || nav.webkitConnection;
+        const lowEnd = Boolean(
+          (connection && connection.saveData) ||
+            (connection && /^(slow-2g|2g)$/.test(connection.effectiveType || "")) ||
+            (typeof nav.deviceMemory === "number" && nav.deviceMemory <= 4) ||
+            (typeof nav.hardwareConcurrency === "number" && nav.hardwareConcurrency <= 4)
+        );
+        window.IDI_LOW_END = lowEnd;
+        window.IDI_REDUCED_MOTION = Boolean(
+          window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches
+        );
+        if (lowEnd) document.documentElement.classList.add("low-end");
+      })();
+    </script>
+    <link rel="preconnect" href="https://gitlab.com" crossorigin />
+    <link rel="dns-prefetch" href="https://gitlab.com" />
+    <meta name="theme-color" content="#07090d" />
+    <meta property="og:image" content="https://idi-official.pages.dev/assets/og-default.png" />
+    <title>Confluence OS 1.1 LTS by espress0 | IDI</title>
+    <meta
+      name="description"
+      content="Confluence OS 1.1 LTS is a zero-bloat Ubuntu 26.04 XFCE 4.20 Linux distribution by espress0 (@3spress0) with Calamares 3.3.14 and six ISO architectures."
+    />
+    <link rel="canonical" href="https://idi-official.pages.dev/members/3spress0/confluence" />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="Confluence OS 1.1 LTS by espress0" />
+    <meta
+      property="og:description"
+      content="Zero-bloat Ubuntu 26.04 LTS XFCE 4.20 Linux distribution by espress0 (@3spress0)."
+    />
+    <meta property="og:url" content="https://idi-official.pages.dev/members/3spress0/confluence" />
+    <meta property="og:site_name" content="International Duck Incorporated" />
+    <meta property="og:locale" content="en_US" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Confluence OS 1.1 LTS by espress0" />
+    <meta
+      name="twitter:description"
+      content="Zero-bloat Ubuntu 26.04 LTS XFCE 4.20 Linux distribution by espress0 (@3spress0)."
+    />
+    <link rel="icon" href="/assets/confluence-os-icon.png?v=c59a5bff" type="image/png" />
+    <link rel="stylesheet" href="/css/bundle.css?v=05d51123" />
+    <script src="/starry-night.js?v=3988ae84" defer></script>
+    <script src="/script.js?v=88885632" defer></script>
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta
+      property="og:image:alt"
+      content="International Duck Incorporated - open-source Minecraft mods, tools and experiments"
+    />
+    <meta name="twitter:image" content="https://idi-official.pages.dev/assets/og-default.png" />
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@graph": [
+          {
+            "@type": "Organization",
+            "@id": "https://idi-official.pages.dev/#organization",
+            "name": "International Duck Incorporated",
+            "alternateName": "IDI",
+            "url": "https://idi-official.pages.dev/",
+            "logo": {
+              "@type": "ImageObject",
+              "url": "https://idi-official.pages.dev/assets/org-avatar.png"
+            },
+            "image": "https://idi-official.pages.dev/assets/og-default.png",
+            "sameAs": ["https://gitlab.com/international-duck-incorporated"]
+          },
+          {
+            "@type": "WebSite",
+            "@id": "https://idi-official.pages.dev/#website",
+            "url": "https://idi-official.pages.dev/",
+            "name": "International Duck Incorporated",
+            "inLanguage": "en",
+            "publisher": {
+              "@id": "https://idi-official.pages.dev/#organization"
+            }
+          },
+          {
+            "@type": "WebPage",
+            "@id": "https://idi-official.pages.dev/members/3spress0/confluence#webpage",
+            "url": "https://idi-official.pages.dev/members/3spress0/confluence",
+            "name": "Confluence OS 1.1 LTS - espress0",
+            "description": "Confluence OS 1.1 LTS (\"Resolute\") is a zero-bloat Linux distribution by espress0 (@3spress0) built on Ubuntu 26.04 LTS with XFCE 4.20, Plank dock, Calamares 3.3.14, and six ISO architectures.",
+            "isPartOf": {
+              "@id": "https://idi-official.pages.dev/#website"
+            },
+            "inLanguage": "en",
+            "primaryImageOfPage": {
+              "@type": "ImageObject",
+              "url": "https://idi-official.pages.dev/assets/confluence-os-icon.png"
+            },
+            "breadcrumb": {
+              "@id": "https://idi-official.pages.dev/members/3spress0/confluence#breadcrumb"
+            },
+            "mainEntity": {
+              "@id": "https://idi-official.pages.dev/members/3spress0/confluence#software"
+            }
+          },
+          {
+            "@type": "BreadcrumbList",
+            "@id": "https://idi-official.pages.dev/members/3spress0/confluence#breadcrumb",
+            "itemListElement": [
+              {
+                "@type": "ListItem",
+                "position": 1,
+                "name": "International Duck Incorporated",
+                "item": "https://idi-official.pages.dev/"
+              },
+              {
+                "@type": "ListItem",
+                "position": 2,
+                "name": "Members",
+                "item": "https://idi-official.pages.dev/members/"
+              },
+              {
+                "@type": "ListItem",
+                "position": 3,
+                "name": "espress0",
+                "item": "https://idi-official.pages.dev/members/3spress0"
+              },
+              {
+                "@type": "ListItem",
+                "position": 4,
+                "name": "Confluence OS",
+                "item": "https://idi-official.pages.dev/members/3spress0/confluence"
+              }
+            ]
+          },
+          {
+            "@type": "Person",
+            "@id": "https://idi-official.pages.dev/members/3spress0#person",
+            "name": "espress0",
+            "alternateName": "3spress0",
+            "url": "https://idi-official.pages.dev/members/3spress0",
+            "sameAs": ["https://gitlab.com/3spress0"]
+          },
+          {
+            "@type": "SoftwareApplication",
+            "@id": "https://idi-official.pages.dev/members/3spress0/confluence#software",
+            "name": "Confluence OS",
+            "alternateName": "Confluence-os final",
+            "description": "Fast, zero-bloat Linux distribution built on Ubuntu 26.04 LTS (\"Resolute\") with a customized XFCE 4.20 top taskbar, bottom Plank dock, Calamares 3.3.14 installer, and prebuilt ISOs across amd64, amd64v3, arm64, riscv64, armhf, and ppc64el.",
+            "url": "https://idi-official.pages.dev/members/3spress0/confluence",
+            "applicationCategory": "OperatingSystem",
+            "operatingSystem": "Linux (Ubuntu 26.04 LTS, XFCE 4.20)",
+            "softwareVersion": "1.1",
+            "isAccessibleForFree": true,
+            "author": {
+              "@id": "https://idi-official.pages.dev/members/3spress0#person"
+            },
+            "codeRepository": "https://gitlab.com/3spress0/confluence-os-final",
+            "downloadUrl": "https://gitlab.com/3spress0/confluence-os-final/-/releases/1.1",
+            "license": "https://gitlab.com/3spress0/confluence-os-final/-/blob/main/LICENSE.md",
+            "offers": {
+              "@type": "Offer",
+              "price": "0",
+              "priceCurrency": "USD"
+            }
+          }
+        ]
+      }
+    </script>
+  </head>
+  <body data-page="member-project" data-member-project="confluence" class="starry-night-page">
+    <svg class="svg-sprite" aria-hidden="true">
+      <symbol id="i-gitlab" viewBox="0 0 24 24">
+        <path
+          fill="currentColor"
+          stroke="none"
+          d="m23.6004 9.5927-.0337-.0862L20.3.9814a.851.851 0 0 0-.3362-.405.8748.8748 0 0 0-.9997.0539.8748.8748 0 0 0-.29.4399l-2.2055 6.748H7.5375l-2.2057-6.748a.8573.8573 0 0 0-.29-.4412.8748.8748 0 0 0-.9997-.0537.8585.8585 0 0 0-.3362.4049L.4332 9.5015l-.0325.0862a6.0657 6.0657 0 0 0 2.0119 7.0105l.0113.0087.03.0213 4.976 3.7264 2.462 1.8633 1.4995 1.1321a1.0085 1.0085 0 0 0 1.2197 0l1.4995-1.1321 2.4619-1.8633 5.006-3.7489.0125-.01a6.0682 6.0682 0 0 0 2.0094-7.003z"
+        />
+      </symbol>
+      <symbol id="i-menu" viewBox="0 0 24 24"><path d="M4 8h16M4 16h16" /></symbol>
+      <symbol id="i-close" viewBox="0 0 24 24"><path d="m5 5 14 14M19 5 5 19" /></symbol>
+      <symbol id="i-arrow" viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6" /></symbol>
+      <symbol id="i-download" viewBox="0 0 24 24">
+        <path d="M12 3v12M7 10l5 5 5-5M4 20h16" />
+      </symbol>
+      <symbol id="i-external" viewBox="0 0 24 24">
+        <path d="M14 5h5v5M19 5l-9 9M18 13v6H5V6h6" />
+      </symbol>
+    </svg>
+    <a class="skip-link" href="#main">Skip to content</a>
+    <div class="site-glow site-glow-blue" aria-hidden="true"></div>
+    <header class="topbar" data-header>
+      <div class="shell topbar-inner">
+        <a class="brand" href="/"
+          ><img
+            data-org-avatar
+            src="/assets/org-avatar.webp?v=fff479ce"
+            alt=""
+            width="40"
+            height="40"
+            decoding="async"
+          /><span><b>International Duck</b><small>Incorporated</small></span></a
+        >
+        <nav class="main-nav" id="main-navigation" data-nav aria-label="Primary navigation">
+          <a href="/">Overview</a><a href="/projects">Projects</a><a href="/noosphere">Noosphere</a
+          ><a class="active" href="/members" aria-current="page">Members</a
+          ><a href="/activity">Activity</a><a href="/migration">Migration</a
+          ><a
+            class="icon-link"
+            href="https://gitlab.com/international-duck-incorporated"
+            target="_blank"
+            rel="noreferrer"
+            aria-label="International Duck Incorporated on GitLab"
+            ><svg><use href="#i-gitlab" /></svg
+          ></a>
+        </nav>
+        <button
+          class="menu-button"
+          type="button"
+          data-menu
+          aria-label="Open navigation"
+          aria-controls="main-navigation"
+          aria-expanded="false"
+        >
+          <svg class="menu-open"><use href="#i-menu" /></svg
+          ><svg class="menu-close"><use href="#i-close" /></svg>
+        </button>
+      </div>
+    </header>
+
+    <main id="main" class="profile-page project-page">
+      <div class="shell">
+        <div class="breadcrumbs">
+          <a href="/">International Duck</a><span>/</span><a href="/members">Members</a
+          ><span>/</span><a href="/members/3spress0">espress0</a><span>/</span><b>Confluence OS</b>
+        </div>
+
+        <section class="profile-hero">
+          <article class="profile-intro glass-card reveal">
+            <picture
+              ><source srcset="/assets/confluence-os-icon.webp?v=19ebeab2" type="image/webp" />
+              <img
+                class="project-mark"
+                src="/assets/confluence-os-icon.png?v=c59a5bff"
+                alt="Confluence OS logo"
+                width="82"
+                height="82"
+                decoding="async"
+            /></picture>
+            <span class="eyebrow" style="color: #38bdf8"
+              >Personal project by @3spress0 · Release <span data-confluence-version>1.1</span> LTS
+              ("Resolute")</span
+            >
+            <h1>Confluence OS.</h1>
+            <p class="lead">
+              A fast, zero-bloat Linux distribution built on
+              <b>Ubuntu 26.04 LTS ("Resolute")</b> featuring a customized <b>XFCE 4.20</b> top
+              taskbar paired with a bottom Plank application dock under the
+              <code>Confluence-Dark</code> ocean glass theme. Every Snap stub, telemetry agent, and
+              background clutter daemon is removed and pinned out (<code>Pin-Priority: -10</code>).
+            </p>
+            <div class="action-row">
+              <a
+                class="button button-blue"
+                data-confluence-release-link
+                href="https://gitlab.com/3spress0/confluence-os-final/-/releases/1.1"
+                target="_blank"
+                rel="noreferrer"
+                ><svg><use href="#i-download" /></svg>Download Release
+                <span data-confluence-version>1.1</span> ISOs</a
+              >
+              <a
+                class="button button-glass"
+                href="https://gitlab.com/3spress0/confluence-os-final"
+                target="_blank"
+                rel="noreferrer"
+                ><svg><use href="#i-gitlab" /></svg>View Repository</a
+              >
+              <a
+                class="button button-glass"
+                href="https://gitlab.com/3spress0/confluence-os-final/-/packages"
+                target="_blank"
+                rel="noreferrer"
+                >Package Registry <svg><use href="#i-external" /></svg
+              ></a>
+              <a
+                class="button button-glass"
+                href="https://gitlab.com/3spress0/confluence-os-final/-/wikis/home"
+                target="_blank"
+                rel="noreferrer"
+                >Wiki <svg><use href="#i-external" /></svg
+              ></a>
+            </div>
+          </article>
+
+          <aside class="profile-sidebar glass-card reveal">
+            <div>
+              <span class="eyebrow">At a glance</span>
+              <div class="fact-list">
+                <div class="fact">
+                  <small>Maintainer</small
+                  ><b><a href="/members/3spress0">espress0 (@3spress0)</a></b>
+                </div>
+                <div class="fact">
+                  <small>Repository</small
+                  ><b
+                    ><a
+                      href="https://gitlab.com/3spress0/confluence-os-final"
+                      target="_blank"
+                      rel="noreferrer"
+                      >3spress0/confluence-os-final ↗</a
+                    ></b
+                  >
+                </div>
+                <div class="fact">
+                  <small>Latest release</small
+                  ><b><span data-confluence-version>1.1</span> LTS ("Resolute")</b>
+                </div>
+                <div class="fact"><small>Base</small><b>Ubuntu 26.04 LTS ("Resolute")</b></div>
+                <div class="fact"><small>Desktop</small><b>XFCE 4.20 + Plank Dock</b></div>
+                <div class="fact"><small>Installer</small><b>Calamares 3.3.14</b></div>
+                <div class="fact"><small>Stack</small><b>Shell · Python · QML · CSS</b></div>
+                <div class="fact">
+                  <small>Commits</small><b><span data-confluence-commits>42</span> on main</b>
+                </div>
+                <div class="fact"><small>Licence</small><b>IDI All Rights Reserved</b></div>
+              </div>
+            </div>
+          </aside>
+        </section>
+
+        <section class="detail-grid" style="margin-top: 2rem">
+          <article class="detail-panel glass-card reveal">
+            <span class="eyebrow">Zero-Snap architecture</span>
+            <h2>Clean APT + Flathub out of the box.</h2>
+            <ul>
+              <li>
+                <code>snapd</code>, Snap transitional stubs, telemetry agents, and crash-reporting
+                daemons are purged and APT-pinned at <code>Pin-Priority: -10</code> so updates never
+                pull Snap back onto the system.
+              </li>
+              <li>
+                Ships native <code>.deb</code> Mozilla Firefox via Mozilla's official signing key
+                alongside a graphical Software Center configured for native APT packages and Flathub
+                Flatpaks, including AppArmor <code>bwrap</code> profiles.
+              </li>
+              <li>
+                Preconfigured PipeWire + WirePlumber + Sound Open Firmware (SOF) audio and
+                <code>blueman</code> Bluetooth management work immediately in both the live session
+                and installed system.
+              </li>
+            </ul>
+          </article>
+
+          <article class="detail-panel glass-card reveal">
+            <span class="eyebrow">Desktop &amp; installer</span>
+            <h2>Confluence-Dark XFCE 4.20 + Calamares 3.3.14.</h2>
+            <ul>
+              <li>
+                Custom <code>Confluence-Dark</code> ocean glass GTK/XFWM4 theme pairing an XFCE 4.20
+                top status taskbar with a bottom Plank application dock.
+              </li>
+              <li>
+                <b>Calamares 3.3.14</b> graphical disk installer with automated partitioning, LUKS2
+                full-disk encryption, Btrfs subvolume layouts, and hybrid BIOS + UEFI GRUB support.
+              </li>
+              <li>
+                Reproducible live-build pipeline written in Shell and Python with automated QEMU
+                boot verification and checksummed ISO artifacts.
+              </li>
+            </ul>
+          </article>
+        </section>
+
+        <section
+          class="home-directory reveal"
+          id="iso-architectures"
+          aria-labelledby="iso-heading"
+          style="margin-top: 2.5rem"
+        >
+          <header class="section-heading">
+            <div>
+              <span class="eyebrow">GitLab Package Registry · Release 1.1</span>
+              <h2 id="iso-heading">Six prebuilt ISO architectures.</h2>
+            </div>
+            <p>
+              Live + installable hybrid images published in the GitLab Package Registry alongside
+              <code>SHA256SUMS</code> and <code>confluence-os-1.1-source.tar.gz</code>.
+            </p>
+          </header>
+
+          <div
+            class="project-grid"
+            style="grid-template-columns: repeat(auto-fit, minmax(240px, 1fr))"
+          >
+            <article class="detail-panel glass-card reveal">
+              <span class="eyebrow">x86_64 baseline · 1.56 GiB</span>
+              <h3>amd64</h3>
+              <p>
+                Standard 64-bit Intel and AMD desktop, laptop, and workstation systems with hybrid
+                UEFI + legacy BIOS boot and Calamares 3.3.14.
+              </p>
+            </article>
+            <article class="detail-panel glass-card reveal">
+              <span class="eyebrow">x86-64-v3 AVX2 · 1.56 GiB</span>
+              <h3>amd64v3</h3>
+              <p>
+                Tuned for modern Haswell / Excavator and newer x86-64 CPUs using Ubuntu 26.04's
+                <code>amd64v3</code> microarchitecture baseline.
+              </p>
+            </article>
+            <article class="detail-panel glass-card reveal">
+              <span class="eyebrow">AArch64 · 1.58 GiB</span>
+              <h3>arm64</h3>
+              <p>
+                64-bit ARM desktops, UEFI SBCs, and Apple Silicon / ARM64 virtual machines with full
+                XFCE 4.20 desktop parity.
+              </p>
+            </article>
+            <article class="detail-panel glass-card reveal">
+              <span class="eyebrow">RISC-V 64 · 1.47 GiB</span>
+              <h3>riscv64</h3>
+              <p>
+                64-bit RISC-V (RV64GC / RVA23) development boards and QEMU guests running native
+                Ubuntu 26.04 Resolute packages.
+              </p>
+            </article>
+            <article class="detail-panel glass-card reveal">
+              <span class="eyebrow">32-bit ARMv7 · 1.36 GiB</span>
+              <h3>armhf</h3>
+              <p>
+                Hard-float 32-bit ARMv7 hardware and compact embedded systems benefiting from XFCE's
+                light memory footprint.
+              </p>
+            </article>
+            <article class="detail-panel glass-card reveal">
+              <span class="eyebrow">POWER8+ LE · 1.51 GiB</span>
+              <h3>ppc64el</h3>
+              <p>
+                64-bit little-endian OpenPOWER workstations and servers with native Resolute kernel
+                and desktop packages.
+              </p>
+            </article>
+          </div>
+        </section>
+
+        <section class="member-contributions" aria-labelledby="confluence-commits-heading">
+          <header class="section-heading reveal">
+            <div>
+              <span class="eyebrow">Live GitLab feed</span>
+              <h2 id="confluence-commits-heading">Recent Confluence OS commits.</h2>
+            </div>
+            <p>Synchronized directly from <code>3spress0/confluence-os-final</code> on GitLab.</p>
+          </header>
+          <article class="activity-card glass-card reveal">
+            <header>
+              <span>main branch</span
+              ><a
+                href="https://gitlab.com/3spress0/confluence-os-final/-/commits/main"
+                target="_blank"
+                rel="noreferrer"
+                >View all commits on GitLab</a
+              >
+            </header>
+            <div class="commit-list" data-confluence-commit-list>
+              <a
+                href="https://gitlab.com/3spress0/confluence-os-final/-/commit/14db7238a85ec52ab6da162da2370be6ed37cdbd"
+                target="_blank"
+                rel="noreferrer"
+                ><i></i
+                ><span
+                  ><b>Add International Duck Incorporated All Rights Reserved Licence</b
+                  ><small>Confluence OS · recent</small></span
+                ><code>14db723</code></a
+              >
+              <a
+                href="https://gitlab.com/3spress0/confluence-os-final/-/commit/c0de8fd5be729ab5876cfebdc9609e6de2728557"
+                target="_blank"
+                rel="noreferrer"
+                ><i></i
+                ><span
+                  ><b>fix(wiki): sync Wiki page against release 1.1 state</b
+                  ><small>Confluence OS · recent</small></span
+                ><code>c0de8fd</code></a
+              >
+            </div>
+          </article>
+        </section>
+      </div>
+    </main>
+
+    <footer class="site-footer">
+      <div class="shell footer-inner">
+        <a class="brand" href="/"
+          ><picture
+            ><source srcset="/assets/org-avatar.webp?v=fff479ce" type="image/webp" />
+            <img src="/assets/org-avatar.png?v=f3debf20" alt="" decoding="async" /></picture
+          ><span><b>International Duck</b><small>Incorporated</small></span></a
+        >
+        <nav>
+          <a href="/projects">Projects</a><a href="/noosphere">Noosphere</a
+          ><a href="/members">Members</a><a href="/activity">Activity</a
+          ><a href="/migration">Migration</a><a href="/glyphsmith">Glyphsmith</a
+          ><a href="/changelog">Changelog</a
+          ><a href="https://gitlab.com/international-duck-incorporated">GitLab</a
+          ><a href="/license">License</a><a href="mailto:0xffshell@duck.com">Contact</a>
+        </nav>
+        <span class="sync-state"><i></i><span data-sync-text>GitLab data synced live</span></span>
+      </div>
+    </footer>
+  </body>
+</html>

@@ -58,7 +58,7 @@
       key: "e-vdv-hu",
       display: "E-VDV-HU",
       page: "/members/e-vdv-hu",
-      avatar: "/assets/member-e-vdv-hu.webp?v=0774275d",
+      avatar: "/assets/member-e-vdv-hu.webp?v=2a0764ef",
       aliases: [/e-?vdv-?hu/i],
     },
     {
@@ -92,9 +92,10 @@
     UPSTREAMS.some((alias) => alias.test(name) || alias.test(email));
   const isBot = (name, email) => BOTS.some((alias) => alias.test(name) || alias.test(email));
 
-  const fromGL = (commit, project) => ({
+  const fromGL = (commit, projectKey, branch) => ({
     platform: "gitlab",
-    project,
+    project: projectKey,
+    branch: branch || "main",
     title: (commit.title || "").split("\n")[0],
     name: commit.author_name || "unknown",
     email: commit.author_email || "",
@@ -103,9 +104,17 @@
     hash: (commit.short_id || commit.id || "").slice(0, 8),
   });
 
-  const PROJECT_LABEL = { home: "Website" };
+  const PROJECT_LABEL = {
+    home: "Website",
+    "badegg-v3": "BadEgg v3",
+    "beacon-bagley": "Bagley",
+    "idi-assets": "IDI Assets",
+    "gitlab-profile": "Group profile",
+    "noosphere/noosphere-chat": "Noosphere Chat",
+    "noosphere/agentarium": "Agentarium",
+    "noosphere/gitlab-profile": "Noosphere profile",
+  };
   const projectLabel = (project) => PROJECT_LABEL[project] || project;
-  const projectPath = (name) => `${GITLAB}/international-duck-incorporated/${name}`;
 
   function orgStatus(projects, commits, error) {
     const el = $("[data-activity-gitlab]");
@@ -121,21 +130,22 @@
     el.replaceChildren(
       ...projects.map((project) => {
         const a = document.createElement("a");
-        const count = byProject.get(project) || 0;
-        a.href = `${projectPath(project)}/-/commits/main`;
+        const count = byProject.get(project.key) || 0;
+        const branch = project.branch || "main";
+        a.href = `${project.webUrl}/-/commits/${encodeURIComponent(branch)}`;
         a.target = "_blank";
         a.rel = "noreferrer";
         const dot = document.createElement("i");
         const span = document.createElement("span");
         const title = document.createElement("b");
-        title.textContent = projectLabel(project);
+        title.textContent = projectLabel(project.key);
         const small = document.createElement("small");
         small.textContent = count
           ? `${count} recent commit${count === 1 ? "" : "s"} loaded`
           : "no commits in window";
         span.append(title, small);
         const code = document.createElement("code");
-        code.textContent = "main ✓";
+        code.textContent = `${branch} ✓`;
         a.append(dot, span, code);
         return a;
       })
@@ -230,7 +240,7 @@
         span.append(title, small);
         const tag = document.createElement("em");
         tag.className = "platform-badge gitlab";
-        tag.textContent = "main";
+        tag.textContent = commit.branch || "main";
         const code = document.createElement("code");
         code.textContent = commit.hash || "•••••••";
         a.append(dot, span, tag, code);
@@ -247,17 +257,31 @@
   }
 
   async function loadGitLab() {
-    const projects = await getJSON(`${GL_GROUP}/projects?per_page=100&include_subgroups=true`);
-    const names = projects.map((project) => project.path).sort((a, b) => a.localeCompare(b));
+    const rawProjects = await getJSON(`${GL_GROUP}/projects?per_page=100&include_subgroups=true`);
+    const prefix = "international-duck-incorporated/";
+    const projects = rawProjects
+      .map((project) => {
+        const full =
+          project.path_with_namespace || `international-duck-incorporated/${project.path}`;
+        const key = full.startsWith(prefix) ? full.slice(prefix.length) : full;
+        return {
+          id: project.id,
+          key,
+          full,
+          webUrl: project.web_url || `${GITLAB}/${full}`,
+          branch: project.default_branch || "main",
+        };
+      })
+      .sort((a, b) => a.key.localeCompare(b.key));
     const settled = await Promise.allSettled(
-      names.map((name) =>
+      projects.map((project) =>
         getJSON(
-          `${GL_API}/projects/${encodeURIComponent(`international-duck-incorporated/${name}`)}/repository/commits?per_page=${PER_REPO_COMMITS}`
-        ).then((commits) => commits.map((commit) => fromGL(commit, name)))
+          `${GL_API}/projects/${project.id}/repository/commits?per_page=${PER_REPO_COMMITS}`
+        ).then((commits) => commits.map((commit) => fromGL(commit, project.key, project.branch)))
       )
     );
     return {
-      names,
+      projects,
       commits: settled
         .filter((result) => result.status === "fulfilled")
         .flatMap((result) => result.value),
@@ -272,10 +296,10 @@
     }
     try {
       const result = await loadGitLab();
-      orgStatus(result.names, result.commits, false);
+      orgStatus(result.projects, result.commits, false);
       renderMembers(result.commits);
       renderFeed(result.commits);
-      setTotal(result.commits.length, result.names.length);
+      setTotal(result.commits.length, result.projects.length);
       const source = $("[data-sync-text]");
       if (source) source.textContent = "GitLab (main) live";
     } catch (error) {

@@ -9,13 +9,25 @@
     "run_worker_first": true,
   },
 
-  // Optional but recommended: cache the blocklist in KV instead of downloading
-  // it from GitLab on every cold isolate (~1.35 s -> single-digit ms).
+  // Optional BadEgg v3 runtime overrides (defaults match badegg-v3):
+  // "vars": {
+  //   "BADEGG_MODE": "enforce",               // "enforce" | "monitor"
+  //   "BADEGG_RISK_MODE": "minimize_false_bans", // "minimize_false_bans" | "catch_more"
+  //   "BADEGG_BAN_TTL_SECONDS": "900",
+  //   "BADEGG_RATE_LIMIT_REQUESTS": "180",
+  //   "BADEGG_RATE_LIMIT_WINDOW_S": "60",
+  //   "BADEGG_RATE_LIMIT_BURST": "60",
+  //   "BADEGG_RATE_LIMIT_BAN_AFTER": "10",
+  //   "BADEGG_OUTPUT_ACTION": "redact"        // "redact" | "block" | "alert"
+  // },
+
+  // Optional but recommended: cache the blocklist and sync BadEgg v3 temporary
+  // exact-IP bans in KV instead of downloading from GitLab on every cold isolate.
   //
   //   wrangler kv namespace create IDI_BADEGG
   //
-  // Paste the id below and uncomment. Without the binding BadEgg still works,
-  // it just pays the cold fetch once per isolate.
+  // Paste the id below and uncomment. Without the binding BadEgg v3 still works
+  // in-isolate and fails open if GitLab is unreachable.
   //
   // "kv_namespaces": [
   //   { "binding": "IDI_BADEGG", "id": "<id from the command above>" }

@@ -1930,11 +1930,18 @@ body::after {
 }
 .project-icon.privacy,
 .project-icon.champion {
+  overflow: hidden;
   color: #dffcff;
   font: 700 0.72rem var(--mono);
   letter-spacing: 0.08em;
   background: linear-gradient(145deg, rgba(93, 235, 211, 0.25), rgba(69, 113, 230, 0.13));
   border: 1px solid rgba(159, 246, 233, 0.2);
+}
+.project-icon.privacy img {
+  width: 100%;
+  height: 100%;
+  border-radius: inherit;
+  object-fit: cover;
 }
 .project-icon.champion {
   color: #f5eac8;
@@ -1947,9 +1954,10 @@ body::after {
   border: 1px solid rgba(125, 155, 255, 0.28);
 }
 .project-icon.noosphere img {
-  width: 59px;
-  height: 59px;
-  object-fit: contain;
+  width: 100%;
+  height: 100%;
+  border-radius: inherit;
+  object-fit: cover;
 }
 .project-icon.agentarium {
   overflow: hidden;
@@ -1959,6 +1967,46 @@ body::after {
 .project-icon.agentarium img {
   width: 59px;
   height: 59px;
+  object-fit: contain;
+}
+.project-icon.noosphere-chat {
+  overflow: hidden;
+  background: linear-gradient(145deg, rgba(132, 148, 255, 0.24), rgba(78, 214, 232, 0.16));
+  border: 1px solid rgba(132, 148, 255, 0.3);
+}
+.project-icon.noosphere-chat img {
+  width: 59px;
+  height: 59px;
+  object-fit: contain;
+}
+.project-icon.badegg {
+  overflow: hidden;
+  background: linear-gradient(145deg, rgba(245, 158, 11, 0.2), rgba(15, 27, 45, 0.85));
+  border: 1px solid rgba(245, 158, 11, 0.28);
+}
+.project-icon.badegg img {
+  width: 59px;
+  height: 59px;
+  object-fit: contain;
+}
+.project-icon.confluence-os {
+  overflow: hidden;
+  background: linear-gradient(145deg, rgba(14, 165, 233, 0.22), rgba(15, 27, 48, 0.86));
+  border: 1px solid rgba(56, 189, 248, 0.3);
+}
+.project-icon.confluence-os img {
+  width: 59px;
+  height: 59px;
+  object-fit: contain;
+}
+.project-icon.fingerprint-damper {
+  overflow: hidden;
+  background: linear-gradient(145deg, rgba(79, 156, 249, 0.22), rgba(20, 34, 68, 0.88));
+  border: 1px solid rgba(79, 156, 249, 0.34);
+}
+.project-icon.fingerprint-damper img {
+  width: 50px;
+  height: 50px;
   object-fit: contain;
 }
 .subgroup-callout {
@@ -1994,6 +2042,12 @@ body::after {
 }
 .language-dot.neutral {
   background: #77818a;
+}
+.language-dot.python {
+  background: #3572a5;
+}
+.language-dot.ts {
+  background: #3178c6;
 }
 .profile-page {
   padding-top: 140px;
@@ -2684,6 +2738,45 @@ body[data-project="zonedout"]::after {
 body[data-project="zonedout"] .eyebrow {
   color: #e79ad0;
 }
+body[data-project="badegg"] {
+  position: relative;
+  background: #070b12;
+}
+body[data-project="badegg"]::before {
+  background:
+    radial-gradient(ellipse at 18% 12%, rgba(245, 158, 11, 0.18), transparent 40%),
+    radial-gradient(ellipse at 82% 28%, rgba(56, 189, 248, 0.12), transparent 40%), #070b12;
+  opacity: 0.96;
+}
+body[data-project="badegg"]::after {
+  opacity: 0.12;
+  background-image:
+    linear-gradient(rgba(255, 255, 255, 0.026) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.026) 1px, transparent 1px);
+  background-size: 64px 64px;
+  mask-image: linear-gradient(to bottom, black 0%, transparent 88%);
+}
+body[data-project="badegg"] .eyebrow {
+  color: #f5b642;
+}
+body[data-project="badegg"] .profile-intro {
+  background: linear-gradient(140deg, rgba(28, 34, 48, 0.88), rgba(10, 15, 24, 0.9) 68%);
+  border-color: rgba(245, 182, 66, 0.24);
+}
+body[data-project="badegg"] .project-mark {
+  overflow: hidden;
+  padding: 0;
+  background: linear-gradient(145deg, rgba(245, 158, 11, 0.24), rgba(15, 27, 45, 0.9));
+  border-color: rgba(245, 182, 66, 0.34);
+  box-shadow:
+    0 16px 38px rgba(0, 0, 0, 0.32),
+    0 0 42px rgba(245, 158, 11, 0.14);
+}
+body[data-project="badegg"] .project-mark img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
 body[data-project="baritone"] main,
 body[data-project="baritone"] footer,
 body[data-project="idi-assets"] main,
@@ -2691,7 +2784,9 @@ body[data-project="idi-assets"] footer,
 body[data-project="website"] main,
 body[data-project="website"] footer,
 body[data-project="zonedout"] main,
-body[data-project="zonedout"] footer {
+body[data-project="zonedout"] footer,
+body[data-project="badegg"] main,
+body[data-project="badegg"] footer {
   position: relative;
   z-index: 1;
 }
@@ -4070,6 +4165,9 @@ body[data-page="projects"] .project-card[data-project-card="home"] {
 body[data-page="projects"] .project-card[data-project-card="zonedout"] {
   background: linear-gradient(145deg, rgba(224, 194, 40, 0.16), rgba(14, 16, 22, 0.78));
 }
+body[data-page="projects"] .project-card[data-project-card="badegg-v3"] {
+  background: linear-gradient(145deg, rgba(245, 158, 11, 0.16), rgba(11, 18, 30, 0.8));
+}
 .project-icon.zonedout {
   overflow: hidden;
   background: #080808;
@@ -4249,7 +4347,8 @@ body[data-project="nulltrace"] .profile-intro::after {
   writing-mode: vertical-rl;
 }
 body[data-project="nulltrace"] .project-mark {
-  border-radius: 50%;
+  border-radius: 22px;
+  object-fit: cover;
   box-shadow:
     0 0 0 12px rgba(82, 210, 231, 0.035),
     0 0 0 24px rgba(82, 210, 231, 0.02),
@@ -4468,7 +4567,7 @@ body[data-member="3spress0"] .detail-grid {
   grid-template-columns: 1.45fr 0.55fr;
 }
 body[data-member="3spress0"] .member-contribution-metrics {
-  grid-template-columns: 1.6fr 0.7fr 0.7fr;
+  grid-template-columns: 1.35fr repeat(3, 0.75fr);
 }
 body[data-member="3spress0"] .member-contribution-metric:first-child {
   min-height: 190px;
@@ -4754,6 +4853,7 @@ body[data-member="midas735"] .detail-panel:last-child {
   }
   body[data-project="championscode"] .profile-hero,
   body[data-project="website"] .profile-hero,
+  body[data-project="badegg"] .profile-hero,
   body[data-member="3spress0"] .profile-hero,
   body[data-member="e-vdv-hu"] .profile-hero,
   body[data-member="midas735"] .profile-hero {
@@ -4763,6 +4863,8 @@ body[data-member="midas735"] .detail-panel:last-child {
   body[data-project="championscode"] .profile-sidebar,
   body[data-project="website"] .profile-intro,
   body[data-project="website"] .profile-sidebar,
+  body[data-project="badegg"] .profile-intro,
+  body[data-project="badegg"] .profile-sidebar,
   body[data-member="3spress0"] .profile-intro,
   body[data-member="3spress0"] .profile-sidebar,
   body[data-member="midas735"] .profile-intro,

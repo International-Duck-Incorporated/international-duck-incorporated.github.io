@@ -46,10 +46,10 @@
     <meta name="robots" content="noindex,nofollow" />
     <!-- keep the egg out of search results -->
     <link rel="icon" href="/assets/org-avatar.png?v=f3debf20" type="image/png" />
-    <link rel="stylesheet" href="/css/bundle.css?v=d4c14665" />
-    <script src="/script.js?v=0443d2ee" defer></script>
-    <script src="/pixel-canvas.js?v=8f2c93f3" defer></script>
-    <script src="/easteregg.js?v=8e387497" defer></script>
+    <link rel="stylesheet" href="/css/bundle.css?v=05d51123" />
+    <script src="/script.js?v=88885632" defer></script>
+    <script src="/pixel-canvas.js?v=0c61d787" defer></script>
+    <script src="/easteregg.js?v=7da22c2b" defer></script>
   </head>
   <body data-page="organization">
     <svg class="svg-sprite" aria-hidden="true">
@@ -196,7 +196,7 @@
             </div>
             <div class="profile-stats">
               <div>
-                <svg><use href="#i-repo" /></svg><span>Repositories</span><b data-org-repos>7</b>
+                <svg><use href="#i-repo" /></svg><span>Repositories</span><b data-org-repos>11</b>
               </div>
               <div>
                 <svg><use href="#i-users" /></svg><span>Members</span
@@ -212,7 +212,7 @@
             <div class="glass-card">
               <span class="metric-icon blue"
                 ><svg><use href="#i-repo" /></svg></span
-              ><span><small>PUBLIC REPOSITORIES</small><b data-org-repos>7</b></span>
+              ><span><small>PUBLIC REPOSITORIES</small><b data-org-repos>11</b></span>
             </div>
             <div class="glass-card">
               <span class="metric-icon violet"
@@ -262,7 +262,7 @@
                   <h3>Beacon</h3>
                   <p>
                     A vanilla-server-safe, modular client-side utility mod for Minecraft 26.2 with
-                    56 registered modules, persistent configuration, and an addon API.
+                    57 registered modules, persistent configuration, and an addon API.
                   </p>
                 </div>
                 <footer>
@@ -302,9 +302,9 @@
                 <div class="project-card-top">
                   <span class="project-icon privacy"
                     ><picture
-                      ><source srcset="/assets/nulltrace-icon.webp?v=3359715a" type="image/webp" />
+                      ><source srcset="/assets/nulltrace-icon.webp?v=956d0879" type="image/webp" />
                       <img
-                        src="/assets/nulltrace-icon.png?v=4eed3528"
+                        src="/assets/nulltrace-icon.png?v=09d4ba7d"
                         alt=""
                         width="64"
                         height="64"
@@ -388,30 +388,30 @@
                   ></span>
                 </footer>
               </a>
-              <a class="project-card glass-card reveal" href="/projects/zonedout">
+              <a class="project-card glass-card reveal" href="/projects/badegg">
                 <div class="project-card-top">
-                  <span class="project-icon zonedout"
+                  <span class="project-icon badegg"
                     ><picture
-                      ><source srcset="/assets/zonedout-icon.webp?v=71a190d8" type="image/webp" />
+                      ><source srcset="/assets/badegg-icon.webp?v=91df0dcf" type="image/webp" />
                       <img
-                        src="/assets/zonedout-icon.png?v=33db904b"
+                        src="/assets/badegg-icon.png?v=a2012fa6"
                         alt=""
                         width="64"
                         height="64"
                         loading="lazy"
                         decoding="async" /></picture></span
-                  ><span class="project-status muted">In development</span>
+                  ><span class="project-status"><i></i> MVP</span>
                 </div>
                 <div>
-                  <span class="card-label">Client-side mod</span>
-                  <h3>ZonedOut</h3>
+                  <span class="card-label">Security gateway</span>
+                  <h3>BadEgg v3</h3>
                   <p>
-                    A client-side Minecraft 26.3 Fabric mod with combat/utility features, a
-                    Metro-style UI, and 36-module seed/world-generation analysis.
+                    Zero-dependency Python HTTP security gateway and reverse-proxy WAF with rate
+                    limiting, secret-leak redaction, and explainable IP bans.
                   </p>
                 </div>
                 <footer>
-                  <span><i class="language-dot java"></i>Java</span
+                  <span><i class="language-dot python"></i>Python</span
                   ><span
                     >Open project <svg><use href="#i-arrow" /></svg
                   ></span>
@@ -433,12 +433,26 @@
               </div>
             </header>
             <p>
-              International Duck Incorporated is an open-source collective publishing Minecraft
-              mods, client utilities and developer tools. The work is client-side Java on Fabric and
-              Meteor Client, released for free under GPL licences, with sources, releases and issue
-              trackers on GitLab. The former GitHub organization is currently hidden from public
-              view, so GitLab is the active source of truth. NullTrace and Beacon are additionally
-              listed on CurseForge.
+              International Duck Incorporated publishes Minecraft mods, client utilities, defensive
+              security gateways, and autonomous AI systems on GitLab. Client-side Fabric and Meteor
+              Client mods carry per-repository open-source licences (GPL-3.0, LGPL-3.0, or MIT where
+              stated), while this website and proprietary repositories are governed by IDI’s
+              <a href="/license">All Rights Reserved Licence</a>. The former GitHub organization is
+              currently hidden from public view, so GitLab is the active source of truth;
+              <a
+                href="https://www.curseforge.com/minecraft/mc-mods/nulltrace/files/all?page=1&amp;pageSize=20&amp;showAlphaFiles=show"
+                target="_blank"
+                rel="noreferrer"
+                >NullTrace</a
+              >
+              and
+              <a
+                href="https://www.curseforge.com/minecraft/mc-mods/beacon-qol/files/all?page=1&amp;pageSize=20&amp;showAlphaFiles=show"
+                target="_blank"
+                rel="noreferrer"
+                >Beacon</a
+              >
+              downloads are hosted on CurseForge.
             </p>
             <p>
               Everything is built in public: commit history, release notes and module registries are
@@ -478,7 +492,7 @@
             target="_blank"
             rel="noreferrer"
             >GitLab</a
-          ><a href="mailto:0xffshell@duck.com">Contact</a>
+          ><a href="/license">License</a><a href="mailto:0xffshell@duck.com">Contact</a>
         </nav>
         <span class="sync-state"><i></i><span data-sync-text>GitLab data synced live</span></span>
       </div>

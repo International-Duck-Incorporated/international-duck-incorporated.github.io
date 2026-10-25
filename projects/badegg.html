@@ -1,0 +1,432 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <script>
+      (() => {
+        const nav = navigator;
+        const connection = nav.connection || nav.mozConnection || nav.webkitConnection;
+        const lowEnd = Boolean(
+          (connection && connection.saveData) ||
+            (connection && /^(slow-2g|2g)$/.test(connection.effectiveType || "")) ||
+            (typeof nav.deviceMemory === "number" && nav.deviceMemory <= 4) ||
+            (typeof nav.hardwareConcurrency === "number" && nav.hardwareConcurrency <= 4)
+        );
+        window.IDI_LOW_END = lowEnd;
+        window.IDI_REDUCED_MOTION = Boolean(
+          window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches
+        );
+        if (lowEnd) document.documentElement.classList.add("low-end");
+      })();
+    </script>
+    <link rel="preconnect" href="https://gitlab.com" crossorigin />
+    <link rel="preconnect" href="https://gitlab.com" />
+    <link rel="dns-prefetch" href="https://gitlab.com" />
+    <meta name="theme-color" content="#070b12" />
+    <meta property="og:image" content="https://idi-official.pages.dev/assets/og-default.png" />
+    <title>BadEgg v3, zero-dependency HTTP security gateway | IDI</title>
+    <meta
+      name="description"
+      content="BadEgg v3 is a zero-dependency Python 3.10+ HTTP security gateway and reverse-proxy WAF with rate limiting, secret redaction and explainable IP bans."
+    />
+    <link rel="canonical" href="https://idi-official.pages.dev/projects/badegg" />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="BadEgg v3, zero-dependency HTTP security gateway" />
+    <meta
+      property="og:description"
+      content="Zero-dependency Python HTTP security gateway and reverse-proxy WAF from IDI."
+    />
+    <meta property="og:url" content="https://idi-official.pages.dev/projects/badegg" />
+    <meta property="og:site_name" content="International Duck Incorporated" />
+    <meta property="og:locale" content="en_US" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="BadEgg v3, zero-dependency HTTP security gateway" />
+    <meta
+      name="twitter:description"
+      content="Zero-dependency Python HTTP security gateway and reverse-proxy WAF from IDI."
+    />
+    <link rel="icon" href="/assets/badegg-icon.png?v=a2012fa6" type="image/png" />
+    <link rel="stylesheet" href="/css/bundle.css?v=05d51123" />
+    <script src="/script.js?v=88885632" defer></script>
+    <script src="/pixel-canvas.js?v=0c61d787" defer></script>
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta
+      property="og:image:alt"
+      content="International Duck Incorporated - open-source Minecraft mods, tools and experiments"
+    />
+    <meta name="twitter:image" content="https://idi-official.pages.dev/assets/og-default.png" />
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@graph": [
+          {
+            "@type": "Organization",
+            "@id": "https://idi-official.pages.dev/#organization",
+            "name": "International Duck Incorporated",
+            "alternateName": "IDI",
+            "url": "https://idi-official.pages.dev/",
+            "logo": {
+              "@type": "ImageObject",
+              "url": "https://idi-official.pages.dev/assets/org-avatar.png"
+            },
+            "image": "https://idi-official.pages.dev/assets/og-default.png",
+            "description": "Open-source collective building Minecraft mods, defensive security tools and autonomous AI experiments in public on GitLab.",
+            "sameAs": ["https://gitlab.com/international-duck-incorporated"]
+          },
+          {
+            "@type": "WebSite",
+            "@id": "https://idi-official.pages.dev/#website",
+            "url": "https://idi-official.pages.dev/",
+            "name": "International Duck Incorporated",
+            "inLanguage": "en",
+            "publisher": {
+              "@id": "https://idi-official.pages.dev/#organization"
+            }
+          },
+          {
+            "@type": "WebPage",
+            "@id": "https://idi-official.pages.dev/projects/badegg#webpage",
+            "url": "https://idi-official.pages.dev/projects/badegg",
+            "name": "BadEgg v3 - International Duck",
+            "description": "BadEgg v3 is a zero-dependency Python 3.10+ HTTP security gateway and reverse-proxy WAF with rate limiting, secret redaction and explainable IP bans.",
+            "isPartOf": {
+              "@id": "https://idi-official.pages.dev/#website"
+            },
+            "about": {
+              "@id": "https://idi-official.pages.dev/#organization"
+            },
+            "inLanguage": "en",
+            "primaryImageOfPage": {
+              "@type": "ImageObject",
+              "url": "https://idi-official.pages.dev/assets/og-default.png"
+            },
+            "breadcrumb": {
+              "@id": "https://idi-official.pages.dev/projects/badegg#breadcrumb"
+            }
+          },
+          {
+            "@type": "BreadcrumbList",
+            "@id": "https://idi-official.pages.dev/projects/badegg#breadcrumb",
+            "itemListElement": [
+              {
+                "@type": "ListItem",
+                "position": 1,
+                "name": "International Duck Incorporated",
+                "item": "https://idi-official.pages.dev/"
+              },
+              {
+                "@type": "ListItem",
+                "position": 2,
+                "name": "Projects",
+                "item": "https://idi-official.pages.dev/projects/"
+              },
+              {
+                "@type": "ListItem",
+                "position": 3,
+                "name": "BadEgg v3",
+                "item": "https://idi-official.pages.dev/projects/badegg"
+              }
+            ]
+          },
+          {
+            "@type": "SoftwareApplication",
+            "@id": "https://idi-official.pages.dev/projects/badegg#app",
+            "name": "BadEgg v3",
+            "description": "Zero-dependency Python 3.10+ HTTP security gateway and reverse-proxy WAF MVP with Monitor and Enforce modes, per-IP token-bucket rate limiting, secret-leak redaction, and explainable expiring IP bans.",
+            "url": "https://idi-official.pages.dev/projects/badegg",
+            "applicationCategory": "SecurityApplication",
+            "operatingSystem": "Linux, macOS, Windows",
+            "programmingLanguage": "Python",
+            "isAccessibleForFree": true,
+            "author": {
+              "@id": "https://idi-official.pages.dev/#organization"
+            },
+            "publisher": {
+              "@id": "https://idi-official.pages.dev/#organization"
+            },
+            "codeRepository": "https://gitlab.com/international-duck-incorporated/badegg-v3",
+            "license": "https://idi-official.pages.dev/license",
+            "offers": {
+              "@type": "Offer",
+              "price": "0",
+              "priceCurrency": "USD"
+            }
+          }
+        ]
+      }
+    </script>
+  </head>
+  <body data-page="project" data-project="badegg">
+    <svg class="svg-sprite" aria-hidden="true">
+      <symbol id="i-gitlab" viewBox="0 0 24 24">
+        <path
+          fill="currentColor"
+          stroke="none"
+          d="m23.6004 9.5927-.0337-.0862L20.3.9814a.851.851 0 0 0-.3362-.405.8748.8748 0 0 0-.9997.0539.8748.8748 0 0 0-.29.4399l-2.2055 6.748H7.5375l-2.2057-6.748a.8573.8573 0 0 0-.29-.4412.8748.8748 0 0 0-.9997-.0537.8585.8585 0 0 0-.3362.4049L.4332 9.5015l-.0325.0862a6.0657 6.0657 0 0 0 2.0119 7.0105l.0113.0087.03.0213 4.976 3.7264 2.462 1.8633 1.4995 1.1321a1.0085 1.0085 0 0 0 1.2197 0l1.4995-1.1321 2.4619-1.8633 5.006-3.7489.0125-.01a6.0682 6.0682 0 0 0 2.0094-7.003z"
+        />
+      </symbol>
+      <symbol id="i-arrow" viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6" /></symbol>
+      <symbol id="i-menu" viewBox="0 0 24 24"><path d="M4 8h16M4 16h16" /></symbol>
+      <symbol id="i-close" viewBox="0 0 24 24"><path d="m5 5 14 14M19 5 5 19" /></symbol>
+    </svg>
+
+    <a class="skip-link" href="#main">Skip to content</a>
+    <div class="site-glow site-glow-blue" aria-hidden="true"></div>
+
+    <header class="topbar" data-header>
+      <div class="shell topbar-inner">
+        <a class="brand" href="/" aria-label="International Duck Incorporated home"
+          ><img
+            data-org-avatar
+            src="/assets/org-avatar.webp?v=fff479ce"
+            alt=""
+            width="40"
+            height="40"
+            decoding="async"
+          /><span><b>International Duck</b><small>Incorporated</small></span></a
+        >
+        <nav class="main-nav" id="main-navigation" data-nav aria-label="Primary navigation">
+          <a href="/">Overview</a>
+          <a class="active" href="/projects" aria-current="page">Projects</a>
+          <a href="/noosphere">Noosphere</a>
+          <a href="/members">Members</a>
+          <a href="/activity">Activity</a>
+          <a href="/migration">Migration</a>
+          <a
+            class="icon-link"
+            href="https://gitlab.com/international-duck-incorporated"
+            target="_blank"
+            rel="noreferrer"
+            aria-label="International Duck Incorporated on GitLab"
+            ><svg><use href="#i-gitlab" /></svg
+          ></a>
+        </nav>
+        <button
+          class="menu-button"
+          type="button"
+          data-menu
+          aria-label="Open navigation"
+          aria-controls="main-navigation"
+          aria-expanded="false"
+        >
+          <svg class="menu-open"><use href="#i-menu" /></svg
+          ><svg class="menu-close"><use href="#i-close" /></svg>
+        </button>
+      </div>
+    </header>
+
+    <main id="main" class="profile-page project-page">
+      <div class="shell">
+        <div class="breadcrumbs">
+          <a href="/">International Duck</a><span>/</span><a href="/projects">Projects</a
+          ><span>/</span><b>BadEgg v3</b>
+        </div>
+
+        <section class="profile-hero" aria-labelledby="badegg-title">
+          <article class="profile-intro glass-card reveal">
+            <div class="project-mark badegg-mark">
+              <picture
+                ><source srcset="/assets/badegg-icon.webp?v=91df0dcf" type="image/webp" />
+                <img
+                  src="/assets/badegg-icon.png?v=a2012fa6"
+                  alt="BadEgg v3 logo"
+                  width="82"
+                  height="82"
+                  loading="lazy"
+                  decoding="async"
+              /></picture>
+            </div>
+            <span class="eyebrow">HTTP security gateway · Reverse-proxy WAF</span>
+            <span class="status-pill release-badge"><i></i>Public MVP</span>
+            <h1 id="badegg-title">BadEgg v3.</h1>
+            <p class="lead">
+              A zero-dependency Python 3.10+ HTTP security gateway and reverse-proxy WAF designed to
+              sit cleanly in front of self-hosted web services. BadEgg inspects inbound traffic,
+              enforces token-bucket rate limits, redacts accidental secret leaks in responses, and
+              maintains explainable, expiring exact-IP bans from a loopback-only operator console.
+            </p>
+            <div class="action-row">
+              <a
+                class="button button-blue"
+                href="https://gitlab.com/international-duck-incorporated/badegg-v3"
+                target="_blank"
+                rel="noreferrer"
+              >
+                <pixel-canvas
+                  data-gap="6"
+                  data-speed="35"
+                  data-colors="#f9ecd4, #eec06a, #b98a2e"
+                ></pixel-canvas>
+                <svg><use href="#i-gitlab" /></svg>View GitLab repository
+              </a>
+              <a class="button button-glass" href="/projects/idi-assets">
+                Edge blocklist in IDI Assets <svg><use href="#i-arrow" /></svg>
+              </a>
+            </div>
+          </article>
+
+          <aside class="profile-sidebar glass-card reveal">
+            <div>
+              <span class="eyebrow">Project facts</span>
+              <div class="fact-list">
+                <div class="fact"><small>Status</small><b>Public MVP</b></div>
+                <div class="fact">
+                  <small>Runtime</small><b>Python 3.10+ · Zero dependencies</b>
+                </div>
+                <div class="fact">
+                  <small>Default listeners</small><b>127.0.0.1:8080 · 127.0.0.1:8765</b>
+                </div>
+                <div class="fact"><small>Modes</small><b>Monitor · Enforce</b></div>
+                <div class="fact">
+                  <small>Corpus benchmark</small><b>10,020 SecLists payloads</b>
+                </div>
+                <div class="fact">
+                  <small>Licence</small><b><a href="/license">All rights reserved</a></b>
+                </div>
+                <div class="fact"><small>Source</small><b>badegg-v3 on GitLab</b></div>
+              </div>
+            </div>
+          </aside>
+        </section>
+
+        <section class="detail-grid" aria-label="BadEgg v3 capabilities">
+          <article class="detail-panel glass-card reveal">
+            <span class="eyebrow">Inspection &amp; modes</span>
+            <h2>Monitor first, enforce with confidence.</h2>
+            <p>
+              Run in <b>Monitor</b> mode to score requests and record structured audit events
+              without dropping legitimate traffic, then switch to <b>Enforce</b> with tunable risk
+              profiles once thresholds match your upstream service.
+            </p>
+          </article>
+
+          <article class="detail-panel glass-card reveal">
+            <span class="eyebrow">Traffic control</span>
+            <h2>Token-bucket rate limits &amp; overload caps.</h2>
+            <p>
+              Per-IP token buckets throttle bursty scanners while global concurrency and payload
+              caps protect small origin servers from slowloris-style exhaustion and oversized
+              request bodies.
+            </p>
+          </article>
+
+          <article class="detail-panel glass-card reveal">
+            <span class="eyebrow">Outbound safety</span>
+            <h2>Response secret-leak redaction.</h2>
+            <p>
+              Scans upstream responses before they leave the gateway to redact accidentally exposed
+              API keys, bearer tokens, and private credentials before they reach the client.
+            </p>
+          </article>
+
+          <article class="detail-panel glass-card reveal">
+            <span class="eyebrow">Explainable bans</span>
+            <h2>Expiring exact-IP decisions.</h2>
+            <p>
+              Automated and manual bans record the triggering rule, score, and expiry timestamp. The
+              admin console binds strictly to loopback (<code>127.0.0.1:8765</code>) and writes
+              privacy-preserving audit logs.
+            </p>
+          </article>
+        </section>
+
+        <section class="project-deep-dive" aria-labelledby="badegg-architecture-title">
+          <header class="section-heading reveal">
+            <div>
+              <span class="eyebrow">Architecture</span>
+              <h2 id="badegg-architecture-title">Standard library only, auditable end to end.</h2>
+            </div>
+            <p>
+              No third-party runtime packages to pin or patch: BadEgg v3 runs on stock Python 3.10+
+              and evaluates cleanly against 10,020 SecLists attack payloads out of the box.
+            </p>
+          </header>
+
+          <div class="project-feature-grid">
+            <article class="project-feature glass-card reveal">
+              <span>01</span>
+              <h3>Reverse-proxy gate</h3>
+              <p>
+                Accepts HTTP traffic on <code>127.0.0.1:8080</code> (behind TLS termination or
+                Cloudflare), normalizes paths, headers, and query parameters, and scores payloads
+                before forwarding upstream.
+              </p>
+            </article>
+            <article class="project-feature glass-card reveal">
+              <span>02</span>
+              <h3>Loopback operator UI</h3>
+              <p>
+                Exposes live metrics, rule hits, mode toggles, and ban management on
+                <code>127.0.0.1:8765</code> so administration is never reachable from the public
+                internet by default.
+              </p>
+            </article>
+            <article class="project-feature glass-card reveal">
+              <span>03</span>
+              <h3>Connected to IDI’s edge</h3>
+              <p>
+                Complements the compiled <code>hall-of-shame.v2.bin</code> IPv4/IPv6 blocklist
+                enforced at the Cloudflare Worker edge across this website and
+                <a class="inline-link" href="/noosphere">Noosphere Chat</a>.
+              </p>
+            </article>
+          </div>
+        </section>
+
+        <section class="project-callout glass-card reveal">
+          <div>
+            <span class="eyebrow">Public repository</span>
+            <h2>Inspect the gateway and benchmark suite on GitLab.</h2>
+            <p>
+              Clone <code>badegg-v3</code>, review the zero-dependency proxy engine, or run the
+              evaluation harness against your own traffic corpus.
+            </p>
+          </div>
+          <a
+            class="button button-glass"
+            href="https://gitlab.com/international-duck-incorporated/badegg-v3"
+            target="_blank"
+            rel="noreferrer"
+          >
+            <pixel-canvas
+              data-gap="6"
+              data-speed="35"
+              data-colors="#f9ecd4, #eec06a, #b98a2e"
+            ></pixel-canvas>
+            <svg><use href="#i-gitlab" /></svg>Browse badegg-v3
+          </a>
+        </section>
+      </div>
+    </main>
+
+    <footer class="site-footer">
+      <div class="shell footer-inner">
+        <a class="brand" href="/"
+          ><img
+            data-org-avatar
+            src="/assets/org-avatar.webp?v=fff479ce"
+            alt=""
+            width="40"
+            height="40"
+            decoding="async"
+          /><span><b>International Duck</b><small>Incorporated</small></span></a
+        >
+        <nav>
+          <a href="/">Overview</a><a href="/projects">Projects</a><a href="/noosphere">Noosphere</a
+          ><a href="/members">Members</a><a href="/activity">Activity</a
+          ><a href="/migration">Migration</a><a href="/glyphsmith">Glyphsmith</a
+          ><a href="/changelog">Changelog</a
+          ><a
+            href="https://gitlab.com/international-duck-incorporated"
+            target="_blank"
+            rel="noreferrer"
+            >GitLab</a
+          ><a href="/license">License</a><a href="mailto:0xffshell@duck.com">Contact</a>
+        </nav>
+        <span class="sync-state"><i></i><span data-sync-text>GitLab data synced live</span></span>
+      </div>
+    </footer>
+  </body>
+</html>

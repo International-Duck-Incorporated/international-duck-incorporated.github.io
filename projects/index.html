@@ -29,14 +29,14 @@
     <title>All projects: Minecraft mods, addons, tools | IDI</title>
     <meta
       name="description"
-      content="Every International Duck project in one place - Beacon, Venomous, NullTrace, ChampionsCode, Bagley and ZonedOut - free Fabric client mods for Minecraft."
+      content="Every International Duck project in one place - Beacon, Venomous, NullTrace, ChampionsCode, Bagley, BadEgg v3 and more - free and open source on GitLab."
     />
     <link rel="canonical" href="https://idi-official.pages.dev/projects/" />
     <meta property="og:type" content="website" />
     <meta property="og:title" content="All projects: Minecraft mods, addons, tools" />
     <meta
       property="og:description"
-      content="Free Fabric client mods for Minecraft: utilities, a Meteor addon and privacy tooling."
+      content="Free Fabric client mods, security gateways and developer tooling from IDI."
     />
     <meta property="og:url" content="https://idi-official.pages.dev/projects/" />
     <meta property="og:site_name" content="International Duck Incorporated" />
@@ -45,12 +45,12 @@
     <meta name="twitter:title" content="All projects: Minecraft mods, addons, tools" />
     <meta
       name="twitter:description"
-      content="Free Fabric client mods for Minecraft: utilities, a Meteor addon and privacy tooling."
+      content="Free Fabric client mods, security gateways and developer tooling from IDI."
     />
     <link rel="icon" href="/assets/org-avatar.png?v=f3debf20" type="image/png" />
-    <link rel="stylesheet" href="/css/bundle.css?v=d4c14665" />
-    <script src="/script.js?v=0443d2ee" defer></script>
-    <script src="/pixel-canvas.js?v=8f2c93f3" defer></script>
+    <link rel="stylesheet" href="/css/bundle.css?v=05d51123" />
+    <script src="/script.js?v=88885632" defer></script>
+    <script src="/pixel-canvas.js?v=0c61d787" defer></script>
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
     <meta
@@ -135,7 +135,7 @@
             "@type": "ItemList",
             "@id": "https://idi-official.pages.dev/projects/#list",
             "name": "Public projects",
-            "numberOfItems": 7,
+            "numberOfItems": 10,
             "itemListElement": [
               {
                 "@type": "ListItem",
@@ -170,12 +170,30 @@
               {
                 "@type": "ListItem",
                 "position": 6,
+                "name": "BadEgg v3",
+                "url": "https://idi-official.pages.dev/projects/badegg"
+              },
+              {
+                "@type": "ListItem",
+                "position": 7,
+                "name": "Baritone",
+                "url": "https://idi-official.pages.dev/projects/baritone"
+              },
+              {
+                "@type": "ListItem",
+                "position": 8,
+                "name": "IDI Assets",
+                "url": "https://idi-official.pages.dev/projects/idi-assets"
+              },
+              {
+                "@type": "ListItem",
+                "position": 9,
                 "name": "ZonedOut",
                 "url": "https://idi-official.pages.dev/projects/zonedout"
               },
               {
                 "@type": "ListItem",
-                "position": 7,
+                "position": 10,
                 "name": "IDI website",
                 "url": "https://idi-official.pages.dev/projects/website"
               }
@@ -274,7 +292,7 @@
             GitLab.
           </p>
           <div class="directory-status">
-            <span class="status-pill"><i></i><b data-org-repos>9</b> public repositories</span
+            <span class="status-pill"><i></i><b data-org-repos>11</b> public repositories</span
             ><span class="source-chip"><i></i> Live GitLab data</span>
           </div>
         </header>
@@ -375,9 +393,9 @@
             <div class="project-card-top">
               <span class="project-icon privacy"
                 ><picture
-                  ><source srcset="/assets/nulltrace-icon.webp?v=3359715a" type="image/webp" />
+                  ><source srcset="/assets/nulltrace-icon.webp?v=956d0879" type="image/webp" />
                   <img
-                    src="/assets/nulltrace-icon.png?v=4eed3528"
+                    src="/assets/nulltrace-icon.png?v=09d4ba7d"
                     alt=""
                     width="64"
                     height="64"
@@ -469,6 +487,39 @@
           </a>
           <a
             class="project-card glass-card reveal"
+            data-project-card="badegg-v3"
+            href="/projects/badegg"
+          >
+            <div class="project-card-top">
+              <span class="project-icon badegg"
+                ><picture
+                  ><source srcset="/assets/badegg-icon.webp?v=91df0dcf" type="image/webp" />
+                  <img
+                    src="/assets/badegg-icon.png?v=a2012fa6"
+                    alt=""
+                    width="64"
+                    height="64"
+                    loading="lazy"
+                    decoding="async" /></picture></span
+              ><span class="project-status"><i></i> MVP</span>
+            </div>
+            <div>
+              <span class="card-label">Security gateway</span>
+              <h3>BadEgg v3</h3>
+              <p>
+                A zero-dependency Python 3.10+ HTTP security gateway and reverse-proxy WAF with
+                token-bucket rate limiting, secret-leak redaction, and explainable IP bans.
+              </p>
+            </div>
+            <footer>
+              <span><i class="language-dot python"></i>Python</span
+              ><span
+                >Open project <svg><use href="#i-arrow" /></svg
+              ></span>
+            </footer>
+          </a>
+          <a
+            class="project-card glass-card reveal"
             data-project-card="zonedout"
             href="/projects/zonedout"
           >
@@ -483,14 +534,14 @@
                     height="64"
                     loading="lazy"
                     decoding="async" /></picture></span
-              ><span class="project-status muted">In development</span>
+              ><span class="project-status muted">Archived</span>
             </div>
             <div>
-              <span class="card-label">Client-side mod</span>
+              <span class="card-label">Archived mod</span>
               <h3>ZonedOut</h3>
               <p>
-                A client-side Minecraft 26.3 Fabric mod with combat/utility features, a Metro-style
-                UI, and 36-module seed/world-generation analysis.
+                An archived, read-only Minecraft 26.3 Fabric mod preserved for reference, with a
+                Metro-style UI and a 36-module seed and world-generation analysis suite.
               </p>
             </div>
             <footer>
@@ -514,8 +565,8 @@
               <span class="card-label">Pathfinding fork</span>
               <h3>Baritone</h3>
               <p>
-                IDI's GitLab fork of the Baritone Minecraft pathfinder, kept current on
-                26.1/26.2/26.3 branches with look-and-aim behaviour work.
+                IDI's GitLab fork of the Baritone Minecraft pathfinder, with releases and branches
+                for Minecraft 26.1, 26.2, and 26.3 plus look-and-aim behaviour work.
               </p>
             </div>
             <footer>
@@ -544,11 +595,11 @@
               ><span class="project-status"><i></i> Media</span>
             </div>
             <div>
-              <span class="card-label">Media bundle</span>
+              <span class="card-label">Media &amp; blocklists</span>
               <h3>IDI Assets</h3>
               <p>
-                Collection of pictures and videos: the organization's public media tree, 69 unique
-                files in 11 directories catalogued in manifest.csv.
+                Shared media and edge-artifact repository: project logos, banners, 4K WebM hero
+                clips, and the compiled <code>hall-of-shame.v2</code> IPv4/IPv6 blocklist.
               </p>
             </div>
             <footer>
@@ -593,9 +644,10 @@
             <span class="eyebrow" style="color: #7d9bff">Autonomous division</span>
             <h3>Looking for Noosphere AI projects?</h3>
             <p>
-              Projects from IDI's autonomous AI subgroup <b>IDI Noosphere</b> (including the
-              <b>Agentarium</b> artificial minds network) operate independently from IDI's Minecraft
-              mods and live on their own dedicated page.
+              Projects from IDI's autonomous AI subgroup <b>IDI Noosphere</b>, including
+              <b>Noosphere Chat</b> (powered by Bagley across 17 BYOK providers), the
+              <b>Agentarium</b> agent-only social network, and the <b>Baritone LLM Swarm</b>,
+              operate independently from IDI's core repositories on their own dedicated page.
             </p>
           </div>
           <a class="button button-glass" href="/noosphere"
@@ -627,7 +679,7 @@
             target="_blank"
             rel="noreferrer"
             >GitLab</a
-          ><a href="mailto:0xffshell@duck.com">Contact</a>
+          ><a href="/license">License</a><a href="mailto:0xffshell@duck.com">Contact</a>
         </nav>
         <span class="sync-state"><i></i><span data-sync-text>GitLab data synced live</span></span>
       </div>

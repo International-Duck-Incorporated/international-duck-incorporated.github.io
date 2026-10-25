@@ -1,5 +1,5 @@
 /*
- * <pixel-canvas> — shimmering pixel-grid hover effect for buttons and cards.
+ * <pixel-canvas> - shimmering pixel-grid hover effect for buttons and cards.
  * Based on the pixel-canvas web component by Ryan Mulligan
  * (https://codepen.io/hexagoncircle/pen/KwPpdBZ), bundled locally so the
  * effect works without a third-party CDN.

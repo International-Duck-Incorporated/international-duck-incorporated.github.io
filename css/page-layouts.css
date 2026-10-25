@@ -787,6 +787,9 @@ body[data-page="projects"] .project-card[data-project-card="home"] {
 body[data-page="projects"] .project-card[data-project-card="zonedout"] {
   background: linear-gradient(145deg, rgba(224, 194, 40, 0.16), rgba(14, 16, 22, 0.78));
 }
+body[data-page="projects"] .project-card[data-project-card="badegg-v3"] {
+  background: linear-gradient(145deg, rgba(245, 158, 11, 0.16), rgba(11, 18, 30, 0.8));
+}
 .project-icon.zonedout {
   overflow: hidden;
   background: #080808;
@@ -966,7 +969,8 @@ body[data-project="nulltrace"] .profile-intro::after {
   writing-mode: vertical-rl;
 }
 body[data-project="nulltrace"] .project-mark {
-  border-radius: 50%;
+  border-radius: 22px;
+  object-fit: cover;
   box-shadow:
     0 0 0 12px rgba(82, 210, 231, 0.035),
     0 0 0 24px rgba(82, 210, 231, 0.02),
@@ -1185,7 +1189,7 @@ body[data-member="3spress0"] .detail-grid {
   grid-template-columns: 1.45fr 0.55fr;
 }
 body[data-member="3spress0"] .member-contribution-metrics {
-  grid-template-columns: 1.6fr 0.7fr 0.7fr;
+  grid-template-columns: 1.35fr repeat(3, 0.75fr);
 }
 body[data-member="3spress0"] .member-contribution-metric:first-child {
   min-height: 190px;
@@ -1471,6 +1475,7 @@ body[data-member="midas735"] .detail-panel:last-child {
   }
   body[data-project="championscode"] .profile-hero,
   body[data-project="website"] .profile-hero,
+  body[data-project="badegg"] .profile-hero,
   body[data-member="3spress0"] .profile-hero,
   body[data-member="e-vdv-hu"] .profile-hero,
   body[data-member="midas735"] .profile-hero {
@@ -1480,6 +1485,8 @@ body[data-member="midas735"] .detail-panel:last-child {
   body[data-project="championscode"] .profile-sidebar,
   body[data-project="website"] .profile-intro,
   body[data-project="website"] .profile-sidebar,
+  body[data-project="badegg"] .profile-intro,
+  body[data-project="badegg"] .profile-sidebar,
   body[data-member="3spress0"] .profile-intro,
   body[data-member="3spress0"] .profile-sidebar,
   body[data-member="midas735"] .profile-intro,

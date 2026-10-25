@@ -25,31 +25,31 @@
     <link rel="dns-prefetch" href="https://gitlab.com" />
     <meta name="theme-color" content="#07090d" />
     <meta property="og:image" content="https://idi-official.pages.dev/assets/og-default.png" />
-    <title>IDI Assets, the organization&#x27;s pictures and videos | IDI</title>
+    <title>IDI Assets, public logos, clips &amp; blocklists | IDI</title>
     <meta
       name="description"
-      content="idi-assets is International Duck&#x27;s public media bundle: icons, logos, banners, screenshots, UI icons, member art and 4K video clips, one copy per asset."
+      content="IDI Assets is International Duck&#x27;s public media and artifact bundle: project icons, banners, 4K WebM hero clips and hall-of-shame.v2 binary IP blocklists."
     />
     <link rel="canonical" href="https://idi-official.pages.dev/projects/idi-assets" />
     <meta property="og:type" content="website" />
-    <meta property="og:title" content="IDI Assets, the organization&#x27;s pictures and videos" />
+    <meta property="og:title" content="IDI Assets, public logos, clips &amp; blocklists" />
     <meta
       property="og:description"
-      content="The organization&#x27;s public media tree: 69 unique files in 11 directories, catalogued and deduplicated."
+      content="Public project icons, 4K WebM hero clips and hall-of-shame.v2 edge blocklists."
     />
     <meta property="og:url" content="https://idi-official.pages.dev/projects/idi-assets" />
     <meta property="og:site_name" content="International Duck Incorporated" />
     <meta property="og:locale" content="en_US" />
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content="IDI Assets, the organization&#x27;s pictures and videos" />
+    <meta name="twitter:title" content="IDI Assets, public logos, clips &amp; blocklists" />
     <meta
       name="twitter:description"
-      content="The organization&#x27;s public media tree: 69 unique files in 11 directories, catalogued and deduplicated."
+      content="Public project icons, 4K WebM hero clips and hall-of-shame.v2 edge blocklists."
     />
-    <link rel="icon" href="/assets/org-avatar.png?v=f3debf20" type="image/png" />
-    <link rel="stylesheet" href="/css/bundle.css?v=d4c14665" />
-    <script src="/script.js?v=0443d2ee" defer></script>
-    <script src="/pixel-canvas.js?v=8f2c93f3" defer></script>
+    <link rel="icon" href="/assets/idi-assets-icon.png?v=38c58fae" type="image/png" />
+    <link rel="stylesheet" href="/css/bundle.css?v=05d51123" />
+    <script src="/script.js?v=88885632" defer></script>
+    <script src="/pixel-canvas.js?v=0c61d787" defer></script>
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
     <meta
@@ -140,7 +140,7 @@
             "@type": "CreativeWork",
             "@id": "https://idi-official.pages.dev/projects/idi-assets#work",
             "name": "IDI Assets",
-            "description": "Collection of pictures and videos: International Duck's public media bundle with one copy per distinct asset, catalogued in manifest.csv with dimensions, sizes, SHA-256 hashes and merged-copy history.",
+            "description": "Shared public media and edge-artifact library for International Duck Incorporated: project icons, banners, 4K WebM hero clips, Oxanium fonts, and the compiled hall-of-shame.v2 binary IPv4/IPv6 blocklist.",
             "url": "https://idi-official.pages.dev/projects/idi-assets",
             "author": {
               "@id": "https://idi-official.pages.dev/#organization"
@@ -231,14 +231,14 @@
                 loading="lazy"
                 decoding="async"
             /></picture>
-            <span class="eyebrow">Media bundle · collection of pictures and videos</span>
+            <span class="eyebrow">Media &amp; edge artifacts · shared asset tree</span>
             <span class="status-pill release-badge"><i></i>Public repository</span>
             <h1 id="idi-assets-title">IDI Assets.</h1>
             <p class="lead">
-              One flat media tree for the whole organization: project icons, logos and banners,
-              config screenshots, the shared UI icon set, member and website art, and the 4K
-              easter-egg video clips. Every distinct asset is stored exactly once and catalogued in
-              <code>manifest.csv</code>.
+              One shared media and edge-artifact repository for the whole organization: project
+              icons, logos and banners across IDI and Noosphere, UI sound effects, shared SVG icons,
+              4K WebM hero clips (<code>video3</code>–<code>video16.webm</code>), and the compiled
+              <code>hall-of-shame.v2.bin</code> IPv4/IPv6 blocklist.
             </p>
             <div class="action-row">
               <a
@@ -268,12 +268,18 @@
             <div>
               <span class="eyebrow">Project facts</span>
               <div class="fact-list">
-                <div class="fact"><small>Contents</small><b>Pictures · videos · SVG icons</b></div>
-                <div class="fact"><small>Layout</small><b>69 unique files · 11 directories</b></div>
-                <div class="fact"><small>Catalogue</small><b>manifest.csv</b></div>
+                <div class="fact">
+                  <small>Contents</small><b>Artwork · 4K WebM · Blocklists · Fonts</b>
+                </div>
+                <div class="fact"><small>Layout</small><b>185 files · 25 directories</b></div>
+                <div class="fact"><small>Edge feed</small><b>hall-of-shame.v2.bin (IDI2)</b></div>
                 <div class="fact"><small>Attribution</small><b>ATTRIBUTION.md</b></div>
-                <div class="fact"><small>Cleanup</small><b>116 → 69 files, Oct 4 2026</b></div>
-                <div class="fact"><small>Videos</small><b>4K VP8 + Opus clips</b></div>
+                <div class="fact">
+                  <small>Videos</small><b>4K / 1080p WebM clips (up to video16)</b>
+                </div>
+                <div class="fact">
+                  <small>Subgroup art</small><b>Noosphere · Chat · Agentarium</b>
+                </div>
               </div>
             </div>
           </aside>
@@ -282,51 +288,54 @@
         <section class="detail-grid" aria-label="IDI Assets overview">
           <article class="detail-panel glass-card reveal">
             <span class="eyebrow">What lives in the tree</span>
-            <h2>Per-project folders, one copy each.</h2>
+            <h2>Organized under assets/ by project.</h2>
             <ul>
-              <li><b>beacon/</b> 7 files: mod and GUI artwork</li>
-              <li><b>nulltrace/</b> 8 files: icon, logo, config screenshots</li>
-              <li><b>championscode/</b> 3 files: icon, logo, branding</li>
               <li>
-                <b>venomous/</b>, <b>zonedout/</b>, <b>beacon-bagley/</b>: project icons and logos
+                <b>noosphere/</b>, <b>noosphere-chat/</b>, <b>agentarium/</b>: subgroup emblems,
+                Bagley marks, and LLM provider monograms
               </li>
-              <li><b>website/</b> 15 files: members, site art, video clips</li>
-              <li><b>ui-icons/</b> 22 files: shared Lucide/Heroicons SVG set</li>
-              <li><b>curseforge/</b> 9 files: listing logos, avatar, gallery</li>
+              <li><b>badegg/</b>: BadEgg v3 security gateway emblem and mark</li>
+              <li>
+                <b>beacon/</b>, <b>beacon-bagley/</b>, <b>nulltrace/</b>, <b>championscode/</b>,
+                <b>venomous/</b>, <b>zonedout/</b>: mod icons, cutouts, WebUI SFX, and screenshots
+              </li>
+              <li>
+                <b>IDI text banners/</b> &amp; <b>IDI icon spinoffs/</b>: wordmarks and themed
+                emblem variants
+              </li>
+              <li><b>website/</b>, <b>ui-icons/</b>, <b>curseforge/</b>, <b>font/Oxanium/</b></li>
             </ul>
           </article>
 
           <article class="detail-panel glass-card reveal">
-            <span class="eyebrow">The catalogue</span>
-            <h2>manifest.csv knows every byte.</h2>
+            <span class="eyebrow">Edge blocklist</span>
+            <h2>hall-of-shame.v2.bin &amp; JSON.</h2>
             <p>
-              One row per asset: project, kind, dimensions, size, SHA-256, how many duplicate copies
-              were merged into it, all of their original paths and URLs, and a note on what the
-              asset is. <code>release-assets.csv</code> separately catalogues release downloads (mod
-              JARs, source archives and checksums), which are not part of this bundle.
+              Alongside visual media, <code>idi-assets</code> publishes the canonical
+              <code>hall-of-shame.v2.json</code> feed and compact <code>IDI2</code> binary index
+              (<code>hall-of-shame.v2.bin</code>) consumed at the Cloudflare edge by IDI’s BadEgg
+              gate across this site and <a class="inline-link" href="/noosphere">Noosphere Chat</a>.
             </p>
           </article>
 
           <article class="detail-panel glass-card reveal">
-            <span class="eyebrow">Deduplication</span>
-            <h2>116 files became 69.</h2>
+            <span class="eyebrow">Deduplication &amp; attribution</span>
+            <h2>Single canonical copy per asset.</h2>
             <p>
-              The original snapshot held the same bytes copied into each project, the website and
-              the platform listings: 116 files over 67 directories. The October 4, 2026 cleanup kept
-              one copy of each distinct asset and shipped a <code>path-mapping.csv</code> of every
-              old path. Nothing was lost: all 50 removed paths were byte-identical to a kept file,
-              and no asset was re-encoded or edited.
+              Consolidates artwork that used to be duplicated across individual mod repositories and
+              storefront listings into a single versioned tree, with third-party font, icon, and
+              provider-monogram provenance documented in <code>ATTRIBUTION.md</code>.
             </p>
           </article>
 
           <article class="detail-panel glass-card reveal">
             <span class="eyebrow">Video</span>
-            <h2>The easter-egg clip family.</h2>
+            <h2>The homepage &amp; easter-egg clip pool.</h2>
             <p>
-              The website folder holds <code>easteregg-video.webm</code> (24.4 s),
-              <code>easteregg-video-2.webm</code> (5.4 s) and
-              <code>easteregg-video-3.webm</code> (14.0 s), all 3840x2160 VP8 with Opus audio, plus
-              the Beacon background video used on this site.
+              <code>assets/website/</code> hosts the full rotating WebM backdrop pool, from the
+              original 4K easter-egg sequences through <code>video14.webm</code>,
+              <code>video15.webm</code>, and <code>video16.webm</code>, streamed on demand after
+              first paint.
             </p>
           </article>
         </section>
@@ -411,7 +420,7 @@
           ><a href="/migration">Migration</a><a href="/glyphsmith">Glyphsmith</a
           ><a href="/changelog">Changelog</a
           ><a href="https://gitlab.com/international-duck-incorporated">GitLab</a
-          ><a href="mailto:0xffshell@duck.com">Contact</a>
+          ><a href="/license">License</a><a href="mailto:0xffshell@duck.com">Contact</a>
         </nav>
         <span class="sync-state"><i></i><span data-sync-text>GitLab data synced live</span></span>
       </div>

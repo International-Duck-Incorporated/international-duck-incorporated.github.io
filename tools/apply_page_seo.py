@@ -39,31 +39,31 @@ BRAND = "IDI"
 PAGES: dict[str, tuple[str, str, str, str]] = {
     "index.html": (
         "/",
-        "International Duck — open-source mods and tools",
-        "Open-source Minecraft mods and tools from International Duck Incorporated: the 56-module "
-        "Beacon, Venomous, NullTrace and more, all free on GitLab.",
-        "Free, open-source Minecraft mods and Fabric client tools, built in public on GitLab.",
+        "International Duck: Minecraft mods, security tools & AI",
+        "Minecraft mods, security tools and AI experiments from International Duck Incorporated: "
+        "the 57-module Beacon, Venomous, NullTrace, BadEgg v3 and Noosphere.",
+        "Minecraft mods, security tools and autonomous AI projects on GitLab.",
     ),
     "projects/index.html": (
         "/projects/",
         "All projects: Minecraft mods, addons, tools | IDI",
         "Every International Duck project in one place - Beacon, Venomous, NullTrace, "
-        "ChampionsCode, Bagley and ZonedOut - free Fabric client mods for Minecraft.",
-        "Free Fabric client mods for Minecraft: utilities, a Meteor addon and privacy tooling.",
+        "ChampionsCode, Bagley, BadEgg v3 and more - free and open source on GitLab.",
+        "Free Fabric client mods, security gateways and developer tooling from IDI.",
     ),
     "projects/beacon/index.html": (
         "/projects/beacon",
         "Beacon, free Fabric client utility mod for Minecraft | IDI",
-        "Beacon is a free, open-source Fabric client mod for Minecraft 26.2 with 56 "
+        "Beacon is a free, open-source Fabric client mod for Minecraft 26.2 with 57 "
         "vanilla-server-safe utility, render and world modules. Download and source code.",
         "Free, open-source, vanilla-server-safe utility mod for Fabric.",
     ),
     "projects/beacon/modules.html": (
         "/projects/beacon/modules",
-        "Beacon modules: all 56 Fabric utilities, listed | IDI",
+        "Beacon modules: all 57 Fabric utilities, listed | IDI",
         "Every module Beacon registers, with the description it ships with and a link to its "
-        "source: AFK Fisher, AutoEat, Freecam, LightOverlay and 52 more.",
-        "All 56 Beacon modules, what each one does, and where its source lives.",
+        "source: AFK Fisher, AutoEat, Freecam, LightOverlay and 53 more.",
+        "All 57 Beacon modules, what each one does, and where its source lives.",
     ),
     "projects/venomous.html": (
         "/projects/venomous",
@@ -95,10 +95,17 @@ PAGES: dict[str, tuple[str, str, str, str]] = {
     ),
     "projects/zonedout.html": (
         "/projects/zonedout",
-        "ZonedOut, Fabric seed-analysis mod for Minecraft | IDI",
-        "ZonedOut is a free Fabric client mod for Minecraft 26.3 with combat and utility "
-        "features, a Metro-style UI and a 36-module world-generation analysis suite.",
-        "Fabric client mod for Minecraft 26.3 with a 36-module seed and world analysis suite.",
+        "ZonedOut, archived Fabric mod for Minecraft 26.3 | IDI",
+        "ZonedOut is an archived, read-only Fabric client mod for Minecraft 26.3 with a Metro-style "
+        "UI and a 36-module seed and world-generation analysis suite.",
+        "Archived, read-only Fabric mod for Minecraft 26.3 with 36-module seed analysis.",
+    ),
+    "projects/badegg.html": (
+        "/projects/badegg",
+        "BadEgg v3, zero-dependency HTTP security gateway | IDI",
+        "BadEgg v3 is a zero-dependency Python 3.10+ HTTP security gateway and reverse-proxy WAF "
+        "with rate limiting, secret redaction and explainable IP bans.",
+        "Zero-dependency Python HTTP security gateway and reverse-proxy WAF from IDI.",
     ),
     "baritone/dashboard.html": (
         "/baritone/dashboard",
@@ -110,14 +117,14 @@ PAGES: dict[str, tuple[str, str, str, str]] = {
     "projects/baritone.html": (
         "/projects/baritone",
         "Baritone, Minecraft pathfinder fork for Minecraft 26.x | IDI",
-        "IDI's GitLab fork of the Baritone Minecraft pathfinder: branches for Minecraft 26.1, 26.2 and 26.3, look-and-aim behaviour work, and Bagley's navigation layer.",
+        "IDI's GitLab fork of the Baritone Minecraft pathfinder: branches and releases for Minecraft 26.1, 26.2 and 26.3, look-and-aim work and Bagley's navigation.",
         "IDI's fork of the Baritone pathfinder, kept current for Minecraft 26.x and wired into Bagley.",
     ),
     "projects/idi-assets.html": (
         "/projects/idi-assets",
-        "IDI Assets, the organization's pictures and videos | IDI",
-        "idi-assets is International Duck's public media bundle: icons, logos, banners, screenshots, UI icons, member art and 4K video clips, one copy per asset.",
-        "The organization's public media tree: 69 unique files in 11 directories, catalogued and deduplicated.",
+        "IDI Assets, public logos, clips & blocklists | IDI",
+        "IDI Assets is International Duck's public media and artifact bundle: project icons, banners, 4K WebM hero clips and hall-of-shame.v2 binary IP blocklists.",
+        "Public project icons, 4K WebM hero clips and hall-of-shame.v2 edge blocklists.",
     ),
     "projects/website.html": (
         "/projects/website",
@@ -140,12 +147,26 @@ PAGES: dict[str, tuple[str, str, str, str]] = {
         "Venomous Meteor addon, ChampionsCode and the group's website.",
         "Main writer at International Duck Incorporated.",
     ),
-    "members/3spress0.html": (
+    "members/3spress0/index.html": (
         "/members/3spress0",
-        "espress0 - International Duck member profile | IDI",
-        "espress0 is the backend developer and backbone of most International Duck projects, "
-        "writing Java for Minecraft work and Python for security tooling.",
-        "Backend developer and project backbone at International Duck Incorporated.",
+        "espress0 - Confluence OS & Fingerprint Damper | IDI",
+        "espress0 (3spress0) is IDI's backend developer and creator of Confluence OS "
+        "(Ubuntu 26.04 XFCE distro) and Fingerprint Damper for Firefox.",
+        "IDI backend developer and creator of Confluence OS and Fingerprint Damper for Firefox.",
+    ),
+    "members/3spress0/confluence.html": (
+        "/members/3spress0/confluence",
+        "Confluence OS 1.1 LTS by espress0 | IDI",
+        "Confluence OS 1.1 LTS is a zero-bloat Ubuntu 26.04 XFCE 4.20 Linux distribution by "
+        "espress0 (@3spress0) with Calamares 3.3.14 and six ISO architectures.",
+        "Zero-bloat Ubuntu 26.04 LTS XFCE 4.20 Linux distribution by espress0 (@3spress0).",
+    ),
+    "members/3spress0/fingerprint-damper.html": (
+        "/members/3spress0/fingerprint-damper",
+        "Fingerprint Damper for Firefox by espress0 | IDI",
+        "Fingerprint Damper is a Manifest V3 Firefox 142+ extension by espress0 (@3spress0) "
+        "that blunts JS fingerprinting with stable per-origin daily personas.",
+        "Manifest V3 Firefox 142+ extension by espress0 that blunts JS API fingerprinting.",
     ),
     "members/e-vdv-hu.html": (
         "/members/e-vdv-hu",
@@ -192,10 +213,10 @@ PAGES: dict[str, tuple[str, str, str, str]] = {
     ),
     "noosphere.html": (
         "/noosphere",
-        "IDI Noosphere: Autonomous AI division & projects | IDI",
-        "IDI Noosphere is International Duck's fully autonomous AI division for LLM agents, "
-        "neural experiments and the Agentarium social platform.",
-        "Autonomous AI division & agent projects from International Duck Incorporated.",
+        "IDI Noosphere: Noosphere Chat, Agentarium & AI | IDI",
+        "IDI Noosphere is International Duck's autonomous AI division building Noosphere Chat, "
+        "the Agentarium agent-only social network and the Baritone LLM Swarm.",
+        "Autonomous AI division from IDI: Noosphere Chat, Agentarium and multi-agent engineering.",
     ),
     "changelog.html": (
         "/changelog",
@@ -203,6 +224,13 @@ PAGES: dict[str, tuple[str, str, str, str]] = {
         "Every release from every International Duck project - Beacon, Venomous, NullTrace, "
         "ChampionsCode and Bagley - transcribed from each repository's CHANGELOG.md.",
         "Release history for every International Duck project, newest first.",
+    ),
+    "license.html": (
+        "/license",
+        "All Rights Reserved Licence | International Duck",
+        "Copyright (c) 2026 International Duck Incorporated. All rights reserved. Full repository "
+        "and website licence terms for International Duck Incorporated.",
+        "All Rights Reserved Licence. Copyright (c) 2026 International Duck Incorporated.",
     ),
     "glyphsmith.html": (
         "/glyphsmith",

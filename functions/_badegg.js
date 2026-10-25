@@ -1,30 +1,35 @@
 /**
- * BadEgg v2 — schema-2 blocklist consumer.
+ * BadEgg v3 - edge HTTP security gateway & schema-2 blocklist consumer.
  *
- * Replaces the schema-1 logic (2.6 MB text scan + 11 feeds fetched per isolate).
- * Reads the prebuilt `hall-of-shame.v2.bin` from idi-assets, keeps it in KV, and
- * answers a lookup in ~1 µs with no network I/O on the hot path.
+ * Ports the BadEgg v3 security gateway (`international-duck-incorporated/badegg-v3`:
+ * `badegg/engine.py`, `badegg/ratelimit.py`, `badegg/gateway.py`, `badegg/config.py`)
+ * onto Cloudflare Pages Functions (`functions/_middleware.js`) and Workers
+ * (`worker.js`), combined with the ~1 us binary `hall-of-shame.v2.bin` IPv4/IPv6
+ * blocklist from `idi-assets`.
  *
- * Why this file exists:
- *   - schema 1 compared the raw CF-Connecting-IP string against the raw feed
- *     string, so 2001:db8::1 never matched 2001:db8:0:0:0:0:0:1. IPv6 was
- *     unenforceable even when listed. Here every address is parsed to bytes and
- *     compared numerically.
- *   - schema 1 sliced text out of the document and trusted it. An HTML error
- *     page from GitLab silently emptied the list and opened the gate. Here the
- *     artifact is validated (magic, version, size, trailer, counts) and a bad
- *     payload never replaces a good index.
- *   - schema 1 made every request a Function invocation that could block for a
- *     cold fetch. Here the index is built once and refreshed in the background;
- *     visitors never wait and the site never goes down.
- *
- * Failure policy, in order: validate -> swap. On any doubt keep the index that
- * is already loaded. If there has never been a good index, allow the request
- * (a broken blocklist must not take the site offline) and retry shortly.
- *
- * Bindings: optional KV namespace `IDI_BADEGG`. Without it the module still works,
- * it just pays the cold fetch once per isolate.
+ * Protection layers (in request order):
+ *   1. Framing & method safeguards: supported HTTP verbs, Expect/Upgrade checks,
+ *      Content-Length bounds, and per-isolate in-flight concurrency cap (64).
+ *   2. Threat-intel IP/CIDR blocklist: `hall-of-shame.v2.bin` / `.json` cached
+ *      in memory and optional `IDI_BADEGG` KV, numeric IPv4 + IPv6 matching.
+ *   3. Explainable temporary exact-IP bans: 15-minute TTL bans (`ban_ttl_seconds = 900`)
+ *      earned by high-confidence attack payloads or sustained rate-limit abuse,
+ *      synced across isolates when `IDI_BADEGG` KV is bound.
+ *   4. Per-IP token-bucket rate limiter: bounded LRU table (`MAX_TRACKED_SOURCES = 10_000`),
+ *      HTTP 429 with `Retry-After`, optional strike escalation to temporary ban,
+ *      zero IP retention in logs.
+ *   5. Deterministic request inspection (`RULES`): 24 rules covering SQL injection,
+ *      XSS (including obfuscated `javascript:` URIs), shell command injection,
+ *      Log4Shell/JNDI & server-side template injection, NoSQL operator injection,
+ *      and sensitive path traversal, with `minimize_false_bans` (0.97) and
+ *      `catch_more` (0.92) risk profiles.
+ *   6. Outgoing secret-leak protection & metadata-only event ring buffer:
+ *      redacts or blocks leaked credentials in response headers (and optional
+ *      text/JSON bodies) while keeping zero raw payloads or client IPs in memory
+ *      diagnostics (`?badegg-status=1`).
  */
+
+export const BADEGG_VERSION = "3.0";
 
 export const BIN_URL =
   "https://gitlab.com/international-duck-incorporated/idi-assets/-/raw/main/hall-of-shame.v2.bin?ref_type=heads";
@@ -32,31 +37,648 @@ export const JSON_URL =
   "https://gitlab.com/international-duck-incorporated/idi-assets/-/raw/main/hall-of-shame.v2.json?ref_type=heads";
 
 const KV_KEY = "badegg:blocklist:v2";
-const TTL_MS = 10 * 60 * 1000; // how stale the in-isolate index may get
-const RETRY_MS = 60 * 1000; // backoff after a failed refresh
-const KV_CACHE_TTL_S = 300; // Cloudflare edge cache for the KV read
-const COLD_WAIT_MS = 9000; // max a cold request may block (see note)
-// A cold isolate has no index, so a short race means the first requests run
-// UNFILTERED - a real bypass for a banlist. The fetch itself is bounded by
-// FETCH_TIMEOUT_MS, so waiting for it is bounded too; we only fail open if the
-// artifact genuinely cannot be fetched.
+const KV_TEMPBAN_PREFIX = "badegg:v3:ban:";
+const TTL_MS = 10 * 60 * 1000;
+const RETRY_MS = 60 * 1000;
+const KV_CACHE_TTL_S = 300;
+const COLD_WAIT_MS = 9000;
 const FETCH_TIMEOUT_MS = 8000;
 const CONTACT_EMAIL = "0xffshell@duck.com";
 const BIN_MAGIC = 0x49444932; // "IDI2"
 const BIN_VERSION = 2;
-const MIN_V4_IPS = 1000; // sanity floors; a truncated file fails them
+const MIN_V4_IPS = 1000;
 const MIN_V4_NETS = 100;
 const MIN_V6_NETS = 1;
 
 /** Manual entries, always enforced. Keep empty unless something is urgent. */
 const EXTRA_BLOCKED = [];
 
-// ---------------------------------------------------------------- state
-// One index per isolate. `source` is for ?badegg-status=1 only.
+// ---------------------------------------------------------------- v3 policy & constants
+export const RISK_PROFILES = {
+  minimize_false_bans: {
+    label: "Minimize false bans",
+    autoBlockThreshold: 0.97,
+    alertThreshold: 0.6,
+  },
+  catch_more: {
+    label: "Catch more threats",
+    autoBlockThreshold: 0.92,
+    alertThreshold: 0.4,
+  },
+};
+
+export const SUPPORTED_METHODS = new Set([
+  "GET",
+  "HEAD",
+  "POST",
+  "PUT",
+  "PATCH",
+  "DELETE",
+  "OPTIONS",
+]);
+
+export const MAX_UNINSPECTED_REQUEST_BYTES = 10_485_760; // 10 MiB hard ceiling
+export const DEFAULT_MAX_GATEWAY_BODY_BYTES = 1_000_000; // 1 MiB inspected body cap
+export const DEFAULT_MAX_SCAN_CHARS = 1_100_000;
+export const DEFAULT_MAX_CONCURRENT_REQUESTS = 64;
+export const MAX_TRACKED_SOURCES = 10_000;
+export const IDLE_EVICTION_MS = 3_600_000;
+export const MAX_ACTIVE_TEMP_BANS = 4_096;
+export const MAX_EVENTS = 200;
+
+export function resolveConfig(env = {}) {
+  const rawRisk = String(env?.BADEGG_RISK_MODE || "minimize_false_bans").trim();
+  const riskMode = RISK_PROFILES[rawRisk] ? rawRisk : "minimize_false_bans";
+  const rawMode = String(env?.BADEGG_MODE || "enforce")
+    .trim()
+    .toLowerCase();
+  const enforcementMode = rawMode === "monitor" ? "monitor" : "enforce";
+  const overrideRaw = env?.BADEGG_AUTO_BLOCK_THRESHOLD;
+  const thresholdOverride =
+    overrideRaw !== undefined && overrideRaw !== "" && Number.isFinite(Number(overrideRaw))
+      ? Math.min(1, Math.max(0.1, Number(overrideRaw)))
+      : null;
+
+  const extraAllow = String(env?.BADEGG_ALLOWLIST || "")
+    .split(",")
+    .map((s) => s.trim().toLowerCase())
+    .filter(Boolean);
+
+  const intOr = (val, fallback, min, max) => {
+    const n = Number.parseInt(String(val ?? ""), 10);
+    if (!Number.isFinite(n)) return fallback;
+    return Math.min(max, Math.max(min, n));
+  };
+
+  return {
+    riskMode,
+    enforcementMode,
+    autoBlockEnabled: env?.BADEGG_AUTO_BLOCK !== "0",
+    autoBlockThreshold: thresholdOverride ?? RISK_PROFILES[riskMode].autoBlockThreshold,
+    alertThreshold: RISK_PROFILES[riskMode].alertThreshold,
+    banTtlSeconds: intOr(env?.BADEGG_BAN_TTL_SECONDS, 900, 30, 86_400),
+    scanInputs: env?.BADEGG_SCAN_INPUTS !== "0",
+    scanOutputs: env?.BADEGG_SCAN_OUTPUTS !== "0",
+    scanOutputBodies: env?.BADEGG_SCAN_OUTPUT_BODIES === "1",
+    scanPii: env?.BADEGG_SCAN_PII === "1",
+    outputAction: ["alert", "redact", "block"].includes(env?.BADEGG_OUTPUT_ACTION)
+      ? env.BADEGG_OUTPUT_ACTION
+      : "redact",
+    maxScanChars: intOr(env?.BADEGG_MAX_SCAN_CHARS, DEFAULT_MAX_SCAN_CHARS, 1024, 5_000_000),
+    maxGatewayBodyBytes: intOr(
+      env?.BADEGG_MAX_BODY_BYTES,
+      DEFAULT_MAX_GATEWAY_BODY_BYTES,
+      1024,
+      MAX_UNINSPECTED_REQUEST_BYTES
+    ),
+    rateLimitEnabled: env?.BADEGG_RATE_LIMIT !== "0",
+    rateLimitRequests: intOr(env?.BADEGG_RATE_LIMIT_REQUESTS, 180, 1, 100_000),
+    rateLimitWindowSeconds: intOr(env?.BADEGG_RATE_LIMIT_WINDOW_S, 60, 1, 3600),
+    rateLimitBurst: intOr(env?.BADEGG_RATE_LIMIT_BURST, 60, 1, 10_000),
+    rateLimitAction: env?.BADEGG_RATE_LIMIT_ACTION === "throttle" ? "throttle" : "ban",
+    rateLimitBanAfter: intOr(env?.BADEGG_RATE_LIMIT_BAN_AFTER, 10, 1, 1000),
+    maxConcurrentRequests: intOr(
+      env?.BADEGG_MAX_CONCURRENT,
+      DEFAULT_MAX_CONCURRENT_REQUESTS,
+      1,
+      4096
+    ),
+    allowlist: new Set(["127.0.0.1", "::1", ...extraAllow]),
+  };
+}
+
+// ---------------------------------------------------------------- v3 inspection rules
+const JS_GAP = String.raw`(?:[\s\x00-\x20]|&#x?0*[0-9a-f]{1,6};?){0,8}`;
+const JS_SCHEME =
+  String.raw`(?!javascript\s*:)` +
+  "javascript".split("").join(JS_GAP) +
+  JS_GAP +
+  String.raw`(?::|&colon;)`;
+
+const SHELL_HARD =
+  String.raw`sh|bash|zsh|ksh|dash|curl|wget|nc|ncat|netcat|telnet|chmod|chown|chgrp|` +
+  String.raw`whoami|uname|hostname|ifconfig|ipconfig|nslookup|dig|powershell|pwsh|` +
+  String.raw`python[23]?|perl|ruby|php|node|openssl|xxd|crontab|systemctl`;
+const SHELL_SOFT =
+  String.raw`cat|id|ps|rm|ls|cp|mv|dd|kill|head|tail|touch|find|grep|awk|sed|env|` +
+  String.raw`export|wc|du|df|more|less|base64|tar|zip|unzip`;
+const SHELL_ARG =
+  String.raw`(?:\s+[-/~$'"\\.]|\s+\w+://|\s+[\w-]{1,40}\.[a-z]{2,6}(?:[/\s]|$)|` +
+  String.raw`\s+\d{1,3}(?:\.\d{1,3}){3}\b|\s*[<>]|\s*\|\s*\w)`;
+const SHELL_TERM = String.raw`(?=\s*(?:[;&|)\`]|[\r\n]|$))`;
+const SHELL_CMD = String.raw`(?:(?:${SHELL_HARD})\b(?:${SHELL_ARG}|${SHELL_TERM})|(?:${SHELL_SOFT})\b${SHELL_ARG})`;
+const SHELL_INJECTION_PATTERN =
+  String.raw`(?:;|&&|\|\|)\s*${SHELL_CMD}` +
+  String.raw`|\|\s*(?:sh|bash|zsh|python[23]?|perl|nc|ncat|netcat|telnet)\b` +
+  String.raw`|\`\s*${SHELL_CMD}[^\`\r\n]{0,100}\``;
+
+export const RULES = [
+  {
+    key: "private_key",
+    category: "private_key",
+    directions: ["input", "output"],
+    pattern:
+      /-----BEGIN (?:RSA |EC |OPENSSH |DSA )?PRIVATE KEY-----[\s\S]*?-----END (?:RSA |EC |OPENSSH |DSA )?PRIVATE KEY-----/i,
+    confidence: 1.0,
+    severity: "critical",
+    summary: "Private-key marker detected.",
+    sensitive: true,
+    pii: false,
+  },
+  {
+    key: "aws_access_key",
+    category: "cloud_credential",
+    directions: ["input", "output"],
+    pattern: /\b(?:AKIA|ASIA)[0-9A-Z]{16}\b/i,
+    confidence: 0.99,
+    severity: "high",
+    summary: "AWS-style access-key format detected.",
+    sensitive: true,
+    pii: false,
+  },
+  {
+    key: "github_token",
+    category: "source_control_credential",
+    directions: ["input", "output"],
+    pattern: /\b(?:gh[pousr]_[A-Za-z0-9]{20,}|github_pat_[A-Za-z0-9_]{20,})\b/i,
+    confidence: 0.99,
+    severity: "high",
+    summary: "GitHub-token-like format detected.",
+    sensitive: true,
+    pii: false,
+  },
+  {
+    key: "slack_token",
+    category: "api_credential",
+    directions: ["input", "output"],
+    pattern: /\bxox[baprs]-[A-Za-z0-9-]{10,}/i,
+    confidence: 0.99,
+    severity: "high",
+    summary: "Slack API token detected.",
+    sensitive: true,
+    pii: false,
+  },
+  {
+    key: "stripe_secret_key",
+    category: "api_credential",
+    directions: ["input", "output"],
+    pattern: /\b(?:sk|rk)_(?:live|test)_[A-Za-z0-9]{16,}/i,
+    confidence: 0.99,
+    severity: "high",
+    summary: "Stripe secret key detected.",
+    sensitive: true,
+    pii: false,
+  },
+  {
+    key: "google_api_key",
+    category: "api_credential",
+    directions: ["input", "output"],
+    pattern: /\bAIza[0-9A-Za-z_-]{35}\b/i,
+    confidence: 0.98,
+    severity: "high",
+    summary: "Google API key detected.",
+    sensitive: true,
+    pii: false,
+  },
+  {
+    key: "connection_string_credential",
+    category: "credential_assignment",
+    directions: ["input", "output"],
+    pattern:
+      /\b(?:postgres(?:ql)?|mysql|mongodb(?:\+srv)?|redis|amqp|mssql|ftp):\/\/[^\s:@/]{1,64}:(?<secret>[^\s:@/]{1,128})@/i,
+    confidence: 0.98,
+    severity: "high",
+    summary: "Database or service connection string containing an inline password.",
+    sensitive: true,
+    pii: false,
+  },
+  {
+    key: "openai_token",
+    category: "api_credential",
+    directions: ["input", "output"],
+    pattern: /\bsk-(?:proj-)?[A-Za-z0-9_-]{20,}\b/i,
+    confidence: 0.98,
+    severity: "high",
+    summary: "API-token-like format detected.",
+    sensitive: true,
+    pii: false,
+  },
+  {
+    key: "jwt",
+    category: "bearer_credential",
+    directions: ["input", "output"],
+    pattern: /\beyJ[A-Za-z0-9_-]{10,}\.[A-Za-z0-9_-]{10,}\.[A-Za-z0-9_-]{10,}\b/i,
+    confidence: 0.96,
+    severity: "high",
+    summary: "JWT-like bearer token detected.",
+    sensitive: true,
+    pii: false,
+  },
+  {
+    key: "authorization_credential",
+    category: "authorization_credential",
+    directions: ["input", "output"],
+    pattern:
+      /\b(?:proxy-)?authorization\b\s*[:=]\s*(?:basic|bearer|token)\s+[A-Za-z0-9._~+/-]{1,}={0,2}/i,
+    confidence: 0.99,
+    severity: "high",
+    summary: "HTTP authorization credential detected.",
+    sensitive: true,
+    pii: false,
+  },
+  {
+    key: "cookie_credential",
+    category: "cookie_credential",
+    directions: ["input", "output"],
+    pattern:
+      /\b(?:set-cookie|cookie)\b\s*:\s*[^\r\n]*?(?:\b(?:session|sess|sid|auth|token|jwt|login|remember|csrf|xsrf|phpsessid|jsessionid)\w*\s*=\s*[^;\r\n]{4,}|=\s*[A-Za-z0-9._~+/-]{24,}={0,2}(?:;|$))/i,
+    confidence: 0.98,
+    severity: "high",
+    summary: "HTTP cookie/session credential detected.",
+    sensitive: true,
+    pii: false,
+  },
+  {
+    key: "credential_assignment",
+    category: "credential_assignment",
+    directions: ["input", "output"],
+    pattern:
+      /\b(?:aws[_-]?secret[_-]?access[_-]?key|api[_-]?(?:key|secret)|(?:(?:access|refresh|id|auth)[_-]?)?token|client[_-]?secret|private[_-]?key|authorization|bearer|jwt|(?:session(?:[_-]?(?:id|token))?|sid)|secret|password|passwd)\b\s*[:=]\s*(?:"(?<secret_double>[^\r\n"]+)"|'(?<secret_single>[^\r\n']+)'|(?<secret>[^\r\n&]+))/i,
+    confidence: 0.9,
+    severity: "high",
+    summary: "Credential-like value assigned to a sensitive field.",
+    sensitive: true,
+    pii: false,
+  },
+  {
+    key: "sql_union_select",
+    category: "sql_injection",
+    directions: ["input"],
+    pattern: /\bunion\s+(?:all\s+)?select\b/i,
+    confidence: 0.96,
+    severity: "high",
+    summary: "SQL UNION/SELECT pattern detected.",
+    sensitive: false,
+    pii: false,
+  },
+  {
+    key: "sql_tautology",
+    category: "sql_injection",
+    directions: ["input"],
+    pattern:
+      /['"]\s*\)?\s*(?:or|and)\s+['"]?[\w.-]{1,40}['"]?\s*=\s*['"]?[\w.-]{1,40}|\b(?:or|and)\s+['"][^'"\r\n]{1,40}['"]\s*=\s*['"]?[^'"\r\n]{1,40}|\b(?:or|and)\s+[\w.-]{1,20}(?:=|<>|!=|<|>)[\w.-]{1,20}(?![=<>])|\b(?:or|and)\s*\(\s*['"]{0,2}[\w.-]{0,40}['"]{0,2}\s*=\s*['"]{0,2}[\w.-]{0,40}|\b(?:or|and)\s+['"]{2}\s*(?:[-=<>&^*|+]|['"])/i,
+    confidence: 0.99,
+    severity: "critical",
+    summary: "SQL tautology pattern detected.",
+    sensitive: false,
+    pii: false,
+  },
+  {
+    key: "sql_stacked_query",
+    category: "sql_injection",
+    directions: ["input"],
+    pattern: /;\s*(?:drop|alter|truncate|delete|insert|update|exec(?:ute)?)\b/i,
+    confidence: 0.99,
+    severity: "critical",
+    summary: "Stacked SQL statement pattern detected.",
+    sensitive: false,
+    pii: false,
+  },
+  {
+    key: "sql_comment_evasion",
+    category: "sql_injection",
+    directions: ["input"],
+    pattern:
+      /\/\*![\d\s]{0,8}(?:union|select|from|where|and|or|insert|update|delete|drop)\b|\/\*(?:!\d*)?[^*]{0,60}\*\/\s*(?:union|select|from|where|and|or|insert|update|delete|drop)\b|\b(?:union|select|from|where|and|or)\s*\/\*(?:!\d*)?[^*]{0,60}\*\//i,
+    confidence: 0.97,
+    severity: "high",
+    summary: "SQL keywords separated by inline comments.",
+    sensitive: false,
+    pii: false,
+  },
+  {
+    key: "sql_comment_terminator",
+    category: "sql_injection",
+    directions: ["input"],
+    pattern:
+      /[\w.@-]{1,40}['"]\)?(?:--|#)(?=\s|$|[^\w-])|[\w.@-]{1,40}['"]\)?\s{0,3}(?:--|#|\/\*)\s*(?=$|[&\r\n])/i,
+    confidence: 0.97,
+    severity: "high",
+    summary: "Quoted value followed by a SQL comment marker.",
+    sensitive: false,
+    pii: false,
+  },
+  {
+    key: "sql_time_delay",
+    category: "sql_injection",
+    directions: ["input"],
+    pattern: /\b(?:sleep|benchmark|pg_sleep)\s*\(|\bwaitfor\s+delay\b/i,
+    confidence: 0.98,
+    severity: "high",
+    summary: "SQL timing-function pattern detected.",
+    sensitive: false,
+    pii: false,
+  },
+  {
+    key: "xss",
+    category: "cross_site_scripting",
+    directions: ["input"],
+    pattern: new RegExp(
+      String.raw`<\s*script\b|javascript\s*:(?:\S|\s{1,5}\S*\()|\bon\w{2,32}\s*=\s*['"]?` +
+        String.raw`|&#x?0*(?:3c|60)\s*;?\s*\/?\s*(?:script|img|svg|iframe|object|embed)\b` +
+        String.raw`|data\s*:\s*(?:text\/html|application\/xhtml)` +
+        String.raw`|style\s*=\s*['"][^'"]{0,80}expression\s*\(` +
+        String.raw`|${JS_SCHEME}` +
+        String.raw`|<\s*[a-z][^>]{0,200}?(?:&#x?0*[0-9a-f]{1,8};?){4,}`,
+      "i"
+    ),
+    confidence: 0.97,
+    severity: "high",
+    summary: "Cross-site-scripting-like input pattern detected.",
+    sensitive: false,
+    pii: false,
+  },
+  {
+    key: "command_injection",
+    category: "command_injection",
+    directions: ["input"],
+    pattern: new RegExp(SHELL_INJECTION_PATTERN, "is"),
+    confidence: 0.99,
+    severity: "critical",
+    summary: "Shell-command-like input pattern detected.",
+    sensitive: false,
+    pii: false,
+  },
+  {
+    key: "shell_variable_assignment",
+    category: "command_injection",
+    directions: ["input"],
+    pattern: /(?:^|[;&|\n])\s*\w{1,20}=\$\(/i,
+    confidence: 0.99,
+    severity: "critical",
+    summary: "Shell variable assigned from command substitution.",
+    sensitive: false,
+    pii: false,
+  },
+  {
+    key: "command_substitution",
+    category: "command_injection",
+    directions: ["input"],
+    pattern: /\$\([^)]{1,120}\)|\$\{(?:IFS\b[^}\r\n]*|[^}\r\n]*[;|&`$(][^}\r\n]*)\}/is,
+    confidence: 0.89,
+    severity: "medium",
+    summary: "Shell command-substitution syntax detected.",
+    sensitive: false,
+    pii: false,
+  },
+  {
+    key: "jndi_lookup",
+    category: "template_injection",
+    directions: ["input"],
+    pattern:
+      /\$\{\s*(?:jndi|ldap|rmi|dns|iiop|corba|nis)\s*:|\$\{\s*(?:lower|upper|env|sys|date|java|ctx)\s*:[^}\r\n]{0,80}[:}]/i,
+    confidence: 0.99,
+    severity: "critical",
+    summary: "JNDI or Log4j lookup syntax detected (Log4Shell family).",
+    sensitive: false,
+    pii: false,
+  },
+  {
+    key: "template_expression",
+    category: "template_injection",
+    directions: ["input"],
+    pattern:
+      /\{\{\s*[^}\r\n]{0,60}?(?:[*/+-]\s*\d|\b(?:self|config|request|__\w+__|constructor|global|process|os\b|system|exec|popen)\b)[^}\r\n]{0,60}\}\}|\{%\s*(?:import|include|extends|for|if)\b[^%]{0,80}%\}|<%=\s*[^%\r\n]{0,80}%>|#\{[^}\r\n]{0,60}(?:[*/+-]\s*\d|\.class\b|getRuntime)[^}\r\n]{0,60}\}|\?\s*new\s*\(\s*\)/i,
+    confidence: 0.97,
+    severity: "high",
+    summary: "Server-side template expression detected.",
+    sensitive: false,
+    pii: false,
+  },
+  {
+    key: "nosql_operator",
+    category: "nosql_injection",
+    directions: ["input"],
+    pattern:
+      /["']?\$(?:ne|gt|gte|lt|lte|in|nin|regex|where|exists|expr|function|accumulator|mapReduce)["']?\s*:/i,
+    confidence: 0.97,
+    severity: "high",
+    summary: "MongoDB query operator supplied in user input.",
+    sensitive: false,
+    pii: false,
+  },
+  {
+    key: "path_traversal_sensitive",
+    category: "path_traversal",
+    directions: ["input"],
+    pattern:
+      /(?<![\w.-])\/(?:etc\/(?:passwd|shadow|group|sudoers|hosts)\b|proc\/self\/(?:environ|cmdline|maps)\b|root\/\.|var\/log\/|windows\/win\.ini|boot\.ini)|(?:\.\.\/|\.\.\\){3,}|(?:\/\.){4,}\/|(?:\.\.\/|\.\.\\)[^\r\n]{0,120}?(?:etc\/|proc\/|sys\/|var\/log|var\/www|root\/|windows\/|winnt\/|system32|win\.ini|boot\.ini|\.ssh|\.aws|\.env|id_rsa|passwd|shadow|wp-config|web\.config|secrets?\.[a-z]{2,5})/i,
+    confidence: 0.98,
+    severity: "critical",
+    summary: "Path traversal toward a sensitive location detected.",
+    sensitive: false,
+    pii: false,
+  },
+  {
+    key: "sensitive_file_parameter",
+    category: "path_traversal",
+    directions: ["input"],
+    pattern:
+      /=\s*[\w./\\-]{0,60}?(?:\/|\\\\)(?:\.bash_history|\.bash_profile|\.bashrc|\.ssh\/|\.aws\/|\.env\b|id_rsa|id_dsa|shadow\b|passwd\b|php\.ini|my\.cnf|httpd\.conf|apache2?\.conf|access[_.]log|error[_.]log|boot\.ini|grub\.conf|win\.ini|sam\b|wp-config\.php|web\.config)/i,
+    confidence: 0.98,
+    severity: "critical",
+    summary: "Request parameter points at a sensitive system file.",
+    sensitive: false,
+    pii: false,
+  },
+  {
+    key: "path_traversal",
+    category: "path_traversal",
+    directions: ["input"],
+    pattern: /(?:\.\.\/|\.\.\\){1,}/i,
+    confidence: 0.91,
+    severity: "medium",
+    summary: "Path-traversal-like input pattern detected.",
+    sensitive: false,
+    pii: false,
+  },
+  {
+    key: "email_address",
+    category: "email_address",
+    directions: ["input", "output"],
+    pattern: /\b[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}\b/i,
+    confidence: 0.72,
+    severity: "low",
+    summary: "Email-address-like data detected.",
+    sensitive: false,
+    pii: true,
+  },
+];
+
+export const ATTACK_CATEGORIES = new Set([
+  "sql_injection",
+  "command_injection",
+  "cross_site_scripting",
+  "path_traversal",
+  "template_injection",
+  "nosql_injection",
+]);
+
+export const SECRET_CATEGORIES = new Set([
+  "private_key",
+  "cloud_credential",
+  "source_control_credential",
+  "api_credential",
+  "bearer_credential",
+  "authorization_credential",
+  "cookie_credential",
+  "credential_assignment",
+]);
+
+// ---------------------------------------------------------------- v3 rate limiter
+export class RateLimiter {
+  constructor({ clock = () => Date.now(), maxSources = MAX_TRACKED_SOURCES } = {}) {
+    this._clock = clock;
+    this._maxSources = Math.max(1, Math.trunc(maxSources));
+    this._buckets = new Map();
+    this.allowedTotal = 0;
+    this.throttledTotal = 0;
+    this.escalationsTotal = 0;
+    this.evictedTotal = 0;
+  }
+
+  _evictIfNeeded(now) {
+    if (this._buckets.size < this._maxSources) return;
+    for (const [source, bucket] of this._buckets) {
+      if (now - bucket.updated >= IDLE_EVICTION_MS) {
+        this._buckets.delete(source);
+        this.evictedTotal++;
+      }
+    }
+    while (this._buckets.size >= this._maxSources) {
+      const oldest = this._buckets.keys().next().value;
+      if (oldest === undefined) break;
+      this._buckets.delete(oldest);
+      this.evictedTotal++;
+    }
+  }
+
+  check(source, { requests = 120, windowSeconds = 60, burst = 30, banAfter = 0 } = {}) {
+    if (!source) throw new Error("A rate-limit source key is required.");
+    const reqs = Math.max(1, Math.trunc(requests));
+    const winMs = Math.max(1, Math.trunc(windowSeconds)) * 1000;
+    const capacity = Math.max(1, Math.trunc(burst));
+    const refillPerMs = reqs / winMs;
+    const now = this._clock();
+
+    let bucket = this._buckets.get(source);
+    if (!bucket) {
+      this._evictIfNeeded(now);
+      bucket = { tokens: capacity, updated: now, strikes: 0, lastStrike: 0, lastReport: -1000 };
+      this._buckets.set(source, bucket);
+    } else {
+      this._buckets.delete(source);
+      const elapsed = Math.max(0, now - bucket.updated);
+      bucket.tokens = Math.min(capacity, bucket.tokens + elapsed * refillPerMs);
+      bucket.updated = now;
+      this._buckets.set(source, bucket);
+    }
+
+    if (bucket.strikes && now - bucket.lastStrike > winMs) {
+      bucket.strikes = 0;
+    }
+
+    if (bucket.tokens >= 1) {
+      bucket.tokens -= 1;
+      this.allowedTotal++;
+      return {
+        allowed: true,
+        retryAfter: 0,
+        strikes: 0,
+        shouldReport: false,
+        escalate: false,
+        remaining: Math.round(bucket.tokens * 1000) / 1000,
+      };
+    }
+
+    const deficit = 1 - bucket.tokens;
+    const retryAfter = Math.max(1, Math.ceil(deficit / (refillPerMs * 1000)));
+    bucket.strikes += 1;
+    bucket.lastStrike = now;
+    this.throttledTotal++;
+
+    const shouldReport = now - bucket.lastReport >= 1000;
+    if (shouldReport) bucket.lastReport = now;
+
+    const escalate = banAfter > 0 && bucket.strikes >= banAfter;
+    if (escalate) {
+      bucket.strikes = 0;
+      this.escalationsTotal++;
+    }
+
+    return {
+      allowed: false,
+      retryAfter,
+      strikes: bucket.strikes,
+      shouldReport,
+      escalate,
+      remaining: 0,
+    };
+  }
+
+  snapshot() {
+    return {
+      trackedSources: this._buckets.size,
+      maxTrackedSources: this._maxSources,
+      allowedTotal: this.allowedTotal,
+      throttledTotal: this.throttledTotal,
+      escalationsTotal: this.escalationsTotal,
+      evictedTotal: this.evictedTotal,
+    };
+  }
+
+  reset() {
+    this._buckets.clear();
+    this.allowedTotal = 0;
+    this.throttledTotal = 0;
+    this.escalationsTotal = 0;
+    this.evictedTotal = 0;
+  }
+}
+
+// ---------------------------------------------------------------- isolate state
 let state = { index: null, loadedAt: 0, source: null, nextAttemptAt: 0, lastError: null };
 let inflight = null;
 
-// ---------------------------------------------------------------- parsing
+const rateLimiter = new RateLimiter();
+const tempBans = new Map(); // normalizedIp -> { ip, expiresAtMs, reasonCategories, mode }
+const recentEvents = []; // bounded metadata-only ring buffer (newest first, max MAX_EVENTS)
+const wafMetrics = {
+  inspectedTotal: 0,
+  blockedAttacksTotal: 0,
+  blockedTempBansTotal: 0,
+  redactedOutputsTotal: 0,
+  blockedOutputsTotal: 0,
+  activeRequests: 0,
+  peakConcurrentRequests: 0,
+  overloadRejections: 0,
+};
+
+export function resetBadEggV3State() {
+  rateLimiter.reset();
+  tempBans.clear();
+  recentEvents.length = 0;
+  wafMetrics.inspectedTotal = 0;
+  wafMetrics.blockedAttacksTotal = 0;
+  wafMetrics.blockedTempBansTotal = 0;
+  wafMetrics.redactedOutputsTotal = 0;
+  wafMetrics.blockedOutputsTotal = 0;
+  wafMetrics.activeRequests = 0;
+  wafMetrics.peakConcurrentRequests = 0;
+  wafMetrics.overloadRejections = 0;
+}
+
+// ---------------------------------------------------------------- IP parsing
 const isV4 = (s) => /^\d{1,3}(\.\d{1,3}){3}$/.test(s);
 
 /** Parse an IPv6 literal into 8 x u16. Returns null when invalid. */
@@ -104,14 +726,12 @@ function dottedToWords(s) {
   return `${((n[0] << 8) | n[1]).toString(16)}:${((n[2] << 8) | n[3]).toString(16)}`;
 }
 
-/** 8 x u16 -> 32-char lowercase hex. Lexicographic order == numeric order. */
 function key6(groups) {
   let out = "";
   for (let i = 0; i < 8; i++) out += groups[i].toString(16).padStart(4, "0");
   return out;
 }
 
-/** 16 network-order bytes -> 32-char lowercase hex. */
 function key6bytes(bytes, off) {
   let out = "";
   for (let i = 0; i < 16; i++) out += bytes[off + i].toString(16).padStart(2, "0");
@@ -130,7 +750,305 @@ export function ipToU32(value) {
   return (((a << 24) >>> 0) + (b << 16) + (c << 8) + d) >>> 0;
 }
 
-// ---------------------------------------------------------------- index
+export function normalizeIp(raw) {
+  if (typeof raw !== "string") return null;
+  const s = raw.trim().toLowerCase();
+  if (!s) return null;
+  if (s.includes(":")) {
+    const g = parse6(s);
+    if (!g) return null;
+    if (g[0] === 0 && g[1] === 0 && g[2] === 0 && g[3] === 0 && g[4] === 0 && g[5] === 0xffff) {
+      return `${g[6] >> 8}.${g[6] & 255}.${g[7] >> 8}.${g[7] & 255}`;
+    }
+    return key6(g);
+  }
+  const u = ipToU32(s);
+  if (u === null) return null;
+  return `${(u >>> 24) & 255}.${(u >>> 16) & 255}.${(u >>> 8) & 255}.${u & 255}`;
+}
+
+export function isAllowlistedIp(rawIp, config) {
+  const norm = normalizeIp(rawIp);
+  if (!norm) return false;
+  if (norm === "127.0.0.1" || norm === "00000000000000000000000000000001") return true;
+  if (config?.allowlist) {
+    if (config.allowlist.has(rawIp.trim().toLowerCase()) || config.allowlist.has(norm)) return true;
+  }
+  return false;
+}
+
+// ---------------------------------------------------------------- v3 redaction & scanning
+export function redactText(text, scanPii = false) {
+  let redacted = String(text ?? "");
+  for (const rule of RULES) {
+    if (!rule.sensitive && !(scanPii && rule.pii)) continue;
+    const globalFlags = rule.pattern.flags.includes("g")
+      ? rule.pattern.flags
+      : rule.pattern.flags + "g";
+    const re = new RegExp(rule.pattern.source, globalFlags);
+    if (rule.key === "credential_assignment") {
+      redacted = redacted.replace(re, (full, ...args) => {
+        const groups = args.at(-1);
+        const secret =
+          groups && typeof groups === "object"
+            ? (groups.secret_double ?? groups.secret_single ?? groups.secret)
+            : null;
+        if (!secret) return full;
+        const idx = full.lastIndexOf(secret);
+        if (idx < 0) return full;
+        return full.slice(0, idx) + "[REDACTED]" + full.slice(idx + secret.length);
+      });
+    } else {
+      const label =
+        rule.key === "email_address"
+          ? "[REDACTED_EMAIL]"
+          : `[REDACTED_${rule.category.toUpperCase()}]`;
+      redacted = redacted.replace(re, label);
+    }
+  }
+  return redacted;
+}
+
+export function safeRoute(route) {
+  const raw = String(route || "").trim();
+  if (!raw) return "";
+  let path = raw.split("?")[0];
+  try {
+    path = decodeURIComponent(path);
+  } catch {
+    // keep raw path segment on malformed % sequence
+  }
+  path = redactText(path, true);
+  path = path.replace(/(?<![A-Za-z0-9])[A-Fa-f0-9]{32,}(?![A-Za-z0-9])/g, "[REDACTED_ID]");
+  path = path.replace(/(?<![A-Za-z0-9])[A-Za-z0-9_-]{40,}(?![A-Za-z0-9])/g, "[REDACTED_VALUE]");
+  let clean = "";
+  for (let i = 0; i < path.length && clean.length < 256; i++) {
+    const code = path.charCodeAt(i);
+    clean += code >= 0x20 && code !== 0x7f ? path[i] : "?";
+  }
+  return clean;
+}
+
+function recordEvent(entry) {
+  recentEvents.unshift(entry);
+  if (recentEvents.length > MAX_EVENTS) recentEvents.length = MAX_EVENTS;
+}
+
+function expireTempBans(now = Date.now()) {
+  for (const [key, ban] of tempBans) {
+    if (ban.expiresAtMs <= now) tempBans.delete(key);
+  }
+}
+
+export function addTemporaryBan(rawIp, reasonCategories, config, env, waitUntil) {
+  const key = normalizeIp(rawIp);
+  if (!key) return null;
+  const now = Date.now();
+  expireTempBans(now);
+  while (tempBans.size >= MAX_ACTIVE_TEMP_BANS) {
+    const oldest = tempBans.keys().next().value;
+    if (oldest === undefined) break;
+    tempBans.delete(oldest);
+  }
+  const ttlSeconds = config.banTtlSeconds;
+  const expiresAtMs = now + ttlSeconds * 1000;
+  const record = {
+    expiresAt: new Date(expiresAtMs).toISOString(),
+    expiresAtMs,
+    ttlSeconds,
+    reasonCategories: [...new Set(reasonCategories)].sort(),
+    mode: config.enforcementMode === "enforce" ? "active" : "dry_run",
+  };
+  tempBans.set(key, record);
+
+  if (record.mode === "active" && env?.IDI_BADEGG && waitUntil) {
+    const kvKey = `${KV_TEMPBAN_PREFIX}${key}`;
+    waitUntil(
+      env.IDI_BADEGG.put(kvKey, JSON.stringify(record), { expirationTtl: ttlSeconds }).catch(
+        () => {}
+      )
+    );
+  }
+  return record;
+}
+
+export async function getActiveTemporaryBan(rawIp, env) {
+  const key = normalizeIp(rawIp);
+  if (!key) return null;
+  const now = Date.now();
+  expireTempBans(now);
+  const local = tempBans.get(key);
+  if (local) {
+    return local.mode === "active" && local.expiresAtMs > now ? local : null;
+  }
+  if (env?.IDI_BADEGG) {
+    try {
+      const stored = await env.IDI_BADEGG.get(`${KV_TEMPBAN_PREFIX}${key}`, {
+        type: "json",
+        cacheTtl: 60,
+      });
+      if (stored && stored.mode === "active" && stored.expiresAtMs > now) {
+        tempBans.set(key, stored);
+        return stored;
+      }
+    } catch {
+      // fail open on KV error
+    }
+  }
+  return null;
+}
+
+/**
+ * Scan normalized text in `"input"` or `"output"` direction using BadEgg v3's
+ * deterministic rule set and risk profile thresholds.
+ */
+export function scanText({
+  direction = "input",
+  text = "",
+  clientIp = "",
+  route = "",
+  live = false,
+  config = resolveConfig(),
+  env = null,
+  waitUntil = null,
+} = {}) {
+  if (direction !== "input" && direction !== "output") {
+    throw new Error("direction must be 'input' or 'output'.");
+  }
+  const body = String(text ?? "");
+  if (body.length > config.maxScanChars) {
+    throw new Error(
+      `Payload is ${body.length} characters; configured scan limit is ${config.maxScanChars}.`
+    );
+  }
+
+  const routeSafe = safeRoute(route);
+  const liveEnforcement = Boolean(live && config.enforcementMode === "enforce");
+  const executionMode = liveEnforcement ? "active" : "dry_run";
+  const enabled = direction === "input" ? config.scanInputs : config.scanOutputs;
+
+  if (!enabled) {
+    return {
+      direction,
+      mode: config.riskMode,
+      status: "skipped_by_policy",
+      decision: "skipped_by_policy",
+      maxConfidence: 0,
+      findings: [],
+      redactedPreview: null,
+      executionMode,
+      rawContentRetained: false,
+      route: routeSafe,
+    };
+  }
+
+  if (direction === "input") wafMetrics.inspectedTotal++;
+
+  const findings = [];
+  for (const rule of RULES) {
+    if (!rule.directions.includes(direction)) continue;
+    if (rule.pii && !config.scanPii) continue;
+    if (rule.pattern.test(body)) {
+      findings.push({
+        ruleId: rule.key,
+        category: rule.category,
+        confidence: rule.confidence,
+        severity: rule.severity,
+        message: rule.summary,
+      });
+    }
+  }
+
+  const attackFindings = findings.filter((f) => ATTACK_CATEGORIES.has(f.category));
+  const maxAttackConfidence = attackFindings.reduce((m, f) => Math.max(m, f.confidence), 0);
+  const maxConfidence = findings.reduce((m, f) => Math.max(m, f.confidence), 0);
+  let decision = "clean";
+  let redactedPreview = null;
+  let banRecord = null;
+
+  if (direction === "output") {
+    const sensitiveFindings = findings.filter(
+      (f) => SECRET_CATEGORIES.has(f.category) || (config.scanPii && f.category === "email_address")
+    );
+    if (sensitiveFindings.length) {
+      const actionMap = {
+        alert: "alert_secret",
+        redact: "redact_output",
+        block: "block_response",
+      };
+      const actionType = actionMap[config.outputAction] || "redact_output";
+      decision = liveEnforcement ? actionType : `would_${actionType}`;
+      if (config.outputAction === "redact") {
+        redactedPreview = redactText(body, config.scanPii);
+      }
+    }
+  }
+
+  if (direction === "input" && attackFindings.length) {
+    const categories = [...new Set(attackFindings.map((f) => f.category))].sort();
+    if (clientIp && isAllowlistedIp(clientIp, config)) {
+      if (decision === "clean") decision = "allowlisted";
+    } else if (config.autoBlockEnabled && maxAttackConfidence >= config.autoBlockThreshold) {
+      if (!normalizeIp(clientIp)) {
+        decision = liveEnforcement ? "blocked_without_verified_ip" : "would_temp_block_no_ip";
+      } else {
+        banRecord = addTemporaryBan(clientIp, categories, config, env, waitUntil);
+        decision = liveEnforcement ? "blocked" : "would_temp_block";
+      }
+      if (liveEnforcement) wafMetrics.blockedAttacksTotal++;
+    } else if (maxAttackConfidence >= config.alertThreshold) {
+      const actionType = config.riskMode === "catch_more" ? "challenge" : "alert_for_review";
+      if (decision === "clean") decision = `would_${actionType}`;
+    } else if (decision === "clean") {
+      decision = "would_alert_for_review";
+    }
+  } else if (findings.length && decision === "clean") {
+    decision = "would_alert_for_review";
+  }
+
+  const status =
+    liveEnforcement &&
+    (decision === "blocked" ||
+      decision === "blocked_without_verified_ip" ||
+      decision === "block_response")
+      ? "blocked"
+      : liveEnforcement && decision === "redact_output"
+        ? "redacted"
+        : "inspected";
+
+  if (findings.length) {
+    recordEvent({
+      timestamp: new Date().toISOString(),
+      direction,
+      mode: config.riskMode,
+      status,
+      decision,
+      executionMode,
+      maxConfidence: Math.round(maxConfidence * 1000) / 1000,
+      categories: [...new Set(findings.map((f) => f.category))].sort(),
+      inspectedCharacters: body.length,
+      route: routeSafe,
+    });
+  }
+
+  return {
+    direction,
+    mode: config.riskMode,
+    status,
+    decision,
+    maxConfidence: Math.round(maxConfidence * 1000) / 1000,
+    autoBlockThreshold: config.autoBlockThreshold,
+    inspectedCharacters: body.length,
+    route: routeSafe,
+    findings,
+    banRecord,
+    redactedPreview,
+    executionMode,
+    rawContentRetained: false,
+  };
+}
+
+// ---------------------------------------------------------------- schema-2 blocklist index
 function emptyIndex() {
   return {
     v4Ips: new Uint32Array(0),
@@ -252,9 +1170,8 @@ function jsonIndex(doc) {
       const size = 128 - Number(bits);
       const end = new Array(8);
       for (let i = 0; i < 8; i++) end[i] = g[i];
-      // fill the host bits with 1s
       for (let bit = 0; bit < size; bit++) {
-        const fromEnd = bit; // 0 = last group
+        const fromEnd = bit;
         const gi = 7 - Math.floor(fromEnd / 16);
         const shift = fromEnd % 16;
         end[gi] |= 1 << shift;
@@ -275,7 +1192,7 @@ function jsonIndex(doc) {
   return index;
 }
 
-// ---------------------------------------------------------------- lookup
+// ---------------------------------------------------------------- blocklist lookup
 function inU32(sorted, value) {
   let lo = 0,
     hi = sorted.length - 1;
@@ -301,10 +1218,6 @@ function inRanges(starts, ends, value) {
   return false;
 }
 
-/**
- * Decide whether an address is listed.
- * @returns {{blocked: boolean, reason?: string}}
- */
 export function match(index, rawIp) {
   const ip = String(rawIp || "")
     .trim()
@@ -314,7 +1227,6 @@ export function match(index, rawIp) {
   if (ip.includes(":")) {
     const groups = parse6(ip);
     if (!groups) return { blocked: false, reason: "unparsable" };
-    // IPv4-mapped (::ffff:a.b.c.d) is a v4 client; check it as one.
     if (
       groups[0] === 0 &&
       groups[1] === 0 &&
@@ -346,8 +1258,8 @@ export function match(index, rawIp) {
   return { blocked: false };
 }
 
-// ---------------------------------------------------------------- loading
-async function readKV(env, waitUntil) {
+// ---------------------------------------------------------------- blocklist loading
+async function readKV(env) {
   const kv = env?.IDI_BADEGG;
   if (!kv) return null;
   try {
@@ -372,7 +1284,6 @@ async function fetchArtifact(url, expectBinary) {
 }
 
 async function buildFromNetwork(env, waitUntil) {
-  // BIN first: smaller and zero-parse. JSON is the fallback and stays canonical.
   try {
     const buf = await fetchArtifact(BIN_URL, true);
     const index = binIndex(buf);
@@ -387,12 +1298,6 @@ async function buildFromNetwork(env, waitUntil) {
   return { index: jsonIndex(doc), source: "network:json" };
 }
 
-/**
- * Make sure an index is available.
- * @param {object} env           Worker env (may carry IDI_BADEGG)
- * @param {object} [options]     {waitUntil}
- * @returns {Promise<object|null>} index, or null when nothing could be loaded
- */
 export async function ensureIndex(env, options = {}) {
   const waitUntil = options.waitUntil;
   const now = Date.now();
@@ -410,7 +1315,6 @@ export async function ensureIndex(env, options = {}) {
   if (now < state.nextAttemptAt) return null;
 
   const load = (async () => {
-    // 1. KV: one fast read, no GitLab round trip.
     const cached = await readKV(env);
     if (cached) {
       try {
@@ -421,7 +1325,6 @@ export async function ensureIndex(env, options = {}) {
         state.lastError = `kv parse: ${err.message}`;
       }
     }
-    // 2. Network, bounded so a cold request cannot hang.
     const work = buildFromNetwork(env, waitUntil);
     if (waitUntil) {
       waitUntil(work.catch(() => {}));
@@ -429,7 +1332,7 @@ export async function ensureIndex(env, options = {}) {
         work,
         new Promise((resolve) => setTimeout(() => resolve(null), COLD_WAIT_MS)),
       ]);
-      if (!raced) return null; // only when fetching genuinely failed
+      if (!raced) return null;
       state = {
         index: raced.index,
         loadedAt: Date.now(),
@@ -446,7 +1349,7 @@ export async function ensureIndex(env, options = {}) {
     .catch((err) => {
       state.lastError = `load: ${err.message}`;
       state.nextAttemptAt = Date.now() + RETRY_MS;
-      return null; // fail open, retry soon
+      return null;
     })
     .finally(() => {
       inflight = null;
@@ -464,7 +1367,6 @@ async function refreshIndex(env, waitUntil) {
       return index;
     })
     .catch((err) => {
-      // Keep the index already in memory; back off before trying again.
       state.lastError = `refresh: ${err.message}`;
       state.nextAttemptAt = Date.now() + RETRY_MS;
       return state.index;
@@ -476,14 +1378,55 @@ async function refreshIndex(env, waitUntil) {
   return run;
 }
 
-/** Diagnostics for ?badegg-status=1. No addresses are exposed. */
-export function badeggStatus() {
+/** Diagnostics for ?badegg-status=1. No client IP addresses or payloads are exposed. */
+export function badeggStatus(env = {}) {
+  const cfg = resolveConfig(env);
+  expireTempBans();
+  let activeTempBans = 0;
+  for (const ban of tempBans.values()) {
+    if (ban.mode === "active") activeTempBans++;
+  }
   return {
+    version: BADEGG_VERSION,
+    engine: "BadEgg v3",
+    mode: cfg.enforcementMode,
+    riskMode: cfg.riskMode,
+    autoBlockThreshold: cfg.autoBlockThreshold,
     loaded: Boolean(state.index),
     source: state.source,
     ageSeconds: state.index ? Math.round((Date.now() - state.loadedAt) / 1000) : null,
     counts: state.index ? state.index.counts : null,
     lastError: state.lastError,
+    waf: {
+      rulesLoaded: RULES.length,
+      attackCategories: [...ATTACK_CATEGORIES],
+      scanInputs: cfg.scanInputs,
+      scanOutputs: cfg.scanOutputs,
+      outputAction: cfg.outputAction,
+      banTtlSeconds: cfg.banTtlSeconds,
+      inspectedTotal: wafMetrics.inspectedTotal,
+      blockedAttacksTotal: wafMetrics.blockedAttacksTotal,
+      blockedTempBansTotal: wafMetrics.blockedTempBansTotal,
+      redactedOutputsTotal: wafMetrics.redactedOutputsTotal,
+      blockedOutputsTotal: wafMetrics.blockedOutputsTotal,
+      activeTempBans,
+      recentEvents: recentEvents.slice(0, 20),
+    },
+    rateLimit: {
+      enabled: cfg.rateLimitEnabled,
+      requests: cfg.rateLimitRequests,
+      windowSeconds: cfg.rateLimitWindowSeconds,
+      burst: cfg.rateLimitBurst,
+      action: cfg.rateLimitAction,
+      banAfter: cfg.rateLimitBanAfter,
+      ...rateLimiter.snapshot(),
+    },
+    concurrency: {
+      activeRequests: wafMetrics.activeRequests,
+      peakConcurrentRequests: wafMetrics.peakConcurrentRequests,
+      maxConcurrentRequests: cfg.maxConcurrentRequests,
+      overloadRejections: wafMetrics.overloadRejections,
+    },
   };
 }
 
@@ -501,18 +1444,511 @@ export function wantsStatus(request) {
 }
 
 export async function isBlockedIp(ip, env, options = {}) {
-  if (ip === "127.0.0.1" || ip === "::1") return false; // wrangler dev
+  const cfg = resolveConfig(env);
+  if (isAllowlistedIp(ip, cfg)) return false;
+  const tempBan = await getActiveTemporaryBan(ip, env);
+  if (tempBan) return true;
   const index = await ensureIndex(env, options);
-  if (!index) return false; // no data: stay open
+  if (!index) return false;
   return match(index, ip).blocked;
 }
 
-// ---------------------------------------------------------------- response
-// The page is the real 403.html asset, rendered with the client IP. The inline
-// template is the fallback so a missing asset still renders a page, not a blank
-// 403. Keep the two in sync - tests/blocked-page.test.mjs asserts they match.
+// ---------------------------------------------------------------- v3 request & response gateway
+const TEXT_MEDIA_TYPES = new Set([
+  "application/json",
+  "application/xml",
+  "application/javascript",
+  "application/graphql",
+  "application/x-www-form-urlencoded",
+  "application/xhtml+xml",
+]);
 
-// CONTACT_EMAIL is declared once, at the top of this module.
+function isInspectableTextType(contentType) {
+  const media = String(contentType || "")
+    .split(";")[0]
+    .trim()
+    .toLowerCase();
+  if (!media || media === "text/event-stream") return false;
+  return (
+    media.startsWith("text/") ||
+    TEXT_MEDIA_TYPES.has(media) ||
+    media.endsWith("+json") ||
+    media.endsWith("+xml")
+  );
+}
+
+function isJsonType(contentType) {
+  const media = String(contentType || "")
+    .split(";")[0]
+    .trim()
+    .toLowerCase();
+  return media === "application/json" || media.endsWith("+json");
+}
+
+function flattenJsonValue(value, depth = 0) {
+  if (depth > 64 || value === null || value === undefined) return "";
+  if (Array.isArray(value)) {
+    return value.map((item) => flattenJsonValue(item, depth + 1)).join(" ");
+  }
+  if (typeof value === "object") {
+    return Object.entries(value)
+      .map(([k, v]) => `${k}:${flattenJsonValue(v, depth + 1)}`)
+      .join(" ");
+  }
+  return String(value);
+}
+
+function safeDecodeQuery(rawSearch) {
+  if (!rawSearch) return "";
+  const plusExpanded = rawSearch.replace(/\+/g, " ");
+  try {
+    return decodeURIComponent(plusExpanded);
+  } catch {
+    return plusExpanded;
+  }
+}
+
+function safeDecodePath(rawPath) {
+  try {
+    return decodeURIComponent(rawPath);
+  } catch {
+    return rawPath;
+  }
+}
+
+const SKIPPED_SCAN_HEADERS = new Set([
+  "accept",
+  "accept-encoding",
+  "accept-language",
+  "cache-control",
+  "cf-connecting-ip",
+  "cf-ipcountry",
+  "cf-ray",
+  "cf-visitor",
+  "connection",
+  "cookie",
+  "authorization",
+  "proxy-authorization",
+  "dnt",
+  "if-modified-since",
+  "if-none-match",
+  "pragma",
+  "priority",
+  "range",
+  "sec-ch-ua",
+  "sec-ch-ua-mobile",
+  "sec-ch-ua-platform",
+  "sec-fetch-dest",
+  "sec-fetch-mode",
+  "sec-fetch-site",
+  "sec-fetch-user",
+  "te",
+  "transfer-encoding",
+  "upgrade-insecure-requests",
+]);
+
+function gatewayErrorResponse(status, message, extraHeaders = {}) {
+  return new Response(message, {
+    status,
+    headers: {
+      "content-type": "text/plain; charset=utf-8",
+      "cache-control": "no-store",
+      "x-content-type-options": "nosniff",
+      "x-robots-tag": "noindex",
+      "x-badegg-version": BADEGG_VERSION,
+      ...extraHeaders,
+    },
+  });
+}
+
+export function throttledResponse(retryAfterSeconds = 1, request = null) {
+  const retry = String(Math.max(1, Math.trunc(retryAfterSeconds)));
+  const accept = request?.headers?.get("accept") || "";
+  if (accept.includes("text/html")) {
+    const html = `<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#07090d">
+  <meta name="robots" content="noindex">
+  <title>Rate limited - International Duck</title>
+  <style>
+    :root{color-scheme:dark;--amber:#f6c177;--muted:#929b96;--line:rgba(255,255,255,.1)}
+    *{box-sizing:border-box}
+    body{display:grid;min-height:100svh;margin:0;padding:1.25rem;place-items:center;color:#f4f7f5;background:#07090d;font-family:Inter,ui-sans-serif,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+    .card{width:min(100%,36rem);padding:clamp(2rem,7vw,3.4rem);border:1px solid var(--line);border-radius:1.4rem;background:linear-gradient(145deg,rgba(31,28,22,.84),rgba(13,12,10,.76));text-align:center}
+    .code{color:var(--amber);font:700 .68rem "SFMono-Regular",Consolas,monospace;letter-spacing:.14em;text-transform:uppercase}
+    h1{margin:.9rem 0 .65rem;font-size:clamp(2.1rem,7vw,3.4rem);line-height:.98;letter-spacing:-.05em}
+    p{margin:0;color:var(--muted);line-height:1.65}
+    .chip{display:inline-flex;margin-top:1.2rem;padding:.5rem .85rem;border:1px solid var(--line);border-radius:999px;font:500 .68rem "SFMono-Regular",Consolas,monospace;color:#f6c177}
+  </style>
+</head>
+<body>
+  <main class="card">
+    <span class="code">BadEgg v3 / 429</span>
+    <h1>Slow down a moment.</h1>
+    <p>BadEgg is rate limiting this connection after a burst of requests. Wait a moment and refresh.</p>
+    <p class="chip">Retry after ${escapeHtml(retry)}s</p>
+  </main>
+</body>
+</html>`;
+    return new Response(html, {
+      status: 429,
+      headers: {
+        "content-type": "text/html; charset=utf-8",
+        "cache-control": "no-store",
+        "retry-after": retry,
+        "x-content-type-options": "nosniff",
+        "x-robots-tag": "noindex",
+        "x-badegg-version": BADEGG_VERSION,
+      },
+    });
+  }
+  return gatewayErrorResponse(
+    429,
+    "BadEgg is rate limiting this source IP. Please retry after the stated delay.",
+    { "retry-after": retry }
+  );
+}
+
+/**
+ * Inspect an outgoing Response according to BadEgg v3's output policy:
+ * redacts or blocks leaked secret patterns in headers (and optional text/JSON
+ * bodies when `BADEGG_SCAN_OUTPUT_BODIES=1`), leaving binary and immutable
+ * static streams untouched.
+ */
+export async function inspectOutgoingResponse(response, route, config) {
+  if (!response || !config.scanOutputs || config.enforcementMode !== "enforce") {
+    return response;
+  }
+
+  const headerLines = [];
+  for (const [name, value] of response.headers.entries()) {
+    headerLines.push(`${name}: ${value}`);
+  }
+  const headerText = headerLines.join("\n");
+  let sanitizedHeaders = null;
+
+  if (headerText) {
+    const headerScan = scanText({
+      direction: "output",
+      text: headerText,
+      route,
+      live: true,
+      config,
+    });
+    const hasSecret = headerScan.findings.some(
+      (f) => SECRET_CATEGORIES.has(f.category) || (config.scanPii && f.category === "email_address")
+    );
+    if (hasSecret) {
+      if (config.outputAction === "block") {
+        wafMetrics.blockedOutputsTotal++;
+        return gatewayErrorResponse(
+          502,
+          "BadEgg blocked a response header containing a sensitive-data pattern."
+        );
+      }
+      if (config.outputAction === "redact") {
+        sanitizedHeaders = new Headers();
+        for (const [name, value] of response.headers.entries()) {
+          const redactedLine = redactText(`${name}: ${value}`, config.scanPii);
+          const idx = redactedLine.indexOf(":");
+          sanitizedHeaders.append(name, idx >= 0 ? redactedLine.slice(idx + 1).trimStart() : value);
+        }
+        wafMetrics.redactedOutputsTotal++;
+      }
+    }
+  }
+
+  if (
+    config.scanOutputBodies &&
+    response.status !== 204 &&
+    response.status !== 304 &&
+    response.status !== 206 &&
+    !response.headers.get("content-encoding") &&
+    isInspectableTextType(response.headers.get("content-type") || "")
+  ) {
+    const lenHeader = response.headers.get("content-length");
+    const declaredLen = lenHeader ? Number.parseInt(lenHeader, 10) : 0;
+    if (!lenHeader || (Number.isFinite(declaredLen) && declaredLen <= config.maxGatewayBodyBytes)) {
+      const clone = response.clone();
+      const text = await clone.text();
+      if (text.length <= config.maxScanChars) {
+        let scanTarget = text;
+        if (isJsonType(response.headers.get("content-type") || "")) {
+          try {
+            scanTarget = flattenJsonValue(JSON.parse(text));
+          } catch {
+            scanTarget = text;
+          }
+        }
+        const bodyScan = scanText({
+          direction: "output",
+          text: scanTarget,
+          route,
+          live: true,
+          config,
+        });
+        const hasBodySecret = bodyScan.findings.some(
+          (f) =>
+            SECRET_CATEGORIES.has(f.category) || (config.scanPii && f.category === "email_address")
+        );
+        if (hasBodySecret) {
+          if (config.outputAction === "block") {
+            wafMetrics.blockedOutputsTotal++;
+            return gatewayErrorResponse(
+              502,
+              "BadEgg blocked an upstream response containing a sensitive-data pattern."
+            );
+          }
+          if (config.outputAction === "redact") {
+            const headers = sanitizedHeaders || new Headers(response.headers);
+            headers.delete("content-length");
+            headers.delete("etag");
+            wafMetrics.redactedOutputsTotal++;
+            return new Response(redactText(text, config.scanPii), {
+              status: response.status,
+              statusText: response.statusText,
+              headers,
+            });
+          }
+        }
+      }
+    }
+  }
+
+  if (sanitizedHeaders) {
+    return new Response(response.body, {
+      status: response.status,
+      statusText: response.statusText,
+      headers: sanitizedHeaders,
+    });
+  }
+  return response;
+}
+
+/**
+ * Full BadEgg v3 edge handler shared by Cloudflare Pages (`functions/_middleware.js`)
+ * and Cloudflare Workers (`worker.js`).
+ */
+export async function handleBadEggRequest(request, env, options = {}, forward) {
+  const waitUntil = options.waitUntil;
+  const config = resolveConfig(env);
+  const url = new URL(request.url);
+  const route = url.pathname.slice(0, 256);
+
+  // 1. Diagnostics endpoint (?badegg-status=1)
+  if (wantsStatus(request)) {
+    await ensureIndex(env, { waitUntil });
+    return statusResponse(env);
+  }
+
+  // 2. Hard concurrency cap (applies in both Monitor and Enforce)
+  if (wafMetrics.activeRequests >= config.maxConcurrentRequests) {
+    wafMetrics.overloadRejections++;
+    return gatewayErrorResponse(
+      503,
+      "BadEgg gateway is at its configured concurrency limit. Please retry shortly.",
+      { "retry-after": "1" }
+    );
+  }
+
+  wafMetrics.activeRequests++;
+  if (wafMetrics.activeRequests > wafMetrics.peakConcurrentRequests) {
+    wafMetrics.peakConcurrentRequests = wafMetrics.activeRequests;
+  }
+
+  try {
+    const method = (request.method || "GET").toUpperCase();
+    if (!SUPPORTED_METHODS.has(method)) {
+      return gatewayErrorResponse(501, "HTTP method is not supported by BadEgg v3.");
+    }
+
+    const expect = (request.headers.get("expect") || "").trim().toLowerCase();
+    if (expect && expect !== "100-continue") {
+      return gatewayErrorResponse(417, "Unsupported HTTP expectation.");
+    }
+
+    const rawLength = request.headers.get("content-length");
+    let bodyLength = 0;
+    if (rawLength !== null) {
+      const trimmed = rawLength.trim();
+      if (!/^\d+$/.test(trimmed)) {
+        return gatewayErrorResponse(400, "Invalid Content-Length.");
+      }
+      bodyLength = Number.parseInt(trimmed, 10);
+      if (bodyLength > MAX_UNINSPECTED_REQUEST_BYTES) {
+        return gatewayErrorResponse(413, "Request exceeds BadEgg v3 hard payload limit.");
+      }
+    }
+
+    const ip = getClientIp(request);
+
+    // 3. Explicit 403 preview switch (?blocked-preview=1)
+    if (isPreview(request)) {
+      return blockedResponse(ip, env, { reason: "preview" });
+    }
+
+    const allowlisted = ip ? isAllowlistedIp(ip, config) : false;
+
+    // 4. Static IP/CIDR blocklist (`hall-of-shame.v2.bin`) + active v3 temporary exact-IP bans
+    if (ip && !allowlisted) {
+      const activeBan = await getActiveTemporaryBan(ip, env);
+      if (activeBan && config.enforcementMode === "enforce") {
+        wafMetrics.blockedTempBansTotal++;
+        const retrySeconds = Math.max(1, Math.ceil((activeBan.expiresAtMs - Date.now()) / 1000));
+        return blockedResponse(ip, env, {
+          reason: activeBan.reasonCategories?.join(", ") || "temporary_ban",
+          retryAfter: retrySeconds,
+        });
+      }
+
+      const index = await ensureIndex(env, { waitUntil });
+      if (index && match(index, ip).blocked && config.enforcementMode === "enforce") {
+        return blockedResponse(ip, env);
+      }
+    }
+
+    // 5. Per-IP token-bucket rate limiter
+    if (config.rateLimitEnabled && ip && !allowlisted) {
+      const escalating = config.rateLimitAction === "ban" && config.enforcementMode === "enforce";
+      const rateDecision = rateLimiter.check(normalizeIp(ip) || ip, {
+        requests: config.rateLimitRequests,
+        windowSeconds: config.rateLimitWindowSeconds,
+        burst: config.rateLimitBurst,
+        banAfter: escalating ? config.rateLimitBanAfter : 0,
+      });
+
+      if (!rateDecision.allowed) {
+        if (rateDecision.shouldReport) {
+          recordEvent({
+            timestamp: new Date().toISOString(),
+            direction: "input",
+            mode: config.riskMode,
+            status: config.enforcementMode === "enforce" ? "blocked" : "observed",
+            decision:
+              config.enforcementMode !== "enforce"
+                ? "would_throttle_rate_limit"
+                : rateDecision.escalate
+                  ? "blocked_rate_limit_ban"
+                  : "throttled_rate_limit",
+            executionMode: config.enforcementMode === "enforce" ? "active" : "dry_run",
+            maxConfidence: rateDecision.escalate ? 1 : 0,
+            categories: ["rate_limit"],
+            inspectedCharacters: 0,
+            route: safeRoute(route),
+          });
+        }
+        if (config.enforcementMode === "enforce") {
+          if (escalating && rateDecision.escalate) {
+            addTemporaryBan(ip, ["rate_limit"], config, env, waitUntil);
+            return blockedResponse(ip, env, {
+              reason: "rate_limit",
+              retryAfter: config.banTtlSeconds,
+            });
+          }
+          return throttledResponse(rateDecision.retryAfter, request);
+        }
+      }
+    }
+
+    // 6. BadEgg v3 deterministic request inspection (path + query + headers + text/JSON body)
+    if (config.scanInputs) {
+      const decodedPath = safeDecodePath(url.pathname);
+      const decodedQuery = url.search ? safeDecodeQuery(url.search.slice(1)) : "";
+      const targetLine = `${method} ${decodedPath}${decodedQuery ? `?${decodedQuery}` : ""}`;
+
+      const headerLines = [];
+      for (const [name, value] of request.headers.entries()) {
+        if (!SKIPPED_SCAN_HEADERS.has(name.toLowerCase())) {
+          headerLines.push(`${name}: ${value}`);
+        }
+      }
+
+      const parts = [targetLine, headerLines.join("\n")];
+
+      if (method !== "GET" && method !== "HEAD" && method !== "OPTIONS") {
+        const contentType = request.headers.get("content-type") || "";
+        const contentEncoding = (request.headers.get("content-encoding") || "identity")
+          .trim()
+          .toLowerCase();
+        if (bodyLength > config.maxGatewayBodyBytes && config.enforcementMode === "enforce") {
+          return gatewayErrorResponse(
+            413,
+            "Request body exceeds BadEgg v3 configured inspection limit."
+          );
+        }
+        if (
+          (bodyLength > 0 || (rawLength === null && contentType)) &&
+          contentEncoding === "identity" &&
+          isInspectableTextType(contentType)
+        ) {
+          const cloned = request.clone();
+          const rawBody = await cloned.text();
+          if (rawBody.length > config.maxScanChars) {
+            if (config.enforcementMode === "enforce") {
+              return gatewayErrorResponse(
+                413,
+                "Request body exceeds BadEgg v3 configured character scan limit."
+              );
+            }
+          } else if (rawBody) {
+            const media = contentType.split(";")[0].trim().toLowerCase();
+            if (media === "application/x-www-form-urlencoded") {
+              parts.push(safeDecodeQuery(rawBody));
+            } else if (isJsonType(contentType)) {
+              try {
+                parts.push(flattenJsonValue(JSON.parse(rawBody)));
+              } catch {
+                parts.push(rawBody);
+              }
+            } else {
+              parts.push(rawBody);
+            }
+          }
+        }
+      }
+
+      const inspectedText = parts.filter(Boolean).join("\n").slice(0, config.maxScanChars);
+      const scanResult = scanText({
+        direction: "input",
+        text: inspectedText,
+        clientIp: ip,
+        route,
+        live: config.enforcementMode === "enforce",
+        config,
+        env,
+        waitUntil,
+      });
+
+      if (
+        config.enforcementMode === "enforce" &&
+        (scanResult.decision === "blocked" || scanResult.decision === "blocked_without_verified_ip")
+      ) {
+        const categories = [
+          ...new Set(
+            scanResult.findings
+              .filter((f) => ATTACK_CATEGORIES.has(f.category))
+              .map((f) => f.category)
+          ),
+        ].join(", ");
+        return blockedResponse(ip, env, {
+          reason: categories || "waf_policy",
+          retryAfter: scanResult.banRecord ? config.banTtlSeconds : undefined,
+        });
+      }
+    }
+
+    // 7. Forward clean request & inspect outgoing headers
+    const upstreamResponse = await forward();
+    return await inspectOutgoingResponse(upstreamResponse, route, config);
+  } finally {
+    if (wafMetrics.activeRequests > 0) wafMetrics.activeRequests--;
+  }
+}
+
+// ---------------------------------------------------------------- 403 response rendering
 export const BLOCKED_PAGE_PATH = "/403.html";
 
 const escapeHtml = (value) =>
@@ -521,7 +1957,6 @@ const escapeHtml = (value) =>
     (ch) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[ch]
   );
 
-/** mailto: href with a pre-filled appeal body. */
 export function appealMailto(ip) {
   const subject = encodeURIComponent("IP block appeal");
   const body = ip
@@ -530,50 +1965,59 @@ export function appealMailto(ip) {
   return `mailto:${CONTACT_EMAIL}?subject=${subject}${body}`;
 }
 
-/** The `{{IP_CHIP}}` value, including the trailing indentation the template wants. */
-export function ipChip(ip) {
-  return ip ? `<p class="ip">Blocked IP <b>${escapeHtml(ip)}</b></p>\n    ` : "";
+export function ipChip(ip, options = {}) {
+  const reason = options?.reason && options.reason !== "preview" ? String(options.reason) : "";
+  if (ip && reason) {
+    return `<p class="ip">Blocked IP <b>${escapeHtml(ip)}</b> · BadEgg v3 <b>${escapeHtml(reason)}</b></p>\n    `;
+  }
+  if (ip) {
+    return `<p class="ip">Blocked IP <b>${escapeHtml(ip)}</b></p>\n    `;
+  }
+  if (reason) {
+    return `<p class="ip">BadEgg v3 <b>${escapeHtml(reason)}</b></p>\n    `;
+  }
+  return "";
 }
 
-/** Substitute the placeholders in a `403.html` document. */
-export function renderBlockedPage(template, ip) {
-  return template.replaceAll("{{MAILTO}}", appealMailto(ip)).replaceAll("{{IP_CHIP}}", ipChip(ip));
+export function renderBlockedPage(template, ip, options = {}) {
+  return template
+    .replaceAll("{{MAILTO}}", appealMailto(ip))
+    .replaceAll("{{IP_CHIP}}", ipChip(ip, options));
 }
 
 const BLOCKED_HEADERS = {
   "content-type": "text/html; charset=utf-8",
   "cache-control": "no-store",
+  "x-content-type-options": "nosniff",
   "x-robots-tag": "noindex",
+  "x-badegg-version": BADEGG_VERSION,
 };
 
-export function blockedResponseFrom(template, ip) {
-  return new Response(renderBlockedPage(template, ip), { status: 403, headers: BLOCKED_HEADERS });
+export function blockedResponseFrom(template, ip, options = {}) {
+  const headers = { ...BLOCKED_HEADERS };
+  if (options?.retryAfter) {
+    headers["retry-after"] = String(Math.max(1, Math.trunc(options.retryAfter)));
+  }
+  return new Response(renderBlockedPage(template, ip, options), { status: 403, headers });
 }
 
-/**
- * Serve the themed 403.
- *
- * Reads `403.html` through the ASSETS binding so the page is a normal, editable
- * asset, and falls back to the inline copy if anything goes wrong. Never throws:
- * a broken page must not turn a 403 into a 500.
- */
-export async function blockedResponse(ip, env) {
+export async function blockedResponse(ip, env, options = {}) {
   const assets = env && env.ASSETS;
   if (assets && typeof assets.fetch === "function") {
     try {
       const res = await assets.fetch(`https://assets.internal${BLOCKED_PAGE_PATH}`);
       if (res.ok) {
         const template = await res.text();
-        if (template.includes("{{MAILTO}}")) return blockedResponseFrom(template, ip);
+        if (template.includes("{{MAILTO}}")) return blockedResponseFrom(template, ip, options);
       }
     } catch {
       // fall through to the inline template
     }
   }
-  return blockedResponseFrom(FALLBACK_TEMPLATE, ip);
+  return blockedResponseFrom(FALLBACK_TEMPLATE, ip, options);
 }
 
-/** Inline copy of 403.html, minus the wrapper. Verified against the file in tests. */
+/** Inline copy of 403.html. Verified against 403.html in tools/test-badegg-v3.mjs. */
 export const FALLBACK_TEMPLATE = `<!doctype html>
 <html lang="en">
 <head>
@@ -617,9 +2061,13 @@ export const FALLBACK_TEMPLATE = `<!doctype html>
 </body>
 </html>`;
 
-export function statusResponse() {
-  return new Response(JSON.stringify(badeggStatus(), null, 2), {
+export function statusResponse(env = {}) {
+  return new Response(JSON.stringify(badeggStatus(env), null, 2), {
     status: 200,
-    headers: { "content-type": "application/json; charset=utf-8", "cache-control": "no-store" },
+    headers: {
+      "content-type": "application/json; charset=utf-8",
+      "cache-control": "no-store",
+      "x-badegg-version": BADEGG_VERSION,
+    },
   });
 }

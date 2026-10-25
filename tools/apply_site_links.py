@@ -16,10 +16,12 @@ from pathlib import Path
 
 GLYPHSMITH_LINK = '<a href="/glyphsmith">Glyphsmith</a>'
 CHANGELOG_LINK = '<a href="/changelog">Changelog</a>'
+LICENSE_LINK = '<a href="/license">License</a>'
 CONTACT_LINK = '<a href="mailto:0xffshell@duck.com">Contact</a>'
 FOOTER_LINKS = (
     ("/changelog", CHANGELOG_LINK, None),
     ("mailto:0xffshell@duck.com", CONTACT_LINK, None),
+    ("/license", LICENSE_LINK, "mailto:0xffshell@duck.com"),
     ("/glyphsmith", GLYPHSMITH_LINK, "/changelog"),
 )
 FOOTER = re.compile(

@@ -48,11 +48,11 @@
       content="Free Fabric privacy mod: brand spoofing, fingerprint protection, tracking defenses."
     />
 
-    <link rel="icon" href="/assets/nulltrace-icon.png?v=4eed3528" type="image/png" />
-    <link rel="stylesheet" href="/css/bundle.css?v=d4c14665" />
+    <link rel="icon" href="/assets/nulltrace-icon.png?v=09d4ba7d" type="image/png" />
+    <link rel="stylesheet" href="/css/bundle.css?v=05d51123" />
 
-    <script src="/script.js?v=0443d2ee" defer></script>
-    <script src="/pixel-canvas.js?v=8f2c93f3" defer></script>
+    <script src="/script.js?v=88885632" defer></script>
+    <script src="/pixel-canvas.js?v=0c61d787" defer></script>
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
     <meta
@@ -99,7 +99,7 @@
             "@id": "https://idi-official.pages.dev/projects/nulltrace#webpage",
             "url": "https://idi-official.pages.dev/projects/nulltrace",
             "name": "NullTrace - International Duck",
-            "description": "NullTrace is a client-side Fabric privacy mod with its first official release, v2.0.0, for Minecraft 1.21.11, 26.1, 26.2, and 26.3.",
+            "description": "NullTrace is a client-side Fabric privacy mod with official release v2.1.0 for Minecraft 1.21.11, 26.1, 26.2, and 26.3.",
             "isPartOf": {
               "@id": "https://idi-official.pages.dev/#website"
             },
@@ -161,9 +161,10 @@
               "price": "0",
               "priceCurrency": "USD"
             },
-            "softwareVersion": "2.0.0",
-            "datePublished": "2026-09-24",
-            "downloadUrl": "https://gitlab.com/international-duck-incorporated/NullTrace/-/releases/v2.0.0",
+            "softwareVersion": "2.1.0",
+            "datePublished": "2026-10-01",
+            "downloadUrl": "https://www.curseforge.com/minecraft/mc-mods/nulltrace/files/all?page=1&pageSize=20&showAlphaFiles=show",
+            "installUrl": "https://www.curseforge.com/minecraft/mc-mods/nulltrace/files/all?page=1&pageSize=20&showAlphaFiles=show",
             "license": "https://spdx.org/licenses/GPL-3.0.html"
           }
         ]
@@ -236,6 +237,7 @@
         <nav class="main-nav" id="main-navigation" data-nav aria-label="Primary navigation">
           <a href="/">Overview</a>
           <a class="active" href="/projects" aria-current="page">Projects</a>
+          <a href="/noosphere">Noosphere</a>
           <a href="/members">Members</a>
           <a href="/activity">Activity</a>
           <a href="/migration">Migration</a>
@@ -278,10 +280,10 @@
         <section class="profile-hero">
           <article class="profile-intro glass-card reveal">
             <picture
-              ><source srcset="/assets/nulltrace-icon.webp?v=3359715a" type="image/webp" />
+              ><source srcset="/assets/nulltrace-icon.webp?v=956d0879" type="image/webp" />
               <img
                 class="project-mark"
-                src="/assets/nulltrace-icon.png?v=4eed3528"
+                src="/assets/nulltrace-icon.png?v=09d4ba7d"
                 alt="NullTrace logo"
                 width="82"
                 height="82"
@@ -294,7 +296,7 @@
             <span class="status-pill green release-badge">
               <i></i>
               Official release ·
-              <b data-nulltrace-version>v2.0.0</b>
+              <b data-nulltrace-version>v2.1.0</b>
             </span>
 
             <h1>NullTrace.</h1>
@@ -309,23 +311,8 @@
             <div class="action-row">
               <a
                 class="button button-blue"
-                data-nulltrace-release-link
-                href="https://gitlab.com/international-duck-incorporated/NullTrace/-/releases/v2.0.0"
-                target="_blank"
-                rel="noreferrer"
-              >
-                <pixel-canvas
-                  data-gap="6"
-                  data-speed="35"
-                  data-colors="#dcecff, #8ab8f6, #4a7fc0"
-                ></pixel-canvas>
-                <svg><use href="#i-download" /></svg>
-                <span data-nulltrace-release-label>Download v2.0.0</span>
-              </a>
-
-              <a
-                class="button button-glass"
-                href="https://www.curseforge.com/minecraft/mc-mods/nulltrace"
+                data-nulltrace-download
+                href="https://www.curseforge.com/minecraft/mc-mods/nulltrace/files/all?page=1&amp;pageSize=20&amp;showAlphaFiles=show"
                 target="_blank"
                 rel="noreferrer"
               >
@@ -335,7 +322,22 @@
                   data-colors="#dcecff, #8ab8f6, #4a7fc0"
                 ></pixel-canvas>
                 <svg><use href="#i-curseforge" /></svg>
-                Get it on CurseForge
+                <span data-nulltrace-release-label>Download v2.1.0</span>
+              </a>
+
+              <a
+                class="button button-glass"
+                href="https://www.curseforge.com/minecraft/mc-mods/nulltrace/files/all?page=1&amp;pageSize=20&amp;showAlphaFiles=show"
+                target="_blank"
+                rel="noreferrer"
+              >
+                <pixel-canvas
+                  data-gap="6"
+                  data-speed="35"
+                  data-colors="#dcecff, #8ab8f6, #4a7fc0"
+                ></pixel-canvas>
+                <svg><use href="#i-download" /></svg>
+                All CurseForge files
               </a>
 
               <a
@@ -355,7 +357,8 @@
 
               <a
                 class="button button-glass"
-                href="https://gitlab.com/international-duck-incorporated/NullTrace/-/releases"
+                data-nulltrace-release-link
+                href="https://gitlab.com/international-duck-incorporated/NullTrace/-/releases/v2.1.0"
                 target="_blank"
                 rel="noreferrer"
               >
@@ -364,8 +367,8 @@
                   data-speed="35"
                   data-colors="#dcecff, #8ab8f6, #4a7fc0"
                 ></pixel-canvas>
-                <svg><use href="#i-download" /></svg>
-                Nightly builds
+                Release notes
+                <svg><use href="#i-arrow" /></svg>
               </a>
             </div>
           </article>
@@ -392,7 +395,7 @@
 
                 <div class="fact">
                   <small>Version</small>
-                  <b data-nulltrace-version>v2.0.0</b>
+                  <b data-nulltrace-version>v2.1.0</b>
                 </div>
 
                 <div class="fact">
@@ -401,8 +404,8 @@
                 </div>
 
                 <div class="fact">
-                  <small>Distribution</small>
-                  <b>GitLab Releases · CurseForge</b>
+                  <small>Downloads</small>
+                  <b>CurseForge (all builds)</b>
                 </div>
               </div>
             </div>
@@ -436,42 +439,43 @@
 
           <article class="detail-panel glass-card reveal release-detail">
             <span class="eyebrow">Official release</span>
-            <h2>First release.</h2>
+            <h2>Latest release.</h2>
 
             <p>
-              <b data-nulltrace-release-note>First official release</b>
-              is now available through GitLab Releases and CurseForge. The v2.0.0 release includes
-              builds for Minecraft 1.21.11, 26.1, 26.2, and 26.3.
+              <b data-nulltrace-release-note>NullTrace v2.1.0</b>
+              downloads (including release and alpha builds for Minecraft 1.21.11, 26.1, 26.2, and
+              26.3) are served on CurseForge, with source code and release notes on GitLab.
             </p>
 
             <div class="release-meta">
               <span>
                 Version
-                <b data-nulltrace-version>v2.0.0</b>
+                <b data-nulltrace-version>v2.1.0</b>
               </span>
 
-              <span data-nulltrace-date>24 Sep 2026</span>
+              <span data-nulltrace-date>1 Oct 2026</span>
             </div>
 
             <div class="inline-link-row">
               <a
                 class="inline-link"
-                data-nulltrace-release-link
-                href="https://gitlab.com/international-duck-incorporated/NullTrace/-/releases/v2.0.0"
+                data-nulltrace-download
+                href="https://www.curseforge.com/minecraft/mc-mods/nulltrace/files/all?page=1&amp;pageSize=20&amp;showAlphaFiles=show"
                 target="_blank"
                 rel="noreferrer"
               >
-                View official release
+                Download on CurseForge
                 <svg><use href="#i-arrow" /></svg>
               </a>
 
               <a
                 class="inline-link"
-                href="https://www.curseforge.com/minecraft/mc-mods/nulltrace"
+                data-nulltrace-release-link
+                href="https://gitlab.com/international-duck-incorporated/NullTrace/-/releases/v2.1.0"
                 target="_blank"
                 rel="noreferrer"
               >
-                View on CurseForge
+                GitLab release notes
                 <svg><use href="#i-arrow" /></svg>
               </a>
             </div>
@@ -642,7 +646,7 @@
           <a href="/migration">Migration</a>
           <a href="/glyphsmith">Glyphsmith</a><a href="/changelog">Changelog</a
           ><a href="https://gitlab.com/international-duck-incorporated"> GitLab </a>
-          <a href="mailto:0xffshell@duck.com">Contact</a>
+          <a href="/license">License</a><a href="mailto:0xffshell@duck.com">Contact</a>
         </nav>
 
         <span class="sync-state">

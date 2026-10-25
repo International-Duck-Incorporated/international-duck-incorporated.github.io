@@ -1,0 +1,499 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <script>
+      (() => {
+        const nav = navigator;
+        const connection = nav.connection || nav.mozConnection || nav.webkitConnection;
+        const lowEnd = Boolean(
+          (connection && connection.saveData) ||
+            (connection && /^(slow-2g|2g)$/.test(connection.effectiveType || "")) ||
+            (typeof nav.deviceMemory === "number" && nav.deviceMemory <= 4) ||
+            (typeof nav.hardwareConcurrency === "number" && nav.hardwareConcurrency <= 4)
+        );
+        window.IDI_LOW_END = lowEnd;
+        window.IDI_REDUCED_MOTION = Boolean(
+          window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches
+        );
+        if (lowEnd) document.documentElement.classList.add("low-end");
+      })();
+    </script>
+    <link rel="preconnect" href="https://gitlab.com" crossorigin />
+    <link rel="dns-prefetch" href="https://gitlab.com" />
+    <meta name="theme-color" content="#07090d" />
+    <meta property="og:image" content="https://idi-official.pages.dev/assets/og-default.png" />
+    <title>Fingerprint Damper for Firefox by espress0 | IDI</title>
+    <meta
+      name="description"
+      content="Fingerprint Damper is a Manifest V3 Firefox 142+ extension by espress0 (@3spress0) that blunts JS fingerprinting with stable per-origin daily personas."
+    />
+    <link
+      rel="canonical"
+      href="https://idi-official.pages.dev/members/3spress0/fingerprint-damper"
+    />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="Fingerprint Damper for Firefox by espress0" />
+    <meta
+      property="og:description"
+      content="Manifest V3 Firefox 142+ extension by espress0 that blunts JS API fingerprinting."
+    />
+    <meta
+      property="og:url"
+      content="https://idi-official.pages.dev/members/3spress0/fingerprint-damper"
+    />
+    <meta property="og:site_name" content="International Duck Incorporated" />
+    <meta property="og:locale" content="en_US" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Fingerprint Damper for Firefox by espress0" />
+    <meta
+      name="twitter:description"
+      content="Manifest V3 Firefox 142+ extension by espress0 that blunts JS API fingerprinting."
+    />
+    <link rel="icon" href="/assets/fingerprint-damper-icon.svg?v=4912b7dd" type="image/svg+xml" />
+    <link rel="stylesheet" href="/css/bundle.css?v=05d51123" />
+    <script src="/starry-night.js?v=3988ae84" defer></script>
+    <script src="/script.js?v=88885632" defer></script>
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta
+      property="og:image:alt"
+      content="International Duck Incorporated - open-source Minecraft mods, tools and experiments"
+    />
+    <meta name="twitter:image" content="https://idi-official.pages.dev/assets/og-default.png" />
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@graph": [
+          {
+            "@type": "Organization",
+            "@id": "https://idi-official.pages.dev/#organization",
+            "name": "International Duck Incorporated",
+            "alternateName": "IDI",
+            "url": "https://idi-official.pages.dev/",
+            "logo": {
+              "@type": "ImageObject",
+              "url": "https://idi-official.pages.dev/assets/org-avatar.png"
+            },
+            "image": "https://idi-official.pages.dev/assets/og-default.png",
+            "sameAs": ["https://gitlab.com/international-duck-incorporated"]
+          },
+          {
+            "@type": "WebSite",
+            "@id": "https://idi-official.pages.dev/#website",
+            "url": "https://idi-official.pages.dev/",
+            "name": "International Duck Incorporated",
+            "inLanguage": "en",
+            "publisher": {
+              "@id": "https://idi-official.pages.dev/#organization"
+            }
+          },
+          {
+            "@type": "WebPage",
+            "@id": "https://idi-official.pages.dev/members/3spress0/fingerprint-damper#webpage",
+            "url": "https://idi-official.pages.dev/members/3spress0/fingerprint-damper",
+            "name": "Fingerprint Damper for Firefox - espress0",
+            "description": "Fingerprint Damper is a Manifest V3 Firefox 142+ extension by espress0 (@3spress0) that blunts browser fingerprinting at the JavaScript API layer using stable per-origin daily personas.",
+            "isPartOf": {
+              "@id": "https://idi-official.pages.dev/#website"
+            },
+            "inLanguage": "en",
+            "primaryImageOfPage": {
+              "@type": "ImageObject",
+              "url": "https://idi-official.pages.dev/assets/og-default.png"
+            },
+            "breadcrumb": {
+              "@id": "https://idi-official.pages.dev/members/3spress0/fingerprint-damper#breadcrumb"
+            },
+            "mainEntity": {
+              "@id": "https://idi-official.pages.dev/members/3spress0/fingerprint-damper#software"
+            }
+          },
+          {
+            "@type": "BreadcrumbList",
+            "@id": "https://idi-official.pages.dev/members/3spress0/fingerprint-damper#breadcrumb",
+            "itemListElement": [
+              {
+                "@type": "ListItem",
+                "position": 1,
+                "name": "International Duck Incorporated",
+                "item": "https://idi-official.pages.dev/"
+              },
+              {
+                "@type": "ListItem",
+                "position": 2,
+                "name": "Members",
+                "item": "https://idi-official.pages.dev/members/"
+              },
+              {
+                "@type": "ListItem",
+                "position": 3,
+                "name": "espress0",
+                "item": "https://idi-official.pages.dev/members/3spress0"
+              },
+              {
+                "@type": "ListItem",
+                "position": 4,
+                "name": "Fingerprint Damper",
+                "item": "https://idi-official.pages.dev/members/3spress0/fingerprint-damper"
+              }
+            ]
+          },
+          {
+            "@type": "Person",
+            "@id": "https://idi-official.pages.dev/members/3spress0#person",
+            "name": "espress0",
+            "alternateName": "3spress0",
+            "url": "https://idi-official.pages.dev/members/3spress0",
+            "sameAs": ["https://gitlab.com/3spress0"]
+          },
+          {
+            "@type": "SoftwareApplication",
+            "@id": "https://idi-official.pages.dev/members/3spress0/fingerprint-damper#software",
+            "name": "Fingerprint Damper",
+            "alternateName": "fingerprint-damper",
+            "description": "Manifest V3 Firefox extension (Firefox 142+) that blunts browser fingerprinting at the JavaScript API layer using stable per-origin daily personas, zero data collection, and optional DNR ad-network and global lockdown rules.",
+            "url": "https://idi-official.pages.dev/members/3spress0/fingerprint-damper",
+            "applicationCategory": "BrowserApplication",
+            "operatingSystem": "Firefox 142+",
+            "programmingLanguage": "JavaScript",
+            "softwareVersion": "1.2.0",
+            "isAccessibleForFree": true,
+            "author": {
+              "@id": "https://idi-official.pages.dev/members/3spress0#person"
+            },
+            "codeRepository": "https://gitlab.com/3spress0/fingerprint-damper",
+            "downloadUrl": "https://addons.mozilla.org/en-US/firefox/addon/fingerprint-damper/",
+            "installUrl": "https://addons.mozilla.org/en-US/firefox/addon/fingerprint-damper/",
+            "license": "https://spdx.org/licenses/GPL-3.0-or-later.html",
+            "offers": {
+              "@type": "Offer",
+              "price": "0",
+              "priceCurrency": "USD"
+            }
+          }
+        ]
+      }
+    </script>
+  </head>
+  <body
+    data-page="member-project"
+    data-member-project="fingerprint-damper"
+    class="starry-night-page"
+  >
+    <svg class="svg-sprite" aria-hidden="true">
+      <symbol id="i-gitlab" viewBox="0 0 24 24">
+        <path
+          fill="currentColor"
+          stroke="none"
+          d="m23.6004 9.5927-.0337-.0862L20.3.9814a.851.851 0 0 0-.3362-.405.8748.8748 0 0 0-.9997.0539.8748.8748 0 0 0-.29.4399l-2.2055 6.748H7.5375l-2.2057-6.748a.8573.8573 0 0 0-.29-.4412.8748.8748 0 0 0-.9997-.0537.8585.8585 0 0 0-.3362.4049L.4332 9.5015l-.0325.0862a6.0657 6.0657 0 0 0 2.0119 7.0105l.0113.0087.03.0213 4.976 3.7264 2.462 1.8633 1.4995 1.1321a1.0085 1.0085 0 0 0 1.2197 0l1.4995-1.1321 2.4619-1.8633 5.006-3.7489.0125-.01a6.0682 6.0682 0 0 0 2.0094-7.003z"
+        />
+      </symbol>
+      <symbol id="i-menu" viewBox="0 0 24 24"><path d="M4 8h16M4 16h16" /></symbol>
+      <symbol id="i-close" viewBox="0 0 24 24"><path d="m5 5 14 14M19 5 5 19" /></symbol>
+      <symbol id="i-arrow" viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6" /></symbol>
+      <symbol id="i-download" viewBox="0 0 24 24">
+        <path d="M12 3v12M7 10l5 5 5-5M4 20h16" />
+      </symbol>
+      <symbol id="i-external" viewBox="0 0 24 24">
+        <path d="M14 5h5v5M19 5l-9 9M18 13v6H5V6h6" />
+      </symbol>
+    </svg>
+    <a class="skip-link" href="#main">Skip to content</a>
+    <div class="site-glow site-glow-blue" aria-hidden="true"></div>
+    <header class="topbar" data-header>
+      <div class="shell topbar-inner">
+        <a class="brand" href="/"
+          ><img
+            data-org-avatar
+            src="/assets/org-avatar.webp?v=fff479ce"
+            alt=""
+            width="40"
+            height="40"
+            decoding="async"
+          /><span><b>International Duck</b><small>Incorporated</small></span></a
+        >
+        <nav class="main-nav" id="main-navigation" data-nav aria-label="Primary navigation">
+          <a href="/">Overview</a><a href="/projects">Projects</a><a href="/noosphere">Noosphere</a
+          ><a class="active" href="/members" aria-current="page">Members</a
+          ><a href="/activity">Activity</a><a href="/migration">Migration</a
+          ><a
+            class="icon-link"
+            href="https://gitlab.com/international-duck-incorporated"
+            target="_blank"
+            rel="noreferrer"
+            aria-label="International Duck Incorporated on GitLab"
+            ><svg><use href="#i-gitlab" /></svg
+          ></a>
+        </nav>
+        <button
+          class="menu-button"
+          type="button"
+          data-menu
+          aria-label="Open navigation"
+          aria-controls="main-navigation"
+          aria-expanded="false"
+        >
+          <svg class="menu-open"><use href="#i-menu" /></svg
+          ><svg class="menu-close"><use href="#i-close" /></svg>
+        </button>
+      </div>
+    </header>
+
+    <main id="main" class="profile-page project-page">
+      <div class="shell">
+        <div class="breadcrumbs">
+          <a href="/">International Duck</a><span>/</span><a href="/members">Members</a
+          ><span>/</span><a href="/members/3spress0">espress0</a><span>/</span
+          ><b>Fingerprint Damper</b>
+        </div>
+
+        <section class="profile-hero">
+          <article class="profile-intro glass-card reveal">
+            <img
+              class="project-mark"
+              src="/assets/fingerprint-damper-icon.svg?v=4912b7dd"
+              alt="Fingerprint Damper logo"
+              width="82"
+              height="82"
+              decoding="async"
+            />
+            <span class="eyebrow" style="color: #60a5fa"
+              >Personal project by @3spress0 · Release
+              <span data-fingerprint-version>v1.2.0</span> · Firefox 142+</span
+            >
+            <h1>Fingerprint Damper.</h1>
+            <p class="lead">
+              A <b>Manifest V3 Firefox extension</b> that blunts passive browser fingerprinting at
+              the JavaScript API layer using deterministic per-origin daily personas rather than
+              per-call random noise. Complements network-layer blockers like uBlock Origin and
+              Privacy Badger without breaking everyday websites, with zero runtime dependencies and
+              zero data collection.
+            </p>
+            <div class="action-row">
+              <a
+                class="button button-blue"
+                href="https://addons.mozilla.org/en-US/firefox/addon/fingerprint-damper/"
+                target="_blank"
+                rel="noreferrer"
+                ><svg><use href="#i-download" /></svg>Install on Firefox Add-ons</a
+              >
+              <a
+                class="button button-glass"
+                href="https://gitlab.com/3spress0/fingerprint-damper"
+                target="_blank"
+                rel="noreferrer"
+                ><svg><use href="#i-gitlab" /></svg>View Repository</a
+              >
+              <a
+                class="button button-glass"
+                href="https://gitlab.com/3spress0/fingerprint-damper/-/blob/main/docs/coverage.md"
+                target="_blank"
+                rel="noreferrer"
+                >Coverage Matrix <svg><use href="#i-external" /></svg
+              ></a>
+              <a
+                class="button button-glass"
+                href="https://gitlab.com/3spress0/fingerprint-damper/-/blob/main/docs/lockdown.md"
+                target="_blank"
+                rel="noreferrer"
+                >Lockdown Docs <svg><use href="#i-external" /></svg
+              ></a>
+            </div>
+          </article>
+
+          <aside class="profile-sidebar glass-card reveal">
+            <div>
+              <span class="eyebrow">At a glance</span>
+              <div class="fact-list">
+                <div class="fact">
+                  <small>Maintainer</small
+                  ><b><a href="/members/3spress0">espress0 (@3spress0)</a></b>
+                </div>
+                <div class="fact">
+                  <small>Repository</small
+                  ><b
+                    ><a
+                      href="https://gitlab.com/3spress0/fingerprint-damper"
+                      target="_blank"
+                      rel="noreferrer"
+                      >3spress0/fingerprint-damper ↗</a
+                    ></b
+                  >
+                </div>
+                <div class="fact"><small>Add-on ID</small><b>fingerprint-damper@3spress0</b></div>
+                <div class="fact">
+                  <small>Latest tag</small><b><span data-fingerprint-version>v1.2.0</span></b>
+                </div>
+                <div class="fact"><small>Target</small><b>Firefox 142+ (Manifest V3)</b></div>
+                <div class="fact"><small>Data collected</small><b>None (verified)</b></div>
+                <div class="fact"><small>Runtime deps</small><b>Zero</b></div>
+                <div class="fact">
+                  <small>Commits</small><b><span data-fingerprint-commits>29</span> on main</b>
+                </div>
+                <div class="fact"><small>Licence</small><b>GPL-3.0-or-later</b></div>
+              </div>
+            </div>
+          </aside>
+        </section>
+
+        <section class="detail-grid" style="margin-top: 2rem">
+          <article class="detail-panel glass-card reveal">
+            <span class="eyebrow">Design philosophy</span>
+            <h2>API-layer damping without site breakage.</h2>
+            <ul>
+              <li>
+                <b>One stable persona per origin per day:</b> per-call randomness is itself a
+                detection signal; deterministic daily salts change cross-site hashes while staying
+                consistent within a browsing session.
+              </li>
+              <li>
+                <b>Blend into the largest crowd:</b> hardware values normalize to common baselines
+                rather than inventing unique synthetic configurations.
+              </li>
+              <li>
+                <b>Leave bot-detection traps alone:</b> surfaces like <code>navigator.plugins</code>
+                are preserved so ordinary anti-bot checks are not tripped, and broken origins can be
+                paused live from the toolbar popup.
+              </li>
+            </ul>
+          </article>
+
+          <article class="detail-panel glass-card reveal">
+            <span class="eyebrow">Default protections (on by default)</span>
+            <h2>Four low-risk passive shields.</h2>
+            <ul>
+              <li>
+                <b>Canvas &amp; text metrics:</b> up to 32 deterministic RGB low-bit flips on pixel
+                serialization plus <code>&lt;0.01px</code> <code>measureText()</code> jitter across
+                HTML canvas and main-thread <code>OffscreenCanvas</code>.
+              </li>
+              <li>
+                <b>WebGL identity &amp; readback:</b> normalizes vendor and renderer strings to
+                <code>Mozilla</code>, hides <code>WEBGL_debug_renderer_info</code>, and applies
+                stable low-bit noise to byte <code>readPixels()</code>.
+              </li>
+              <li>
+                <b>Hardware &amp; battery:</b> clamps <code>hardwareConcurrency</code> (and
+                <code>deviceMemory</code> where present) to <code>8</code>, and reports a full,
+                charging <code>BatteryManager</code> shell.
+              </li>
+            </ul>
+          </article>
+        </section>
+
+        <section
+          class="home-directory reveal"
+          id="optional-tiers"
+          aria-labelledby="tiers-heading"
+          style="margin-top: 2.5rem"
+        >
+          <header class="section-heading">
+            <div>
+              <span class="eyebrow">Layered defense · Opt-in controls</span>
+              <h2 id="tiers-heading">Opt-in shields, DNR rules &amp; lockdown.</h2>
+            </div>
+            <p>
+              Every higher-risk surface ships disabled with an explicit breakage note, paired with
+              byte-reproducible <code>.xpi</code> builds and zero-dependency Node regression tests.
+            </p>
+          </header>
+
+          <div
+            class="project-grid"
+            style="grid-template-columns: repeat(auto-fit, minmax(260px, 1fr))"
+          >
+            <article class="detail-panel glass-card reveal">
+              <span class="eyebrow">14 opt-in API switches</span>
+              <h3>Granular surface controls</h3>
+              <p>
+                Includes <code>AudioBuffer</code>/<code>AnalyserNode</code> sample perturbation,
+                non-relay WebRTC ICE filtering, <code>ClientRects</code> sub-pixel noise, 12-bit
+                Math rounding, UTC and <code>en-US</code> defaults, speech/media device list hiding,
+                and unsolicited notification prompt blocking.
+              </p>
+            </article>
+            <article class="detail-panel glass-card reveal">
+              <span class="eyebrow">DeclarativeNetRequest</span>
+              <h3>78-domain ad &amp; push blocklist</h3>
+              <p>
+                Optional static DNR ruleset (<code>rules/adnets.json</code>) blocking known push-ad
+                SDKs and third-party tracking domains, plus boundary-aware ad service-worker
+                registration guards.
+              </p>
+            </article>
+            <article class="detail-panel glass-card reveal">
+              <span class="eyebrow">Global lockdown tier</span>
+              <h3>9 browser-enforced kill switches</h3>
+              <p>
+                Experimental CSP and network switches (script block, opaque-origin sandbox, worker
+                and embed blocks, text-only mode, cookie/cache/header stripping) enforced by Firefox
+                independently of page JavaScript.
+              </p>
+            </article>
+          </div>
+        </section>
+
+        <section class="member-contributions" aria-labelledby="fingerprint-commits-heading">
+          <header class="section-heading reveal">
+            <div>
+              <span class="eyebrow">Live GitLab feed</span>
+              <h2 id="fingerprint-commits-heading">Recent Fingerprint Damper commits.</h2>
+            </div>
+            <p>Synchronized directly from <code>3spress0/fingerprint-damper</code> on GitLab.</p>
+          </header>
+          <article class="activity-card glass-card reveal">
+            <header>
+              <span>main branch</span
+              ><a
+                href="https://gitlab.com/3spress0/fingerprint-damper/-/commits/main"
+                target="_blank"
+                rel="noreferrer"
+                >View all commits on GitLab</a
+              >
+            </header>
+            <div class="commit-list" data-fingerprint-commit-list>
+              <a
+                href="https://gitlab.com/3spress0/fingerprint-damper/-/commit/886eb414b8d0ad5c635f2ca704d0ef9ef2123210"
+                target="_blank"
+                rel="noreferrer"
+                ><i></i
+                ><span><b>prepping for 1.2.0</b><small>Fingerprint Damper · recent</small></span
+                ><code>886eb41</code></a
+              >
+              <a
+                href="https://gitlab.com/3spress0/fingerprint-damper/-/commit/673b01ce80147f976833c5056e98bd68bc94353c"
+                target="_blank"
+                rel="noreferrer"
+                ><i></i
+                ><span><b>amo review notes</b><small>Fingerprint Damper · recent</small></span
+                ><code>673b01c</code></a
+              >
+            </div>
+          </article>
+        </section>
+      </div>
+    </main>
+
+    <footer class="site-footer">
+      <div class="shell footer-inner">
+        <a class="brand" href="/"
+          ><picture
+            ><source srcset="/assets/org-avatar.webp?v=fff479ce" type="image/webp" />
+            <img src="/assets/org-avatar.png?v=f3debf20" alt="" decoding="async" /></picture
+          ><span><b>International Duck</b><small>Incorporated</small></span></a
+        >
+        <nav>
+          <a href="/projects">Projects</a><a href="/noosphere">Noosphere</a
+          ><a href="/members">Members</a><a href="/activity">Activity</a
+          ><a href="/migration">Migration</a><a href="/glyphsmith">Glyphsmith</a
+          ><a href="/changelog">Changelog</a
+          ><a href="https://gitlab.com/international-duck-incorporated">GitLab</a
+          ><a href="/license">License</a><a href="mailto:0xffshell@duck.com">Contact</a>
+        </nav>
+        <span class="sync-state"><i></i><span data-sync-text>GitLab data synced live</span></span>
+      </div>
+    </footer>
+  </body>
+</html>

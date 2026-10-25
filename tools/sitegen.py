@@ -68,14 +68,14 @@ LINK_STYLESHEET_FALLBACK = '<link rel="stylesheet" href="/css/bundle.css">'
 def nav_with_active(header: str, active: str | None) -> str:
     """Move the `active` class onto `active` (a nav href), leaving the rest unset."""
     header = re.sub(
-        r'<a class="[^"]*active[^"]*" href="/">Overview</a>', '<a href="/">Overview</a>', header
+        r'<a class="[^"]*active[^"]*" href="([^"]+)"(?:\s+aria-current="page")?>',
+        r'<a href="\1">',
+        header,
     )
-    header = header.replace(
-        '<a href="/projects">Projects</a>', '<a class="active" href="/projects">Projects</a>'
-    )
-    if active == "/":
+    if active:
         header = header.replace(
-            '<a href="/">Overview</a>', '<a class="active" href="/">Overview</a>'
+            f'<a href="{active}">',
+            f'<a class="active" href="{active}" aria-current="page">',
         )
     return header
 
@@ -92,10 +92,18 @@ def assemble(
     body_attrs: str = "",
     active_nav: str | None = None,
     extra_head: str = "",
+    favicon: str | None = None,
 ) -> str:
     """Compose a page from the shell plus generated content."""
+    base_head = shells["head"]
+    if favicon:
+        base_head = re.sub(
+            r'<link rel="icon" href="[^"]+"',
+            f'<link rel="icon" href="{favicon}"',
+            base_head,
+        )
     head_parts = [
-        shells["head"],
+        base_head,
         f"  <title>{html.escape(title)}</title>",
         f'  <meta name="description" content="{html.escape(description, quote=True)}">',
         f'  <link rel="canonical" href="https://idi-official.pages.dev{url_path}">',
@@ -137,7 +145,8 @@ def inline_md(text: str, base_url: str | None = None) -> str:
     Escapes first, then applies code / bold / links, so nothing in the source
     text can inject markup.
     """
-    out = html.escape(text, quote=False)
+    cleaned = text.replace(" — ", " - ").replace("—", "-")
+    out = html.escape(cleaned, quote=False)
     out = CODE.sub(lambda m: f"<code>{m.group(1)}</code>", out)
     out = BOLD.sub(lambda m: f"<strong>{m.group(1)}</strong>", out)
     out = ITALIC.sub(lambda m: f"<em>{m.group(1)}</em>", out)

@@ -28,13 +28,19 @@ const SITE_ROUTES = Object.freeze({
   zonedout: "/projects/zonedout",
   beacon: "/projects/beacon",
   bagley: "/projects/bagley",
+  badegg: "/projects/badegg",
   website: "/projects/website",
   migration: "/migration",
   baritone: "/projects/baritone",
   idiAssets: "/projects/idi-assets",
   noosphere: "/noosphere",
   glyphsmith: "/glyphsmith",
+  license: "/license",
 });
+const BEACON_CURSEFORGE_FILES_URL =
+  "https://www.curseforge.com/minecraft/mc-mods/beacon-qol/files/all?page=1&pageSize=20&showAlphaFiles=show";
+const NULLTRACE_CURSEFORGE_FILES_URL =
+  "https://www.curseforge.com/minecraft/mc-mods/nulltrace/files/all?page=1&pageSize=20&showAlphaFiles=show";
 const GL_SITE_PROJECT = `${GITLAB_API}/projects/${encodeURIComponent(`${GL_GROUP_PATH}/home`)}`;
 const fallbackModules = [
   { name: "Aimbot", category: "combat" },
@@ -290,9 +296,9 @@ async function syncNoosphere() {
     $$("[data-noosphere-avatar]").forEach((image) => {
       image.onerror = () => {
         image.onerror = null;
-        image.src = "/assets/noosphere-avatar.webp?v=e9df725c";
+        image.src = "/assets/noosphere-avatar.webp?v=da95d789";
       };
-      image.src = group.avatar_url || "/assets/noosphere-avatar.webp?v=e9df725c";
+      image.src = group.avatar_url || "/assets/noosphere-avatar.webp?v=da95d789";
     });
     setText("[data-noosphere-name]", group.name || "IDI Noosphere");
     setText("[data-noosphere-desc]", group.description || "");
@@ -311,6 +317,7 @@ const languageColors = {
   HTML: "#e34c26",
   CSS: "#563d7c",
   JavaScript: "#f1e05a",
+  TypeScript: "#3178c6",
   Python: "#3572A5",
 };
 
@@ -347,13 +354,15 @@ async function syncProjects() {
   const glProjects = allGlProjects.filter(
     (project) => !project.namespace || project.namespace.full_path === GL_GROUP_PATH
   );
+  setText("[data-org-repos]", glProjects.length);
+  const directoryProjects = glProjects.filter((project) => project.path !== "gitlab-profile");
   const [beaconVersion, championscodeVersion] = await Promise.all([
     latestReleaseTag(GL_BEACON_PROJECT),
     latestReleaseTag(GL_CHAMPIONSCODE_PROJECT),
   ]);
   const languageByProject = new Map(
     await Promise.all(
-      glProjects.map(async (project) => {
+      directoryProjects.map(async (project) => {
         const languages = await getJSON(
           `${GITLAB_API}/projects/${project.id}/languages`,
           "application/json"
@@ -365,7 +374,7 @@ async function syncProjects() {
       })
     )
   );
-  const repos = glProjects.map((project) => ({
+  const repos = directoryProjects.map((project) => ({
     name: project.path,
     html_url: project.web_url,
     description: project.description,
@@ -401,24 +410,31 @@ async function syncProjects() {
       language: "Java",
     },
     {
+      name: "badegg-v3",
+      html_url: `${GITLAB}/${GL_GROUP_PATH}/badegg-v3`,
+      description:
+        "A zero-dependency Python 3.10+ HTTP security gateway and reverse-proxy WAF with token-bucket rate limiting, secret-leak redaction, and explainable IP bans.",
+      language: "Python",
+    },
+    {
       name: "zonedout",
       html_url: `${GITLAB}/${GL_GROUP_PATH}/zonedout`,
       description:
-        "A client-side Minecraft 26.3 Fabric mod with modular combat and utility features, a Metro-style UI, and a 36-module seed-analysis and world-generation suite.",
+        "An archived, read-only Minecraft 26.3 Fabric mod preserved for reference, with a Metro-style UI and a 36-module seed and world-generation analysis suite.",
       language: "Java",
     },
     {
       name: "Baritone",
       html_url: `${GITLAB}/${GL_GROUP_PATH}/Baritone`,
       description:
-        "IDI's GitLab fork of the Baritone Minecraft pathfinder, kept current on 26.1/26.2/26.3 branches with look-and-aim behaviour work.",
+        "IDI's GitLab fork of the Baritone Minecraft pathfinder, with releases and branches for Minecraft 26.1, 26.2, and 26.3 plus look-and-aim behaviour work.",
       language: "Java",
     },
     {
       name: "idi-assets",
       html_url: `${GITLAB}/${GL_GROUP_PATH}/idi-assets`,
       description:
-        "Collection of pictures and videos: the organization's public media bundle, 69 unique files in 11 directories catalogued in manifest.csv.",
+        "Shared media and edge-artifact repository: project logos, banners, 4K WebM hero clips, and the compiled hall-of-shame.v2 IPv4/IPv6 blocklist.",
       language: null,
     },
     {
@@ -444,6 +460,7 @@ async function syncProjects() {
     Venomous: SITE_ROUTES.venomous,
     Beacon: SITE_ROUTES.beacon,
     "beacon-bagley": SITE_ROUTES.bagley,
+    "badegg-v3": SITE_ROUTES.badegg,
     NullTrace: SITE_ROUTES.nulltrace,
     ChampionsCode: SITE_ROUTES.championscode,
     zonedout: SITE_ROUTES.zonedout,
@@ -473,13 +490,21 @@ async function syncProjects() {
       label: "Beacon addon",
       icon: "bagley",
       logo: "/assets/bagley-icon.webp?v=f22db4e3",
-      status: "New",
+      status: "Active",
+      action: "Open project",
+    },
+    "badegg-v3": {
+      title: "BadEgg v3",
+      label: "Security gateway",
+      icon: "badegg",
+      logo: "/assets/badegg-icon.webp?v=91df0dcf",
+      status: "MVP",
       action: "Open project",
     },
     NullTrace: {
       label: "Privacy project",
       icon: "privacy",
-      logo: "/assets/nulltrace-icon.webp?v=3359715a",
+      logo: "/assets/nulltrace-icon.webp?v=956d0879",
       status: "Official release",
       action: "Open project",
     },
@@ -487,15 +512,15 @@ async function syncProjects() {
       label: "Research project",
       icon: "champion",
       logo: "/assets/championscode-icon.webp?v=636bb343",
-      status: championscodeVersion ? `First launch · ${championscodeVersion}` : "First launch",
+      status: championscodeVersion ? `Beta · ${championscodeVersion}` : "Public beta",
       action: "Open project",
     },
     zonedout: {
       title: "ZonedOut",
-      label: "Client-side mod",
+      label: "Archived mod",
       icon: "zonedout",
       logo: "/assets/zonedout-icon.webp?v=71a190d8",
-      status: "In development",
+      status: "Archived",
       statusMuted: true,
       action: "Open project",
     },
@@ -508,7 +533,7 @@ async function syncProjects() {
     },
     "idi-assets": {
       title: "IDI Assets",
-      label: "Media bundle",
+      label: "Media & blocklists",
       icon: "web",
       logo: "/assets/idi-assets-icon.webp?v=c18e5e66",
       status: "Media",
@@ -586,7 +611,9 @@ async function syncProjects() {
         repo.description ||
         (isVenomous
           ? "Optimized & refined Meteor Client addon for Minecraft 26.2."
-          : "Organization website and project directory.");
+          : repo.name === "home"
+            ? "Organization website and project directory."
+            : "Public International Duck Incorporated repository on GitLab.");
       copy.append(label, title, description);
 
       const footer = document.createElement("footer");
@@ -605,7 +632,7 @@ async function syncProjects() {
           ? pixelPalettes.green
           : repo.name === NULLTRACE || repo.name === BEACON || repo.name === "beacon-bagley"
             ? pixelPalettes.blue
-            : repo.name === "ChampionsCode" || repo.name === "zonedout"
+            : repo.name === "ChampionsCode" || repo.name === "badegg-v3" || repo.name === "zonedout"
               ? pixelPalettes.amber
               : pixelPalettes.slate;
       link.append(pixelEffect(palette));
@@ -650,7 +677,7 @@ async function syncMembers() {
       const localMemberImages = {
         "3spress0": "/assets/contributor-3spress0.webp?v=a3c2db19",
         "0xFFshell": "/assets/member-0xffshell.webp?v=827f401e",
-        "E-VDV-HU": "/assets/member-e-vdv-hu.webp?v=0774275d",
+        "E-VDV-HU": "/assets/member-e-vdv-hu.webp?v=2a0764ef",
         "Xx-superIvar-xX": "/assets/member-xx-superivar-xx.webp?v=1c79d93d",
         midas735: "/assets/member-midas735.webp?v=3700f4a4",
         "Jojo-8002": "/assets/member-jojo-8002.webp?v=8c2a077e",
@@ -1127,6 +1154,9 @@ async function syncNullTraceRelease() {
   );
   setText("[data-nulltrace-date]", fullDate(stable.released_at));
   setText("[data-nulltrace-release-label]", `Download ${semanticVersion}`);
+  $$("[data-nulltrace-download]").forEach((link) => {
+    link.href = NULLTRACE_CURSEFORGE_FILES_URL;
+  });
   $$("[data-nulltrace-release-link]").forEach((link) => {
     link.href = stable._links?.self || `${GITLAB}/${GL_GROUP_PATH}/${NULLTRACE}/-/releases`;
   });
@@ -1157,17 +1187,13 @@ async function syncBeaconRelease() {
   ]);
   const stable = releases.find((release) => !release.upcoming_release);
   if (!stable) return;
-  const published = stable.tag_name || stable.name || "2.0.1";
+  const published = stable.tag_name || stable.name || "1.8.16";
   const sourceVersion = properties.match(/^mod_version\s*=\s*(\S+)/m)?.[1];
   const version =
     sourceVersion && compareVersions(sourceVersion, published) > 0 ? sourceVersion : published;
-  const jar = stable.assets?.links?.find((asset) =>
-    `${asset.name || ""} ${asset.url || ""}`.toLowerCase().includes(".jar")
-  );
   const releaseUrl =
     stable._links?.self ||
     `${GITLAB}/${GL_GROUP_PATH}/${BEACON}/-/releases/${encodeURIComponent(published)}`;
-  const downloadUrl = jar?.direct_asset_url || jar?.url || releaseUrl;
   setText("[data-beacon-version]", version);
   setText("[data-beacon-date]", fullDate(stable.released_at));
   setText("[data-beacon-release-count]", releases.length.toLocaleString());
@@ -1176,7 +1202,7 @@ async function syncBeaconRelease() {
     link.href = releaseUrl;
   });
   $$("[data-beacon-download]").forEach((link) => {
-    link.href = downloadUrl;
+    link.href = BEACON_CURSEFORGE_FILES_URL;
   });
 }
 
@@ -1206,15 +1232,34 @@ async function syncChampionsCodeRelease() {
 }
 
 async function syncMemberContributions() {
-  // Contribution counts come from the GitLab group's mirrored repositories. The ChampionsCode count
-  // remains a checked-in fallback; this refresh synchronizes Venomous and website commits.
+  // Contribution counts come from the GitLab group's mirrored repositories plus espress0's
+  // personal Confluence OS and Fingerprint Damper repositories (shown only on /members/3spress0).
   const isMemberCommit = (commit) =>
     /espervanderven|3spress0|espress0|166116795/i.test(
       `${commit.author_name || ""} ${commit.author_email || ""}`
     );
-  const [venomousCommits, siteCommits] = await Promise.all([
+  const confluenceProject = `${GITLAB_API}/projects/${encodeURIComponent("3spress0/confluence-os-final")}`;
+  const fingerprintProject = `${GITLAB_API}/projects/${encodeURIComponent("3spress0/fingerprint-damper")}`;
+  const [
+    venomousCommits,
+    siteCommits,
+    confluenceCommits,
+    confluenceReleases,
+    fingerprintCommits,
+    fingerprintTags,
+  ] = await Promise.all([
     getJSON(`${GL_PROJECT}/repository/commits?per_page=100`, "application/json"),
     getJSON(`${GL_SITE_PROJECT}/repository/commits?per_page=100`, "application/json"),
+    getJSON(`${confluenceProject}/repository/commits?per_page=100`, "application/json").catch(
+      () => []
+    ),
+    getJSON(`${confluenceProject}/releases?per_page=10`, "application/json").catch(() => []),
+    getJSON(`${fingerprintProject}/repository/commits?per_page=100`, "application/json").catch(
+      () => []
+    ),
+    getJSON(`${fingerprintProject}/repository/tags?per_page=10`, "application/json").catch(
+      () => []
+    ),
   ]);
   const venomous = venomousCommits.filter(isMemberCommit),
     site = siteCommits.filter(isMemberCommit);
@@ -1222,10 +1267,29 @@ async function syncMemberContributions() {
   setText("[data-member-venomous-contributions]", venomous.length);
   setText("[data-member-site-contributions]", site.length);
   setText("[data-member-contributions]", venomous.length + site.length + champions);
+  if (confluenceCommits.length) {
+    setText("[data-confluence-commits]", confluenceCommits.length);
+  }
+  if (fingerprintCommits.length) {
+    setText("[data-fingerprint-commits]", fingerprintCommits.length);
+  }
+  const latestConfluence = confluenceReleases.find((release) => !release.upcoming_release);
+  if (latestConfluence) {
+    const tag = latestConfluence.tag_name || latestConfluence.name;
+    if (tag) setText("[data-confluence-version]", tag);
+    if (latestConfluence._links?.self) {
+      $$("[data-confluence-release-link]").forEach((link) => {
+        link.href = latestConfluence._links.self;
+      });
+    }
+  }
+  if (fingerprintTags[0]?.name) {
+    setText("[data-fingerprint-version]", fingerprintTags[0].name);
+  }
 
   const list = $("[data-member-commits]");
   if (!list) return;
-  const recent = [...venomous, ...site]
+  const recent = [...venomous, ...site, ...confluenceCommits, ...fingerprintCommits]
     .sort((a, b) => new Date(b.committed_date) - new Date(a.committed_date))
     .slice(0, 8);
   if (!recent.length) return;
@@ -1238,11 +1302,80 @@ async function syncMemberContributions() {
       const meta = document.createElement("small");
       const hash = document.createElement("code");
       const repoSegment = item.web_url.split("/-/")[0].split("/").pop();
+      const repoName =
+        repoSegment === "International-Duck-Incorporated.github.io" || repoSegment === "home"
+          ? "Website"
+          : repoSegment === "confluence-os-final"
+            ? "Confluence OS"
+            : repoSegment === "fingerprint-damper"
+              ? "Fingerprint Damper"
+              : repoSegment;
       link.href = item.web_url;
       link.target = "_blank";
       link.rel = "noreferrer";
       title.textContent = item.title?.split("\n")[0] || "Commit";
-      meta.textContent = `${repoSegment === "International-Duck-Incorporated.github.io" ? "Website" : repoSegment} · ${relativeDate(item.committed_date)}`;
+      meta.textContent = `${repoName} · ${relativeDate(item.committed_date)}`;
+      hash.textContent = (item.short_id || item.id).slice(0, 7);
+      copy.append(title, meta);
+      link.append(dot, copy, hash);
+      return link;
+    })
+  );
+}
+
+async function syncMemberProjectPage() {
+  const slug = document.body.dataset.memberProject;
+  const isConfluence = slug === "confluence";
+  const repoPath = isConfluence ? "3spress0/confluence-os-final" : "3spress0/fingerprint-damper";
+  const label = isConfluence ? "Confluence OS" : "Fingerprint Damper";
+  const apiBase = `${GITLAB_API}/projects/${encodeURIComponent(repoPath)}`;
+
+  const [commits, releases, tags] = await Promise.all([
+    getJSON(`${apiBase}/repository/commits?per_page=100`, "application/json").catch(() => []),
+    isConfluence
+      ? getJSON(`${apiBase}/releases?per_page=10`, "application/json").catch(() => [])
+      : Promise.resolve([]),
+    !isConfluence
+      ? getJSON(`${apiBase}/repository/tags?per_page=10`, "application/json").catch(() => [])
+      : Promise.resolve([]),
+  ]);
+
+  if (commits.length) {
+    setText(
+      isConfluence ? "[data-confluence-commits]" : "[data-fingerprint-commits]",
+      commits.length
+    );
+  }
+  if (isConfluence) {
+    const latest = releases.find((r) => !r.upcoming_release);
+    if (latest) {
+      const tag = latest.tag_name || latest.name;
+      if (tag) setText("[data-confluence-version]", tag);
+      if (latest._links?.self) {
+        $$("[data-confluence-release-link]").forEach((link) => {
+          link.href = latest._links.self;
+        });
+      }
+    }
+  } else if (tags[0]?.name) {
+    setText("[data-fingerprint-version]", tags[0].name);
+  }
+
+  const list = $(isConfluence ? "[data-confluence-commit-list]" : "[data-fingerprint-commit-list]");
+  if (!list || !commits.length) return;
+  list.replaceChildren(
+    ...commits.slice(0, 8).map((item) => {
+      const link = document.createElement("a");
+      const dot = document.createElement("i");
+      const copy = document.createElement("span");
+      const title = document.createElement("b");
+      const meta = document.createElement("small");
+      const hash = document.createElement("code");
+      link.href = item.web_url;
+      link.target = "_blank";
+      link.rel = "noreferrer";
+      title.textContent = item.title?.split("\n")[0] || "Commit";
+      meta.textContent = `${label} · ${relativeDate(item.committed_date)}`;
       hash.textContent = (item.short_id || item.id).slice(0, 7);
       copy.append(title, meta);
       link.append(dot, copy, hash);
@@ -1417,6 +1550,7 @@ if (!lowPowerMode && page === "project" && document.body.dataset.project === "ch
   addLiveTask(syncChampionsCodeRelease());
 if (!lowPowerMode && page === "member" && document.body.dataset.member === MEMBER_LOGIN)
   addLiveTask(syncMemberContributions());
+if (!lowPowerMode && page === "member-project") addLiveTask(syncMemberProjectPage());
 if (page === "venomous") {
   setupModules(); // renders the checked-in module index when live data is paused
   if (lowPowerMode) setText("[data-module-source]", "Checked-in module index");
@@ -1790,7 +1924,7 @@ function renderBaritoneAgents(
     roster.replaceChildren(
       baritoneEmptyLine(
         agents.length
-          ? "All agents have finished \u2014 nobody left on the roster."
+          ? "All agents have finished; nobody left on the roster."
           : "No active-agent table could be parsed from AGENTS.md."
       )
     );
@@ -1847,7 +1981,7 @@ function renderBaritoneAgents(
         commitsLink.target = "_blank";
         commitsLink.rel = "noreferrer";
         commitsLink.textContent = `${commitTotal} ${commitTotal === 1 ? "commit" : "commits"}`;
-        commitsLink.title = `Commits on ${BARITONE_AGENTS_REF} signed ${agent.name} (newest ${BARITONE_COMMIT_PAGES * 100}) — opens the branch history`;
+        commitsLink.title = `Commits on ${BARITONE_AGENTS_REF} signed ${agent.name} (newest ${BARITONE_COMMIT_PAGES * 100}), opens the branch history`;
         commits.append(commitsLink);
         copy.append(commits);
       }

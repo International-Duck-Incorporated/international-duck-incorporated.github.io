@@ -32,6 +32,11 @@ from pathlib import Path
 IMG = re.compile(r"<img\b[^>]*>")
 SRC = re.compile(r'src="(?P<src>/assets/(?P<name>[^"?]+)\.(?:png|jpg|jpeg))"')
 WRAPPED = re.compile(r"<picture>\s*<source[^>]*>\s*$")
+DYNAMIC_AVATAR_WRAP = re.compile(
+    r"<picture>\s*<source[^>]*>\s*(<img\b[^>]*\bdata-(?:org|noosphere)-avatar\b[^>]*>)\s*</picture>",
+    re.S,
+)
+DYNAMIC_AVATAR = re.compile(r"\bdata-(?:org|noosphere)-avatar\b")
 
 
 def webp_sibling(root: Path, name: str) -> str | None:
@@ -43,6 +48,7 @@ def webp_sibling(root: Path, name: str) -> str | None:
 
 def rewrite(root: Path, source: str) -> tuple[str, int, int]:
     wrapped = swapped = 0
+    source = DYNAMIC_AVATAR_WRAP.sub(r"\1", source)
 
     def fix(match: re.Match) -> str:
         nonlocal wrapped, swapped
@@ -55,7 +61,7 @@ def rewrite(root: Path, source: str) -> tuple[str, int, int]:
         sibling = webp_sibling(root, found.group("name"))
         if not sibling:
             return tag
-        if "data-org-avatar" in tag:
+        if DYNAMIC_AVATAR.search(tag):
             swapped += 1
             return tag.replace(found.group(0), f'src="{sibling}"')
         if WRAPPED.search(source[max(0, match.start() - 200) : match.start()]):

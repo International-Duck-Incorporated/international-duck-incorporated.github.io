@@ -148,7 +148,7 @@ Lighthouse, local server, mobile emulation, one run per page:
 Playwright, 1400x1000 and 390x844: both new pages render with no console errors,
 no failed requests, no horizontal overflow; all 56 card anchors and both category
 anchors resolve and scroll into view; `<details>` toggles; the footer `Changelog`
-link and Beacon's "All 56 modules" button both land on the right page.
+link and Beacon's "All 57 modules" button both land on the right page.
 
 ## Refreshing the snapshots
 

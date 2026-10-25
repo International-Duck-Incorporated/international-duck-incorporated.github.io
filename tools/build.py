@@ -43,6 +43,7 @@ STEPS = [
     # projects/beacon/index.html, so the sprite pass runs after them, not before.
     "gen_module_page.py",
     "gen_changelog_page.py",
+    "gen_license_page.py",
     "apply_svg_sprite.py",  # every page gets the icons it references
     # Site-wide passes, in this order: copy -> metadata -> links -> sitemap.
     "apply_module_count.py",

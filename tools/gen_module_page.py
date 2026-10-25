@@ -32,7 +32,10 @@ URL_PATH = "/projects/beacon/modules"
 # about it. The CurseForge listing ("Beacon QoL", project 1720579) is public, so
 # it is the primary download for the whole page; GitLab keeps the tagged stable
 # releases. Change these constants in one place and re-run the generator.
-CURSEFORGE_URL = "https://www.curseforge.com/minecraft/mc-mods/beacon-qol"
+CURSEFORGE_URL = (
+    "https://www.curseforge.com/minecraft/mc-mods/beacon-qol/files/all"
+    "?page=1&pageSize=20&showAlphaFiles=show"
+)
 CURSEFORGE_NAME = "Beacon QoL"
 RELEASES_URL = "https://gitlab.com/international-duck-incorporated/Beacon/-/releases"
 DOWNLOAD_URL = CURSEFORGE_URL
@@ -61,8 +64,8 @@ def module_card(module: dict, download_url: str) -> str:
             <p class="module-source"><code>{html.escape(module["class"])}.java</code></p>
           </div>
           <footer class="module-links">
-            <a class="module-link" href="{download_url}" target="_blank" rel="noreferrer">Download <svg><use href="#i-download"/></svg></a>
-            <a class="module-link muted" href="{module["source_url"]}" target="_blank" rel="noreferrer">Source <svg><use href="#i-external"/></svg></a>
+            <a class="module-link" href="{html.escape(download_url, quote=True)}" target="_blank" rel="noreferrer">Download <svg><use href="#i-download"/></svg></a>
+            <a class="module-link muted" href="{html.escape(module["source_url"], quote=True)}" target="_blank" rel="noreferrer">Source <svg><use href="#i-external"/></svg></a>
           </footer>
         </article>"""
 
@@ -116,8 +119,8 @@ def main() -> int:
         <h1>Beacon modules.</h1>
         <p class="lead">Every module Beacon registers, grouped by category - {total} client-side, vanilla-server-safe modules across {len(counts)} categories.</p>
         <div class="action-row">
-          <a class="button button-blue" href="{CURSEFORGE_URL}" target="_blank" rel="noreferrer"><svg><use href="#i-curseforge"/></svg>Get {CURSEFORGE_NAME} on CurseForge</a>
-          <a class="button button-glass" href="{RELEASES_URL}" target="_blank" rel="noreferrer"><svg><use href="#i-download"/></svg>All GitLab releases</a>
+          <a class="button button-blue" href="{html.escape(CURSEFORGE_URL, quote=True)}" target="_blank" rel="noreferrer"><svg><use href="#i-curseforge"/></svg>Download {CURSEFORGE_NAME} on CurseForge</a>
+          <a class="button button-glass" href="{html.escape(RELEASES_URL, quote=True)}" target="_blank" rel="noreferrer"><svg><use href="#i-gitlab"/></svg>GitLab release notes</a>
         </div>
         <div class="chip-row">{category_nav}</div>
       </section>
@@ -127,7 +130,7 @@ def main() -> int:
       <section class="directory-foot glass-card reveal">
         <h2>Where this list comes from</h2>
         <p>{verification}</p>
-        <p>Every Download link on this page goes to <b><a href="{CURSEFORGE_URL}" target="_blank" rel="noreferrer">{CURSEFORGE_NAME}</a></b>, the project's CurseForge listing. Tagged releases stay on <a href="{RELEASES_URL}" target="_blank" rel="noreferrer">GitLab</a>, and the <a href="https://gitlab.com/international-duck-incorporated/Beacon" target="_blank" rel="noreferrer">source repository</a> is public.</p>
+        <p>Every Download link on this page goes to <b><a href="{html.escape(CURSEFORGE_URL, quote=True)}" target="_blank" rel="noreferrer">{CURSEFORGE_NAME} on CurseForge</a></b> (all release and alpha builds). Release notes and tagged source history live on <a href="{html.escape(RELEASES_URL, quote=True)}" target="_blank" rel="noreferrer">GitLab</a>, and the <a href="https://gitlab.com/international-duck-incorporated/Beacon" target="_blank" rel="noreferrer">source repository</a> is public.</p>
         <p>Every module heading is linkable - for example <code>/projects/beacon/modules#{modules[0]["id"]}</code> - and each card links to that module's source file.</p>
       </section>
     </div>

@@ -49,10 +49,10 @@
     />
 
     <link rel="icon" href="/assets/org-avatar.png?v=f3debf20" type="image/png" />
-    <link rel="stylesheet" href="/css/bundle.css?v=d4c14665" />
+    <link rel="stylesheet" href="/css/bundle.css?v=05d51123" />
 
-    <script src="/script.js?v=0443d2ee" defer></script>
-    <script src="/pixel-canvas.js?v=8f2c93f3" defer></script>
+    <script src="/script.js?v=88885632" defer></script>
+    <script src="/pixel-canvas.js?v=0c61d787" defer></script>
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
     <meta
@@ -143,12 +143,13 @@
             "@type": "SoftwareApplication",
             "@id": "https://idi-official.pages.dev/projects/website#app",
             "name": "IDI website",
-            "description": "The static, dependency-free source repository for this website: an open-source organization dashboard synchronized live with the GitLab API and deployed on Cloudflare Pages.",
+            "description": "The static, dependency-free source repository for this website: an organization dashboard synchronized live with the GitLab API and deployed on Cloudflare Pages.",
             "url": "https://idi-official.pages.dev/projects/website",
             "applicationCategory": "WebApplication",
             "operatingSystem": "Web",
             "programmingLanguage": "HTML",
             "isAccessibleForFree": true,
+            "license": "https://idi-official.pages.dev/license",
             "author": {
               "@id": "https://idi-official.pages.dev/#organization"
             },
@@ -211,6 +212,7 @@
         <nav class="main-nav" id="main-navigation" data-nav aria-label="Primary navigation">
           <a href="/">Overview</a>
           <a class="active" href="/projects" aria-current="page">Projects</a>
+          <a href="/noosphere">Noosphere</a>
           <a href="/members">Members</a>
           <a href="/activity">Activity</a>
           <a href="/migration">Migration</a>
@@ -289,27 +291,32 @@
               <div class="fact-list">
                 <div class="fact">
                   <small>Status</small>
-                  <b>Live on GitLab Pages</b>
+                  <b>Live on Cloudflare Pages</b>
                 </div>
 
                 <div class="fact">
                   <small>Technology</small>
-                  <b>HTML · CSS · JavaScript</b>
+                  <b>HTML · CSS · JS · Edge Worker</b>
                 </div>
 
                 <div class="fact">
                   <small>Data</small>
-                  <b>GitLab API</b>
+                  <b>GitLab API + static snapshots</b>
                 </div>
 
                 <div class="fact">
-                  <small>Build</small>
-                  <b>No build step</b>
+                  <small>Pipeline</small>
+                  <b>Python tools/build.py</b>
                 </div>
 
                 <div class="fact">
-                  <small>Source</small>
-                  <b>Public repository</b>
+                  <small>Edge gate</small>
+                  <b>BadEgg v2 (hall-of-shame.v2)</b>
+                </div>
+
+                <div class="fact">
+                  <small>Licence</small>
+                  <b><a href="/license">All rights reserved</a></b>
                 </div>
               </div>
             </div>
@@ -336,17 +343,19 @@
               <li>Plain HTML pages with no framework dependency</li>
               <li>Responsive glass UI with local assets</li>
               <li>Client-side GitLab API synchronization</li>
-              <li>GitLab Pages deployment from the main branch</li>
+              <li>Cloudflare Pages deployment from the main branch</li>
             </ul>
           </article>
 
           <article class="detail-panel glass-card reveal">
-            <span class="eyebrow">Source</span>
-            <h2>Open by default.</h2>
+            <span class="eyebrow">Source &amp; licence</span>
+            <h2>Public tree, rights reserved.</h2>
 
             <p>
-              The source, content, and design live in the public repository. Browse the files,
-              inspect the styles, or improve the next weird little page.
+              The source, content, and design live in a public GitLab repository under IDI’s
+              <a class="inline-link" href="/license">All Rights Reserved Licence</a>
+              (<code>LICENSE.md</code>). Public viewing is supported; reproduction or redistribution
+              requires permission except where third-party licences apply.
             </p>
 
             <a
@@ -522,7 +531,7 @@
           <a href="/migration">Migration</a>
           <a href="/glyphsmith">Glyphsmith</a><a href="/changelog">Changelog</a
           ><a href="https://gitlab.com/international-duck-incorporated"> GitLab </a>
-          <a href="mailto:0xffshell@duck.com">Contact</a>
+          <a href="/license">License</a><a href="mailto:0xffshell@duck.com">Contact</a>
         </nav>
 
         <span class="sync-state">

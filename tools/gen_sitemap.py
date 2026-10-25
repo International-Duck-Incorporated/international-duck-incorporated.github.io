@@ -29,12 +29,15 @@ PRIORITY = {
     "/projects/championscode": ("weekly", "0.8"),
     "/members/": ("weekly", "0.8"),
     "/projects/bagley": ("weekly", "0.7"),
-    "/projects/zonedout": ("weekly", "0.7"),
+    "/projects/badegg": ("weekly", "0.8"),
+    "/projects/zonedout": ("monthly", "0.6"),
     "/activity": ("weekly", "0.6"),
     "/migration": ("weekly", "0.6"),
     "/glyphsmith": ("weekly", "0.6"),
     "/members/0xffshell": ("weekly", "0.6"),
     "/members/3spress0": ("weekly", "0.6"),
+    "/members/3spress0/confluence": ("weekly", "0.6"),
+    "/members/3spress0/fingerprint-damper": ("weekly", "0.6"),
     "/members/e-vdv-hu": ("weekly", "0.6"),
     "/members/midas735": ("weekly", "0.6"),
     "/members/superivar": ("weekly", "0.6"),
@@ -44,6 +47,7 @@ PRIORITY = {
     "/baritone/dashboard": ("weekly", "0.7"),
     "/projects/idi-assets": ("weekly", "0.6"),
     "/noosphere": ("weekly", "0.8"),
+    "/license": ("monthly", "0.4"),
 }
 
 ORDER = list(PRIORITY)

@@ -1,5 +1,5 @@
 /*
- * venom-hex.js — neon hexagon-forming particle background for the Venomous
+ * venom-hex.js - neon hexagon-forming particle background for the Venomous
  * page. Adapted from the supplied venom_index.html (green hex lattice
  * walkers, hue 120), retuned so the fade matches the site background and
  * reduced-motion users get a settled static lattice instead of animation.

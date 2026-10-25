@@ -73,7 +73,7 @@ d.text((TX, AY + 40), "International Duck", font=f_1, fill=TEXT)
 d.text((TX, AY + 118), "Incorporated.", font=f_2, fill=MUTED)
 ty = AY + 212
 for line in wrap(
-    "Open-source Minecraft mods, tools and experiments \u2014 built in public on GitLab.",
+    "Minecraft mods, security tools, and autonomous AI projects on GitLab.",
     f_tag,
     MAXW,
 ):
@@ -83,7 +83,7 @@ for line in wrap(
 # footer strip
 d.line([96, H - 86, W - 96, H - 86], fill=(38, 52, 76), width=1)
 f_foot = ImageFont.truetype(FONT, 24)
-left, right = "idi-official.pages.dev", "Beacon \u00b7 Venomous \u00b7 NullTrace \u00b7 ZonedOut"
+left, right = "idi-official.pages.dev", "Beacon \u00b7 Venomous \u00b7 NullTrace \u00b7 Noosphere"
 d.text((96, H - 68), left, font=f_foot, fill=BLUE)
 d.text((RIGHT - d.textlength(right, font=f_foot), H - 68), right, font=f_foot, fill=MUTED)
 

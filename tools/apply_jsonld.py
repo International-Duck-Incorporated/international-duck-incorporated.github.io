@@ -47,18 +47,18 @@ WEB = {
 
 PROJECTS = {
     "projects/beacon/index.html": {
-        "curseforge": "https://www.curseforge.com/minecraft/mc-mods/beacon-qol",
+        "curseforge": "https://www.curseforge.com/minecraft/mc-mods/beacon-qol/files/all?page=1&pageSize=20&showAlphaFiles=show",
         "url": "/projects/beacon",
         "name": "Beacon",
         "desc": (
-            "Modular, client-side utility mod for Minecraft 26.2 with 56 registered "
+            "Modular, client-side utility mod for Minecraft 26.2 with 57 registered "
             "modules, persistent configuration and an addon API. Vanilla-server-safe."
         ),
-        "version": "2.0.1",
+        "version": "1.8.16",
         "date": "2026-09-25",
         "os": "Minecraft 26.2",
         "repo": GITLAB + "/Beacon",
-        "download": GITLAB + "/Beacon/-/releases/1.8.16/downloads/Beacon-1.8.16.jar",
+        "download": "https://www.curseforge.com/minecraft/mc-mods/beacon-qol/files/all?page=1&pageSize=20&showAlphaFiles=show",
         "license": "https://spdx.org/licenses/GPL-3.0-only.html",
     },
     "projects/venomous.html": {
@@ -76,6 +76,7 @@ PROJECTS = {
         "license": None,
     },
     "projects/nulltrace.html": {
+        "curseforge": "https://www.curseforge.com/minecraft/mc-mods/nulltrace/files/all?page=1&pageSize=20&showAlphaFiles=show",
         "url": "/projects/nulltrace",
         "name": "NullTrace",
         "desc": (
@@ -83,11 +84,11 @@ PROJECTS = {
             "1.21.11, 26.1, 26.2 and 26.3: client brand spoofing, fingerprint "
             "protection, tracking defenses and safer server connections."
         ),
-        "version": "2.0.0",
-        "date": "2026-09-24",
+        "version": "2.1.0",
+        "date": "2026-10-01",
         "os": "Minecraft 1.21.11 / 26.1 / 26.2 / 26.3",
         "repo": GITLAB + "/NullTrace",
-        "download": GITLAB + "/NullTrace/-/releases/v2.0.0",
+        "download": "https://www.curseforge.com/minecraft/mc-mods/nulltrace/files/all?page=1&pageSize=20&showAlphaFiles=show",
         "license": "https://spdx.org/licenses/GPL-3.0.html",
     },
     "projects/championscode.html": {
@@ -138,7 +139,7 @@ PROJECTS["projects/website.html"] = {
     "url": "/projects/website",
     "name": "IDI website",
     "desc": (
-        "The static, dependency-free source repository for this website: an open-source "
+        "The static, dependency-free source repository for this website: an "
         "organization dashboard synchronized live with the GitLab API and deployed on "
         "Cloudflare Pages."
     ),
@@ -147,7 +148,7 @@ PROJECTS["projects/website.html"] = {
     "os": "Web",
     "repo": GITLAB + "/home",
     "download": None,
-    "license": None,
+    "license": "https://idi-official.pages.dev/license",
     "category": "WebApplication",
     "lang": "HTML",
 }
@@ -159,11 +160,16 @@ MEMBERS = {
         "desc": "International Duck's main writer.",
         "sameAs": ["https://gitlab.com/0xFFshell"],
     },
-    "members/3spress0.html": {
+    "members/3spress0/index.html": {
         "url": "/members/3spress0",
         "name": "espress0",
-        "desc": "Backend developer and backbone of most International Duck projects.",
-        "sameAs": ["https://gitlab.com/3spress0"],
+        "desc": "Backend developer and backbone of most International Duck projects, and creator of Confluence OS and Fingerprint Damper.",
+        "sameAs": [
+            "https://gitlab.com/3spress0",
+            "https://gitlab.com/3spress0/confluence-os-final",
+            "https://gitlab.com/3spress0/fingerprint-damper",
+            "https://addons.mozilla.org/en-US/firefox/addon/fingerprint-damper/",
+        ],
     },
     "members/e-vdv-hu.html": {
         "url": "/members/e-vdv-hu",

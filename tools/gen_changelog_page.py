@@ -30,8 +30,9 @@ EXPANDED_PER_PROJECT = 2
 
 
 def version_block(project: dict, version: dict, index: int) -> str:
-    version_label = version["version"]
-    title = version.get("title")
+    version_label = version["version"].replace(" — ", " - ").replace("—", "-")
+    raw_title = version.get("title")
+    title = raw_title.replace(" — ", " - ").replace("—", "-") if raw_title else None
     # Most CHANGELOG headings already lead with the version ("1.9.0 - ..."), so only
     # add the version prefix when the title does not carry it.
     if not title:
@@ -39,7 +40,7 @@ def version_block(project: dict, version: dict, index: int) -> str:
     elif title.lower().startswith(version_label.lower()):
         heading = title
     else:
-        heading = f"{version_label} — {title}"
+        heading = f"{version_label} - {title}"
 
     meta = []
     if version["date"]:
@@ -190,7 +191,7 @@ def main() -> int:
     page = sitegen.assemble(
         shells=shells,
         url_path=URL_PATH,
-        title=f"Changelog — {total_versions} release sections | IDI",
+        title=f"Changelog: {total_versions} release sections | IDI",
         description=(
             "Every release from every International Duck project - Beacon, Venomous, NullTrace, "
             f"ChampionsCode and Bagley - {total_versions} version sections from each CHANGELOG.md."
@@ -200,6 +201,7 @@ def main() -> int:
         jsonld=f'  <script type="application/ld+json">\n{jsonld}\n  </script>',
         active_nav=None,
         body_attrs='data-page="changelog"',
+        favicon="/assets/org-avatar.png",
     )
 
     out = root / "changelog.html"

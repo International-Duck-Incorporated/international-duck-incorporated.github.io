@@ -1,5 +1,5 @@
 /*
- * matrix-rain.js — falling "digital rain" characters background for the
+ * matrix-rain.js - falling "digital rain" characters background for the
  * 0xFFshell member page. Katakana + terminal glyphs in venom green over the
  * site background, kept subtle so content stays readable.
  */

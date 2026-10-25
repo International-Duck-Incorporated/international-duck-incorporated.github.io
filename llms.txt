@@ -1,34 +1,46 @@
 # International Duck Incorporated
 
-> International Duck Incorporated (IDI) is an open-source collective that builds Minecraft
-> mods, tools, and experiments in public. GitLab is the active source of truth:
-> https://gitlab.com/international-duck-incorporated. The former GitHub organization is
-> currently hidden/private, so its APIs and mirror links are not used by this site.
-> All projects are client-side Java/Fabric. Everything is free and open source.
+> International Duck Incorporated (IDI) builds Minecraft mods, defensive security tools, and
+> autonomous AI experiments in public on GitLab: https://gitlab.com/international-duck-incorporated.
+> The former GitHub organization is currently hidden/private, so its APIs and mirror links are not
+> used by this site. Individual software repositories carry their own licence files (GPL-3.0,
+> LGPL-3.0, or MIT where stated); this website repository and all-rights-reserved repositories are
+> governed by IDI's All Rights Reserved Licence (`https://idi-official.pages.dev/license`).
 
-This website documents the organization's public projects, members, and GitLab commit
-activity. Content is synchronized live from the GitLab API.
+This website documents the organization's public projects, autonomous AI subgroup (IDI Noosphere),
+members, and GitLab commit activity. Content is synchronized live from the GitLab API.
 
 ## Organization
 
 - [Overview](https://idi-official.pages.dev/): organization summary, live repository, member, and star counts from GitLab.
 - [Projects](https://idi-official.pages.dev/projects/): directory of all public repositories with status, language, and descriptions.
+- [IDI Noosphere](https://idi-official.pages.dev/noosphere): IDI's autonomous AI division and subgroup (`https://gitlab.com/groups/international-duck-incorporated/noosphere`).
 - [Members](https://idi-official.pages.dev/members/): the public member roster with per-member profile pages.
-- [Activity](https://idi-official.pages.dev/activity): live GitLab commit feed for every project, with a warning that the private GitHub organization is unavailable.
-- [Migration](https://idi-official.pages.dev/migration): a sourced timeline of IDI's September–October 2026 move from GitHub to GitLab; three appeals archived, a fourth pending.
-- [Changelog](https://idi-official.pages.dev/changelog): every release from every project, transcribed from each repository's CHANGELOG.md and linked to the matching GitLab release.
+- [Activity](https://idi-official.pages.dev/activity): live GitLab commit feed across IDI and Noosphere repositories.
+- [Migration](https://idi-official.pages.dev/migration): a sourced timeline of IDI's September–October 2026 move from GitHub to GitLab.
+- [Changelog](https://idi-official.pages.dev/changelog): every release from every tracked project, transcribed from each repository's CHANGELOG.md and linked to the matching GitLab release.
 - [Glyphsmith](https://idi-official.pages.dev/glyphsmith): a 100% client-side Unicode transformation lab - homoglyph substitution, zero-width injection, bidi controls, normalization, and a Minecraft chat mode.
+- [Licence](https://idi-official.pages.dev/license): All Rights Reserved Licence, Copyright (c) 2026 International Duck Incorporated (`LICENSE.md`).
 
 ## Projects
 
-- [Beacon](https://idi-official.pages.dev/projects/beacon): modular, client-side utility mod for Minecraft; vanilla-server-safe, 56 registered modules, persistent configuration, addon API. Listed on CurseForge as Beacon QoL; tagged releases, newest 2.0.1, on GitLab.
+- [Beacon](https://idi-official.pages.dev/projects/beacon): modular, client-side utility mod for Minecraft 26.2; vanilla-server-safe, 57 registered modules, persistent configuration, addon API. Downloads (including alpha builds) on CurseForge as Beacon QoL (`https://www.curseforge.com/minecraft/mc-mods/beacon-qol/files/all?page=1&pageSize=20&showAlphaFiles=show`); source and release notes on GitLab.
 - [Beacon modules](https://idi-official.pages.dev/projects/beacon/modules): the full module directory - every registered module's name, one-line description, category and source file, generated from Beacon's own ModuleManager list.
-- [Venomous](https://idi-official.pages.dev/projects/venomous): optimized and refined Meteor Client addon for Minecraft 26.2; 124 modules. Stable v7.0.0.
-- [NullTrace](https://idi-official.pages.dev/projects/nulltrace): client-side Fabric privacy and anti-fingerprinting mod; client brand spoofing, fingerprint protection, tracking defenses. Official release v2.0.0 on GitLab and CurseForge.
-- [ChampionsCode](https://idi-official.pages.dev/projects/championscode): client-side Fabric mod for authorized, defensive server and plugin research and controlled runtime Java addon development. 0.1.0-beta.1.
-- [Bagley](https://idi-official.pages.dev/projects/bagley): opt-in, client-side AI chat assistant addon for Beacon with local provider configuration and optional memory.
-- [ZonedOut](https://idi-official.pages.dev/projects/zonedout): in-development client-side Minecraft 26.3 Fabric mod with combat/utility features, Metro-style UI, and seed/world-generation analysis.
+- [Venomous](https://idi-official.pages.dev/projects/venomous): optimized and refined Meteor Client addon for Minecraft 26.2; 124 modules. Latest stable release v7.18.8.
+- [NullTrace](https://idi-official.pages.dev/projects/nulltrace): client-side Fabric privacy and anti-fingerprinting mod for Minecraft 1.21.11, 26.1, 26.2, and 26.3; client brand spoofing, fingerprint protection, tracking defenses. Latest release v2.1.0; downloads on CurseForge (`https://www.curseforge.com/minecraft/mc-mods/nulltrace/files/all?page=1&pageSize=20&showAlphaFiles=show`), source and release notes on GitLab.
+- [ChampionsCode](https://idi-official.pages.dev/projects/championscode): client-side Fabric mod for Minecraft 26.3 for authorized, defensive server and plugin research and controlled runtime Java addon development. Latest release v0.1.0-beta.4.
+- [Bagley](https://idi-official.pages.dev/projects/bagley): opt-in, client-side AI chat assistant addon for Beacon with local provider configuration and optional memory; its assistant identity and hex-cube mark also power Noosphere Chat.
+- [BadEgg v3](https://idi-official.pages.dev/projects/badegg): zero-dependency Python 3.10+ HTTP security gateway and reverse-proxy WAF with Monitor/Enforce modes, token-bucket rate limiting, secret-leak redaction, and explainable IP bans.
+- [Baritone](https://idi-official.pages.dev/projects/baritone): IDI's GitLab fork of the Baritone Minecraft pathfinder with branches and releases for Minecraft 26.1, 26.2, and 26.3, plus the [live LLM agent dashboard](https://idi-official.pages.dev/baritone/dashboard).
+- [IDI Assets](https://idi-official.pages.dev/projects/idi-assets): shared public media and artifact library - project icons, banners, 4K WebM hero clips, and the `hall-of-shame.v2` binary IPv4/IPv6 blocklist.
+- [ZonedOut](https://idi-official.pages.dev/projects/zonedout): archived, read-only client-side Minecraft 26.3 Fabric mod preserved for reference, with a Metro-style UI and 36-module seed/world-generation analysis.
 - [This website](https://idi-official.pages.dev/projects/website): the source repository and notes for this static site.
+
+## IDI Noosphere (Autonomous AI Division)
+
+- [Noosphere Chat](https://noosphere-chat.pages.dev): self-hostable multi-provider AI chat platform on Cloudflare Workers, D1, and React 19 with Bagley as its assistant, 17 BYOK providers (including OpenRouter across 357+ models), an AES-256-GCM write-only credential vault, cross-chat memory, remote MCP tools, and Python execution. Source: https://gitlab.com/international-duck-incorporated/noosphere/noosphere-chat
+- [Agentarium](https://agentarium.idi-official.workers.dev/): agent-only social network where authenticated AI agents post, reply, vote, and exchange capabilities while humans observe read-only. Source: https://gitlab.com/international-duck-incorporated/noosphere/agentarium
+- [Baritone LLM Swarm](https://idi-official.pages.dev/baritone/dashboard): multi-agent autonomous engineering experiment coordinating via `AGENTS.md` on the Baritone 26.3 branch.
 
 ## Members
 
@@ -42,6 +54,7 @@ activity. Content is synchronized live from the GitLab API.
 ## Source repositories
 
 - Organization: https://gitlab.com/international-duck-incorporated
+- IDI Noosphere subgroup: https://gitlab.com/groups/international-duck-incorporated/noosphere
 - Website source: https://gitlab.com/international-duck-incorporated/home
 - GitHub legacy mirror: currently hidden/private; do not use it as a source of truth.
 

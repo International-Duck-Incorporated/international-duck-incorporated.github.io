@@ -1,0 +1,633 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <script>
+      (() => {
+        const nav = navigator;
+        const connection = nav.connection || nav.mozConnection || nav.webkitConnection;
+        const lowEnd = Boolean(
+          (connection && connection.saveData) ||
+            (connection && /^(slow-2g|2g)$/.test(connection.effectiveType || "")) ||
+            (typeof nav.deviceMemory === "number" && nav.deviceMemory <= 4) ||
+            (typeof nav.hardwareConcurrency === "number" && nav.hardwareConcurrency <= 4)
+        );
+        window.IDI_LOW_END = lowEnd;
+        window.IDI_REDUCED_MOTION = Boolean(
+          window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches
+        );
+        if (lowEnd) document.documentElement.classList.add("low-end");
+      })();
+    </script>
+    <link rel="preconnect" href="https://gitlab.com" crossorigin />
+    <link rel="preconnect" href="https://gitlab.com" />
+    <link rel="dns-prefetch" href="https://gitlab.com" />
+    <meta name="theme-color" content="#071015" />
+    <link rel="icon" href="/assets/org-avatar.png?v=f3debf20" type="image/png" />
+    <link rel="stylesheet" href="/css/bundle.css?v=05d51123" />
+    <meta
+      property="og:image:alt"
+      content="International Duck Incorporated - open-source Minecraft mods, tools and experiments"
+    />
+
+    <title>All Rights Reserved Licence | International Duck</title>
+    <meta
+      name="description"
+      content="Copyright (c) 2026 International Duck Incorporated. All rights reserved. Full repository and website licence terms for International Duck Incorporated."
+    />
+    <link rel="canonical" href="https://idi-official.pages.dev/license" />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="All Rights Reserved Licence | International Duck" />
+    <meta
+      property="og:description"
+      content="All Rights Reserved Licence. Copyright (c) 2026 International Duck Incorporated."
+    />
+    <meta property="og:url" content="https://idi-official.pages.dev/license" />
+    <meta property="og:site_name" content="International Duck Incorporated" />
+    <meta property="og:locale" content="en_US" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="All Rights Reserved Licence | International Duck" />
+    <meta
+      name="twitter:description"
+      content="All Rights Reserved Licence. Copyright (c) 2026 International Duck Incorporated."
+    />
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@graph": [
+          {
+            "@type": "Organization",
+            "@id": "https://idi-official.pages.dev/#organization",
+            "name": "International Duck Incorporated",
+            "alternateName": "IDI",
+            "url": "https://idi-official.pages.dev/",
+            "logo": {
+              "@type": "ImageObject",
+              "url": "https://idi-official.pages.dev/assets/org-avatar.png"
+            },
+            "sameAs": ["https://gitlab.com/international-duck-incorporated"]
+          },
+          {
+            "@type": "WebSite",
+            "@id": "https://idi-official.pages.dev/#website",
+            "url": "https://idi-official.pages.dev/",
+            "name": "International Duck Incorporated",
+            "inLanguage": "en",
+            "publisher": {
+              "@id": "https://idi-official.pages.dev/#organization"
+            }
+          },
+          {
+            "@type": "WebPage",
+            "@id": "https://idi-official.pages.dev/license#webpage",
+            "url": "https://idi-official.pages.dev/license",
+            "name": "All Rights Reserved Licence | International Duck Incorporated",
+            "description": "Copyright (c) 2026 International Duck Incorporated. All rights reserved.",
+            "isPartOf": {
+              "@id": "https://idi-official.pages.dev/#website"
+            },
+            "about": {
+              "@id": "https://idi-official.pages.dev/#organization"
+            },
+            "inLanguage": "en",
+            "breadcrumb": {
+              "@id": "https://idi-official.pages.dev/license#breadcrumb"
+            }
+          },
+          {
+            "@type": "BreadcrumbList",
+            "@id": "https://idi-official.pages.dev/license#breadcrumb",
+            "itemListElement": [
+              {
+                "@type": "ListItem",
+                "position": 1,
+                "name": "International Duck Incorporated",
+                "item": "https://idi-official.pages.dev/"
+              },
+              {
+                "@type": "ListItem",
+                "position": 2,
+                "name": "All Rights Reserved Licence",
+                "item": "https://idi-official.pages.dev/license"
+              }
+            ]
+          }
+        ]
+      }
+    </script>
+    <link rel="stylesheet" href="/css/bundle.css?v=05d51123" />
+    <script src="/script.js?v=88885632" defer></script>
+  </head>
+  <body data-page="license">
+    <svg class="svg-sprite" aria-hidden="true">
+      <symbol id="i-gitlab" viewBox="0 0 24 24">
+        <path
+          fill="currentColor"
+          stroke="none"
+          d="m23.6004 9.5927-.0337-.0862L20.3.9814a.851.851 0 0 0-.3362-.405.8748.8748 0 0 0-.9997.0539.8748.8748 0 0 0-.29.4399l-2.2055 6.748H7.5375l-2.2057-6.748a.8573.8573 0 0 0-.29-.4412.8748.8748 0 0 0-.9997-.0537.8585.8585 0 0 0-.3362.4049L.4332 9.5015l-.0325.0862a6.0657 6.0657 0 0 0 2.0119 7.0105l.0113.0087.03.0213 4.976 3.7264 2.462 1.8633 1.4995 1.1321a1.0085 1.0085 0 0 0 1.2197 0l1.4995-1.1321 2.4619-1.8633 5.006-3.7489.0125-.01a6.0682 6.0682 0 0 0 2.0094-7.003z"
+        />
+      </symbol>
+      <symbol id="i-arrow" viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6" /></symbol>
+      <symbol id="i-download" viewBox="0 0 24 24">
+        <path d="M12 3v12M7 10l5 5 5-5M4 20h16" />
+      </symbol>
+      <symbol id="i-menu" viewBox="0 0 24 24"><path d="M4 8h16M4 16h16" /></symbol>
+      <symbol id="i-close" viewBox="0 0 24 24"><path d="m5 5 14 14M19 5 5 19" /></symbol>
+      <symbol id="i-curseforge" viewBox="0 0 24 24">
+        <path
+          fill="currentColor"
+          stroke="none"
+          d="M18.326 9.2145S23.2261 8.4418 24 6.1882h-7.5066V4.4H0l2.0318 2.3576V9.173s5.1267-.2665 7.1098 1.2372c2.7146 2.516-3.053 5.917-3.053 5.917L5.0995 19.6c1.5465-1.4726 4.494-3.3775 9.8983-3.2857-2.0565.65-4.1245 1.6651-5.7344 3.2857h10.9248l-1.0288-3.2726s-7.918-4.6688-.8336-7.1127z"
+        />
+      </symbol>
+      <symbol id="i-external" viewBox="0 0 24 24">
+        <path d="M14 5h5v5M19 5l-9 9M18 13v6H5V6h6" />
+      </symbol>
+    </svg>
+    <header class="topbar" data-header>
+      <div class="shell topbar-inner">
+        <a class="brand" href="/" aria-label="International Duck Incorporated home">
+          <img
+            data-org-avatar
+            src="/assets/org-avatar.webp?v=fff479ce"
+            alt=""
+            width="40"
+            height="40"
+            decoding="async"
+          />
+          <span><b>International Duck</b><small>Incorporated</small></span>
+        </a>
+        <nav class="main-nav" id="main-navigation" data-nav aria-label="Primary navigation">
+          <a href="/">Overview</a>
+          <a href="/projects">Projects</a><a href="/noosphere">Noosphere</a>
+          <a href="/members">Members</a>
+          <a href="/activity">Activity</a>
+          <a href="/migration">Migration</a>
+          <a
+            class="icon-link"
+            href="https://gitlab.com/international-duck-incorporated"
+            target="_blank"
+            rel="noreferrer"
+            aria-label="International Duck Incorporated on GitLab"
+            ><svg><use href="#i-gitlab" /></svg
+          ></a>
+        </nav>
+        <button
+          class="menu-button"
+          type="button"
+          data-menu
+          aria-label="Open navigation"
+          aria-controls="main-navigation"
+          aria-expanded="false"
+        >
+          <svg class="menu-open"><use href="#i-menu" /></svg
+          ><svg class="menu-close"><use href="#i-close" /></svg>
+        </button>
+      </div>
+    </header>
+    <main id="main" class="subpage-main">
+      <section class="shell">
+        <header class="subpage-heading reveal">
+          <div class="breadcrumbs">
+            <a href="/">International Duck</a><span>/</span><b>Licence</b>
+          </div>
+          <span class="eyebrow">Repository &amp; website terms</span>
+          <h1>All Rights Reserved Licence.</h1>
+          <p>Copyright (c) 2026 International Duck Incorporated. All rights reserved.</p>
+          <div class="action-row" style="margin-top: 1.25rem">
+            <a class="button button-glass" href="/LICENSE.md" target="_blank" rel="noreferrer"
+              >View raw LICENSE.md <svg><use href="#i-external" /></svg
+            ></a>
+            <a
+              class="button button-glass"
+              href="https://gitlab.com/international-duck-incorporated/home/-/blob/main/LICENSE.md"
+              target="_blank"
+              rel="noreferrer"
+              ><svg><use href="#i-gitlab" /></svg>View on GitLab</a
+            >
+          </div>
+        </header>
+
+        <section class="detail-grid" aria-label="Licence terms">
+          <article
+            class="detail-panel glass-card reveal"
+            id="1-ownership-and-copyright"
+            style="min-height: auto"
+          >
+            <h2>1. Ownership and Copyright</h2>
+            <p>
+              This repository and its contents, including source code, object code, documentation,
+              designs, graphics, original assets, configuration files, and other materials, are
+              protected by applicable intellectual property laws, including copyright law.
+            </p>
+            <p>
+              Unless expressly stated otherwise, all rights in the original materials are reserved
+              by International Duck Incorporated ("the Copyright Holder").
+            </p>
+            <p>
+              No ownership rights are transferred by making this repository or its contents
+              available to the public.
+            </p>
+          </article>
+          <article
+            class="detail-panel glass-card reveal"
+            id="2-no-licence-granted"
+            style="min-height: auto"
+          >
+            <h2>2. No Licence Granted</h2>
+            <p>
+              No licence, permission, or other right to use the materials is granted by making this
+              repository publicly accessible, except for the limited permissions expressly stated in
+              this document or required by applicable law.
+            </p>
+            <p>
+              Access to, viewing of, or interaction with this repository does not grant permission
+              to reproduce, modify, distribute, sublicense, sell, or otherwise exploit its contents.
+            </p>
+            <p>All rights not expressly granted are reserved by the Copyright Holder.</p>
+          </article>
+          <article
+            class="detail-panel glass-card reveal"
+            id="3-restrictions-on-use"
+            style="min-height: auto"
+          >
+            <h2>3. Restrictions on Use</h2>
+            <p>
+              Without prior written permission from the Copyright Holder or the applicable owner of
+              the relevant rights, you may not, to the extent prohibited by applicable law:
+            </p>
+            <ul>
+              <li>
+                Copy, reproduce, or republish the source code or other protected materials, in whole
+                or in part.
+              </li>
+              <li>Modify, adapt, translate, or create derivative works based on the materials.</li>
+              <li>
+                Redistribute, sublicense, sell, rent, lease, or otherwise transfer the materials to
+                another party.
+              </li>
+              <li>
+                Incorporate the materials into another software project, product, service, or
+                commercial offering.
+              </li>
+              <li>Publish or distribute modified or unmodified versions of the materials.</li>
+              <li>Use the materials as the basis for a competing product or service.</li>
+              <li>
+                Remove, alter, or conceal copyright notices, ownership notices, or other proprietary
+                notices.
+              </li>
+              <li>Represent the materials or derivative versions as your own original work.</li>
+              <li>
+                Use the materials to train, fine-tune, or otherwise develop machine-learning or
+                artificial-intelligence models, except where expressly authorised in writing or
+                permitted by applicable law.
+              </li>
+            </ul>
+            <p>
+              These restrictions apply only to rights controlled by the Copyright Holder. They do
+              not prohibit activities that are expressly authorised in writing or that cannot
+              lawfully be restricted.
+            </p>
+          </article>
+          <article
+            class="detail-panel glass-card reveal"
+            id="4-public-repository-access"
+            style="min-height: auto"
+          >
+            <h2>4. Public Repository Access</h2>
+            <p>
+              Where this repository is publicly accessible, visitors may view its contents through
+              the hosting platform's ordinary viewing functionality, subject to the platform's
+              applicable terms.
+            </p>
+            <p>
+              Public availability does not constitute a general licence to copy, modify,
+              redistribute, or commercially exploit the materials.
+            </p>
+            <p>
+              The hosting platform may provide users with certain technical permissions, including
+              permissions relating to displaying, caching, indexing, or forking repository content.
+              Those permissions are governed by the platform's applicable terms and do not
+              automatically grant unrestricted rights to use the materials outside their scope.
+            </p>
+            <p>
+              The Copyright Holder does not represent that this licence overrides or supersedes the
+              terms of any hosting platform.
+            </p>
+          </article>
+          <article
+            class="detail-panel glass-card reveal"
+            id="5-third-party-materials-and-dependencies"
+            style="min-height: auto"
+          >
+            <h2>5. Third-Party Materials and Dependencies</h2>
+            <p>
+              This licence applies only to materials for which International Duck Incorporated owns
+              or controls the relevant rights.
+            </p>
+            <p>
+              Third-party software, libraries, dependencies, assets, fonts, datasets, trademarks,
+              and other materials may be subject to separate licences, copyright notices, or terms
+              of use.
+            </p>
+            <p>
+              Those separate terms remain applicable to the relevant materials. Nothing in this
+              licence revokes, restricts, or replaces permissions already granted by a third-party
+              rights holder.
+            </p>
+            <p>
+              The inclusion of third-party materials in this repository does not imply that
+              International Duck Incorporated owns those materials.
+            </p>
+          </article>
+          <article
+            class="detail-panel glass-card reveal"
+            id="6-contributions"
+            style="min-height: auto"
+          >
+            <h2>6. Contributions</h2>
+            <p>
+              Unless a separate written agreement states otherwise, contributions submitted to this
+              repository remain subject to the applicable rights and terms governing those
+              contributions.
+            </p>
+            <p>
+              Submitting a contribution does not automatically transfer its copyright to
+              International Duck Incorporated or grant the Copyright Holder rights beyond those
+              established by applicable law, the contribution process, or a separate agreement.
+            </p>
+            <p>
+              Contributors are responsible for ensuring that they have the rights necessary to
+              submit their contributions.
+            </p>
+            <p>
+              International Duck Incorporated may decline, remove, or refrain from incorporating
+              contributions at its discretion, subject to applicable law and platform rules.
+            </p>
+          </article>
+          <article
+            class="detail-panel glass-card reveal"
+            id="7-trademarks-and-branding"
+            style="min-height: auto"
+          >
+            <h2>7. Trademarks and Branding</h2>
+            <p>
+              No permission is granted to use the names, logos, trademarks, service marks, product
+              names, or branding associated with International Duck Incorporated or its projects in
+              a manner that suggests endorsement, affiliation, sponsorship, or ownership without
+              appropriate authorisation.
+            </p>
+            <p>
+              Copyright permission, where applicable, does not automatically grant trademark
+              permission.
+            </p>
+            <p>Any rights and legal exceptions provided by applicable law remain unaffected.</p>
+          </article>
+          <article
+            class="detail-panel glass-card reveal"
+            id="8-requests-for-permission"
+            style="min-height: auto"
+          >
+            <h2>8. Requests for Permission</h2>
+            <p>
+              Requests for permission to copy, modify, distribute, publish, commercially exploit, or
+              otherwise use the materials must be submitted to International Duck Incorporated
+              through an official contact channel.
+            </p>
+            <p>
+              Any permission granted may be subject to separate written terms, limitations, or
+              conditions.
+            </p>
+            <p>
+              No permission should be assumed unless it has been expressly granted by an authorised
+              rights holder.
+            </p>
+            <p>
+              The Copyright Holder reserves the right to refuse permission, impose conditions on
+              permitted use, or revoke permissions where the applicable written agreement or law
+              allows it.
+            </p>
+          </article>
+          <article
+            class="detail-panel glass-card reveal"
+            id="9-disclaimer-of-warranty"
+            style="min-height: auto"
+          >
+            <h2>9. Disclaimer of Warranty</h2>
+            <p>
+              To the maximum extent permitted by applicable law, the materials are provided "AS IS"
+              and "AS AVAILABLE", without warranties or conditions of any kind, whether express,
+              implied, or statutory.
+            </p>
+            <p>
+              This includes, to the extent legally permitted, disclaimers of implied warranties of
+              merchantability, fitness for a particular purpose, title, and non-infringement.
+            </p>
+            <p>
+              International Duck Incorporated does not warrant that the materials will be
+              error-free, secure, continuously available, compatible with every environment, or
+              suitable for a particular purpose.
+            </p>
+            <p>
+              Nothing in this section excludes or limits any warranty or right that cannot lawfully
+              be excluded or limited.
+            </p>
+          </article>
+          <article
+            class="detail-panel glass-card reveal"
+            id="10-limitation-of-liability"
+            style="min-height: auto"
+          >
+            <h2>10. Limitation of Liability</h2>
+            <p>
+              To the maximum extent permitted by applicable law, International Duck Incorporated and
+              its representatives shall not be liable for indirect, incidental, special,
+              consequential, or punitive damages, or for loss of profits, revenue, data, goodwill,
+              or business opportunities arising from access to, inability to use, or use of the
+              materials.
+            </p>
+            <p>
+              Nothing in this section excludes or limits liability where such exclusion or
+              limitation is prohibited by applicable law.
+            </p>
+            <p>
+              Nothing in this section limits any rights or remedies that cannot lawfully be waived.
+            </p>
+          </article>
+          <article
+            class="detail-panel glass-card reveal"
+            id="11-enforcement-of-rights"
+            style="min-height: auto"
+          >
+            <h2>11. Enforcement of Rights</h2>
+            <p>
+              International Duck Incorporated reserves all rights and remedies available under
+              applicable law in response to infringement of rights in materials that it owns or
+              controls.
+            </p>
+            <p>
+              Unauthorised use may result in requests to remove or cease the use of infringing
+              materials and, where appropriate, legal proceedings or other lawful remedies.
+            </p>
+            <p>
+              Failure to enforce a right in one instance does not constitute a waiver of that right
+              in another instance.
+            </p>
+            <p>
+              Any enforcement action remains subject to applicable law and the rights of other
+              parties.
+            </p>
+          </article>
+          <article
+            class="detail-panel glass-card reveal"
+            id="12-changes-to-this-licence"
+            style="min-height: auto"
+          >
+            <h2>12. Changes to This Licence</h2>
+            <p>
+              International Duck Incorporated may publish a revised version of this licence for
+              future use.
+            </p>
+            <p>
+              A revised version does not automatically change the terms of a separate written
+              agreement or retroactively remove rights validly granted under an earlier agreement,
+              except where permitted by the applicable agreement and law.
+            </p>
+            <p>
+              The licence version included with a particular release or repository should be
+              consulted to determine the terms applicable to that version.
+            </p>
+          </article>
+          <article
+            class="detail-panel glass-card reveal"
+            id="13-applicable-law-and-jurisdiction"
+            style="min-height: auto"
+          >
+            <h2>13. Applicable Law and Jurisdiction</h2>
+            <p>This licence is subject to applicable law.</p>
+            <p>
+              The governing law and competent jurisdiction for any dispute shall be determined in
+              accordance with applicable legal requirements and any valid agreement between the
+              relevant parties.
+            </p>
+            <p>
+              Nothing in this section excludes mandatory legal protections or jurisdictional rules
+              that cannot lawfully be excluded.
+            </p>
+          </article>
+          <article
+            class="detail-panel glass-card reveal"
+            id="14-severability"
+            style="min-height: auto"
+          >
+            <h2>14. Severability</h2>
+            <p>
+              If any provision of this licence is found to be invalid, unlawful, or unenforceable,
+              that provision shall be interpreted or limited to the minimum extent necessary where
+              legally permissible.
+            </p>
+            <p>
+              If such interpretation or limitation is not possible, the affected provision shall be
+              severed to the extent necessary, and the remaining provisions shall continue in effect
+              to the extent permitted by applicable law.
+            </p>
+          </article>
+          <article
+            class="detail-panel glass-card reveal"
+            id="15-no-waiver"
+            style="min-height: auto"
+          >
+            <h2>15. No Waiver</h2>
+            <p>
+              Failure or delay by the Copyright Holder in exercising any right under this licence
+              does not constitute a waiver of that right.
+            </p>
+            <p>
+              A waiver is effective only to the extent permitted by applicable law and, where
+              required, expressly documented in writing by an authorised representative.
+            </p>
+          </article>
+          <article
+            class="detail-panel glass-card reveal"
+            id="16-entire-permission-statement"
+            style="min-height: auto"
+          >
+            <h2>16. Entire Permission Statement</h2>
+            <p>
+              This document describes the permissions and restrictions applicable to the materials
+              covered by it.
+            </p>
+            <p>
+              Any separate written agreement, applicable third-party licence, or mandatory legal
+              provision that governs particular materials or activities shall apply according to its
+              terms and the requirements of applicable law.
+            </p>
+            <p>
+              No provision of this licence shall be interpreted as granting rights that the
+              Copyright Holder does not own or have authority to grant.
+            </p>
+          </article>
+          <article
+            class="detail-panel glass-card reveal"
+            id="17-reservation-of-rights"
+            style="min-height: auto"
+          >
+            <h2>17. Reservation of Rights</h2>
+            <p>All rights not expressly granted are reserved by International Duck Incorporated.</p>
+            <p>
+              No permission to copy, modify, distribute, sublicense, publish, or commercially
+              exploit the protected materials is granted except as expressly authorised in writing
+              or otherwise permitted by applicable law.
+            </p>
+          </article>
+        </section>
+        <section class="project-callout glass-card reveal" style="margin-top: 2rem">
+          <div>
+            <span class="eyebrow">Reservation of rights</span>
+            <p>
+              <strong
+                >Copyright (c) 2026 International Duck Incorporated. All rights reserved.</strong
+              >
+            </p>
+            <p>
+              Individual International Duck Incorporated software repositories that carry their own
+              licence file (such as GPL-3.0, LGPL-3.0, or MIT) are governed by the licence included
+              in that repository.
+            </p>
+          </div>
+          <a class="button button-glass" href="/LICENSE.md" target="_blank" rel="noreferrer"
+            >Raw LICENSE.md <svg><use href="#i-external" /></svg
+          ></a>
+        </section>
+      </section>
+    </main>
+    <footer class="site-footer">
+      <div class="shell footer-inner">
+        <a class="brand" href="/"
+          ><img
+            data-org-avatar
+            src="/assets/org-avatar.webp?v=fff479ce"
+            alt=""
+            width="40"
+            height="40"
+            decoding="async"
+          /><span><b>International Duck</b><small>Incorporated</small></span></a
+        >
+        <nav>
+          <a href="/">Overview</a><a href="/projects">Projects</a><a href="/noosphere">Noosphere</a
+          ><a href="/members">Members</a><a href="/activity">Activity</a
+          ><a href="/migration">Migration</a><a href="/projects/beacon">Beacon</a
+          ><a href="/glyphsmith">Glyphsmith</a><a href="/changelog">Changelog</a
+          ><a
+            href="https://gitlab.com/international-duck-incorporated"
+            target="_blank"
+            rel="noreferrer"
+            >GitLab</a
+          ><a href="/license">License</a><a href="mailto:0xffshell@duck.com">Contact</a>
+        </nav>
+        <span class="sync-state"><i></i><span data-sync-text>GitLab data synced live</span></span>
+      </div>
+    </footer>
+  </body>
+</html>

@@ -44,12 +44,13 @@ re-run the build.
 
 ### Generated pages and snapshots
 
-Two pages are generated from committed data rather than hand-written:
+Three pages are generated from committed files/snapshots rather than hand-written:
 
 | Page                       | Generator                     | Data                       |
 | -------------------------- | ----------------------------- | -------------------------- |
 | `/projects/beacon/modules` | `tools/gen_module_page.py`    | `data/beacon-modules.json` |
 | `/changelog`               | `tools/gen_changelog_page.py` | `data/changelogs.json`     |
+| `/license`                 | `tools/gen_license_page.py`   | `LICENSE.md`               |
 
 The snapshots come from the projects themselves and are refreshed on demand (they
 need network access to the public GitLab API):

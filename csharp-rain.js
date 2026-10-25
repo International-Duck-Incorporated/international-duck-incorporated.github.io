@@ -1,5 +1,5 @@
 /*
- * csharp-rain.js — drifting C# code behind the Jojo-8002 member page.
+ * csharp-rain.js - drifting C# code behind the Jojo-8002 member page.
  *
  * Jojo codes in C#, so his profile gets a slow veil of C# syntax falling over a
  * near-black violet field. Deliberately low contrast: it is a backdrop, not the

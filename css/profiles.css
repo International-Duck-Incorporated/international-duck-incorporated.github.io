@@ -64,11 +64,18 @@ body::after {
 }
 .project-icon.privacy,
 .project-icon.champion {
+  overflow: hidden;
   color: #dffcff;
   font: 700 0.72rem var(--mono);
   letter-spacing: 0.08em;
   background: linear-gradient(145deg, rgba(93, 235, 211, 0.25), rgba(69, 113, 230, 0.13));
   border: 1px solid rgba(159, 246, 233, 0.2);
+}
+.project-icon.privacy img {
+  width: 100%;
+  height: 100%;
+  border-radius: inherit;
+  object-fit: cover;
 }
 .project-icon.champion {
   color: #f5eac8;
@@ -81,9 +88,10 @@ body::after {
   border: 1px solid rgba(125, 155, 255, 0.28);
 }
 .project-icon.noosphere img {
-  width: 59px;
-  height: 59px;
-  object-fit: contain;
+  width: 100%;
+  height: 100%;
+  border-radius: inherit;
+  object-fit: cover;
 }
 .project-icon.agentarium {
   overflow: hidden;
@@ -93,6 +101,46 @@ body::after {
 .project-icon.agentarium img {
   width: 59px;
   height: 59px;
+  object-fit: contain;
+}
+.project-icon.noosphere-chat {
+  overflow: hidden;
+  background: linear-gradient(145deg, rgba(132, 148, 255, 0.24), rgba(78, 214, 232, 0.16));
+  border: 1px solid rgba(132, 148, 255, 0.3);
+}
+.project-icon.noosphere-chat img {
+  width: 59px;
+  height: 59px;
+  object-fit: contain;
+}
+.project-icon.badegg {
+  overflow: hidden;
+  background: linear-gradient(145deg, rgba(245, 158, 11, 0.2), rgba(15, 27, 45, 0.85));
+  border: 1px solid rgba(245, 158, 11, 0.28);
+}
+.project-icon.badegg img {
+  width: 59px;
+  height: 59px;
+  object-fit: contain;
+}
+.project-icon.confluence-os {
+  overflow: hidden;
+  background: linear-gradient(145deg, rgba(14, 165, 233, 0.22), rgba(15, 27, 48, 0.86));
+  border: 1px solid rgba(56, 189, 248, 0.3);
+}
+.project-icon.confluence-os img {
+  width: 59px;
+  height: 59px;
+  object-fit: contain;
+}
+.project-icon.fingerprint-damper {
+  overflow: hidden;
+  background: linear-gradient(145deg, rgba(79, 156, 249, 0.22), rgba(20, 34, 68, 0.88));
+  border: 1px solid rgba(79, 156, 249, 0.34);
+}
+.project-icon.fingerprint-damper img {
+  width: 50px;
+  height: 50px;
   object-fit: contain;
 }
 .subgroup-callout {
@@ -128,6 +176,12 @@ body::after {
 }
 .language-dot.neutral {
   background: #77818a;
+}
+.language-dot.python {
+  background: #3572a5;
+}
+.language-dot.ts {
+  background: #3178c6;
 }
 .profile-page {
   padding-top: 140px;
