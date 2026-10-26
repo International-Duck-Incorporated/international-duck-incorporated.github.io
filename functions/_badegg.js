@@ -967,6 +967,44 @@ export async function getActiveTemporaryBan(rawIp, env) {
 }
 
 /**
+ * Hydrate active bans from the shared IDI_BADEGG KV into this isolate's
+ * in-memory map. Bans are written to KV (under `badegg:v3:ban:*`) by every
+ * Worker/isolate sharing the namespace — home, Agentarium, and the console's
+ * Lift endpoint all touch the same store — but per-request enforcement reads
+ * back lazily per IP, which means the bans LIST API and the status counters
+ * would otherwise only show what this specific isolate has seen. Calling this
+ * in those read paths makes the whole-fleet view visible to the dashboard.
+ *
+ * Reads bypass the KV cache (cacheTtl 0) so Lift operations from the console
+ * are reflected immediately. Fails open on KV errors.
+ */
+async function hydrateBansFromKv(env) {
+  const kv = env?.IDI_BADEGG;
+  if (!kv || typeof kv.list !== "function") return;
+  try {
+    let cursor;
+    do {
+      const page = await kv.list({ prefix: KV_TEMPBAN_PREFIX, cursor });
+      for (const entry of page?.keys || []) {
+        const key = String(entry.name || "").slice(KV_TEMPBAN_PREFIX.length);
+        if (!key || tempBans.has(key)) continue;
+        const stored = await kv.get(entry.name, { type: "json", cacheTtl: 0 }).catch(() => null);
+        if (
+          stored &&
+          stored.mode === "active" &&
+          (stored.expiresAtMs === null || stored.expiresAtMs > Date.now())
+        ) {
+          tempBans.set(key, stored);
+        }
+      }
+      cursor = page && page.list_complete === false ? page.cursor : undefined;
+    } while (cursor);
+  } catch {
+    // fail open: the local view is still correct for this isolate
+  }
+}
+
+/**
  * Scan normalized text in `"input"` or `"output"` direction using BadEgg v3's
  * deterministic rule set and risk profile thresholds.
  */
@@ -2097,6 +2135,7 @@ export async function handleBansApi(request, env) {
   if (!authorized) {
     return jsonResponse({ ok: false, error: "unauthorized" }, 401);
   }
+  await hydrateBansFromKv(env);
   expireTempBans();
   const bans = [];
   for (const [ip, ban] of tempBans) {
@@ -2496,6 +2535,7 @@ export async function handleBadEggRequest(request, env, options = {}, forward) {
       );
     }
     await ensureIndex(env, { waitUntil });
+    await hydrateBansFromKv(env);
     return statusResponse(env, configRecord);
   }
 
