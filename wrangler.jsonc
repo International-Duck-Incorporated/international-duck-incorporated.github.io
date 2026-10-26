@@ -9,15 +9,26 @@
     "run_worker_first": true,
   },
 
+  // BadEgg v3 policy. These env vars are the baseline; anything saved from the
+  // dashboard (badegg-v3, feat/idi-pages-dashboard) is stored in the IDI_BADEGG
+  // KV namespace under "badegg:v3:config" and wins over them. Clear the KV record
+  // (DELETE /api/badegg/config) to fall back to whatever is set here.
+  //
+  // Every key below is described, bounded and validated by `badegg-config.js`,
+  // which this Worker imports and the dashboard shares, so the two cannot drift.
+  //
   // Optional BadEgg v3 runtime overrides (defaults match badegg-v3):
   // "vars": {
   //   "BADEGG_MODE": "enforce",               // "enforce" | "monitor"
   //   "BADEGG_RISK_MODE": "minimize_false_bans", // "minimize_false_bans" | "catch_more"
   //   "BADEGG_BAN_TTL_SECONDS": "900",
+  //   "BADEGG_BAN_FOREVER": "0",              // "1" = bans never expire
   //   "BADEGG_RATE_LIMIT_REQUESTS": "180",
   //   "BADEGG_RATE_LIMIT_WINDOW_S": "60",
   //   "BADEGG_RATE_LIMIT_BURST": "60",
   //   "BADEGG_RATE_LIMIT_BAN_AFTER": "10",
+  //   "BADEGG_ALLOWLIST": "",                 // IPs/CIDRs that skip everything
+  //   "BADEGG_BAN_ALWAYS": "",                // IPs/CIDRs blocked on every request
   //   "BADEGG_OUTPUT_ACTION": "redact"        // "redact" | "block" | "alert"
   // },
 
@@ -32,4 +43,16 @@
   // "kv_namespaces": [
   //   { "binding": "IDI_BADEGG", "id": "<id from the command above>" }
   // ]
+  //
+  // The same namespace also stores dashboard-written policy overrides. To enable
+  // live editing, bind it as above and add the admin secret the config API
+  // authenticates with (16+ characters, never committed):
+  //
+  //   wrangler secret put BADEGG_ADMIN_TOKEN
+  //
+  // One secret serves three jobs: it is the bearer token for the config API, the
+  // password the dashboard asks for, and the credential for the diagnostics
+  // endpoint (?badegg-status=1). Without it those answer 503 and nothing can
+  // read or write the policy - the diagnostics endpoint is gated too, because it
+  // reports the same settings the login exists to protect.
 }

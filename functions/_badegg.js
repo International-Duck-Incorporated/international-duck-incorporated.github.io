@@ -23,11 +23,53 @@
  *      Log4Shell/JNDI & server-side template injection, NoSQL operator injection,
  *      and sensitive path traversal, with `minimize_false_bans` (0.97) and
  *      `catch_more` (0.92) risk profiles.
- *   6. Outgoing secret-leak protection & metadata-only event ring buffer:
+ *   6. Runtime configuration API (`GET|PUT|DELETE /api/badegg/config`), token
+ *      authenticated with `BADEGG_ADMIN_TOKEN`, storing overrides in the
+ *      `IDI_BADEGG` KV namespace so policy can be retuned without a redeploy.
+ *   7. Outgoing secret-leak protection & metadata-only event ring buffer:
  *      redacts or blocks leaked credentials in response headers (and optional
  *      text/JSON bodies) while keeping zero raw payloads or client IPs in memory
  *      diagnostics (`?badegg-status=1`).
  */
+
+import {
+  BADEGG_CONFIG_KV_KEY,
+  BADEGG_CONFIG_PATH,
+  CONFIG_BY_KEY,
+  CONFIG_DEFAULTS,
+  CONFIG_GROUPS,
+  CONFIG_KEYS,
+  CONFIG_SCHEMA,
+  DEFAULT_MAX_CONCURRENT_REQUESTS,
+  DEFAULT_MAX_GATEWAY_BODY_BYTES,
+  DEFAULT_MAX_SCAN_CHARS,
+  MAX_UNINSPECTED_REQUEST_BYTES,
+  RISK_PROFILES,
+  configEnvView,
+  normalizeConfigValue,
+  resolveConfig,
+  sanitizeConfigOverrides,
+} from "../badegg-config.js";
+
+// The configuration surface lives in `badegg-config.js` so the console and the
+// gateway read the same schema. Re-exported here because this module was the
+// public entry point for it, and tools/tests import it from here.
+export {
+  BADEGG_CONFIG_KV_KEY,
+  BADEGG_CONFIG_PATH,
+  CONFIG_DEFAULTS,
+  CONFIG_GROUPS,
+  CONFIG_KEYS,
+  CONFIG_SCHEMA,
+  DEFAULT_MAX_CONCURRENT_REQUESTS,
+  DEFAULT_MAX_GATEWAY_BODY_BYTES,
+  DEFAULT_MAX_SCAN_CHARS,
+  MAX_UNINSPECTED_REQUEST_BYTES,
+  RISK_PROFILES,
+  configEnvView,
+  resolveConfig,
+  sanitizeConfigOverrides,
+};
 
 export const BADEGG_VERSION = "3.0";
 
@@ -54,19 +96,6 @@ const MIN_V6_NETS = 1;
 const EXTRA_BLOCKED = [];
 
 // ---------------------------------------------------------------- v3 policy & constants
-export const RISK_PROFILES = {
-  minimize_false_bans: {
-    label: "Minimize false bans",
-    autoBlockThreshold: 0.97,
-    alertThreshold: 0.6,
-  },
-  catch_more: {
-    label: "Catch more threats",
-    autoBlockThreshold: 0.92,
-    alertThreshold: 0.4,
-  },
-};
-
 export const SUPPORTED_METHODS = new Set([
   "GET",
   "HEAD",
@@ -77,75 +106,10 @@ export const SUPPORTED_METHODS = new Set([
   "OPTIONS",
 ]);
 
-export const MAX_UNINSPECTED_REQUEST_BYTES = 10_485_760; // 10 MiB hard ceiling
-export const DEFAULT_MAX_GATEWAY_BODY_BYTES = 1_000_000; // 1 MiB inspected body cap
-export const DEFAULT_MAX_SCAN_CHARS = 1_100_000;
-export const DEFAULT_MAX_CONCURRENT_REQUESTS = 64;
 export const MAX_TRACKED_SOURCES = 10_000;
 export const IDLE_EVICTION_MS = 3_600_000;
 export const MAX_ACTIVE_TEMP_BANS = 4_096;
 export const MAX_EVENTS = 200;
-
-export function resolveConfig(env = {}) {
-  const rawRisk = String(env?.BADEGG_RISK_MODE || "minimize_false_bans").trim();
-  const riskMode = RISK_PROFILES[rawRisk] ? rawRisk : "minimize_false_bans";
-  const rawMode = String(env?.BADEGG_MODE || "enforce")
-    .trim()
-    .toLowerCase();
-  const enforcementMode = rawMode === "monitor" ? "monitor" : "enforce";
-  const overrideRaw = env?.BADEGG_AUTO_BLOCK_THRESHOLD;
-  const thresholdOverride =
-    overrideRaw !== undefined && overrideRaw !== "" && Number.isFinite(Number(overrideRaw))
-      ? Math.min(1, Math.max(0.1, Number(overrideRaw)))
-      : null;
-
-  const extraAllow = String(env?.BADEGG_ALLOWLIST || "")
-    .split(",")
-    .map((s) => s.trim().toLowerCase())
-    .filter(Boolean);
-
-  const intOr = (val, fallback, min, max) => {
-    const n = Number.parseInt(String(val ?? ""), 10);
-    if (!Number.isFinite(n)) return fallback;
-    return Math.min(max, Math.max(min, n));
-  };
-
-  return {
-    riskMode,
-    enforcementMode,
-    autoBlockEnabled: env?.BADEGG_AUTO_BLOCK !== "0",
-    autoBlockThreshold: thresholdOverride ?? RISK_PROFILES[riskMode].autoBlockThreshold,
-    alertThreshold: RISK_PROFILES[riskMode].alertThreshold,
-    banTtlSeconds: intOr(env?.BADEGG_BAN_TTL_SECONDS, 900, 30, 86_400),
-    scanInputs: env?.BADEGG_SCAN_INPUTS !== "0",
-    scanOutputs: env?.BADEGG_SCAN_OUTPUTS !== "0",
-    scanOutputBodies: env?.BADEGG_SCAN_OUTPUT_BODIES === "1",
-    scanPii: env?.BADEGG_SCAN_PII === "1",
-    outputAction: ["alert", "redact", "block"].includes(env?.BADEGG_OUTPUT_ACTION)
-      ? env.BADEGG_OUTPUT_ACTION
-      : "redact",
-    maxScanChars: intOr(env?.BADEGG_MAX_SCAN_CHARS, DEFAULT_MAX_SCAN_CHARS, 1024, 5_000_000),
-    maxGatewayBodyBytes: intOr(
-      env?.BADEGG_MAX_BODY_BYTES,
-      DEFAULT_MAX_GATEWAY_BODY_BYTES,
-      1024,
-      MAX_UNINSPECTED_REQUEST_BYTES
-    ),
-    rateLimitEnabled: env?.BADEGG_RATE_LIMIT !== "0",
-    rateLimitRequests: intOr(env?.BADEGG_RATE_LIMIT_REQUESTS, 180, 1, 100_000),
-    rateLimitWindowSeconds: intOr(env?.BADEGG_RATE_LIMIT_WINDOW_S, 60, 1, 3600),
-    rateLimitBurst: intOr(env?.BADEGG_RATE_LIMIT_BURST, 60, 1, 10_000),
-    rateLimitAction: env?.BADEGG_RATE_LIMIT_ACTION === "throttle" ? "throttle" : "ban",
-    rateLimitBanAfter: intOr(env?.BADEGG_RATE_LIMIT_BAN_AFTER, 10, 1, 1000),
-    maxConcurrentRequests: intOr(
-      env?.BADEGG_MAX_CONCURRENT,
-      DEFAULT_MAX_CONCURRENT_REQUESTS,
-      1,
-      4096
-    ),
-    allowlist: new Set(["127.0.0.1", "::1", ...extraAllow]),
-  };
-}
 
 // ---------------------------------------------------------------- v3 inspection rules
 const JS_GAP = String.raw`(?:[\s\x00-\x20]|&#x?0*[0-9a-f]{1,6};?){0,8}`;
@@ -302,8 +266,11 @@ export const RULES = [
     key: "credential_assignment",
     category: "credential_assignment",
     directions: ["input", "output"],
+    // The unquoted branch has to be value-shaped. `session: eating, sorting...`
+    // in ordinary prose would otherwise read as a credential and, in `block`
+    // mode, take down a page that merely uses the word.
     pattern:
-      /\b(?:aws[_-]?secret[_-]?access[_-]?key|api[_-]?(?:key|secret)|(?:(?:access|refresh|id|auth)[_-]?)?token|client[_-]?secret|private[_-]?key|authorization|bearer|jwt|(?:session(?:[_-]?(?:id|token))?|sid)|secret|password|passwd)\b\s*[:=]\s*(?:"(?<secret_double>[^\r\n"]+)"|'(?<secret_single>[^\r\n']+)'|(?<secret>[^\r\n&]+))/i,
+      /\b(?:aws[_-]?secret[_-]?access[_-]?key|api[_-]?(?:key|secret)|(?:(?:access|refresh|id|auth)[_-]?)?token|client[_-]?secret|private[_-]?key|authorization|bearer|jwt|(?:session(?:[_-]?(?:id|token))?|sid)|secret|password|passwd)\b\s*[:=]\s*(?:"(?<secret_double>[^\r\n"]+)"|'(?<secret_single>[^\r\n']+)'|(?<secret>(?![^\s]*\s)[A-Za-z0-9_\-+/=.!~\[\]()]{8,}))/i,
     confidence: 0.9,
     severity: "high",
     summary: "Credential-like value assigned to a sensitive field.",
@@ -637,6 +604,16 @@ export class RateLimiter {
     };
   }
 
+  /**
+   * Drop one address's bucket. Called when an operator lifts a ban: the
+   * strikes that produced it should not quietly re-ban the address seconds
+   * later, which would make "lift" look broken.
+   */
+  resetSource(source) {
+    if (!source) return false;
+    return this._buckets.delete(source);
+  }
+
   reset() {
     this._buckets.clear();
     this.allowedTotal = 0;
@@ -657,6 +634,7 @@ const wafMetrics = {
   inspectedTotal: 0,
   blockedAttacksTotal: 0,
   blockedTempBansTotal: 0,
+  blockedAlwaysTotal: 0,
   redactedOutputsTotal: 0,
   blockedOutputsTotal: 0,
   activeRequests: 0,
@@ -671,6 +649,7 @@ export function resetBadEggV3State() {
   wafMetrics.inspectedTotal = 0;
   wafMetrics.blockedAttacksTotal = 0;
   wafMetrics.blockedTempBansTotal = 0;
+  wafMetrics.blockedAlwaysTotal = 0;
   wafMetrics.redactedOutputsTotal = 0;
   wafMetrics.blockedOutputsTotal = 0;
   wafMetrics.activeRequests = 0;
@@ -771,10 +750,84 @@ export function isAllowlistedIp(rawIp, config) {
   const norm = normalizeIp(rawIp);
   if (!norm) return false;
   if (norm === "127.0.0.1" || norm === "00000000000000000000000000000001") return true;
-  if (config?.allowlist) {
-    if (config.allowlist.has(rawIp.trim().toLowerCase()) || config.allowlist.has(norm)) return true;
+  if (config?.allowlist?.length) return matchIpList(norm, config.allowlist);
+  return false;
+}
+
+/** Turn a normalized IPv6 key (32 hex chars) back into 8 x u16 groups. */
+function hexKeyToGroups(key) {
+  if (!/^[0-9a-f]{32}$/.test(key)) return null;
+  const out = new Array(8);
+  for (let i = 0; i < 8; i++) out[i] = Number.parseInt(key.slice(i * 4, i * 4 + 4), 16);
+  return out;
+}
+
+/** Parse "a.b.c.d", "a.b.c.d/24" or "2001:db8::/32" into { ip, prefix }. */
+function parseIpEntry(entry) {
+  const raw = String(entry).trim().toLowerCase();
+  const slash = raw.lastIndexOf("/");
+  if (slash === -1) return { ip: raw, prefix: null };
+  const ip = raw.slice(0, slash);
+  const prefix = Number.parseInt(raw.slice(slash + 1), 10);
+  if (!Number.isInteger(prefix) || prefix < 0) return null;
+  return { ip, prefix };
+}
+
+/**
+ * True when `rawIp` falls inside any entry of `entries`.
+ *
+ * Exact IPs and CIDRs, IPv4 and IPv6, on the same normalized forms the
+ * blocklist matcher uses. A prefix of 0 matches everything, which is legal
+ * and useful ("ban the whole internet").
+ */
+export function matchIpList(rawIp, entries) {
+  const norm = normalizeIp(rawIp);
+  if (!norm) return false;
+  for (const entry of entries) {
+    const parsed = parseIpEntry(entry);
+    if (!parsed) continue;
+    const target = normalizeIp(parsed.ip);
+    if (!target) continue;
+    if (parsed.prefix === null) {
+      if (norm === target) return true;
+      continue;
+    }
+    if (target.includes(".")) {
+      const a = ipToU32(norm);
+      const b = ipToU32(target);
+      if (a === null || b === null) continue;
+      if (prefixMatch32(a, b, parsed.prefix)) return true;
+    } else {
+      const a = hexKeyToGroups(norm);
+      const b = hexKeyToGroups(target);
+      if (!a || !b) continue;
+      if (prefixMatch6(a, b, parsed.prefix)) return true;
+    }
   }
   return false;
+}
+
+function prefixMatch32(a, b, prefix) {
+  if (prefix <= 0) return true;
+  if (prefix >= 32) return a === b;
+  return a >>> (32 - prefix) === b >>> (32 - prefix);
+}
+
+function prefixMatch6(a, b, prefix) {
+  if (prefix <= 0) return true;
+  let bits = 0;
+  for (let i = 0; i < 8; i++) {
+    if (bits >= prefix) return true;
+    const remaining = prefix - bits;
+    if (remaining >= 16) {
+      if (a[i] !== b[i]) return false;
+      bits += 16;
+    } else {
+      const shift = 16 - remaining;
+      return a[i] >>> shift === b[i] >>> shift;
+    }
+  }
+  return bits >= prefix;
 }
 
 // ---------------------------------------------------------------- v3 redaction & scanning
@@ -836,7 +889,7 @@ function recordEvent(entry) {
 
 function expireTempBans(now = Date.now()) {
   for (const [key, ban] of tempBans) {
-    if (ban.expiresAtMs <= now) tempBans.delete(key);
+    if (ban.expiresAtMs !== null && ban.expiresAtMs <= now) tempBans.delete(key);
   }
 }
 
@@ -846,16 +899,26 @@ export function addTemporaryBan(rawIp, reasonCategories, config, env, waitUntil)
   const now = Date.now();
   expireTempBans(now);
   while (tempBans.size >= MAX_ACTIVE_TEMP_BANS) {
-    const oldest = tempBans.keys().next().value;
-    if (oldest === undefined) break;
-    tempBans.delete(oldest);
+    // Prefer dropping a ban that was going to expire anyway; only churn a
+    // forever ban when the table is full of them.
+    let victim = null;
+    for (const [candidate, ban] of tempBans) {
+      if (ban.expiresAtMs === null) continue;
+      victim = candidate;
+      break;
+    }
+    if (victim === null) victim = tempBans.keys().next().value;
+    if (victim === undefined) break;
+    tempBans.delete(victim);
   }
+  const forever = config.banForever === true;
   const ttlSeconds = config.banTtlSeconds;
-  const expiresAtMs = now + ttlSeconds * 1000;
+  const expiresAtMs = forever ? null : now + ttlSeconds * 1000;
   const record = {
-    expiresAt: new Date(expiresAtMs).toISOString(),
+    expiresAt: forever ? null : new Date(expiresAtMs).toISOString(),
     expiresAtMs,
-    ttlSeconds,
+    ttlSeconds: forever ? null : ttlSeconds,
+    forever: Boolean(forever),
     reasonCategories: [...new Set(reasonCategories)].sort(),
     mode: config.enforcementMode === "enforce" ? "active" : "dry_run",
   };
@@ -863,11 +926,10 @@ export function addTemporaryBan(rawIp, reasonCategories, config, env, waitUntil)
 
   if (record.mode === "active" && env?.IDI_BADEGG && waitUntil) {
     const kvKey = `${KV_TEMPBAN_PREFIX}${key}`;
-    waitUntil(
-      env.IDI_BADEGG.put(kvKey, JSON.stringify(record), { expirationTtl: ttlSeconds }).catch(
-        () => {}
-      )
-    );
+    // A forever ban is stored without an expirationTtl, which is exactly what
+    // "never expires" means in KV.
+    const options = forever ? {} : { expirationTtl: ttlSeconds };
+    waitUntil(env.IDI_BADEGG.put(kvKey, JSON.stringify(record), options).catch(() => {}));
   }
   return record;
 }
@@ -879,7 +941,9 @@ export async function getActiveTemporaryBan(rawIp, env) {
   expireTempBans(now);
   const local = tempBans.get(key);
   if (local) {
-    return local.mode === "active" && local.expiresAtMs > now ? local : null;
+    return local.mode === "active" && (local.expiresAtMs === null || local.expiresAtMs > now)
+      ? local
+      : null;
   }
   if (env?.IDI_BADEGG) {
     try {
@@ -887,7 +951,11 @@ export async function getActiveTemporaryBan(rawIp, env) {
         type: "json",
         cacheTtl: 60,
       });
-      if (stored && stored.mode === "active" && stored.expiresAtMs > now) {
+      if (
+        stored &&
+        stored.mode === "active" &&
+        (stored.expiresAtMs === null || stored.expiresAtMs > now)
+      ) {
         tempBans.set(key, stored);
         return stored;
       }
@@ -1379,8 +1447,9 @@ async function refreshIndex(env, waitUntil) {
 }
 
 /** Diagnostics for ?badegg-status=1. No client IP addresses or payloads are exposed. */
-export function badeggStatus(env = {}) {
-  const cfg = resolveConfig(env);
+export function badeggStatus(env = {}, options = {}) {
+  const record = options.record || emptyConfigRecord();
+  const cfg = resolveConfig(env, record.values);
   expireTempBans();
   let activeTempBans = 0;
   for (const ban of tempBans.values()) {
@@ -1397,6 +1466,15 @@ export function badeggStatus(env = {}) {
     ageSeconds: state.index ? Math.round((Date.now() - state.loadedAt) / 1000) : null,
     counts: state.index ? state.index.counts : null,
     lastError: state.lastError,
+    config: {
+      storage: record.storage,
+      overrides: record.values,
+      updatedAt: record.updatedAt,
+      updatedBy: record.updatedBy,
+      revision: record.revision,
+      effective: configEnvView(env, record.values),
+      groups: CONFIG_GROUPS.map((group) => group.id),
+    },
     waf: {
       rulesLoaded: RULES.length,
       attackCategories: [...ATTACK_CATEGORIES],
@@ -1404,9 +1482,11 @@ export function badeggStatus(env = {}) {
       scanOutputs: cfg.scanOutputs,
       outputAction: cfg.outputAction,
       banTtlSeconds: cfg.banTtlSeconds,
+      banForever: cfg.banForever,
       inspectedTotal: wafMetrics.inspectedTotal,
       blockedAttacksTotal: wafMetrics.blockedAttacksTotal,
       blockedTempBansTotal: wafMetrics.blockedTempBansTotal,
+      blockedAlwaysTotal: wafMetrics.blockedAlwaysTotal,
       redactedOutputsTotal: wafMetrics.redactedOutputsTotal,
       blockedOutputsTotal: wafMetrics.blockedOutputsTotal,
       activeTempBans,
@@ -1428,6 +1508,608 @@ export function badeggStatus(env = {}) {
       overloadRejections: wafMetrics.overloadRejections,
     },
   };
+}
+
+// ---------------------------------------------------------------- runtime configuration
+// Dashboard-written overrides live in KV (`badegg:v3:config`) and win over the
+// env vars in `wrangler.jsonc`, so the site can be retuned without a redeploy.
+// The env vars stay the baseline: with no KV binding, or an empty record, the
+// gateway behaves exactly as before.
+const CONFIG_CACHE_MS = 15_000;
+const CONFIG_TOKEN_MIN_LENGTH = 16;
+const CONFIG_AUTH_FAILURE_LIMIT = 10;
+const CONFIG_AUTH_FAILURE_WINDOW_MS = 60_000;
+
+let configRecordCache = { at: 0, record: null };
+const configAuthFailures = { count: 0, firstAt: 0 };
+
+/** The "no overrides, environment only" record. */
+export function emptyConfigRecord() {
+  return { values: {}, updatedAt: null, revision: 0, updatedBy: null, storage: "env" };
+}
+
+/** Forget the in-isolate cache; called after a write so the next request sees it. */
+export function invalidateConfigCache() {
+  configRecordCache = { at: 0, record: null };
+}
+
+/** Test helper: also clears the token brute-force window. */
+export function resetConfigApiState() {
+  invalidateConfigCache();
+  configAuthFailures.count = 0;
+  configAuthFailures.firstAt = 0;
+}
+
+/**
+ * Read dashboard-written overrides from KV.
+ *
+ * Cached in memory for `CONFIG_CACHE_MS` because this runs on every request.
+ * Every failure path (no binding, KV error, garbage record) falls back to the
+ * environment-only record: a storage problem must never silently change policy.
+ */
+export async function loadConfigRecord(env = {}, options = {}) {
+  const kv = env && env.IDI_BADEGG;
+  if (!kv || typeof kv.get !== "function") return emptyConfigRecord();
+  const now = Date.now();
+  if (!options.force && configRecordCache.record && now - configRecordCache.at < CONFIG_CACHE_MS) {
+    return configRecordCache.record;
+  }
+
+  // KV is bound, so the dashboard can write even before anything has been saved.
+  let record = { ...emptyConfigRecord(), storage: "kv" };
+  try {
+    const raw = await kv.get(BADEGG_CONFIG_KV_KEY, { type: "json", cacheTtl: 30 });
+    if (raw && typeof raw === "object" && !Array.isArray(raw)) {
+      // Accept both the stored shape and a bare override map.
+      const source = raw.values && typeof raw.values === "object" ? raw.values : raw;
+      const { values } = sanitizeConfigOverrides(source);
+      const revision = Number.parseInt(String(raw.revision ?? ""), 10);
+      record = {
+        values,
+        updatedAt: typeof raw.updatedAt === "string" ? raw.updatedAt : null,
+        revision: Number.isFinite(revision) ? revision : 0,
+        updatedBy: typeof raw.updatedBy === "string" ? raw.updatedBy : null,
+        storage: "kv",
+      };
+    }
+  } catch {
+    // fail open: environment variables remain in force
+  }
+
+  configRecordCache = { at: now, record };
+  return record;
+}
+
+function jsonResponse(body, status = 200, extraHeaders = {}) {
+  return new Response(JSON.stringify(body, null, 2), {
+    status,
+    headers: {
+      "content-type": "application/json; charset=utf-8",
+      "cache-control": "no-store",
+      "x-content-type-options": "nosniff",
+      "x-badegg-version": BADEGG_VERSION,
+      ...extraHeaders,
+    },
+  });
+}
+
+/** Retry-After for a ban: none when the ban is set to never expire. */
+function banRetryAfter(config) {
+  return config.banForever ? undefined : config.banTtlSeconds;
+}
+
+/** Length-independent comparison, so a wrong token leaks no prefix timing. */
+function constantTimeEquals(a, b) {
+  const left = String(a);
+  const right = String(b);
+  let diff = left.length ^ right.length;
+  for (let i = 0; i < Math.max(left.length, right.length); i++) {
+    diff |= (left.charCodeAt(i) || 0) ^ (right.charCodeAt(i) || 0);
+  }
+  return diff === 0;
+}
+
+function configApiPayload(env, record) {
+  return {
+    ok: true,
+    endpoint: BADEGG_CONFIG_PATH,
+    schemaVersion: 1,
+    engine: `BadEgg v${BADEGG_VERSION}`,
+    storage: env && env.IDI_BADEGG ? "kv" : "unbound",
+    overrides: record.values,
+    updatedAt: record.updatedAt,
+    updatedBy: record.updatedBy,
+    revision: record.revision,
+    effective: configEnvView(env, record.values),
+    defaults: CONFIG_DEFAULTS,
+  };
+}
+
+/**
+ * `GET|PUT|DELETE /api/badegg/config`.
+ *
+ * GET     - current overrides, effective values and defaults (token required).
+ * PUT     - replace the override set; body `{ "overrides": { "BADEGG_*": "..." } }`.
+ * DELETE  - drop every override and fall back to the environment.
+ *
+ * Authentication is a bearer secret in `env.BADEGG_ADMIN_TOKEN`. Without that
+ * secret configured the endpoint refuses to do anything (503) rather than
+ * defaulting to something guessable.
+ */
+export async function handleConfigApi(request, env = {}, options = {}) {
+  const method = (request.method || "GET").toUpperCase();
+  const url = new URL(request.url);
+  const token = String((env && env.BADEGG_ADMIN_TOKEN) || "").trim();
+  const kv = env && env.IDI_BADEGG;
+
+  if (method === "OPTIONS") {
+    return new Response(null, {
+      status: 204,
+      headers: {
+        allow: "GET, PUT, DELETE, OPTIONS",
+        "access-control-allow-headers": "authorization, content-type",
+        "access-control-allow-methods": "GET, PUT, DELETE, OPTIONS",
+        "cache-control": "no-store",
+        "x-badegg-version": BADEGG_VERSION,
+      },
+    });
+  }
+
+  if (token.length < CONFIG_TOKEN_MIN_LENGTH) {
+    return jsonResponse(
+      {
+        ok: false,
+        error: "admin_token_not_configured",
+        message: `Set the BADEGG_ADMIN_TOKEN secret (at least ${CONFIG_TOKEN_MIN_LENGTH} characters) to manage BadEgg from the dashboard.`,
+      },
+      503
+    );
+  }
+
+  const presented = (request.headers.get("authorization") || "").replace(/^Bearer\s+/i, "").trim();
+  const now = Date.now();
+  if (now - configAuthFailures.firstAt > CONFIG_AUTH_FAILURE_WINDOW_MS) {
+    configAuthFailures.count = 0;
+    configAuthFailures.firstAt = 0;
+  }
+  if (configAuthFailures.count >= CONFIG_AUTH_FAILURE_LIMIT) {
+    const retryAfter = Math.max(
+      1,
+      Math.ceil((configAuthFailures.firstAt + CONFIG_AUTH_FAILURE_WINDOW_MS - now) / 1000)
+    );
+    return jsonResponse(
+      {
+        ok: false,
+        error: "too_many_attempts",
+        message: "Too many rejected tokens from this isolate. Wait a minute and try again.",
+      },
+      429,
+      { "retry-after": String(retryAfter) }
+    );
+  }
+  // Either the bearer secret or a valid dashboard session cookie unlocks the
+  // endpoint; the cookie is what the signed-in page uses.
+  const bearerOk = presented && constantTimeEquals(presented, token);
+  const sessionOk = !presented && Boolean(await readSessionCookie(request, token));
+  if (!bearerOk && !sessionOk) {
+    if (!configAuthFailures.firstAt) configAuthFailures.firstAt = now;
+    configAuthFailures.count++;
+    return jsonResponse(
+      {
+        ok: false,
+        error: "unauthorized",
+        message:
+          "Sign in to the dashboard, or send the token as `Authorization: Bearer <BADEGG_ADMIN_TOKEN>`.",
+      },
+      401
+    );
+  }
+
+  const record = await loadConfigRecord(env, { force: true });
+
+  if (method === "GET") {
+    return jsonResponse(configApiPayload(env, record));
+  }
+
+  if (!kv || typeof kv.put !== "function") {
+    return jsonResponse(
+      {
+        ok: false,
+        error: "kv_not_bound",
+        message:
+          "Live editing needs the IDI_BADEGG KV namespace. Bind it in wrangler.jsonc (see the comments there), or copy the values into BADEGG_* env vars instead.",
+      },
+      503
+    );
+  }
+
+  if (method === "DELETE") {
+    const next = {
+      values: {},
+      updatedAt: new Date().toISOString(),
+      updatedBy: "dashboard",
+      revision: record.revision + 1,
+    };
+    await kv.put(BADEGG_CONFIG_KV_KEY, JSON.stringify(next));
+    invalidateConfigCache();
+    return jsonResponse({ ...configApiPayload(env, { ...next, storage: "kv" }), applied: true });
+  }
+
+  if (method !== "PUT" && method !== "POST") {
+    return jsonResponse({ ok: false, error: "method_not_allowed" }, 405, {
+      allow: "GET, PUT, DELETE, OPTIONS",
+    });
+  }
+
+  let body;
+  try {
+    body = await request.json();
+  } catch {
+    return jsonResponse(
+      {
+        ok: false,
+        error: "invalid_json",
+        message: 'Body must be JSON: {"overrides": {...}}.',
+      },
+      400
+    );
+  }
+
+  const submitted =
+    body && typeof body === "object" ? (body.overrides ?? body.values ?? body) : null;
+  const { values, errors } = sanitizeConfigOverrides(submitted);
+  if (errors.length) {
+    return jsonResponse(
+      {
+        ok: false,
+        error: "invalid_settings",
+        message: "Nothing was saved. Fix the settings below and try again.",
+        errors,
+      },
+      422
+    );
+  }
+
+  const next = {
+    values,
+    updatedAt: new Date().toISOString(),
+    updatedBy: String((body && body.updatedBy) || "dashboard").slice(0, 64),
+    revision: record.revision + 1,
+  };
+  await kv.put(BADEGG_CONFIG_KV_KEY, JSON.stringify(next));
+  invalidateConfigCache();
+
+  if (options.waitUntil) {
+    options.waitUntil(
+      Promise.resolve().then(() =>
+        recordEvent({
+          timestamp: new Date().toISOString(),
+          direction: "input",
+          mode: values.BADEGG_MODE === "monitor" ? "monitor" : "enforce",
+          status: "observed",
+          decision: "config_updated",
+          executionMode: "active",
+          maxConfidence: 0,
+          categories: ["config"],
+          inspectedCharacters: 0,
+          route: safeRoute(`${BADEGG_CONFIG_PATH}${url.search}`),
+        })
+      )
+    );
+  }
+
+  return jsonResponse({
+    ...configApiPayload(env, { ...next, storage: "kv" }),
+    applied: true,
+    effectiveImmediately: true,
+  });
+}
+
+// ---------------------------------------------------------------- dashboard sessions
+//
+// The console ships in `badegg-v3`, but the password check lives here on the
+// edge: signing in is an endpoint the console calls, not something a page does,
+// so the same flow works wherever the console is built. Auth is a signed,
+// HttpOnly cookie rather than a token in the page, so the password never reaches
+// JavaScript and a leaked page source is worthless.
+//
+// The signing key is the existing `BADEGG_ADMIN_TOKEN` secret: one secret, one
+// place to rotate. The cookie is `expiry.nonce.hmac`, HMAC-SHA256 over
+// `expiry.nonce`, verified in constant time.
+
+export const SESSION_COOKIE = "badegg_session";
+export const SESSION_TTL_MS = 12 * 60 * 60 * 1000;
+
+async function hmacHex(secret, message) {
+  const key = await crypto.subtle.importKey(
+    "raw",
+    new TextEncoder().encode(secret),
+    { name: "HMAC", hash: "SHA-256" },
+    false,
+    ["sign"]
+  );
+  const signature = await crypto.subtle.sign("HMAC", key, new TextEncoder().encode(message));
+  return [...new Uint8Array(signature)].map((byte) => byte.toString(16).padStart(2, "0")).join("");
+}
+
+function randomNonce() {
+  return [...crypto.getRandomValues(new Uint8Array(16))]
+    .map((byte) => byte.toString(16).padStart(2, "0"))
+    .join("");
+}
+
+/**
+ * Read the session cookie and check it against the secret.
+ *
+ * @returns {Promise<{expiry: number}|null>}
+ */
+export async function readSessionCookie(request, secret) {
+  if (!secret) return null;
+  const header = request.headers.get("cookie") || "";
+  const match = new RegExp(`(?:^|;\\s*)${SESSION_COOKIE}=([^;]+)`).exec(header);
+  if (!match) return null;
+  let value = "";
+  try {
+    value = decodeURIComponent(match[1]).trim();
+  } catch {
+    return null;
+  }
+  const parts = value.split(".");
+  if (parts.length !== 3) return null;
+  const [expiry, nonce, signature] = parts;
+  const expiryMs = Number.parseInt(expiry, 10);
+  if (!Number.isFinite(expiryMs) || expiryMs < Date.now()) return null;
+  const expected = await hmacHex(secret, `${expiry}.${nonce}`);
+  return constantTimeEquals(signature, expected) ? { expiry: expiryMs, nonce } : null;
+}
+
+function sessionCookieHeader(value, secure) {
+  const attrs = [
+    `${SESSION_COOKIE}=${value}`,
+    "Path=/",
+    "HttpOnly",
+    "SameSite=Strict",
+    `Max-Age=${Math.floor(SESSION_TTL_MS / 1000)}`,
+  ];
+  if (secure) attrs.push("Secure");
+  return attrs.join("; ");
+}
+
+function expiredSessionCookieHeader(secure) {
+  const attrs = [`${SESSION_COOKIE}=`, "Path=/", "HttpOnly", "SameSite=Strict", "Max-Age=0"];
+  if (secure) attrs.push("Secure");
+  return attrs.join("; ");
+}
+
+function isSecureRequest(request) {
+  try {
+    return new URL(request.url).protocol === "https:";
+  } catch {
+    return false;
+  }
+}
+
+/** Shared login throttle: bad passwords count against the same window as bad tokens. */
+function loginThrottled(now) {
+  if (now - configAuthFailures.firstAt > CONFIG_AUTH_FAILURE_WINDOW_MS) {
+    configAuthFailures.count = 0;
+    configAuthFailures.firstAt = 0;
+  }
+  return configAuthFailures.count >= CONFIG_AUTH_FAILURE_LIMIT;
+}
+
+function loginRetryAfter(now) {
+  return Math.max(
+    1,
+    Math.ceil((configAuthFailures.firstAt + CONFIG_AUTH_FAILURE_WINDOW_MS - now) / 1000)
+  );
+}
+
+async function readLoginBody(request) {
+  const type = (request.headers.get("content-type") || "").split(";")[0].trim().toLowerCase();
+  if (type === "application/x-www-form-urlencoded") {
+    const text = await request.text();
+    const params = new URLSearchParams(text);
+    return { password: params.get("password") || "" };
+  }
+  try {
+    const body = await request.json();
+    return { password: String(body?.password ?? body?.token ?? "") };
+  } catch {
+    return { password: "" };
+  }
+}
+
+/**
+ * `POST /api/badegg/login` - verify the dashboard password.
+ *
+ * The password is `BADEGG_ADMIN_TOKEN`. A successful login sets the session
+ * cookie, which the console presents on its next request to the operator
+ * endpoints.
+ */
+export async function handleLoginApi(request, env) {
+  const method = (request.method || "POST").toUpperCase();
+  const secret = String(env?.BADEGG_ADMIN_TOKEN || "").trim();
+
+  if (method === "OPTIONS") {
+    return new Response(null, {
+      status: 204,
+      headers: {
+        allow: "POST, OPTIONS",
+        "access-control-allow-headers": "content-type",
+        "access-control-allow-methods": "POST, OPTIONS",
+        "cache-control": "no-store",
+        "x-badegg-version": BADEGG_VERSION,
+      },
+    });
+  }
+  if (method !== "POST") {
+    return jsonResponse({ ok: false, error: "method_not_allowed" }, 405, {
+      allow: "POST, OPTIONS",
+    });
+  }
+  if (secret.length < CONFIG_TOKEN_MIN_LENGTH) {
+    return jsonResponse(
+      {
+        ok: false,
+        error: "admin_token_not_configured",
+        message: `Set the BADEGG_ADMIN_TOKEN secret (at least ${CONFIG_TOKEN_MIN_LENGTH} characters) before the dashboard can be unlocked.`,
+      },
+      503
+    );
+  }
+
+  const now = Date.now();
+  if (loginThrottled(now)) {
+    return jsonResponse(
+      {
+        ok: false,
+        error: "too_many_attempts",
+        message: "Too many rejected passwords from this isolate. Wait a minute and try again.",
+      },
+      429,
+      { "retry-after": String(loginRetryAfter(now)) }
+    );
+  }
+
+  const { password } = await readLoginBody(request);
+  if (!password || !constantTimeEquals(password, secret)) {
+    if (!configAuthFailures.firstAt) configAuthFailures.firstAt = now;
+    configAuthFailures.count++;
+    return jsonResponse(
+      {
+        ok: false,
+        error: "invalid_password",
+        message: "That password did not unlock the dashboard.",
+      },
+      401
+    );
+  }
+
+  configAuthFailures.count = 0;
+  configAuthFailures.firstAt = 0;
+  const expiry = now + SESSION_TTL_MS;
+  const nonce = randomNonce();
+  const signature = await hmacHex(secret, `${expiry}.${nonce}`);
+  return jsonResponse({ ok: true, expiresAt: new Date(expiry).toISOString() }, 200, {
+    "set-cookie": sessionCookieHeader(`${expiry}.${nonce}.${signature}`, isSecureRequest(request)),
+  });
+}
+
+/** `POST /api/badegg/logout` - drop the session cookie. */
+export async function handleLogoutApi(request) {
+  const method = (request.method || "POST").toUpperCase();
+  if (method === "OPTIONS") {
+    return new Response(null, { status: 204, headers: { allow: "POST, OPTIONS" } });
+  }
+  if (method !== "POST") {
+    return jsonResponse({ ok: false, error: "method_not_allowed" }, 405, {
+      allow: "POST, OPTIONS",
+    });
+  }
+  return jsonResponse({ ok: true }, 200, {
+    "set-cookie": expiredSessionCookieHeader(isSecureRequest(request)),
+  });
+}
+
+/** `GET /api/badegg/session` - is the caller signed in? */
+export async function handleSessionApi(request, env) {
+  const secret = String(env?.BADEGG_ADMIN_TOKEN || "").trim();
+  const session = await readSessionCookie(request, secret);
+  if (!session) {
+    return jsonResponse({ ok: false, authenticated: false, error: "unauthenticated" }, 401);
+  }
+  return jsonResponse({
+    ok: true,
+    authenticated: true,
+    expiresAt: new Date(session.expiry).toISOString(),
+  });
+}
+
+/**
+ * `POST /api/badegg/lift` - remove one temporary ban.
+ *
+ * Needed because a forever ban has no expiry to wait out: without a way to lift
+ * it, turning `BADEGG_BAN_FOREVER` on would be a one-way door. Authenticated
+ * with the same bearer token or session cookie as the config API.
+ */
+export async function handleLiftApi(request, env) {
+  const method = (request.method || "POST").toUpperCase();
+  const secret = String(env?.BADEGG_ADMIN_TOKEN || "").trim();
+  if (secret.length < CONFIG_TOKEN_MIN_LENGTH) {
+    return jsonResponse({ ok: false, error: "admin_token_not_configured" }, 503);
+  }
+  if (method === "OPTIONS") {
+    return new Response(null, { status: 204, headers: { allow: "POST, OPTIONS" } });
+  }
+  if (method !== "POST") {
+    return jsonResponse({ ok: false, error: "method_not_allowed" }, 405, {
+      allow: "POST, OPTIONS",
+    });
+  }
+
+  const presented = (request.headers.get("authorization") || "").replace(/^Bearer\s+/i, "").trim();
+  const authorized = presented
+    ? constantTimeEquals(presented, secret)
+    : Boolean(await readSessionCookie(request, secret));
+  if (!authorized) {
+    return jsonResponse({ ok: false, error: "unauthorized" }, 401);
+  }
+
+  let body;
+  try {
+    body = await request.json();
+  } catch {
+    return jsonResponse({ ok: false, error: "invalid_json" }, 400);
+  }
+  const rawIp = String(body?.ip || "").trim();
+  const key = normalizeIp(rawIp);
+  if (!key) {
+    return jsonResponse(
+      { ok: false, error: "invalid_ip", message: "Send an IP address to lift." },
+      422
+    );
+  }
+
+  const existed = tempBans.delete(key);
+  rateLimiter.resetSource(key);
+  if (env?.IDI_BADEGG && typeof env.IDI_BADEGG.delete === "function") {
+    await env.IDI_BADEGG.delete(`${KV_TEMPBAN_PREFIX}${key}`).catch(() => {});
+  }
+  return jsonResponse({ ok: true, lifted: rawIp, existed });
+}
+
+/**
+ * `GET /api/badegg/bans` - the temporary bans this isolate is currently holding.
+ *
+ * Authenticated like the config API. The public `?badegg-status=1` payload only
+ * reports a count, never the addresses.
+ */
+export async function handleBansApi(request, env) {
+  const secret = String(env?.BADEGG_ADMIN_TOKEN || "").trim();
+  if (secret.length < CONFIG_TOKEN_MIN_LENGTH) {
+    return jsonResponse({ ok: false, error: "admin_token_not_configured" }, 503);
+  }
+  const presented = (request.headers.get("authorization") || "").replace(/^Bearer\s+/i, "").trim();
+  const authorized = presented
+    ? constantTimeEquals(presented, secret)
+    : Boolean(await readSessionCookie(request, secret));
+  if (!authorized) {
+    return jsonResponse({ ok: false, error: "unauthorized" }, 401);
+  }
+  expireTempBans();
+  const bans = [];
+  for (const [ip, ban] of tempBans) {
+    if (ban.mode !== "active") continue;
+    bans.push({
+      ip,
+      expiresAt: ban.expiresAt,
+      forever: ban.expiresAtMs === null,
+      reasonCategories: ban.reasonCategories,
+    });
+  }
+  bans.sort((a, b) => String(a.ip).localeCompare(String(b.ip)));
+  return jsonResponse({ ok: true, bans, count: bans.length });
 }
 
 // ---------------------------------------------------------------- request helpers
@@ -1462,6 +2144,55 @@ const TEXT_MEDIA_TYPES = new Set([
   "application/x-www-form-urlencoded",
   "application/xhtml+xml",
 ]);
+
+/**
+ * Static assets are public by definition: the same bytes for every visitor,
+ * served from a hashed, immutable URL. Scanning their bodies is pure cost, and
+ * in `block`/`redact` mode it is actively harmful - a bundled script that merely
+ * *mentions* `authorization: Bearer ...` (like the dashboard does) would come
+ * back redacted, or as a 502, and take the site down. Headers are still scanned:
+ * a secret there is a real misconfiguration.
+ */
+const STATIC_ASSET_EXTENSIONS = new Set([
+  ".js",
+  ".mjs",
+  ".css",
+  ".map",
+  ".svg",
+  ".png",
+  ".webp",
+  ".jpg",
+  ".jpeg",
+  ".gif",
+  ".ico",
+  ".avif",
+  ".mp4",
+  ".webm",
+  ".woff",
+  ".woff2",
+  ".ttf",
+  ".otf",
+  ".txt",
+  ".xml",
+]);
+
+const NON_SCRIPTABLE_OUTPUT_TYPES =
+  /^(?:text\/css|text\/javascript|application\/javascript|application\/x-javascript|image\/|font\/|audio\/|video\/)/i;
+
+export function isScannableOutputBody(route, contentType) {
+  const media = String(contentType || "")
+    .split(";")[0]
+    .trim()
+    .toLowerCase();
+  if (!media) return false;
+  if (NON_SCRIPTABLE_OUTPUT_TYPES.test(media)) return false;
+  const path = String(route || "")
+    .split("?")[0]
+    .toLowerCase();
+  const dot = path.lastIndexOf(".");
+  if (dot > 0 && STATIC_ASSET_EXTENSIONS.has(path.slice(dot))) return false;
+  return true;
+}
 
 function isInspectableTextType(contentType) {
   const media = String(contentType || "")
@@ -1661,13 +2392,15 @@ export async function inspectOutgoingResponse(response, route, config) {
     }
   }
 
+  const responseType = response.headers.get("content-type") || "";
   if (
     config.scanOutputBodies &&
     response.status !== 204 &&
     response.status !== 304 &&
     response.status !== 206 &&
     !response.headers.get("content-encoding") &&
-    isInspectableTextType(response.headers.get("content-type") || "")
+    isInspectableTextType(responseType) &&
+    isScannableOutputBody(route, responseType)
   ) {
     const lenHeader = response.headers.get("content-length");
     const declaredLen = lenHeader ? Number.parseInt(lenHeader, 10) : 0;
@@ -1734,14 +2467,36 @@ export async function inspectOutgoingResponse(response, route, config) {
  */
 export async function handleBadEggRequest(request, env, options = {}, forward) {
   const waitUntil = options.waitUntil;
-  const config = resolveConfig(env);
+  const configRecord = await loadConfigRecord(env);
+  const config = resolveConfig(env, configRecord.values);
   const url = new URL(request.url);
   const route = url.pathname.slice(0, 256);
 
-  // 1. Diagnostics endpoint (?badegg-status=1)
+  // 1. Diagnostics endpoint (?badegg-status=1). Gated like the console: it
+  //    reports the effective policy, so an open endpoint would hand the same
+  //    information the login screen is there to protect.
   if (wantsStatus(request)) {
+    const secret = String(env?.BADEGG_ADMIN_TOKEN || "").trim();
+    const presented = (request.headers.get("authorization") || "")
+      .replace(/^Bearer\s+/i, "")
+      .trim();
+    const authorized =
+      secret.length >= CONFIG_TOKEN_MIN_LENGTH &&
+      ((presented && constantTimeEquals(presented, secret)) ||
+        Boolean(await readSessionCookie(request, secret)));
+    if (!authorized) {
+      return jsonResponse(
+        {
+          ok: false,
+          error: "unauthorized",
+          message:
+            "Sign in to the dashboard, or send the token as `Authorization: Bearer <BADEGG_ADMIN_TOKEN>`.",
+        },
+        401
+      );
+    }
     await ensureIndex(env, { waitUntil });
-    return statusResponse(env);
+    return statusResponse(env, configRecord);
   }
 
   // 2. Hard concurrency cap (applies in both Monitor and Enforce)
@@ -1785,19 +2540,42 @@ export async function handleBadEggRequest(request, env, options = {}, forward) {
 
     const ip = getClientIp(request);
 
-    // 3. Explicit 403 preview switch (?blocked-preview=1)
+    // 3. Operator surface: login, session probe, lift/ban listing and the config
+    //    API. All of it sits ahead of every ban so the console stays reachable
+    //    and fixable, whatever the current policy says. The console itself is
+    //    built in badegg-v3 and calls these endpoints.
+    if (route === "/api/badegg/login") return handleLoginApi(request, env);
+    if (route === "/api/badegg/logout") return handleLogoutApi(request);
+    if (route === "/api/badegg/session") return handleSessionApi(request, env);
+    if (route === "/api/badegg/lift") return handleLiftApi(request, env);
+    if (route === "/api/badegg/bans") return handleBansApi(request, env);
+    if (route === BADEGG_CONFIG_PATH || route === `${BADEGG_CONFIG_PATH}/`) {
+      return handleConfigApi(request, env, { waitUntil });
+    }
+
+    // 4. Explicit 403 preview switch (?blocked-preview=1)
     if (isPreview(request)) {
       return blockedResponse(ip, env, { reason: "preview" });
     }
 
+    // 5. Always-banned IPs/CIDRs: an explicit operator list that blocks in
+    //    monitor and enforce mode alike, checked before the allowlist so it wins.
+    if (ip && config.banAlways.length && matchIpList(ip, config.banAlways)) {
+      wafMetrics.blockedAlwaysTotal++;
+      return blockedResponse(ip, env, { reason: "ban_always" });
+    }
+
     const allowlisted = ip ? isAllowlistedIp(ip, config) : false;
 
-    // 4. Static IP/CIDR blocklist (`hall-of-shame.v2.bin`) + active v3 temporary exact-IP bans
+    // 6. Static IP/CIDR blocklist (`hall-of-shame.v2.bin`) + active v3 temporary exact-IP bans
     if (ip && !allowlisted) {
       const activeBan = await getActiveTemporaryBan(ip, env);
       if (activeBan && config.enforcementMode === "enforce") {
         wafMetrics.blockedTempBansTotal++;
-        const retrySeconds = Math.max(1, Math.ceil((activeBan.expiresAtMs - Date.now()) / 1000));
+        const retrySeconds =
+          activeBan.expiresAtMs === null
+            ? undefined
+            : Math.max(1, Math.ceil((activeBan.expiresAtMs - Date.now()) / 1000));
         return blockedResponse(ip, env, {
           reason: activeBan.reasonCategories?.join(", ") || "temporary_ban",
           retryAfter: retrySeconds,
@@ -1810,7 +2588,15 @@ export async function handleBadEggRequest(request, env, options = {}, forward) {
       }
     }
 
-    // 5. Per-IP token-bucket rate limiter
+    // 5. Configuration API (`/api/badegg/config`). Deliberately ahead of the rate
+    //    limiter: a rate limit that was set too low must stay fixable from the
+    //    dashboard, and the endpoint authenticates with its own bearer token.
+    if (route === BADEGG_CONFIG_PATH || route === `${BADEGG_CONFIG_PATH}/`) {
+      return handleConfigApi(request, env, { waitUntil });
+    }
+
+    // 7. Per-IP token-bucket rate limiter. The operator endpoints are handled
+    //    above, ahead of this, so a limit set too low cannot lock them out.
     if (config.rateLimitEnabled && ip && !allowlisted) {
       const escalating = config.rateLimitAction === "ban" && config.enforcementMode === "enforce";
       const rateDecision = rateLimiter.check(normalizeIp(ip) || ip, {
@@ -1845,7 +2631,7 @@ export async function handleBadEggRequest(request, env, options = {}, forward) {
             addTemporaryBan(ip, ["rate_limit"], config, env, waitUntil);
             return blockedResponse(ip, env, {
               reason: "rate_limit",
-              retryAfter: config.banTtlSeconds,
+              retryAfter: banRetryAfter(config),
             });
           }
           return throttledResponse(rateDecision.retryAfter, request);
@@ -1853,7 +2639,7 @@ export async function handleBadEggRequest(request, env, options = {}, forward) {
       }
     }
 
-    // 6. BadEgg v3 deterministic request inspection (path + query + headers + text/JSON body)
+    // 8. BadEgg v3 deterministic request inspection (path + query + headers + text/JSON body)
     if (config.scanInputs) {
       const decodedPath = safeDecodePath(url.pathname);
       const decodedQuery = url.search ? safeDecodeQuery(url.search.slice(1)) : "";
@@ -1935,12 +2721,12 @@ export async function handleBadEggRequest(request, env, options = {}, forward) {
         ].join(", ");
         return blockedResponse(ip, env, {
           reason: categories || "waf_policy",
-          retryAfter: scanResult.banRecord ? config.banTtlSeconds : undefined,
+          retryAfter: scanResult.banRecord ? banRetryAfter(config) : undefined,
         });
       }
     }
 
-    // 7. Forward clean request & inspect outgoing headers
+    // 9. Forward clean request & inspect outgoing headers
     const upstreamResponse = await forward();
     return await inspectOutgoingResponse(upstreamResponse, route, config);
   } finally {
@@ -2061,8 +2847,8 @@ export const FALLBACK_TEMPLATE = `<!doctype html>
 </body>
 </html>`;
 
-export function statusResponse(env = {}) {
-  return new Response(JSON.stringify(badeggStatus(env), null, 2), {
+export function statusResponse(env = {}, record = null) {
+  return new Response(JSON.stringify(badeggStatus(env, { record }), null, 2), {
     status: 200,
     headers: {
       "content-type": "application/json; charset=utf-8",

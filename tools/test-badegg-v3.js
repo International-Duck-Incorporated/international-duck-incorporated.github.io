@@ -241,7 +241,9 @@ test("Full edge middleware pipeline: WAF temp ban, 429 rate limit, and header se
     assert.equal(secretRes.headers.get("x-debug-token"), "[REDACTED]");
 
     // 4. ?badegg-status=1 never leaks client IPs
-    const statusReq = new Request("https://idi-official.pages.dev/?badegg-status=1");
+    const statusReq = new Request("https://idi-official.pages.dev/?badegg-status=1", {
+      headers: { authorization: "Bearer test-token-at-least-16-chars" },
+    });
     const statusRes = await handleBadEggRequest(
       statusReq,
       env,

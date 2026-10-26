@@ -377,6 +377,34 @@
 
         <section class="project-callout glass-card reveal">
           <div>
+            <span class="eyebrow">Operator surface</span>
+            <h2>Every knob on this gateway is a setting the edge resolves per request.</h2>
+            <p>
+              Mode, risk profile, the token-bucket budget, ban lifetime, inspection switches and the
+              allowlist are live configuration rather than a rebuild: settings that differ from the
+              code defaults are written to KV, so a policy change lands on the next request instead of
+              the next deploy. No KV? The same values export as <code>BADEGG_*</code> variables for
+              <code>wrangler.jsonc</code>.
+            </p>
+            <p>
+              The gateway behind this page is where that resolution happens, and it is where the
+              operator endpoints live - a session login, a config API, the list of addresses it is
+              banning right now, and a call to lift one. The browser console that drives them ships
+              with <code>badegg-v3</code>.
+            </p>
+          </div>
+          <a
+            class="button button-blue"
+            href="https://gitlab.com/international-duck-incorporated/badegg-v3"
+            target="_blank"
+            rel="noreferrer"
+          >
+            <svg><use href="#i-arrow" /></svg>Browse badegg-v3
+          </a>
+        </section>
+
+        <section class="cta-panel glass-card reveal">
+          <div>
             <span class="eyebrow">Public repository</span>
             <h2>Inspect the gateway and benchmark suite on GitLab.</h2>
             <p>

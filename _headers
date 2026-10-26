@@ -45,3 +45,8 @@
   Cache-Control: public, max-age=3600, must-revalidate
 /llms.txt
   Cache-Control: public, max-age=3600, must-revalidate
+
+# The shared config schema is imported by path (no ?v= hash), so it must stay
+# revalidatable: a schema change has to reach the dashboard immediately.
+/badegg-config.js
+  Cache-Control: public, max-age=0, must-revalidate

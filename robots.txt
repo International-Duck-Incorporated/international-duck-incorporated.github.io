@@ -4,6 +4,9 @@
 User-agent: *
 Allow: /
 
+# The BadEgg configuration API is a token-gated endpoint, not a page.
+Disallow: /api/
+
 # --- AI / LLM crawlers, explicitly allowed (see also /llms.txt) ---
 User-agent: GPTBot
 Allow: /
