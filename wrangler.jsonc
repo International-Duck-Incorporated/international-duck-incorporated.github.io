@@ -14,6 +14,31 @@
 			"id": "2966263df5e3465ebdfdef2c6158d3e0"
 		}
 	],
+	// Durable console metrics and event history. One shared D1 database, also
+	// bound to Agentarium and the Pages site, so deploys and isolate restarts no
+	// longer zero the dashboard counters: the status API overlays the persisted
+	// fleet totals on this isolate's live memory. Setup once:
+	//
+	//   npx wrangler d1 create idi-badegg-metrics
+	//   npx wrangler d1 execute idi-badegg-metrics --remote --file ./tools/badegg-metrics.sql
+	//
+	// Paste the database_id printed by the first command below (and into the
+	// agentarium repo's wrangler.jsonc). For the Pages site (idi-official) add
+	// the same binding in the dashboard under Settings -> Bindings -> D1
+	// Database -> BADEGG_DB. Without the binding everything still works with
+	// live in-memory numbers only.
+	"d1_databases": [
+		{
+			"binding": "BADEGG_DB",
+			"database_name": "idi-badegg-metrics",
+			"database_id": "PASTE-DATABASE-ID-HERE"
+		}
+	],
+	// Site label this worker reports under in the shared database. The Pages
+	// Functions side (which has no vars) reports as "home" by default.
+	"vars": {
+		"BADEGG_SITE": "home-worker"
+	},
 	// BadEgg v3 policy. These env vars are the baseline; anything saved from the
 	// dashboard (badegg-v3, feat/idi-pages-dashboard) is stored in the IDI_BADEGG
 	// KV namespace under "badegg:v3:config" and wins over them. Clear the KV record

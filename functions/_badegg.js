@@ -882,6 +882,150 @@ export function safeRoute(route) {
   return clean;
 }
 
+
+/* --------------------------------------------------------------------------
+ * Durable metrics + event persistence (optional D1 binding `BADEGG_DB`).
+ *
+ * The per-isolate counters and ring buffer above reset on every deploy and
+ * only ever reflect what this isolate has seen. With a shared D1 database
+ * (`idi-badegg-metrics`) bound, refusals and scans are persisted there, and
+ * the status API reads fleet-wide totals back: the console keeps working
+ * across deploys and sees home, the worker mirror and Agentarium at once.
+ * Without the binding everything behaves exactly as before, in-memory only.
+ * All writes are fire-and-forget and fail open.
+ * ------------------------------------------------------------------------ */
+
+const D1_EVENTS_RETENTION_MS = 30 * 86400_000;
+const D1_EVENT_THROTTLE_MS = 60_000;
+const D1_METRICS_FLUSH_MS = 60_000;
+const d1EventThrottle = new Map(); // "decision|categories" -> last written (per isolate)
+const d1Local = { inspected: 0, blocked: 0, throttled: 0 }; // observed by THIS isolate
+const d1Persisted = { inspected: 0, blocked: 0, throttled: 0 }; // flushed by this isolate
+let d1LastFlush = Date.now();
+
+function d1Db(env) {
+  const db = env?.BADEGG_DB;
+  return db && typeof db.prepare === "function" ? db : null;
+}
+
+function d1Site(env) {
+  const s = String(env?.BADEGG_SITE || "home").trim().toLowerCase();
+  return /^[a-z0-9-]{1,32}$/.test(s) ? s : "home";
+}
+
+function d1Run(env, waitUntil, promise) {
+  if (waitUntil) waitUntil(promise.catch(() => {}));
+  else promise.catch(() => {});
+}
+
+function d1FlushMetrics(env, waitUntil) {
+  const db = d1Db(env);
+  if (!db) return;
+  const now = Date.now();
+  if (now - d1LastFlush < D1_METRICS_FLUSH_MS) return;
+  const delta = {
+    inspected: d1Local.inspected - d1Persisted.inspected,
+    blocked: d1Local.blocked - d1Persisted.blocked,
+    throttled: d1Local.throttled - d1Persisted.throttled,
+  };
+  if (!delta.inspected && !delta.blocked && !delta.throttled) return;
+  d1LastFlush = now;
+  d1Persisted.inspected += delta.inspected;
+  d1Persisted.blocked += delta.blocked;
+  d1Persisted.throttled += delta.throttled;
+  const bucket = Math.floor(now / 300_000) * 300;
+  d1Run(
+    env,
+    waitUntil,
+    db
+      .prepare(
+        "INSERT INTO badegg_metrics (bucket_start, site, inspected, blocked, throttled) VALUES (?, ?, ?, ?, ?) " +
+          "ON CONFLICT(bucket_start, site) DO UPDATE SET inspected = inspected + excluded.inspected, " +
+          "blocked = blocked + excluded.blocked, throttled = throttled + excluded.throttled"
+      )
+      .bind(bucket, d1Site(env), delta.inspected, delta.blocked, delta.throttled)
+      .run()
+      .then(async () => {
+        // Amortized retention sweep (~1-in-20 flushes): events keep 30 days.
+        if (Math.random() < 0.05) {
+          await db.prepare("DELETE FROM badegg_events WHERE ts < ?").bind(now - D1_EVENTS_RETENTION_MS).run();
+        }
+      })
+  );
+}
+
+function d1Note(kind, env, waitUntil) {
+  if (!Object.hasOwn(d1Local, kind)) return;
+  d1Local[kind]++;
+  d1FlushMetrics(env, waitUntil);
+}
+
+function d1PersistEvent(entry, env, waitUntil) {
+  const db = d1Db(env);
+  if (!db) return;
+  try {
+    const decision = String(entry?.decision || entry?.status || "event").slice(0, 64);
+    const categories = Array.isArray(entry?.categories) ? entry.categories.join(",") : "";
+    const key = `${decision}|${categories.slice(0, 120)}`;
+    const now = Date.now();
+    // One row per distinct decision+categories per minute per isolate: a flood
+    // of refused requests must not become a flood of writes.
+    if (now - (d1EventThrottle.get(key) || 0) < D1_EVENT_THROTTLE_MS) return;
+    if (d1EventThrottle.size > 500) d1EventThrottle.clear();
+    d1EventThrottle.set(key, now);
+    const ts = Date.parse(entry?.timestamp || "") || now;
+    d1Run(
+      env,
+      waitUntil,
+      db
+        .prepare("INSERT INTO badegg_events (site, ts, decision, status, categories) VALUES (?, ?, ?, ?, ?)")
+        .bind(d1Site(env), ts, decision, String(entry?.status || "").slice(0, 32), String(categories).slice(0, 200))
+        .run()
+    );
+  } catch {
+    // best-effort telemetry only
+  }
+}
+
+async function d1Totals(env) {
+  const db = d1Db(env);
+  if (!db) return null;
+  try {
+    const sums = await db
+      .prepare(
+        "SELECT COALESCE(SUM(inspected), 0) AS inspected, COALESCE(SUM(blocked), 0) AS blocked, " +
+          "COALESCE(SUM(throttled), 0) AS throttled FROM badegg_metrics"
+      )
+      .first();
+    const ev = await db
+      .prepare("SELECT site, ts, decision, status, categories FROM badegg_events ORDER BY id DESC LIMIT 20")
+      .all();
+    return {
+      inspected: Number(sums?.inspected) || 0,
+      blocked: Number(sums?.blocked) || 0,
+      throttled: Number(sums?.throttled) || 0,
+      events: Array.isArray(ev?.results) ? ev.results : [],
+    };
+  } catch {
+    return null;
+  }
+}
+
+function d1Event(decision, categories, status, route) {
+  return {
+    timestamp: new Date().toISOString(),
+    direction: "input",
+    mode: "enforce",
+    status,
+    decision,
+    executionMode: "active",
+    maxConfidence: 0,
+    categories,
+    inspectedCharacters: 0,
+    route: safeRoute(route),
+  };
+}
+
 function recordEvent(entry) {
   recentEvents.unshift(entry);
   if (recentEvents.length > MAX_EVENTS) recentEvents.length = MAX_EVENTS;
@@ -1048,7 +1192,10 @@ export function scanText({
     };
   }
 
-  if (direction === "input") wafMetrics.inspectedTotal++;
+  if (direction === "input") {
+    wafMetrics.inspectedTotal++;
+    d1Note("inspected", env, waitUntil);
+  }
 
   const findings = [];
   for (const rule of RULES) {
@@ -1101,7 +1248,10 @@ export function scanText({
         banRecord = addTemporaryBan(clientIp, categories, config, env, waitUntil);
         decision = liveEnforcement ? "blocked" : "would_temp_block";
       }
-      if (liveEnforcement) wafMetrics.blockedAttacksTotal++;
+      if (liveEnforcement) {
+        wafMetrics.blockedAttacksTotal++;
+        d1Note("blocked", env, waitUntil);
+      }
     } else if (maxAttackConfidence >= config.alertThreshold) {
       const actionType = config.riskMode === "catch_more" ? "challenge" : "alert_for_review";
       if (decision === "clean") decision = `would_${actionType}`;
@@ -1123,7 +1273,7 @@ export function scanText({
         : "inspected";
 
   if (findings.length) {
-    recordEvent({
+    const eventEntry = {
       timestamp: new Date().toISOString(),
       direction,
       mode: config.riskMode,
@@ -1134,7 +1284,9 @@ export function scanText({
       categories: [...new Set(findings.map((f) => f.category))].sort(),
       inspectedCharacters: body.length,
       route: routeSafe,
-    });
+    };
+    recordEvent(eventEntry);
+    d1PersistEvent(eventEntry, env, waitUntil);
   }
 
   return {
@@ -1819,8 +1971,8 @@ export async function handleConfigApi(request, env = {}, options = {}) {
 
   if (options.waitUntil) {
     options.waitUntil(
-      Promise.resolve().then(() =>
-        recordEvent({
+      Promise.resolve().then(() => {
+        const eventEntry = {
           timestamp: new Date().toISOString(),
           direction: "input",
           mode: values.BADEGG_MODE === "monitor" ? "monitor" : "enforce",
@@ -1831,8 +1983,10 @@ export async function handleConfigApi(request, env = {}, options = {}) {
           categories: ["config"],
           inspectedCharacters: 0,
           route: safeRoute(`${BADEGG_CONFIG_PATH}${url.search}`),
-        })
-      )
+        };
+        recordEvent(eventEntry);
+        d1PersistEvent(eventEntry, env, options.waitUntil);
+      })
     );
   }
 
@@ -2388,7 +2542,7 @@ export function throttledResponse(retryAfterSeconds = 1, request = null) {
  * bodies when `BADEGG_SCAN_OUTPUT_BODIES=1`), leaving binary and immutable
  * static streams untouched.
  */
-export async function inspectOutgoingResponse(response, route, config) {
+export async function inspectOutgoingResponse(response, route, config, env = null, waitUntil = null) {
   if (!response || !config.scanOutputs || config.enforcementMode !== "enforce") {
     return response;
   }
@@ -2414,6 +2568,17 @@ export async function inspectOutgoingResponse(response, route, config) {
     if (hasSecret) {
       if (config.outputAction === "block") {
         wafMetrics.blockedOutputsTotal++;
+        d1Note("blocked", env, waitUntil);
+        d1PersistEvent(
+          d1Event(
+            "block_output_secret",
+            [...new Set(headerScan.findings.map((f) => f.category))].sort(),
+            "blocked",
+            route
+          ),
+          env,
+          waitUntil
+        );
         return gatewayErrorResponse(
           502,
           "BadEgg blocked a response header containing a sensitive-data pattern."
@@ -2469,6 +2634,17 @@ export async function inspectOutgoingResponse(response, route, config) {
         if (hasBodySecret) {
           if (config.outputAction === "block") {
             wafMetrics.blockedOutputsTotal++;
+            d1Note("blocked", env, waitUntil);
+            d1PersistEvent(
+              d1Event(
+                "block_output_secret",
+                [...new Set(bodyScan.findings.map((f) => f.category))].sort(),
+                "blocked",
+                route
+              ),
+              env,
+              waitUntil
+            );
             return gatewayErrorResponse(
               502,
               "BadEgg blocked an upstream response containing a sensitive-data pattern."
@@ -2542,6 +2718,7 @@ export async function handleBadEggRequest(request, env, options = {}, forward) {
   // 2. Hard concurrency cap (applies in both Monitor and Enforce)
   if (wafMetrics.activeRequests >= config.maxConcurrentRequests) {
     wafMetrics.overloadRejections++;
+    d1Note("throttled", env, waitUntil);
     return gatewayErrorResponse(
       503,
       "BadEgg gateway is at its configured concurrency limit. Please retry shortly.",
@@ -2602,6 +2779,8 @@ export async function handleBadEggRequest(request, env, options = {}, forward) {
     //    monitor and enforce mode alike, checked before the allowlist so it wins.
     if (ip && config.banAlways.length && matchIpList(ip, config.banAlways)) {
       wafMetrics.blockedAlwaysTotal++;
+      d1Note("blocked", env, waitUntil);
+      d1PersistEvent(d1Event("ban_always", ["ban_always"], "blocked", route), env, waitUntil);
       return blockedResponse(ip, env, { reason: "ban_always" });
     }
 
@@ -2615,6 +2794,17 @@ export async function handleBadEggRequest(request, env, options = {}, forward) {
       const activeBan = await getActiveTemporaryBan(ip, env);
       if (activeBan) {
         wafMetrics.blockedTempBansTotal++;
+        d1Note("blocked", env, waitUntil);
+        d1PersistEvent(
+          d1Event(
+            "temp_ban",
+            activeBan.reasonCategories?.length ? activeBan.reasonCategories : ["temporary_ban"],
+            "blocked",
+            route
+          ),
+          env,
+          waitUntil
+        );
         const retrySeconds =
           activeBan.expiresAtMs === null
             ? undefined
@@ -2627,6 +2817,8 @@ export async function handleBadEggRequest(request, env, options = {}, forward) {
 
       const index = await ensureIndex(env, { waitUntil });
       if (index && match(index, ip).blocked) {
+        d1Note("blocked", env, waitUntil);
+        d1PersistEvent(d1Event("blocklist", ["blocklist"], "blocked", route), env, waitUntil);
         return blockedResponse(ip, env);
       }
     }
@@ -2651,7 +2843,7 @@ export async function handleBadEggRequest(request, env, options = {}, forward) {
 
       if (!rateDecision.allowed) {
         if (rateDecision.shouldReport) {
-          recordEvent({
+          const eventEntry = {
             timestamp: new Date().toISOString(),
             direction: "input",
             mode: config.riskMode,
@@ -2667,16 +2859,20 @@ export async function handleBadEggRequest(request, env, options = {}, forward) {
             categories: ["rate_limit"],
             inspectedCharacters: 0,
             route: safeRoute(route),
-          });
+          };
+          recordEvent(eventEntry);
+          d1PersistEvent(eventEntry, env, waitUntil);
         }
         if (config.enforcementMode === "enforce") {
           if (escalating && rateDecision.escalate) {
             addTemporaryBan(ip, ["rate_limit"], config, env, waitUntil);
+            d1Note("blocked", env, waitUntil);
             return blockedResponse(ip, env, {
               reason: "rate_limit",
               retryAfter: banRetryAfter(config),
             });
           }
+          d1Note("throttled", env, waitUntil);
           return throttledResponse(rateDecision.retryAfter, request);
         }
       }
@@ -2771,7 +2967,7 @@ export async function handleBadEggRequest(request, env, options = {}, forward) {
 
     // 9. Forward clean request & inspect outgoing headers
     const upstreamResponse = await forward();
-    return await inspectOutgoingResponse(upstreamResponse, route, config);
+    return await inspectOutgoingResponse(upstreamResponse, route, config, env, waitUntil);
   } finally {
     if (wafMetrics.activeRequests > 0) wafMetrics.activeRequests--;
   }
@@ -2890,8 +3086,41 @@ export const FALLBACK_TEMPLATE = `<!doctype html>
 </body>
 </html>`;
 
-export function statusResponse(env = {}, record = null) {
-  return new Response(JSON.stringify(badeggStatus(env, { record }), null, 2), {
+
+/**
+ * Overlay the durable fleet totals (D1 `BADEGG_DB`) onto this isolate's
+ * counters for the status API: display = persisted fleet sum plus this
+ * isolate's not-yet-flushed observations. `badeggStatus` itself stays
+ * synchronous (the public ?badegg-status=1 diagnostics route uses it); this
+ * is the only read path that awaits D1, and it fails open to in-memory only.
+ */
+async function mergePersistentStatus(body, env) {
+  const totals = await d1Totals(env);
+  if (!totals || !body || !body.waf) return;
+  body.waf.inspectedTotal = totals.inspected + (d1Local.inspected - d1Persisted.inspected);
+  body.waf.blockedAttacksTotal = totals.blocked + (d1Local.blocked - d1Persisted.blocked);
+  if (body.concurrency) {
+    body.concurrency.overloadRejections = totals.throttled + (d1Local.throttled - d1Persisted.throttled);
+  }
+  if (totals.events.length) {
+    body.waf.recentEvents = totals.events.map((row) => ({
+      timestamp: new Date(Number(row.ts) || Date.now()).toISOString(),
+      direction: "input",
+      status: String(row.status || ""),
+      decision: String(row.decision || "event"),
+      categories: String(row.categories || "")
+        .split(",")
+        .map((s) => s.trim())
+        .filter(Boolean),
+      site: String(row.site || ""),
+    }));
+  }
+}
+
+export async function statusResponse(env = {}, record = null) {
+  const body = badeggStatus(env, { record });
+  await mergePersistentStatus(body, env);
+  return new Response(JSON.stringify(body, null, 2), {
     status: 200,
     headers: {
       "content-type": "application/json; charset=utf-8",
