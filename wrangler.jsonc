@@ -31,7 +31,7 @@
 		{
 			"binding": "BADEGG_DB",
 			"database_name": "idi-badegg-metrics",
-			"database_id": "PASTE-DATABASE-ID-HERE"
+			"database_id": "5be321fd-f457-483d-ae0d-6bf81f642969"
 		}
 	],
 	// Site label this worker reports under in the shared database. The Pages
