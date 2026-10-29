@@ -1120,7 +1120,7 @@ export async function getActiveTemporaryBan(rawIp, env) {
         return stored;
       }
     } catch {
-      // fail open on KV error
+      throw new Error("ban_store_unavailable");
     }
   }
   return null;
@@ -1140,7 +1140,9 @@ export async function getActiveTemporaryBan(rawIp, env) {
  */
 async function hydrateBansFromKv(env) {
   const kv = env?.IDI_BADEGG;
-  if (!kv || typeof kv.list !== "function") return;
+  if (!kv || typeof kv.list !== "function" || typeof kv.get !== "function") {
+    throw new Error("ban_store_unavailable");
+  }
   try {
     let cursor;
     do {
@@ -1148,7 +1150,7 @@ async function hydrateBansFromKv(env) {
       for (const entry of page?.keys || []) {
         const key = String(entry.name || "").slice(KV_TEMPBAN_PREFIX.length);
         if (!key || tempBans.has(key)) continue;
-        const stored = await kv.get(entry.name, { type: "json", cacheTtl: 0 }).catch(() => null);
+        const stored = await kv.get(entry.name, { type: "json", cacheTtl: 60 });
         if (
           stored &&
           stored.mode === "active" &&
@@ -1160,7 +1162,7 @@ async function hydrateBansFromKv(env) {
       cursor = page && page.list_complete === false ? page.cursor : undefined;
     } while (cursor);
   } catch {
-    // fail open: the local view is still correct for this isolate
+    throw new Error("ban_store_unavailable");
   }
 }
 
@@ -1729,7 +1731,31 @@ const CONFIG_AUTH_FAILURE_LIMIT = 10;
 const CONFIG_AUTH_FAILURE_WINDOW_MS = 60_000;
 
 let configRecordCache = { at: 0, record: null };
-const configAuthFailures = { count: 0, firstAt: 0 };
+// Approximate in-isolate per-source defense, not a replacement for a
+// distributed Cloudflare rate limit. Bound memory and fail over to one bucket
+// when a trustworthy connecting address is unavailable.
+const configAuthFailures = new Map();
+function rejectedOperatorAuth(request, error = "unauthorized") {
+  const now = Date.now();
+  const key = normalizeIp(getClientIp(request)) || "unknown";
+  let entry = configAuthFailures.get(key);
+  if (!entry || now - entry.firstAt >= CONFIG_AUTH_FAILURE_WINDOW_MS) {
+    if (configAuthFailures.size >= 10000) {
+      for (const [k, v] of configAuthFailures) {
+        if (now - v.firstAt >= CONFIG_AUTH_FAILURE_WINDOW_MS) configAuthFailures.delete(k);
+      }
+      if (configAuthFailures.size >= 10000) configAuthFailures.delete(configAuthFailures.keys().next().value);
+    }
+    entry = { count: 0, firstAt: now };
+    configAuthFailures.set(key, entry);
+  }
+  if (entry.count >= CONFIG_AUTH_FAILURE_LIMIT) {
+    const retry = Math.max(1, Math.ceil((entry.firstAt + CONFIG_AUTH_FAILURE_WINDOW_MS - now) / 1000));
+    return jsonResponse({ ok: false, error: "too_many_attempts", message: "Too many rejected credentials; retry later." }, 429, { "retry-after": String(retry) });
+  }
+  entry.count++;
+  return jsonResponse({ ok: false, error }, 401);
+}
 
 /** The "no overrides, environment only" record. */
 export function emptyConfigRecord() {
@@ -1744,16 +1770,15 @@ export function invalidateConfigCache() {
 /** Test helper: also clears the token brute-force window. */
 export function resetConfigApiState() {
   invalidateConfigCache();
-  configAuthFailures.count = 0;
-  configAuthFailures.firstAt = 0;
+  configAuthFailures.clear();
 }
 
 /**
  * Read dashboard-written overrides from KV.
  *
  * Cached in memory for `CONFIG_CACHE_MS` because this runs on every request.
- * Every failure path (no binding, KV error, garbage record) falls back to the
- * environment-only record: a storage problem must never silently change policy.
+ * With no binding the environment is the baseline. A bound but unreadable
+ * store is an error: silently replacing saved overrides with defaults is unsafe.
  */
 export async function loadConfigRecord(env = {}, options = {}) {
   const kv = env && env.IDI_BADEGG;
@@ -1781,7 +1806,7 @@ export async function loadConfigRecord(env = {}, options = {}) {
       };
     }
   } catch {
-    // fail open: environment variables remain in force
+    throw new Error("policy_store_unavailable");
   }
 
   configRecordCache = { at: now, record };
@@ -1875,45 +1900,14 @@ export async function handleConfigApi(request, env = {}, options = {}) {
   }
 
   const presented = (request.headers.get("authorization") || "").replace(/^Bearer\s+/i, "").trim();
-  const now = Date.now();
-  if (now - configAuthFailures.firstAt > CONFIG_AUTH_FAILURE_WINDOW_MS) {
-    configAuthFailures.count = 0;
-    configAuthFailures.firstAt = 0;
-  }
-  if (configAuthFailures.count >= CONFIG_AUTH_FAILURE_LIMIT) {
-    const retryAfter = Math.max(
-      1,
-      Math.ceil((configAuthFailures.firstAt + CONFIG_AUTH_FAILURE_WINDOW_MS - now) / 1000)
-    );
-    return jsonResponse(
-      {
-        ok: false,
-        error: "too_many_attempts",
-        message: "Too many rejected tokens from this isolate. Wait a minute and try again.",
-      },
-      429,
-      { "retry-after": String(retryAfter) }
-    );
-  }
-  // Either the bearer secret or a valid dashboard session cookie unlocks the
-  // endpoint; the cookie is what the signed-in page uses.
+  // Valid credentials are never locked out by another client's failures.
   const bearerOk = presented && constantTimeEquals(presented, token);
   const sessionOk = !presented && Boolean(await readSessionCookie(request, token));
-  if (!bearerOk && !sessionOk) {
-    if (!configAuthFailures.firstAt) configAuthFailures.firstAt = now;
-    configAuthFailures.count++;
-    return jsonResponse(
-      {
-        ok: false,
-        error: "unauthorized",
-        message:
-          "Sign in to the dashboard, or send the token as `Authorization: Bearer <BADEGG_ADMIN_TOKEN>`.",
-      },
-      401
-    );
-  }
+  if (!bearerOk && !sessionOk) return rejectedOperatorAuth(request);
 
-  const record = await loadConfigRecord(env, { force: true });
+  let record;
+  try { record = await loadConfigRecord(env, { force: true }); }
+  catch { return jsonResponse({ ok: false, error: "policy_store_unavailable", message: "Policy storage is unavailable; retry later." }, 503); }
 
   if (method === "GET") {
     return jsonResponse(configApiPayload(env, record));
@@ -2101,22 +2095,6 @@ function isSecureRequest(request) {
   }
 }
 
-/** Shared login throttle: bad passwords count against the same window as bad tokens. */
-function loginThrottled(now) {
-  if (now - configAuthFailures.firstAt > CONFIG_AUTH_FAILURE_WINDOW_MS) {
-    configAuthFailures.count = 0;
-    configAuthFailures.firstAt = 0;
-  }
-  return configAuthFailures.count >= CONFIG_AUTH_FAILURE_LIMIT;
-}
-
-function loginRetryAfter(now) {
-  return Math.max(
-    1,
-    Math.ceil((configAuthFailures.firstAt + CONFIG_AUTH_FAILURE_WINDOW_MS - now) / 1000)
-  );
-}
-
 async function readLoginBody(request) {
   const type = (request.headers.get("content-type") || "").split(";")[0].trim().toLowerCase();
   if (type === "application/x-www-form-urlencoded") {
@@ -2172,34 +2150,11 @@ export async function handleLoginApi(request, env) {
   }
 
   const now = Date.now();
-  if (loginThrottled(now)) {
-    return jsonResponse(
-      {
-        ok: false,
-        error: "too_many_attempts",
-        message: "Too many rejected passwords from this isolate. Wait a minute and try again.",
-      },
-      429,
-      { "retry-after": String(loginRetryAfter(now)) }
-    );
-  }
-
   const { password } = await readLoginBody(request);
   if (!password || !constantTimeEquals(password, secret)) {
-    if (!configAuthFailures.firstAt) configAuthFailures.firstAt = now;
-    configAuthFailures.count++;
-    return jsonResponse(
-      {
-        ok: false,
-        error: "invalid_password",
-        message: "That password did not unlock the dashboard.",
-      },
-      401
-    );
+    return rejectedOperatorAuth(request, "invalid_password");
   }
 
-  configAuthFailures.count = 0;
-  configAuthFailures.firstAt = 0;
   const expiry = now + SESSION_TTL_MS;
   const nonce = randomNonce();
   const signature = await hmacHex(secret, `${expiry}.${nonce}`);
@@ -2228,9 +2183,7 @@ export async function handleLogoutApi(request) {
 export async function handleSessionApi(request, env) {
   const secret = String(env?.BADEGG_ADMIN_TOKEN || "").trim();
   const session = await readSessionCookie(request, secret);
-  if (!session) {
-    return jsonResponse({ ok: false, authenticated: false, error: "unauthenticated" }, 401);
-  }
+  if (!session) return rejectedOperatorAuth(request, "unauthenticated");
   return jsonResponse({
     ok: true,
     authenticated: true,
@@ -2264,9 +2217,7 @@ export async function handleLiftApi(request, env) {
   const authorized = presented
     ? constantTimeEquals(presented, secret)
     : Boolean(await readSessionCookie(request, secret));
-  if (!authorized) {
-    return jsonResponse({ ok: false, error: "unauthorized" }, 401);
-  }
+  if (!authorized) return rejectedOperatorAuth(request);
 
   let body;
   try {
@@ -2283,12 +2234,18 @@ export async function handleLiftApi(request, env) {
     );
   }
 
+  const kv = env?.IDI_BADEGG;
+  if (!kv || typeof kv.delete !== "function") {
+    return jsonResponse({ ok: false, error: "ban_store_unavailable", message: "Ban storage is unavailable; retry later." }, 503);
+  }
+  try {
+    await kv.delete(`${KV_TEMPBAN_PREFIX}${key}`);
+  } catch {
+    return jsonResponse({ ok: false, error: "ban_store_unavailable", message: "The lift was not confirmed; retry later." }, 503);
+  }
   const existed = tempBans.delete(key);
   rateLimiter.resetSource(key);
-  if (env?.IDI_BADEGG && typeof env.IDI_BADEGG.delete === "function") {
-    await env.IDI_BADEGG.delete(`${KV_TEMPBAN_PREFIX}${key}`).catch(() => {});
-  }
-  return jsonResponse({ ok: true, lifted: rawIp, existed });
+  return jsonResponse({ ok: true, lifted: rawIp, existed, propagation: "KV is eventually consistent; other locations may take time to reflect this change." });
 }
 
 /**
@@ -2306,10 +2263,12 @@ export async function handleBansApi(request, env) {
   const authorized = presented
     ? constantTimeEquals(presented, secret)
     : Boolean(await readSessionCookie(request, secret));
-  if (!authorized) {
-    return jsonResponse({ ok: false, error: "unauthorized" }, 401);
+  if (!authorized) return rejectedOperatorAuth(request);
+  try {
+    await hydrateBansFromKv(env);
+  } catch {
+    return jsonResponse({ ok: false, error: "ban_store_unavailable", message: "Active bans could not be read; retry later." }, 503);
   }
-  await hydrateBansFromKv(env);
   expireTempBans();
   const bans = [];
   for (const [ip, ban] of tempBans) {
@@ -2641,6 +2600,12 @@ export async function inspectOutgoingResponse(response, route, config, env = nul
             scanTarget = text;
           }
         }
+        // This address is intentionally published as the IDI homepage contact.
+        // Exempt only this exact address on this exact host and route, and only
+        // from body matching; other email addresses and all secrets stay scanned.
+        if (context.host === "idi.idi-official.workers.dev" && route === "/" && /text\/html/i.test(responseType)) {
+          scanTarget = scanTarget.replace(/(?<![A-Z0-9._%+-])0xffshell@duck\.com(?![A-Z0-9_%+-]|\.[A-Z0-9-])/gi, "[PUBLIC_CONTACT]");
+        }
         const bodyScan = scanText({
           direction: "output",
           text: scanTarget,
@@ -2704,7 +2669,9 @@ export async function inspectOutgoingResponse(response, route, config, env = nul
  */
 export async function handleBadEggRequest(request, env, options = {}, forward) {
   const waitUntil = options.waitUntil;
-  const configRecord = await loadConfigRecord(env);
+  let configRecord;
+  try { configRecord = await loadConfigRecord(env); }
+  catch { return gatewayErrorResponse(503, "BadEgg policy storage is unavailable. Please retry later.", { "retry-after": "60" }); }
   const config = resolveConfig(env, configRecord.values);
   const url = new URL(request.url);
   const route = url.pathname.slice(0, 256);
@@ -2721,19 +2688,10 @@ export async function handleBadEggRequest(request, env, options = {}, forward) {
       secret.length >= CONFIG_TOKEN_MIN_LENGTH &&
       ((presented && constantTimeEquals(presented, secret)) ||
         Boolean(await readSessionCookie(request, secret)));
-    if (!authorized) {
-      return jsonResponse(
-        {
-          ok: false,
-          error: "unauthorized",
-          message:
-            "Sign in to the dashboard, or send the token as `Authorization: Bearer <BADEGG_ADMIN_TOKEN>`.",
-        },
-        401
-      );
-    }
+    if (!authorized) return rejectedOperatorAuth(request);
     await ensureIndex(env, { waitUntil });
-    await hydrateBansFromKv(env);
+    try { await hydrateBansFromKv(env); }
+    catch { return jsonResponse({ ok: false, error: "ban_store_unavailable", message: "Ban storage is unavailable; retry later." }, 503); }
     return statusResponse(env, configRecord);
   }
 
@@ -2813,7 +2771,9 @@ export async function handleBadEggRequest(request, env, options = {}, forward) {
     //    apply in monitor mode as well — monitor relaxes what the scanner does
     //    with request content, never who is allowed in at all.
     if (ip && !allowlisted) {
-      const activeBan = await getActiveTemporaryBan(ip, env);
+      let activeBan;
+      try { activeBan = await getActiveTemporaryBan(ip, env); }
+      catch { return gatewayErrorResponse(503, "BadEgg ban storage is unavailable. Please retry later.", { "retry-after": "60" }); }
       if (activeBan) {
         wafMetrics.blockedTempBansTotal++;
         d1Note("blocked", env, waitUntil);

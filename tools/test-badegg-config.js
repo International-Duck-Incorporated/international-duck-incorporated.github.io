@@ -43,6 +43,9 @@ function makeKv() {
     async put(key, value) {
       store.set(key, value);
     },
+    async list({prefix = ""} = {}) {
+      return {keys: [...store.keys()].filter(k => k.startsWith(prefix)).map(name => ({name})), list_complete:true};
+    },
     async delete(key) {
       store.delete(key);
     },
