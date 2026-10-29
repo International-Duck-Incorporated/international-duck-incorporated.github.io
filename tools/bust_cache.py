@@ -53,7 +53,7 @@ def main() -> None:
     for js_dir in ["js/main", "js/pages", "js/effects"]:
         for p in (root / js_dir).glob("*.js"):
             if p.is_file():
-                js[p.stem] = vhash(p)
+                js[p.relative_to(root).as_posix()] = vhash(p)
     assets = {
         p.relative_to(root / "assets").as_posix(): vhash(p)
         for p in (root / "assets").rglob("*")
@@ -69,7 +69,7 @@ def main() -> None:
     changed = 0
     pages = sorted(root.rglob("*.html"))
     pages += sorted((root / "css").glob("*.css"))
-    pages += sorted(p for p in root.glob("*.js") if p.is_file())
+    pages += sorted((root / "js").rglob("*.js"))
     for page in pages:
         if ".git" in page.parts:
             continue
@@ -86,8 +86,10 @@ def main() -> None:
                 src,
             )
             src = re.sub(
-                r'src="/(?P<name>[\w-]+)\.js(?:\?v=[\w-]+)?"',
-                lambda m: f'src="/{m.group("name")}.js?v={js[m.group("name")]}"',
+                r'src="/(?P<name>js/[\w/-]+)\.js(?:\?v=[\w-]+)?"',
+                lambda m: f'src="/{m.group("name")}.js?v={js[m.group("name") + ".js"]}"'
+                if m.group("name") + ".js" in js
+                else m.group(0),
                 src,
             )
         src = ASSET_REF.sub(fix_asset, src)
