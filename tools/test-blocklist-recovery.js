@@ -3,7 +3,7 @@ function fixture(){return {schema:2,block:{v4:{ips:['203.0.113.8',...Array.from(
 const request=ip=>new Request('https://local.test/',{headers:{'CF-Connecting-IP':ip}});
 test('failed verification retries three times and returns a safe 503',async()=>{
  const m=await import('../functions/_badegg.js?offline-test');let calls=0;const orig=globalThis.fetch;globalThis.fetch=async()=>{calls++;throw Error('offline')};try{
- const res=await m.handleBadEggRequest(request('203.0.113.7'),{}, {},()=>new Response('upstream'));assert.equal(res.status,503);assert.equal(calls,6);assert.match(await res.text(),/retry later/i);
+ const res=await m.handleBadEggRequest(request('203.0.113.7'),{}, {},()=>new Response('upstream'));assert.equal(res.status,503);assert.equal(calls,8);assert.match(await res.text(),/retry later/i);
  }finally{globalThis.fetch=orig}
 });
 test('external blocklist wins over allowlist for normal requests',async()=>{

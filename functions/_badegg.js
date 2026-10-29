@@ -1563,8 +1563,8 @@ async function fetchArtifact(url, expectBinary) {
 
 async function buildFromNetwork(env, waitUntil) {
   let lastError;
-  // Three attempts, each trying binary then JSON; each fetch has a timeout.
-  for (let attempt = 0; attempt < 3; attempt++) {
+  // One initial attempt and three retries, each trying binary then JSON.
+  for (let attempt = 0; attempt < 4; attempt++) {
     try {
       const buf = await fetchArtifact(BIN_URL, true);
       const index = binIndex(buf);
