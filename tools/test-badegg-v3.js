@@ -280,3 +280,19 @@ test("403.html and FALLBACK_TEMPLATE carry identical placeholders and structure"
   assert.ok(FALLBACK_TEMPLATE.includes("{{MAILTO}}"));
   assert.ok(FALLBACK_TEMPLATE.includes("{{IP_CHIP}}"));
 });
+
+test("event context writes validated IP, redacted path, host and real scanner rules", async () => {
+  const writes = [], pending = [];
+  const db = {prepare(sql) { return {bind(...values) { return {run: async () => {writes.push({sql, values}); return {success:true};}}; }}; }};
+  const found = scanText({direction:"input", text:"q=1 UNION SELECT password FROM users' OR '1'='1",clientIp:"203.0.113.77",route:"/context-test?password=secret",host:"example.test",method:"POST",env:{BADEGG_DB:db, BADEGG_SITE:"home"},waitUntil:p=>pending.push(p)});
+  await Promise.all(pending);
+  const record=writes.find(w=>w.sql.includes('INSERT INTO badegg_events'));
+  assert.ok(record);assert.equal(record.values[5],'203.0.113.77');assert.equal(record.values[6],'/context-test');assert.equal(record.values[7],'example.test');assert.equal(record.values[8],'POST');assert.ok(found.findings.some(f=>record.values[9].split(',').includes(f.ruleId)));assert.equal(record.values[10],'input');assert.ok(record.values[11]>0);
+});
+
+test("event writes remain compatible with an old D1 schema", async () => {
+  const writes=[],pending=[];
+  const db={prepare(sql){return {bind(...values){return {run:async()=>{writes.push({sql,values});if(sql.includes('client_ip'))throw new Error('D1_ERROR: table badegg_events has no column named client_ip: SQLITE_ERROR');return {success:true}}}}}}};
+  scanText({direction:'input',text:"q=1 UNION SELECT password FROM users' OR '1'='1",clientIp:'203.0.113.78',route:'/compat-test',env:{BADEGG_DB:db},waitUntil:p=>pending.push(p)});
+  await Promise.all(pending);assert.equal(writes.length,2);assert.equal(writes[1].values.length,5);
+});

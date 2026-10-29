@@ -898,7 +898,10 @@ export function safeRoute(route) {
 const D1_EVENTS_RETENTION_MS = 30 * 86400_000;
 const D1_EVENT_THROTTLE_MS = 60_000;
 const D1_METRICS_FLUSH_MS = 60_000;
-const d1EventThrottle = new Map(); // "decision|categories" -> last written (per isolate)
+const d1EventThrottle = new Map();
+let d1WriteWindow = 0;
+let d1WriteCount = 0;
+const D1_MAX_EVENT_WRITES_PER_MINUTE = 120; // cap per isolate; history is sampled
 const d1Local = { inspected: 0, blocked: 0, throttled: 0 }; // observed by THIS isolate
 const d1Persisted = { inspected: 0, blocked: 0, throttled: 0 }; // flushed by this isolate
 let d1LastFlush = Date.now();
@@ -960,28 +963,41 @@ function d1Note(kind, env, waitUntil) {
   d1FlushMetrics(env, waitUntil);
 }
 
-function d1PersistEvent(entry, env, waitUntil) {
+function d1PersistEvent(entry, env, waitUntil, context = {}) {
   const db = d1Db(env);
   if (!db) return;
   try {
     const decision = String(entry?.decision || entry?.status || "event").slice(0, 64);
     const categories = Array.isArray(entry?.categories) ? entry.categories.join(",") : "";
-    const key = `${decision}|${categories.slice(0, 120)}`;
+    // Preserve distinct sources, but limit global write amplification during floods.
+    const clientIp = normalizeIp(context.ip) ? String(context.ip).trim().toLowerCase().slice(0, 45) : "";
+    const path = safeRoute(entry?.route || "");
+    const host = /^[a-z0-9.-]{1,253}$/.test(String(context.host || "").toLowerCase()) ? String(context.host).toLowerCase() : "";
+    const method = /^[A-Z]{1,16}$/.test(String(context.method || "")) ? String(context.method) : "";
+    const ruleIds = Array.isArray(context.ruleIds) ? context.ruleIds.filter(x => /^[a-z0-9_]{1,80}$/.test(String(x))).slice(0, 29).join(",") : "";
+    const direction = ["input", "output"].includes(context.direction || entry?.direction) ? (context.direction || entry.direction) : "";
+    const confidence = ruleIds && context.direction !== "output" && entry?.maxConfidence != null && Number.isFinite(Number(entry.maxConfidence)) ? Math.max(0, Math.min(1, Number(entry.maxConfidence))) : null;
+    const key = `${decision}|${categories.slice(0, 120)}|${clientIp}|${path}`;
     const now = Date.now();
-    // One row per distinct decision+categories per minute per isolate: a flood
-    // of refused requests must not become a flood of writes.
+    // Per-decision/category/source/path sampling plus a per-isolate global cap.
+    // This is not a complete request log; distinct records can be dropped under flood.
     if (now - (d1EventThrottle.get(key) || 0) < D1_EVENT_THROTTLE_MS) return;
     if (d1EventThrottle.size > 500) d1EventThrottle.clear();
-    d1EventThrottle.set(key, now);
+    const window = Math.floor(now / 60_000);
+    if (window !== d1WriteWindow) { d1WriteWindow = window; d1WriteCount = 0; }
+    if (d1WriteCount >= D1_MAX_EVENT_WRITES_PER_MINUTE) return;
+    d1EventThrottle.set(key, now); d1WriteCount++;
     const ts = Date.parse(entry?.timestamp || "") || now;
-    d1Run(
-      env,
-      waitUntil,
-      db
-        .prepare("INSERT INTO badegg_events (site, ts, decision, status, categories) VALUES (?, ?, ?, ?, ?)")
-        .bind(d1Site(env), ts, decision, String(entry?.status || "").slice(0, 32), String(categories).slice(0, 200))
-        .run()
-    );
+    const basic = [d1Site(env), ts, decision, String(entry?.status || "").slice(0, 32), String(categories).slice(0, 200)];
+    // During a rolling deployment the old schema remains writable. Once the
+    // one-time migration is applied, new events gain optional context.
+    const write = Promise.resolve().then(() => db.prepare("INSERT INTO badegg_events (site, ts, decision, status, categories, client_ip, path, host, method, rule_ids, direction, confidence) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)")
+      .bind(...basic, clientIp || null, path || null, host || null, method || null, ruleIds || null, direction || null, confidence).run())
+      .catch((error) => {
+        if (!/no column named\s+(?:client_ip|path|host|method|rule_ids|direction|confidence)/i.test(String(error))) throw error;
+        return db.prepare("INSERT INTO badegg_events (site, ts, decision, status, categories) VALUES (?, ?, ?, ?, ?)").bind(...basic).run();
+      });
+    d1Run(env, waitUntil, write);
   } catch {
     // best-effort telemetry only
   }
@@ -1157,6 +1173,8 @@ export function scanText({
   text = "",
   clientIp = "",
   route = "",
+  host = "",
+  method = "",
   live = false,
   config = resolveConfig(),
   env = null,
@@ -1286,7 +1304,7 @@ export function scanText({
       route: routeSafe,
     };
     recordEvent(eventEntry);
-    d1PersistEvent(eventEntry, env, waitUntil);
+    d1PersistEvent(eventEntry, env, waitUntil, {ip:clientIp, host, method, ruleIds:findings.map(f=>f.ruleId)});
   }
 
   return {
@@ -1985,7 +2003,9 @@ export async function handleConfigApi(request, env = {}, options = {}) {
           route: safeRoute(`${BADEGG_CONFIG_PATH}${url.search}`),
         };
         recordEvent(eventEntry);
-        d1PersistEvent(eventEntry, env, options.waitUntil);
+        // Management calls can be proxied via a service binding. Do not mislabel
+        // the gateway peer as the human operator without a trusted identity.
+        d1PersistEvent(eventEntry, env, options.waitUntil, {host:url.hostname, method});
       })
     );
   }
@@ -2542,7 +2562,7 @@ export function throttledResponse(retryAfterSeconds = 1, request = null) {
  * bodies when `BADEGG_SCAN_OUTPUT_BODIES=1`), leaving binary and immutable
  * static streams untouched.
  */
-export async function inspectOutgoingResponse(response, route, config, env = null, waitUntil = null) {
+export async function inspectOutgoingResponse(response, route, config, env = null, waitUntil = null, context = {}) {
   if (!response || !config.scanOutputs || config.enforcementMode !== "enforce") {
     return response;
   }
@@ -2577,7 +2597,8 @@ export async function inspectOutgoingResponse(response, route, config, env = nul
             route
           ),
           env,
-          waitUntil
+          waitUntil,
+          {...context, direction:"output", ruleIds:headerScan.findings.map(f=>f.ruleId)}
         );
         return gatewayErrorResponse(
           502,
@@ -2643,7 +2664,8 @@ export async function inspectOutgoingResponse(response, route, config, env = nul
                 route
               ),
               env,
-              waitUntil
+              waitUntil,
+              {...context, direction:"output", ruleIds:bodyScan.findings.map(f=>f.ruleId)}
             );
             return gatewayErrorResponse(
               502,
@@ -2780,7 +2802,7 @@ export async function handleBadEggRequest(request, env, options = {}, forward) {
     if (ip && config.banAlways.length && matchIpList(ip, config.banAlways)) {
       wafMetrics.blockedAlwaysTotal++;
       d1Note("blocked", env, waitUntil);
-      d1PersistEvent(d1Event("ban_always", ["ban_always"], "blocked", route), env, waitUntil);
+      d1PersistEvent(d1Event("ban_always", ["ban_always"], "blocked", route), env, waitUntil, {ip, host:url.hostname, method});
       return blockedResponse(ip, env, { reason: "ban_always" });
     }
 
@@ -2803,7 +2825,8 @@ export async function handleBadEggRequest(request, env, options = {}, forward) {
             route
           ),
           env,
-          waitUntil
+          waitUntil,
+          {ip, host:url.hostname, method}
         );
         const retrySeconds =
           activeBan.expiresAtMs === null
@@ -2818,7 +2841,7 @@ export async function handleBadEggRequest(request, env, options = {}, forward) {
       const index = await ensureIndex(env, { waitUntil });
       if (index && match(index, ip).blocked) {
         d1Note("blocked", env, waitUntil);
-        d1PersistEvent(d1Event("blocklist", ["blocklist"], "blocked", route), env, waitUntil);
+        d1PersistEvent(d1Event("blocklist", ["blocklist"], "blocked", route), env, waitUntil, {ip, host:url.hostname, method});
         return blockedResponse(ip, env);
       }
     }
@@ -2861,7 +2884,7 @@ export async function handleBadEggRequest(request, env, options = {}, forward) {
             route: safeRoute(route),
           };
           recordEvent(eventEntry);
-          d1PersistEvent(eventEntry, env, waitUntil);
+          d1PersistEvent(eventEntry, env, waitUntil, {ip, host:url.hostname, method});
         }
         if (config.enforcementMode === "enforce") {
           if (escalating && rateDecision.escalate) {
@@ -2941,6 +2964,8 @@ export async function handleBadEggRequest(request, env, options = {}, forward) {
         text: inspectedText,
         clientIp: ip,
         route,
+        host: url.hostname,
+        method,
         live: config.enforcementMode === "enforce",
         config,
         env,
@@ -2967,7 +2992,7 @@ export async function handleBadEggRequest(request, env, options = {}, forward) {
 
     // 9. Forward clean request & inspect outgoing headers
     const upstreamResponse = await forward();
-    return await inspectOutgoingResponse(upstreamResponse, route, config, env, waitUntil);
+    return await inspectOutgoingResponse(upstreamResponse, route, config, env, waitUntil, {ip, host:url.hostname, method});
   } finally {
     if (wafMetrics.activeRequests > 0) wafMetrics.activeRequests--;
   }
