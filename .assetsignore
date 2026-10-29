@@ -9,3 +9,16 @@ node_modules/
 .config/
 *.patch
 patch_final_verified.txt
+
+# Assets are served publicly. Never upload local credentials or backup dumps.
+.env*
+.dev.vars*
+.npmrc
+.netrc
+*.pem
+*.key
+*.p12
+*.pfx
+*.sql
+*.sql.gz
+*.bak
