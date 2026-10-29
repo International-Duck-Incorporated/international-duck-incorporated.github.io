@@ -1,9 +1,74 @@
 /* Shared layout hardening and homepage background treatment.
- *
  * IMPORTANT: link this file last, after the ordered stylesheet modules in
  * /css/. These declarations intentionally override page styles; moving this
  * file earlier can reintroduce overlapping hero cards on profile pages.
  */
+
+/* ---- Announcement banner (GitHub return, shows until 2026-11-05) ---- */
+.announcement-banner {
+  position: relative;
+  z-index: 100;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  background: linear-gradient(145deg, rgba(63, 116, 192, 0.18), rgba(63, 116, 192, 0.06));
+}
+.announcement-banner[hidden] {
+  display: none;
+}
+.announcement-inner {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.75rem 0;
+}
+.announcement-icon {
+  flex: 0 0 auto;
+  width: 1.25rem;
+  height: 1.25rem;
+  color: #5a9bf2;
+}
+.announcement-text {
+  flex: 1;
+  color: #dcecff;
+  font-size: 0.8rem;
+  line-height: 1.4;
+}
+.announcement-text a {
+  color: #8ab8f6;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+.announcement-text a:hover {
+  color: #b3d1ff;
+}
+.announcement-dismiss {
+  flex: 0 0 auto;
+  width: 2rem;
+  height: 2rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.25rem;
+  line-height: 1;
+  color: #9fb3c8;
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 999px;
+  cursor: pointer;
+  transition: color 0.2s ease, border-color 0.2s ease, background 0.2s ease;
+}
+.announcement-dismiss:hover {
+  color: #fff;
+  border-color: rgba(255, 255, 255, 0.3);
+  background: rgba(255, 255, 255, 0.06);
+}
+@media (max-width: 480px) {
+  .announcement-text {
+    font-size: 0.72rem;
+  }
+  .announcement-inner {
+    padding: 0.6rem 0;
+  }
+}
 
 /* Prevent grid children from forcing their tracks wider than the viewport. */
 .profile-hero > *,

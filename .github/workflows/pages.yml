@@ -1,10 +1,10 @@
 # The canonical site is served by Cloudflare Pages (https://idi-official.pages.dev).
-# GitHub Pages only serves a catch-all 301 so old github.io links keep working.
+# GitHub Pages now serves a full mirror of the static site (since GitHub is unbanned).
 #
-# This workflow deploys a _redirects file to GitHub Pages with a wildcard rule
-# that redirects all paths to the corresponding path on idi-official.pages.dev.
+# This workflow copies the static site to public/ and deploys it to GitHub Pages.
+# Excludes Cloudflare-specific files (_headers, _redirects, functions/, wrangler.jsonc).
 
-name: Deploy GitHub Pages redirect
+name: Deploy GitHub Pages mirror
 
 on:
   push:
@@ -20,10 +20,27 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
-      - name: Create redirect file
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Prepare public folder
         run: |
           mkdir -p public
-          printf '/* https://idi-official.pages.dev/:splat 301\n' > public/_redirects
+          # Copy all static site files
+          cp -r *.html public/ 2>/dev/null || true
+          cp -r css public/ 2>/dev/null || true
+          cp -r assets public/ 2>/dev/null || true
+          cp -r js public/ 2>/dev/null || true
+          cp -r data public/ 2>/dev/null || true
+          cp -r members public/ 2>/dev/null || true
+          cp -r projects public/ 2>/dev/null || true
+          cp -r baritone public/ 2>/dev/null || true
+          cp _redirects public/ 2>/dev/null || true
+          cp 403.html public/ 2>/dev/null || true
+          cp 404.html public/ 2>/dev/null || true
+          cp robots.txt public/ 2>/dev/null || true
+          cp sitemap.xml public/ 2>/dev/null || true
+          cp .nojekyll public/ 2>/dev/null || true
 
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v3
