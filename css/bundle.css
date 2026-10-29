@@ -6334,6 +6334,8 @@ body[data-page="glyphsmith"] ::-webkit-scrollbar-track {
   z-index: 90;
   /* Clear the fixed topbar (78px) and add breathing room above the card. */
   padding: 94px 0 0;
+  /* The container spans the header area; never let it swallow nav clicks. */
+  pointer-events: none;
 }
 .announcement-banner[hidden] {
   display: none;
@@ -6345,6 +6347,7 @@ body[data-page="glyphsmith"] ::-webkit-scrollbar-track {
   max-width: 980px;
   margin: 0 auto;
   padding: 1.1rem 1.3rem;
+  pointer-events: auto;
   border: 1px solid rgba(138, 184, 246, 0.35);
   border-radius: 16px;
   background:
