@@ -29,6 +29,8 @@ import {
   resetConfigApiState,
 } from "../functions/_badegg.js";
 
+const blocklistFixture = {schema:2, block:{v4:{ips:Array.from({length:1000},(_,i)=>`10.${Math.floor(i/256)}.${i%256}.1`), nets:Array.from({length:100},(_,i)=>`198.18.${i}.0/24`)},v6:{ips:[],nets:["2001:db8:aaaa::/48"]}}, counts:{v4Ips:1000,v4Nets:100,v6Ips:0,v6Nets:1}};
+globalThis.fetch = async url => String(url).includes(".bin") ? new Response("no binary",{status:503}) : new Response(JSON.stringify(blocklistFixture),{headers:{"content-type":"application/json"}});
 const TOKEN = "test-token-at-least-16-chars";
 
 function makeKv() {

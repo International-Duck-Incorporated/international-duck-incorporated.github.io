@@ -83,8 +83,8 @@ const KV_TEMPBAN_PREFIX = "badegg:v3:ban:";
 const TTL_MS = 10 * 60 * 1000;
 const RETRY_MS = 60 * 1000;
 const KV_CACHE_TTL_S = 300;
-const COLD_WAIT_MS = 9000;
-const FETCH_TIMEOUT_MS = 8000;
+const FETCH_TIMEOUT_MS = 2000;
+const BLOCKLIST_MAX_AGE_MS = 24 * 60 * 60 * 1000;
 const CONTACT_EMAIL = "0xffshell@duck.com";
 const BIN_MAGIC = 0x49444932; // "IDI2"
 const BIN_VERSION = 2;
@@ -1562,18 +1562,27 @@ async function fetchArtifact(url, expectBinary) {
 }
 
 async function buildFromNetwork(env, waitUntil) {
-  try {
-    const buf = await fetchArtifact(BIN_URL, true);
-    const index = binIndex(buf);
-    if (env?.IDI_BADEGG && waitUntil) {
-      waitUntil(env.IDI_BADEGG.put(KV_KEY, buf, { expirationTtl: 86400 }).catch(() => {}));
+  let lastError;
+  // Three attempts, each trying binary then JSON; each fetch has a timeout.
+  for (let attempt = 0; attempt < 3; attempt++) {
+    try {
+      const buf = await fetchArtifact(BIN_URL, true);
+      const index = binIndex(buf);
+      if (env?.IDI_BADEGG && waitUntil) {
+        waitUntil(env.IDI_BADEGG.put(KV_KEY, buf, { expirationTtl: 86400 }).catch(() => {}));
+      }
+      return { index, source: "network:bin" };
+    } catch (err) {
+      lastError = err;
     }
-    return { index, source: "network:bin" };
-  } catch (binErr) {
-    state.lastError = `bin: ${binErr.message}`;
+    try {
+      const doc = await fetchArtifact(JSON_URL, false);
+      return { index: jsonIndex(doc), source: "network:json" };
+    } catch (err) {
+      lastError = err;
+    }
   }
-  const doc = await fetchArtifact(JSON_URL, false);
-  return { index: jsonIndex(doc), source: "network:json" };
+  throw lastError || new Error("blocklist unavailable");
 }
 
 export async function ensureIndex(env, options = {}) {
@@ -1581,6 +1590,10 @@ export async function ensureIndex(env, options = {}) {
   const now = Date.now();
 
   if (state.index) {
+    if (now >= state.loadedAt + BLOCKLIST_MAX_AGE_MS) {
+      if (now >= state.nextAttemptAt) await refreshIndex(env, waitUntil);
+      return Date.now() < state.loadedAt + BLOCKLIST_MAX_AGE_MS ? state.index : null;
+    }
     if (now >= state.loadedAt + TTL_MS && now >= state.nextAttemptAt) {
       const refresh = refreshIndex(env, waitUntil);
       if (waitUntil) waitUntil(refresh);
@@ -1603,23 +1616,8 @@ export async function ensureIndex(env, options = {}) {
         state.lastError = `kv parse: ${err.message}`;
       }
     }
+    // Do not forward a cold request while verification is still in progress.
     const work = buildFromNetwork(env, waitUntil);
-    if (waitUntil) {
-      waitUntil(work.catch(() => {}));
-      const raced = await Promise.race([
-        work,
-        new Promise((resolve) => setTimeout(() => resolve(null), COLD_WAIT_MS)),
-      ]);
-      if (!raced) return null;
-      state = {
-        index: raced.index,
-        loadedAt: Date.now(),
-        source: raced.source,
-        nextAttemptAt: 0,
-        lastError: null,
-      };
-      return raced.index;
-    }
     const { index, source } = await work;
     state = { index, loadedAt: Date.now(), source, nextAttemptAt: 0, lastError: null };
     return index;
@@ -2299,11 +2297,11 @@ export function wantsStatus(request) {
 
 export async function isBlockedIp(ip, env, options = {}) {
   const cfg = resolveConfig(env);
-  if (isAllowlistedIp(ip, cfg)) return false;
+  if (cfg.banAlways.length && matchIpList(ip, cfg.banAlways)) return true;
   const tempBan = await getActiveTemporaryBan(ip, env);
   if (tempBan) return true;
   const index = await ensureIndex(env, options);
-  if (!index) return false;
+  if (!index) throw new Error("blocklist_unavailable");
   return match(index, ip).blocked;
 }
 
@@ -2689,7 +2687,8 @@ export async function handleBadEggRequest(request, env, options = {}, forward) {
       ((presented && constantTimeEquals(presented, secret)) ||
         Boolean(await readSessionCookie(request, secret)));
     if (!authorized) return rejectedOperatorAuth(request);
-    await ensureIndex(env, { waitUntil });
+    const index = await ensureIndex(env, { waitUntil });
+    if (!index) return jsonResponse({ ok: false, error: "blocklist_unavailable", message: "Blocklist verification failed; retry later." }, 503, { "retry-after": "60" });
     try { await hydrateBansFromKv(env); }
     catch { return jsonResponse({ ok: false, error: "ban_store_unavailable", message: "Ban storage is unavailable; retry later." }, 503); }
     return statusResponse(env, configRecord);
@@ -2770,7 +2769,7 @@ export async function handleBadEggRequest(request, env, options = {}, forward) {
     //    These are identity refusals, not content findings: like ban_always they
     //    apply in monitor mode as well — monitor relaxes what the scanner does
     //    with request content, never who is allowed in at all.
-    if (ip && !allowlisted) {
+    if (ip) {
       let activeBan;
       try { activeBan = await getActiveTemporaryBan(ip, env); }
       catch { return gatewayErrorResponse(503, "BadEgg ban storage is unavailable. Please retry later.", { "retry-after": "60" }); }
@@ -2799,7 +2798,10 @@ export async function handleBadEggRequest(request, env, options = {}, forward) {
       }
 
       const index = await ensureIndex(env, { waitUntil });
-      if (index && match(index, ip).blocked) {
+      if (!index) {
+        return gatewayErrorResponse(503, "BadEgg could not verify the blocklist. Please retry later.", { "retry-after": "60" });
+      }
+      if (match(index, ip).blocked) {
         d1Note("blocked", env, waitUntil);
         d1PersistEvent(d1Event("blocklist", ["blocklist"], "blocked", route), env, waitUntil, {ip, host:url.hostname, method});
         return blockedResponse(ip, env);

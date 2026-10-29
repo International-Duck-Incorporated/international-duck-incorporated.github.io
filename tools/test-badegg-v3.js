@@ -161,7 +161,14 @@ test("Full edge middleware pipeline: WAF temp ban, 429 rate limit, and header se
   });
 
   const origFetch = globalThis.fetch;
-  globalThis.fetch = async () => new Response("offline", { status: 503 });
+  const fixture = {
+    schema: 2,
+    block: {v4: {ips: Array.from({length:1000}, (_,i) => `10.${Math.floor(i / 256)}.${i % 256}.1`), nets: Array.from({length:100}, (_,i) => `198.18.${i}.0/24`)}, v6: {ips: [], nets: ["2001:db8::/32"]}},
+    counts: {v4Ips:1000, v4Nets:100, v6Ips:0, v6Nets:1}
+  };
+  globalThis.fetch = async url => String(url).includes(".bin")
+    ? new Response("no binary", {status:503})
+    : new Response(JSON.stringify(fixture), {headers:{"content-type":"application/json"}});
   try {
     // 1. High-confidence attack earns an immediate 403 + temporary exact-IP ban
     const attackReq = new Request("https://idi-official.pages.dev/?q=%27%20OR%20%271%27%3D%271", {
