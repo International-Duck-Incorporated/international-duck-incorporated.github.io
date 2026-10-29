@@ -197,7 +197,7 @@ def main() -> int:
             f"ChampionsCode and Bagley - {total_versions} version sections from each CHANGELOG.md."
         ),
         body=body,
-        scripts=["/script.js"],
+        scripts=["/js/main/script.js"],
         jsonld=f'  <script type="application/ld+json">\n{jsonld}\n  </script>',
         active_nav=None,
         body_attrs='data-page="changelog"',

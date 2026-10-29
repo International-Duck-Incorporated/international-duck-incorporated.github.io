@@ -49,7 +49,11 @@ def main() -> None:
     root = Path(__file__).resolve().parent.parent
 
     css = {p.stem: vhash(p) for p in (root / "css").glob("*.css")}
-    js = {p.stem: vhash(p) for p in root.glob("*.js") if p.is_file()}
+    js = {}
+    for js_dir in ["js/main", "js/pages", "js/effects"]:
+        for p in (root / js_dir).glob("*.js"):
+            if p.is_file():
+                js[p.stem] = vhash(p)
     assets = {
         p.relative_to(root / "assets").as_posix(): vhash(p)
         for p in (root / "assets").rglob("*")

@@ -201,7 +201,7 @@ def main() -> int:
             "what each one does, grouped by category, with source links."
         ),
         body=body,
-        scripts=["/script.js"],
+        scripts=["/js/main/script.js"],
         jsonld=f'  <script type="application/ld+json">\n{jsonld}\n  </script>',
         active_nav="/projects",
         body_attrs='data-page="directory"',
