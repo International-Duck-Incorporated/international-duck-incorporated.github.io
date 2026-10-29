@@ -19,12 +19,10 @@ there were three structural reasons in the original audit snapshot; the current 
 3. **The homepage is empty to a crawler.** `index.html` contains **567 characters** of visible text.
    Every project name, member name, stat and description was injected by JavaScript from the GitLab/GitHub
    APIs. The current site keeps checked-in content as a fallback and uses GitLab only for live activity;
-   the former GitHub organization is hidden/private and its API is intentionally disabled.
+   the former GitHub organization was hidden/private at the time of this audit, and its API was intentionally disabled.
 
 The original audit found historical GitHub mirror pages competing for project-name searches. Those
-pages are no longer treated as active sources: the GitHub organization is hidden/private, while GitLab
-is the current source of truth. Migration history remains documented on `/migration` without linking
-users toward unavailable organization pages.
+pages were treated as historical sources during this audit: the GitHub organization was hidden/private then, while GitLab was the active source of truth. Migration history remains documented on `/migration`; GitHub restrictions were removed in October 2026 and the organization link has since been restored.
 
 ---
 
@@ -123,7 +121,7 @@ Today it cannot.
 - Target roughly **300–600 words of unique text per project page**. The repository README is not a
   substitute for useful on-site copy; the website needs something the source repository does not have.
 - Watch out for a self-inflicted trap: your `/activity` page fetches the newest 100 commits per repo
-  from the former GitHub organization. That organization is now hidden/private, so the site intentionally
+  from the former GitHub organization. At the time of this audit, that organization was hidden/private, so the site intentionally
   does not depend on GitHub activity data. Anything you want indexed must be present in checked-in HTML
   or come from the active GitLab source.
 
@@ -264,11 +262,8 @@ Static no-JS word count in `<main>`: homepage 49 -> 413, `/members/` 49 -> 155, 
   retained only as an explicit 301 compatibility redirect. Navigation, breadcrumbs, canonicals,
   Open Graph URLs, JSON-LD, generators, documentation, and the sitemap all use `/members`.
 - Every sitemap URL now declares `<changefreq>weekly</changefreq>`.
-- Activity and member commit feeds query GitLab only. The activity page visibly warns that the
-  GitHub organization is hidden/private and that GitLab is the active source of truth.
-- Organization-level GitHub links, API hints, and JSON-LD `sameAs` entries were removed. The
-  migration page retains historical GitHub references only to explain the move and unavailable
-  status; the third-party Starry Night license attribution remains required.
+- Activity and member commit feeds query GitLab only. As of the October 2026 restoration, the activity page notes that GitHub access is restored while clarifying that its feed still tracks GitLab only.
+- During the restriction period, organization-level GitHub links and JSON-LD `sameAs` entries were removed. On October 29, 2026, the organization link and `sameAs` reference were restored; the migration page retains the dated record of the move and appeal history. The third-party Starry Night license attribution remains required.
 
 ### Handy commands
 

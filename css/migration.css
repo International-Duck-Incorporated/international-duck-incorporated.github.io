@@ -313,3 +313,12 @@
 .appeal-restricted {
   border-top: 2px solid rgba(221, 96, 96, 0.55);
 }
+
+.appeal-resolved .appeal-chip {
+  color: #9fdca8;
+  background: rgba(104, 201, 122, 0.1);
+  border: 1px solid rgba(104, 201, 122, 0.28);
+}
+.appeal-resolved {
+  border-top: 2px solid rgba(104, 201, 122, 0.5);
+}

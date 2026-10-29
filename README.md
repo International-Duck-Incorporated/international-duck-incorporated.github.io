@@ -2,7 +2,7 @@
 
 Static GitLab Pages site for [International Duck Incorporated](https://gitlab.com/international-duck-incorporated)
 
-**Platform policy:** GitLab is IDI's active platform and source of truth for development, releases, issues, and live activity. The former GitHub organization is currently hidden/private from public view, so this site does not call its APIs or link to its mirror. GitHub references are retained only where they explain the migration history or unavailable-data status.
+**Platform policy:** GitLab remains an active home for IDI development, releases, issues, and live activity. GitHub Support removed restrictions on the @3spress0 account on October 29, 2026, and the team reports that the IDI organization was restored as well. The site can link to both public homes; historical migration notes retain the context and status as of their dates.
 
 Change notes live in `LIGHTHOUSE-FIXES.md` (round 1: performance and
 accessibility) and `SEO-FIXES.md` (round 2: crawlability, page heads, the module

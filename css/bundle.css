@@ -3185,6 +3185,15 @@ body[data-page="dashboard"] footer {
   border-top: 2px solid rgba(221, 96, 96, 0.55);
 }
 
+.appeal-resolved .appeal-chip {
+  color: #9fdca8;
+  background: rgba(104, 201, 122, 0.1);
+  border: 1px solid rgba(104, 201, 122, 0.28);
+}
+.appeal-resolved {
+  border-top: 2px solid rgba(104, 201, 122, 0.5);
+}
+
 /* ===== css/profile-themes.css ===== */
 /* Starry-night and Matrix member profile themes.
    Modules load in this order; see the root README for the stylesheet map. */
