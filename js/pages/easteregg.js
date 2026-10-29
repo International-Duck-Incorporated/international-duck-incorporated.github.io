@@ -215,7 +215,7 @@
       kind: "video",
       wordmark: true,
       focus: "50% 50%",
-      holdAt: 4.5,
+      holdAt: 5.2, // full red/grey IDI lockup; 4.5s is only the red I
       label: "clip, plays out in full",
       src: `${ASSET_REPO}/-/raw/${ASSET_REF}${ASSET_DIR}video15.webm`,
     },
