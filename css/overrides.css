@@ -16,6 +16,9 @@
 .announcement-banner[hidden] {
   display: none;
 }
+html.banner-hidden .announcement-banner {
+  display: none;
+}
 .announcement-inner {
   display: flex;
   align-items: flex-start;

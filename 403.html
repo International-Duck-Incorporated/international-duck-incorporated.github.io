@@ -185,6 +185,21 @@
         stroke-linejoin: round;
       }
     </style>
+    <script>
+      // Hide the GitHub banner before first paint when it is dismissed or
+      // expired, so revealing/hiding it never shifts the page layout.
+      (() => {
+        try {
+          const end = new Date("2026-11-05T00:00:00Z").getTime();
+          if (
+            Date.now() >= end ||
+            localStorage.getItem("idi-github-banner-dismissed-v2") === "1"
+          ) {
+            document.documentElement.classList.add("banner-hidden");
+          }
+        } catch {}
+      })();
+    </script>
   </head>
   <body>
     <main class="card">

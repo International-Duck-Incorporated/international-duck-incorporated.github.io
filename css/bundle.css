@@ -55,7 +55,7 @@
   src: url("/assets/fonts/Oxanium-VariableFont_wght.ttf?v=47c0af85") format("truetype");
   font-weight: 200 800;
   font-style: normal;
-  font-display: swap;
+  font-display: optional;
 }
 body[data-page="project"] .profile-hero h1 {
   font-family: "Oxanium", var(--sans);
@@ -6338,6 +6338,9 @@ body[data-page="glyphsmith"] ::-webkit-scrollbar-track {
   pointer-events: none;
 }
 .announcement-banner[hidden] {
+  display: none;
+}
+html.banner-hidden .announcement-banner {
   display: none;
 }
 .announcement-inner {
