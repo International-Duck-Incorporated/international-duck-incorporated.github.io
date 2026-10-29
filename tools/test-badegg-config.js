@@ -518,7 +518,7 @@ test("forever bans never expire and can be lifted from the console", async () =>
     await call(env, "/?badegg-status=1", { headers: { authorization: `Bearer ${TOKEN}` } })
   ).json();
   assert.equal(status.waf.banForever, true);
-  assert.equal(status.waf.activeTempBans, 1);
+  assert.equal(status.waf.activeTempBans, null, "status does not imply a fleet-wide ban count");
 
   const list = await (
     await call(env, "/api/badegg/bans", { headers: { authorization: `Bearer ${TOKEN}` } })

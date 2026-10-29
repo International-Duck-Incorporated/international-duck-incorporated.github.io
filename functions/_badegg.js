@@ -2689,8 +2689,8 @@ export async function handleBadEggRequest(request, env, options = {}, forward) {
     if (!authorized) return rejectedOperatorAuth(request);
     const index = await ensureIndex(env, { waitUntil });
     if (!index) return jsonResponse({ ok: false, error: "blocklist_unavailable", message: "Blocklist verification failed; retry later." }, 503, { "retry-after": "60" });
-    try { await hydrateBansFromKv(env); }
-    catch { return jsonResponse({ ok: false, error: "ban_store_unavailable", message: "Ban storage is unavailable; retry later." }, 503); }
+    // Status polling must not enumerate KV bans: list operations have a strict
+    // account-wide daily quota. The separate bans endpoint is explicit/on demand.
     return statusResponse(env, configRecord);
   }
 
@@ -3106,6 +3106,10 @@ async function mergePersistentStatus(body, env) {
 
 export async function statusResponse(env = {}, record = null) {
   const body = badeggStatus(env, { record });
+  // Isolate memory is not a fleet-wide count; an operator may fetch the list
+  // explicitly instead of repeatedly enumerating KV on each status refresh.
+  body.waf.activeTempBans = null;
+  body.waf.banCountScope = "not_loaded";
   await mergePersistentStatus(body, env);
   return new Response(JSON.stringify(body, null, 2), {
     status: 200,
