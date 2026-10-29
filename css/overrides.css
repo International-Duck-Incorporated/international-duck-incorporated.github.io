@@ -7,8 +7,9 @@
 /* ---- Announcement banner (GitHub return, shows until 2026-11-05) ---- */
 .announcement-banner {
   position: relative;
-  z-index: 100;
-  padding: 1rem 0 0;
+  z-index: 90;
+  /* Clear the fixed topbar (78px) and add breathing room above the card. */
+  padding: 94px 0 0;
 }
 .announcement-banner[hidden] {
   display: none;
@@ -81,7 +82,8 @@
 }
 @media (max-width: 640px) {
   .announcement-banner {
-    padding: 0.75rem 10px 0;
+    /* Mobile topbar is 68px tall. */
+    padding: 84px 10px 0;
   }
   .announcement-inner {
     padding: 0.9rem 1rem;
