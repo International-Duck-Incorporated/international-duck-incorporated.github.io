@@ -963,6 +963,51 @@ function d1Note(kind, env, waitUntil) {
   d1FlushMetrics(env, waitUntil);
 }
 
+// Bounded metadata; separate input evidence may include inspected headers and body.
+function requestTelemetry(request) {
+  const cf = request.cf || {};
+  const bounded = (v, n) => typeof v === "string" && v ? v.replace(/[\x00-\x1f\x7f]/g, " ").slice(0, n) : null;
+  return {
+    userAgent: bounded(request.headers.get("user-agent"), 512),
+    httpVersion: bounded(cf.httpProtocol, 24), tlsVersion: bounded(cf.tlsVersion, 24),
+    country: bounded(cf.country, 8), colo: bounded(cf.colo, 12),
+    asn: Number.isSafeInteger(cf.asn) && cf.asn >= 0 ? cf.asn : null,
+    contentType: bounded(request.headers.get("content-type"), 128),
+    rayId: bounded(request.headers.get("cf-ray"), 80),
+  };
+}
+
+// The scanner receives decoded/flattened text, not necessarily raw bytes. Keep
+// an upper bound and state truncation; never collect authorization/cookie or
+// other credential-named headers. Output-secret material is never retained.
+function inputEvidence(parts, findings, scanLimit) {
+  let remaining = Math.min(scanLimit, 8192), truncated = false, first = true;
+  const segments = [];
+  for (const part of parts) {
+    if (!part.text) continue;
+    if (!first) remaining--; // newlines in the actual concatenated scan text
+    first = false;
+    if (remaining <= 0) { truncated = true; break; }
+    const scanned = part.text.slice(0, remaining);
+    const text = part.secret ? `[${part.source} excluded]` : scanned;
+    if (text) segments.push({source:part.source, text, excluded:!!part.secret});
+    remaining -= scanned.length;
+    if (scanned.length < part.text.length) { truncated = true; break; }
+  }
+  const matches = [];
+  for (const finding of findings) {
+    if (!ATTACK_CATEGORIES.has(finding.category)) continue;
+    const rule = RULES.find(r => r.key === finding.ruleId);
+    if (!rule) continue;
+    for (const part of segments) {
+      if (part.excluded) continue;
+      const result = new RegExp(rule.pattern.source, rule.pattern.flags.replace(/[gy]/g, "")).exec(part.text);
+      if (result) { matches.push({ruleId:finding.ruleId, source:part.source, match:result[0].slice(0, 512)}); break; }
+    }
+  }
+  return {segments, matches, truncated};
+}
+
 function d1PersistEvent(entry, env, waitUntil, context = {}) {
   const db = d1Db(env);
   if (!db) return;
@@ -991,9 +1036,16 @@ function d1PersistEvent(entry, env, waitUntil, context = {}) {
     const basic = [d1Site(env), ts, decision, String(entry?.status || "").slice(0, 32), String(categories).slice(0, 200)];
     // During a rolling deployment the old schema remains writable. Once the
     // one-time migration is applied, new events gain optional context.
-    const write = Promise.resolve().then(() => db.prepare("INSERT INTO badegg_events (site, ts, decision, status, categories, client_ip, path, host, method, rule_ids, direction, confidence) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)")
-      .bind(...basic, clientIp || null, path || null, host || null, method || null, ruleIds || null, direction || null, confidence).run())
-      .catch((error) => {
+    const contextValues = [clientIp || null, path || null, host || null, method || null, ruleIds || null, direction || null, confidence];
+    const details = context.requestInfo || context.evidence ? JSON.stringify({request:context.requestInfo || null, evidence:context.evidence || null}) : null;
+    const fullInsert = "INSERT INTO badegg_events (site, ts, decision, status, categories, client_ip, path, host, method, rule_ids, direction, confidence, details_json) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+    const contextInsert = "INSERT INTO badegg_events (site, ts, decision, status, categories, client_ip, path, host, method, rule_ids, direction, confidence) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+    const write = Promise.resolve().then(() => db.prepare(fullInsert).bind(...basic, ...contextValues, details).run())
+      .catch(error => {
+        if (/no column named\s+details_json/i.test(String(error))) return db.prepare(contextInsert).bind(...basic, ...contextValues).run();
+        throw error;
+      })
+      .catch(error => {
         if (!/no column named\s+(?:client_ip|path|host|method|rule_ids|direction|confidence)/i.test(String(error))) throw error;
         return db.prepare("INSERT INTO badegg_events (site, ts, decision, status, categories) VALUES (?, ?, ?, ?, ?)").bind(...basic).run();
       });
@@ -1181,6 +1233,8 @@ export function scanText({
   config = resolveConfig(),
   env = null,
   waitUntil = null,
+  requestInfo = null,
+  evidenceParts = null,
 } = {}) {
   if (direction !== "input" && direction !== "output") {
     throw new Error("direction must be 'input' or 'output'.");
@@ -1306,7 +1360,9 @@ export function scanText({
       route: routeSafe,
     };
     recordEvent(eventEntry);
-    d1PersistEvent(eventEntry, env, waitUntil, {ip:clientIp, host, method, ruleIds:findings.map(f=>f.ruleId)});
+    let evidence = null;
+    try { if (direction === "input" && evidenceParts && d1Db(env)) evidence = inputEvidence(evidenceParts, findings, config.maxScanChars); } catch { /* evidence must not affect request handling */ }
+    d1PersistEvent(eventEntry, env, waitUntil, {ip:clientIp, host, method, ruleIds:findings.map(f=>f.ruleId), requestInfo, evidence});
   }
 
   return {
@@ -2674,6 +2730,7 @@ export async function handleBadEggRequest(request, env, options = {}, forward) {
   const config = resolveConfig(env, configRecord.values);
   const url = new URL(request.url);
   const route = url.pathname.slice(0, 256);
+  const requestInfo = requestTelemetry(request);
 
   // 1. Diagnostics endpoint (?badegg-status=1). Gated like the console: it
   //    reports the effective policy, so an open endpoint would hand the same
@@ -2760,7 +2817,7 @@ export async function handleBadEggRequest(request, env, options = {}, forward) {
     if (ip && config.banAlways.length && matchIpList(ip, config.banAlways)) {
       wafMetrics.blockedAlwaysTotal++;
       d1Note("blocked", env, waitUntil);
-      d1PersistEvent(d1Event("ban_always", ["ban_always"], "blocked", route), env, waitUntil, {ip, host:url.hostname, method});
+      d1PersistEvent(d1Event("ban_always", ["ban_always"], "blocked", route), env, waitUntil, {ip, host:url.hostname, method, requestInfo});
       return blockedResponse(ip, env, { reason: "ban_always" });
     }
 
@@ -2786,7 +2843,7 @@ export async function handleBadEggRequest(request, env, options = {}, forward) {
           ),
           env,
           waitUntil,
-          {ip, host:url.hostname, method}
+          {ip, host:url.hostname, method, requestInfo}
         );
         const retrySeconds =
           activeBan.expiresAtMs === null
@@ -2804,7 +2861,7 @@ export async function handleBadEggRequest(request, env, options = {}, forward) {
       }
       if (match(index, ip).blocked) {
         d1Note("blocked", env, waitUntil);
-        d1PersistEvent(d1Event("blocklist", ["blocklist"], "blocked", route), env, waitUntil, {ip, host:url.hostname, method});
+        d1PersistEvent(d1Event("blocklist", ["blocklist"], "blocked", route), env, waitUntil, {ip, host:url.hostname, method, requestInfo});
         return blockedResponse(ip, env);
       }
     }
@@ -2847,7 +2904,7 @@ export async function handleBadEggRequest(request, env, options = {}, forward) {
             route: safeRoute(route),
           };
           recordEvent(eventEntry);
-          d1PersistEvent(eventEntry, env, waitUntil, {ip, host:url.hostname, method});
+          d1PersistEvent(eventEntry, env, waitUntil, {ip, host:url.hostname, method, requestInfo});
         }
         if (config.enforcementMode === "enforce") {
           if (escalating && rateDecision.escalate) {
@@ -2871,9 +2928,12 @@ export async function handleBadEggRequest(request, env, options = {}, forward) {
       const targetLine = `${method} ${decodedPath}${decodedQuery ? `?${decodedQuery}` : ""}`;
 
       const headerLines = [];
+      const evidenceParts = [{source:"request target (decoded)", text:targetLine}];
       for (const [name, value] of request.headers.entries()) {
         if (!SKIPPED_SCAN_HEADERS.has(name.toLowerCase())) {
-          headerLines.push(`${name}: ${value}`);
+          const line = `${name}: ${value}`;
+          headerLines.push(line);
+          evidenceParts.push({source:`header: ${name}`, text:line, secret:/(?:authorization|cookie|api[-_]?key|auth|access[-_]?token|csrf|xsrf|session|secret|password|credential|bearer|token)/i.test(name)});
         }
       }
 
@@ -2921,6 +2981,7 @@ export async function handleBadEggRequest(request, env, options = {}, forward) {
         }
       }
 
+      if (parts.length > 2) evidenceParts.push({source:"request body (decoded/flattened)", text:parts[2]});
       const inspectedText = parts.filter(Boolean).join("\n").slice(0, config.maxScanChars);
       const scanResult = scanText({
         direction: "input",
@@ -2929,6 +2990,8 @@ export async function handleBadEggRequest(request, env, options = {}, forward) {
         route,
         host: url.hostname,
         method,
+        requestInfo,
+        evidenceParts,
         live: config.enforcementMode === "enforce",
         config,
         env,
@@ -2955,7 +3018,7 @@ export async function handleBadEggRequest(request, env, options = {}, forward) {
 
     // 9. Forward clean request & inspect outgoing headers
     const upstreamResponse = await forward();
-    return await inspectOutgoingResponse(upstreamResponse, route, config, env, waitUntil, {ip, host:url.hostname, method});
+    return await inspectOutgoingResponse(upstreamResponse, route, config, env, waitUntil, {ip, host:url.hostname, method, requestInfo});
   } finally {
     if (wafMetrics.activeRequests > 0) wafMetrics.activeRequests--;
   }
