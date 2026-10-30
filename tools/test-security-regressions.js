@@ -4,7 +4,7 @@ import {readFile} from 'node:fs/promises';
 import {resolveConfig, inspectOutgoingResponse, handleBansApi, handleLiftApi, handleBadEggRequest, resetBadEggV3State, resetConfigApiState, getActiveTemporaryBan} from '../functions/_badegg.js';
 const token='test-token-at-least-16-chars';
 const req=(path,ip='203.0.113.9',auth='invalid')=>new Request('https://local.test'+path,{headers:{'CF-Connecting-IP':ip, authorization:`Bearer ${auth}`}});
-test('intentional public homepage contact is narrow and other PII remains protected',async()=>{
+test('intentional public home-site HTML contact is narrow and other PII remains protected',async()=>{
  const html=await readFile(new URL('../index.html',import.meta.url),'utf8');
  const config=resolveConfig({BADEGG_MODE:'enforce',BADEGG_SCAN_OUTPUTS:'1',BADEGG_SCAN_PII:'1',BADEGG_SCAN_OUTPUT_BODIES:'1',BADEGG_OUTPUT_ACTION:'block'});
  const scan=async(text,host='idi.idi-official.workers.dev',route='/')=>inspectOutgoingResponse(new Response(text,{headers:{'content-type':'text/html'}}),route,config,null,null,{host});
@@ -12,7 +12,8 @@ test('intentional public homepage contact is narrow and other PII remains protec
  assert.equal((await scan(html+' private-person@example.org')).status,502);
  assert.equal((await scan('0xffshell@duck.com.example.org')).status,502);
  assert.equal((await scan(html,'elsewhere.example')).status,502);
- assert.equal((await scan(html,'idi.idi-official.workers.dev','/other')).status,502);
+ assert.equal((await scan(html,'idi.idi-official.workers.dev','/other')).status,200);
+ assert.equal((await scan('0xffshell@duck.com plus another@example.org','idi.idi-official.workers.dev','/other')).status,502);
  assert.equal((await scan('0xffshell@duck.com and password = "SuperSecretPassword123456"')).status,502);
 });
 test('failed KV delete cannot report lift success, and list failure is visible',async()=>{

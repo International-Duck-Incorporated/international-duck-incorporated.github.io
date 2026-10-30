@@ -2598,10 +2598,11 @@ export async function inspectOutgoingResponse(response, route, config, env = nul
             scanTarget = text;
           }
         }
-        // This address is intentionally published as the IDI homepage contact.
-        // Exempt only this exact address on this exact host and route, and only
-        // from body matching; other email addresses and all secrets stay scanned.
-        if (context.host === "idi.idi-official.workers.dev" && route === "/" && /text\/html/i.test(responseType)) {
+        // This exact address is intentionally published throughout the home
+        // site's HTML, both as link text and in footer mailto links. Exempt it
+        // only from body scanning on this hostname; all other addresses, hosts,
+        // headers and secrets remain subject to policy.
+        if (context.host === "idi.idi-official.workers.dev" && /^text\/html(?:\s*;|\s*$)/i.test(responseType)) {
           scanTarget = scanTarget.replace(/(?<![A-Z0-9._%+-])0xffshell@duck\.com(?![A-Z0-9_%+-]|\.[A-Z0-9-])/gi, "[PUBLIC_CONTACT]");
         }
         const bodyScan = scanText({
