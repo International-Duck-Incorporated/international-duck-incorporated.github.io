@@ -42,6 +42,7 @@ jobs:
           cp 404.html public/ 2>/dev/null || true
           cp robots.txt public/ 2>/dev/null || true
           cp sitemap.xml public/ 2>/dev/null || true
+          cp sitemap.xsl public/ 2>/dev/null || true
           cp .nojekyll public/ 2>/dev/null || true
 
       - name: Upload Pages artifact

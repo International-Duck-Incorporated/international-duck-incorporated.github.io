@@ -6,6 +6,9 @@ Skips pages that declare <meta name="robots" content="noindex">.
 <lastmod> is taken from the most recent commit that touched each file. The URL for
 each entry is read from that page's own <link rel="canonical"> (owned by
 tools/apply_page_seo.py), so the sitemap cannot disagree with the canonicals.
+The xml-stylesheet instruction is for browsers only (rendered by sitemap.xsl);
+crawlers read the XML directly. Keep the XML declaration as the first bytes of
+the file or Firefox refuses to parse the document.
 """
 
 import datetime
@@ -107,6 +110,8 @@ def main() -> int:
 
     lines = [
         '<?xml version="1.0" encoding="UTF-8"?>',
+        '<?xml-stylesheet type="text/xsl" href="/sitemap.xsl"?>',
+        '',
         '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">',
     ]
     for url, path in sorted(entries, key=lambda e: ORDER.index(e[0]) if e[0] in ORDER else 99):
