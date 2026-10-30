@@ -1,8 +1,9 @@
 #!/usr/bin/env python3
 """Keep the site's own cross-links consistent across every page.
 
-The footer gains links to Glyphsmith, Changelog and Contact. The Beacon project
-page also links to its module directory. Detection is based on link targets, not
+The footer gains links to Glyphsmith, Changelog and Contact. The primary nav
+gains the GitHub icon that mirrors the GitLab icon. The Beacon project page also
+links to its module directory. Detection is based on link targets, not
 whitespace, so Prettier-formatted markup stays idempotent.
 
 Run from the repo root: python3 tools/apply_site_links.py
@@ -29,6 +30,15 @@ FOOTER = re.compile(
     re.S | re.I,
 )
 NAV = re.compile(r"<nav\b[^>]*>.*?</nav\s*>", re.S | re.I)
+TOPBAR_NAV = re.compile(
+    r'<nav\b(?=[^>]*\sclass\s*=\s*["\']main-nav["\'])[^>]*>.*?</nav\s*>', re.S | re.I
+)
+GITHUB_URL = "https://github.com/international-duck-incorporated"
+GITLAB_ICON = re.compile(
+    r'<a\b(?=[^>]*\sclass\s*=\s*["\']icon-link["\'])'
+    r'(?=[^>]*\shref\s*=\s*["\']https://gitlab\.com/[^"\']+["\'])[^>]*>',
+    re.S | re.I,
+)
 
 # On the Beacon page, alongside the existing action row.
 MODULES_LINK = (
@@ -55,6 +65,35 @@ def link_pattern(href: str) -> re.Pattern[str]:
         r'<a\b(?=[^>]*\shref\s*=\s*["\']' + re.escape(href) + r'["\'])[^>]*>.*?</a\s*>',
         re.S | re.I,
     )
+
+
+def github_icon(indent: str) -> str:
+    """Mirror the nav's GitLab icon with the GitHub logo at the same indentation."""
+    inner = indent + "  "
+    return (
+        "<a\n"
+        f'{inner}class="icon-link"\n'
+        f'{inner}href="{GITHUB_URL}"\n'
+        f'{inner}target="_blank"\n'
+        f'{inner}rel="noreferrer"\n'
+        f'{inner}aria-label="International Duck Incorporated on GitHub"\n'
+        f'{inner}><svg><use href="#i-github" /></svg\n'
+        f"{indent}></a>"
+    )
+
+
+def ensure_nav_github(nav: str) -> str:
+    """Put the GitHub logo immediately before the GitLab logo, unless present."""
+    if link_pattern(GITHUB_URL).search(nav):
+        return nav
+
+    gitlab = GITLAB_ICON.search(nav)
+    if not gitlab:
+        return nav
+
+    indent = re.search(r"[ \t]*$", nav[: gitlab.start()]).group(0)
+    joiner = "\n" + indent if indent else "\n"
+    return nav[: gitlab.start()] + github_icon(indent) + joiner + nav[gitlab.start() :]
 
 
 def keep_first_link(source: str, href: str) -> tuple[str, int]:
@@ -107,7 +146,7 @@ def main() -> None:
     count = (
         json.loads(snapshot.read_text(encoding="utf-8"))["count"] if snapshot.is_file() else None
     )
-    footers = beacon = 0
+    footers = beacon = navs = 0
 
     for page in sorted(root.rglob("*.html")):
         if ".git" in page.parts:
@@ -122,6 +161,14 @@ def main() -> None:
             if patched != block:
                 updated = updated[: footer.start()] + patched + updated[footer.end() :]
                 footers += 1
+
+        nav = TOPBAR_NAV.search(updated)
+        if nav:
+            block = nav.group(0)
+            patched = ensure_nav_github(block)
+            if patched != block:
+                updated = updated[: nav.start()] + patched + updated[nav.end() :]
+                navs += 1
 
         if page.relative_to(root).as_posix() == "projects/beacon/index.html":
             link = MODULES_LINK.format(count=count)
@@ -149,7 +196,7 @@ def main() -> None:
 
     print(
         f"footer links (changelog, contact): {footers} page(s); "
-        f"Beacon modules link: {beacon} page(s)"
+        f"Beacon modules link: {beacon} page(s); GitHub nav icon: {navs} page(s)"
     )
 
 
