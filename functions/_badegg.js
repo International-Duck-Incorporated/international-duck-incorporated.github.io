@@ -35,6 +35,9 @@
 import {
   BADEGG_CONFIG_KV_KEY,
   BADEGG_CONFIG_PATH,
+  CATEGORY_ACTION_OPTIONS,
+  CONFIGURABLE_CATEGORIES,
+  CONFIGURABLE_CATEGORY_BY_ID,
   CONFIG_BY_KEY,
   CONFIG_DEFAULTS,
   CONFIG_GROUPS,
@@ -45,11 +48,15 @@ import {
   DEFAULT_MAX_SCAN_CHARS,
   MAX_UNINSPECTED_REQUEST_BYTES,
   RISK_PROFILES,
-  configEnvView,
+  abuseIpdbCategoriesFor,
   canonicalProtectionPath,
+  configEnvView,
+  effectiveCategoryAction,
   normalizeConfigValue,
+  resolveCategoryActions,
   resolveConfig,
   sanitizeConfigOverrides,
+  shouldReportCategoryToAbuseIpdb,
 } from "../badegg-config.js";
 
 // The configuration surface lives in `badegg-config.js` so the console and the
@@ -58,6 +65,9 @@ import {
 export {
   BADEGG_CONFIG_KV_KEY,
   BADEGG_CONFIG_PATH,
+  CATEGORY_ACTION_OPTIONS,
+  CONFIGURABLE_CATEGORIES,
+  CONFIGURABLE_CATEGORY_BY_ID,
   CONFIG_DEFAULTS,
   CONFIG_GROUPS,
   CONFIG_KEYS,
@@ -67,9 +77,13 @@ export {
   DEFAULT_MAX_SCAN_CHARS,
   MAX_UNINSPECTED_REQUEST_BYTES,
   RISK_PROFILES,
+  abuseIpdbCategoriesFor,
   configEnvView,
+  effectiveCategoryAction,
+  resolveCategoryActions,
   resolveConfig,
   sanitizeConfigOverrides,
+  shouldReportCategoryToAbuseIpdb,
 };
 
 export const BADEGG_VERSION = "3.0";
@@ -111,6 +125,63 @@ export const MAX_TRACKED_SOURCES = 10_000;
 export const IDLE_EVICTION_MS = 3_600_000;
 export const MAX_ACTIVE_TEMP_BANS = 4_096;
 export const MAX_EVENTS = 200;
+
+/**
+ * Recon-paden: één scanner-pad is nog geen scanner.
+ *
+ * Gemeten op 31-10-2026 op de live site: de `recon_*`-regels staan op 0,97–0,99
+ * confidence en de auto-blokdrempel is 0,97, dus één request naar `/config.php`
+ * betekende meteen een ban. Met `BADEGG_BAN_FOREVER` aan is dat een ban die
+ * nooit verloopt. Twaalf bans in de tabel, tien daarvan van precies één
+ * recon-pad, allemaal permanent — en een IP is op mobiele netwerken en in
+ * kantoren nooit van één persoon.
+ *
+ * Daarom: recon-paden krijgen per request 403 (de aanvraag is fout, de client
+ * hoeft dat niet te zijn), en pas na `RECON_BAN_AFTER` treffers binnen
+ * `RECON_STRIKE_WINDOW_MS` volgt een ban. Injectie, traversal en XSS houden hun
+ * directe ban: dat is geen vergissing meer.
+ *
+ * Recon-bans zijn bovendien altijd tijdelijk. Een scanner die drie keer een
+ * achtergebleven bestand zoekt is geen reden om een heel kantoor voorgoed
+ * buiten te sluiten.
+ */
+export const RECON_BAN_AFTER = 3;
+export const RECON_STRIKE_WINDOW_MS = 10 * 60 * 1000;
+const MAX_TRACKED_RECON_SOURCES = 5_000;
+
+/** ip → tijdstippen van recon-treffers, oudste eerst. */
+const reconStrikes = new Map();
+
+/**
+ * Registreert één recon-treffer en geeft het aantal treffers in het venster.
+ * De tabel is begrensd: een scanner die duizend adressen gebruikt mag geen
+ * geheugen worden.
+ */
+export function noteReconStrike(rawIp, nowMs = Date.now()) {
+  const key = normalizeIp(rawIp) || String(rawIp || '').trim();
+  if (!key) return RECON_BAN_AFTER;
+  const recent = (reconStrikes.get(key) || []).filter((t) => nowMs - t < RECON_STRIKE_WINDOW_MS);
+  recent.push(nowMs);
+  if (!reconStrikes.has(key)) {
+    while (reconStrikes.size >= MAX_TRACKED_RECON_SOURCES) {
+      const oldest = reconStrikes.keys().next().value;
+      if (oldest === undefined) break;
+      reconStrikes.delete(oldest);
+    }
+  }
+  reconStrikes.set(key, recent);
+  return recent.length;
+}
+
+/** Alleen voor tests en om een lifted IP echt schoon te maken. */
+export function resetReconStrikes(rawIp) {
+  if (rawIp === undefined) {
+    reconStrikes.clear();
+    return;
+  }
+  const key = normalizeIp(rawIp) || String(rawIp || '').trim();
+  reconStrikes.delete(key);
+}
 
 // ---------------------------------------------------------------- v3 inspection rules
 const JS_GAP = String.raw`(?:[\s\x00-\x20]|&#x?0*[0-9a-f]{1,6};?){0,8}`;
@@ -470,6 +541,134 @@ export const RULES = [
     sensitive: false,
     pii: false,
   },
+  /**
+   * Recon-paden.
+   *
+   * Toegevoegd op 31-10-2026 na een echte meting op vlot-idi-official.pages.dev:
+   * in één bezoek van één IP werden `/config.php`, `/.gitlab-ci.yml`,
+   * `/.htpasswd`, `/wp-content/debug.log`, `/gcloud-credentials.json`,
+   * `/.env.save`, `/mysql.sql`, `/.env.bak`, `/.htaccess`, `/administrator/`,
+   * `/.git/config`, `/site.zip` en `/db.tar.gz` opgevraagd. Geen van die paden
+   * bestaat op deze site; het zijn scanners die zoeken naar achtergebleven
+   * bestanden. Ze vielen eerder door de mand heen omdat ze geen aanval *in* de
+   * aanvraag bevatten, alleen een verdacht *pad*.
+   *
+   * De drempel voor automatisch blokkeren is 0,97 (profiel "minimize_false_bans"),
+   * dus deze regels staan op 0,97 of hoger. Bewust niet hoger dan nodig: een
+   * scanner die één keer een verkeerd pad raakt hoort geen 15-minutenban te
+   * krijgen als het ook een legitieme 404 kan zijn. Vandaar dat algemene 404's
+   * (/random) hier níet onder vallen, en alleen bekende probeerpaden wel.
+   */
+  {
+    key: "recon_source_control",
+    category: "recon_path",
+    directions: ["input"],
+    pattern:
+      /\/\.git\/(?:config|credentials|HEAD|index|packed-refs|logs|refs|hooks|objects)|\/\.svn\/(?:entries|wc\.db|pristine)|\/\.hg\/(?:hgrc|store|null)|\/\.bzr\//i,
+    confidence: 0.99,
+    severity: "critical",
+    summary: "Probe for exposed source-control metadata (.git/.svn/.hg).",
+    sensitive: false,
+    pii: false,
+  },
+  {
+    key: "recon_env_or_secret_file",
+    category: "recon_path",
+    directions: ["input"],
+    pattern:
+      /(?:^|[/\\])\.env(?:\.[\w.-]{1,20})?(?:$|[/\\?#\s])|\/(?:gcloud-credentials|credentials|serviceaccount|service-account|firebase-adminsdk)[\w.-]*\.json|\/\.aws\/credentials|\/\.ssh\/id_(?:rsa|dsa|ecdsa|ed25519)(?:$|[/?#\s])|\/netrc(?:$|[/?#\s])|\/\.npmrc(?:$|[/?#\s])/i,
+    confidence: 0.99,
+    severity: "critical",
+    summary: "Probe for an environment or credential file.",
+    sensitive: false,
+    pii: false,
+  },
+  {
+    key: "recon_dotfile",
+    category: "recon_path",
+    directions: ["input"],
+    pattern:
+      /\/\.(?:htaccess|htpasswd|gitlab-ci\.yml|travis\.yml|DS_Store|babelrc|dockerignore|editorconfig)(?:$|[/?#\s])|\/\.github\/workflows\/|\/\.vscode\/|\/_vti_bin\//i,
+    confidence: 0.97,
+    severity: "high",
+    summary: "Probe for a dotfile or CI configuration.",
+    sensitive: false,
+    pii: false,
+  },
+  {
+    key: "recon_cms_probe",
+    category: "recon_path",
+    directions: ["input"],
+    pattern:
+      /\/(?:wp-(?:config|content|admin|login|includes|json|signup|comments)|xmlrpc\.php|administrator(?:\/|$)|phpmyadmin|adminer\.php|pma\/|typo3|joomla|drupal\/|cgi-bin\/)/i,
+    confidence: 0.97,
+    severity: "high",
+    summary: "Probe for a CMS or database-admin console that is not part of this site.",
+    sensitive: false,
+    pii: false,
+  },
+  {
+    key: "recon_backup_or_config_file",
+    category: "recon_path",
+    directions: ["input"],
+    pattern:
+      // Dubbele extensies (/config.php.bak, /db.sql.gz) horen er ook bij: scanners
+      // proberen die juist omdat een simpele regel ze mist.
+      /(?:^|\/)(?:config|configuration|settings|setup|install|web|site|www|mysql|database|db|dump|backup|admin|wordpress|wp|test|old|new|temp)[\w-]{0,24}\.(?:php\d?|asp|aspx|jsp|cgi|pl|bak|old|orig|save|swp|sql|tar|tgz|zip|rar|7z|gz)(?:\.(?:\w{1,9})){0,2}(?:$|[/?#\s])/i,
+    confidence: 0.97,
+    severity: "high",
+    summary: "Probe for a configuration, database dump or backup archive.",
+    sensitive: false,
+    pii: false,
+  },
+  {
+    key: "ssrf_cloud_metadata",
+    category: "ssrf",
+    directions: ["input"],
+    pattern:
+      /(?:https?:\/\/|\/\/)(?:169\.254\.169\.254|metadata\.google\.internal|100\.100\.100\.200\/latest\/meta-data|\[fd00:ec2::254\])/i,
+    confidence: 0.99,
+    severity: "critical",
+    summary: "SSRF probe targeting cloud instance metadata service.",
+    sensitive: false,
+    pii: false,
+  },
+  {
+    key: "prototype_pollution_payload",
+    category: "prototype_pollution",
+    directions: ["input"],
+    pattern:
+      /(?:["']__proto__["']\s*:|constructor\s*(?:\.\s*prototype|\[\s*["']prototype["']\s*\])\s*(?:[:=]|\[))/i,
+    confidence: 0.98,
+    severity: "high",
+    summary: "JavaScript prototype pollution payload (__proto__ / constructor.prototype).",
+    sensitive: false,
+    pii: false,
+  },
+  {
+    key: "xxe_entity_declaration",
+    category: "xml_external_entity",
+    directions: ["input"],
+    pattern:
+      /<!DOCTYPE[^>]{0,256}\[[\s\S]{0,512}<!ENTITY\s+%?\s*[A-Za-z0-9_.-]+\s+(?:SYSTEM|PUBLIC)\s+["']/i,
+    confidence: 0.99,
+    severity: "critical",
+    summary: "XML external entity (XXE) declaration referencing SYSTEM/PUBLIC URI.",
+    sensitive: false,
+    pii: false,
+  },
+  {
+    key: "crlf_header_injection",
+    category: "header_injection",
+    directions: ["input"],
+    pattern:
+      /(?:%0d%0a|%0a|%0d|\r\n)\s*(?:set-cookie|location|content-type|x-forwarded-for|transfer-encoding)\s*:/i,
+    confidence: 0.98,
+    severity: "high",
+    summary: "CRLF HTTP header / response-splitting injection attempt.",
+    sensitive: false,
+    pii: false,
+  },
   {
     key: "email_address",
     category: "email_address",
@@ -484,12 +683,20 @@ export const RULES = [
 ];
 
 export const ATTACK_CATEGORIES = new Set([
+  "recon_path",
   "sql_injection",
   "command_injection",
   "cross_site_scripting",
   "path_traversal",
   "template_injection",
   "nosql_injection",
+  "ssrf",
+  "prototype_pollution",
+  "xml_external_entity",
+  "header_injection",
+  "graphql_abuse",
+  "malicious_upload",
+  "prompt_injection",
 ]);
 
 export const SECRET_CATEGORIES = new Set([
@@ -646,6 +853,7 @@ const wafMetrics = {
 export function resetBadEggV3State() {
   rateLimiter.reset();
   tempBans.clear();
+  reconStrikes.clear();
   recentEvents.length = 0;
   wafMetrics.inspectedTotal = 0;
   wafMetrics.blockedAttacksTotal = 0;
@@ -745,6 +953,39 @@ export function normalizeIp(raw) {
   const u = ipToU32(s);
   if (u === null) return null;
   return `${(u >>> 24) & 255}.${(u >>> 16) & 255}.${(u >>> 8) & 255}.${u & 255}`;
+}
+
+/**
+ * Een opgeslagen sleutel terug naar leesbaar IP.
+ *
+ * IPv6 wordt intern als 32 hex-tekens bewaard. Het bans-endpoint gaf die vorm
+ * terug, waardoor een operator `26001900000040030000000000000401` te zien kreeg
+ * en dat met de hand moest omrekenen naar `2600:1900:0:4003::401` — en de lift
+ * met de hexvorm werd stil geaccepteerd zonder de ban te raken (gemeten
+ * 31-10-2026). Weergeven wat je kunt intypen.
+ */
+export function formatIpForDisplay(key) {
+  const s = String(key ?? "");
+  if (!/^[0-9a-f]{32}$/i.test(s)) return s;
+  const groepen = [];
+  for (let i = 0; i < 8; i++) groepen.push(parseInt(s.slice(i * 4, i * 4 + 4), 16).toString(16));
+  // Langste rij nullen samenvatten tot `::`, zoals IPv6 hoort te lezen.
+  let besteStart = -1;
+  let besteLengte = 0;
+  for (let i = 0; i < 8; i++) {
+    if (groepen[i] !== "0") continue;
+    let j = i;
+    while (j < 8 && groepen[j] === "0") j++;
+    if (j - i > besteLengte) {
+      besteStart = i;
+      besteLengte = j - i;
+    }
+    i = j;
+  }
+  if (besteLengte < 2) return groepen.join(":");
+  const kop = groepen.slice(0, besteStart).join(":");
+  const staart = groepen.slice(besteStart + besteLengte).join(":");
+  return `${kop}::${staart}`;
 }
 
 export function isAllowlistedIp(rawIp, config) {
@@ -1106,7 +1347,7 @@ function expireTempBans(now = Date.now()) {
   }
 }
 
-export function addTemporaryBan(rawIp, reasonCategories, config, env, waitUntil) {
+export function addTemporaryBan(rawIp, reasonCategories, config, env, waitUntil, overrides = null) {
   const key = normalizeIp(rawIp);
   if (!key) return null;
   const now = Date.now();
@@ -1124,8 +1365,9 @@ export function addTemporaryBan(rawIp, reasonCategories, config, env, waitUntil)
     if (victim === undefined) break;
     tempBans.delete(victim);
   }
-  const forever = config.banForever === true;
-  const ttlSeconds = config.banTtlSeconds;
+  const forcedTtl = Number(overrides?.forceTtlSeconds);
+  const forever = config.banForever === true && !(forcedTtl > 0);
+  const ttlSeconds = forcedTtl > 0 ? forcedTtl : config.banTtlSeconds;
   const expiresAtMs = forever ? null : now + ttlSeconds * 1000;
   const record = {
     expiresAt: forever ? null : new Date(expiresAtMs).toISOString(),
@@ -1276,6 +1518,9 @@ export function scanText({
   for (const rule of RULES) {
     if (!rule.directions.includes(direction)) continue;
     if (rule.pii && !config.scanPii) continue;
+    if (direction === "input" && ATTACK_CATEGORIES.has(rule.category)) {
+      if (effectiveCategoryAction(rule.category, config) === "ignore") continue;
+    }
     if (rule.pattern.test(body)) {
       findings.push({
         ruleId: rule.key,
@@ -1313,11 +1558,47 @@ export function scanText({
   }
 
   if (direction === "input" && attackFindings.length) {
-    const categories = [...new Set(attackFindings.map((f) => f.category))].sort();
+    const enforcedFindings = attackFindings.filter((f) => {
+      const act = effectiveCategoryAction(f.category, config);
+      return act === "ban" || act === "strike_ban" || act === "block";
+    });
+    const monitoredOnly = enforcedFindings.length === 0;
+    const categories = [
+      ...new Set((monitoredOnly ? attackFindings : enforcedFindings).map((f) => f.category)),
+    ].sort();
+    const enforcedMaxConfidence = enforcedFindings.reduce((m, f) => Math.max(m, f.confidence), 0);
+
     if (clientIp && isAllowlistedIp(clientIp, config)) {
       if (decision === "clean") decision = "allowlisted";
-    } else if (config.autoBlockEnabled && maxAttackConfidence >= config.autoBlockThreshold) {
-      if (!normalizeIp(clientIp)) {
+    } else if (monitoredOnly) {
+      if (decision === "clean") decision = "monitored_category";
+    } else if (config.autoBlockEnabled && enforcedMaxConfidence >= config.autoBlockThreshold) {
+      // Strictest configured action across threshold-qualifying findings wins:
+      // ban > strike_ban > block.
+      const qualifying = enforcedFindings.filter((f) => f.confidence >= config.autoBlockThreshold);
+      const actions = new Set(qualifying.map((f) => effectiveCategoryAction(f.category, config)));
+      const strictest = actions.has("ban")
+        ? "ban"
+        : actions.has("strike_ban")
+          ? "strike_ban"
+          : "block";
+
+      if (strictest === "block") {
+        decision = liveEnforcement ? "blocked_request" : "would_block_request";
+      } else if (strictest === "strike_ban") {
+        const strikes = normalizeIp(clientIp) ? noteReconStrike(clientIp) : 0;
+        if (!normalizeIp(clientIp)) {
+          decision = liveEnforcement ? "blocked_without_verified_ip" : "would_temp_block_no_ip";
+        } else if (strikes < RECON_BAN_AFTER) {
+          // Het request is fout, de client hoeft dat niet te zijn: 403, geen ban.
+          decision = liveEnforcement ? "blocked_request" : "would_block_request";
+        } else {
+          banRecord = addTemporaryBan(clientIp, categories, config, env, waitUntil, {
+            forceTtlSeconds: config.banTtlSeconds,
+          });
+          decision = liveEnforcement ? "blocked" : "would_temp_block";
+        }
+      } else if (!normalizeIp(clientIp)) {
         decision = liveEnforcement ? "blocked_without_verified_ip" : "would_temp_block_no_ip";
       } else {
         banRecord = addTemporaryBan(clientIp, categories, config, env, waitUntil);
@@ -1327,7 +1608,7 @@ export function scanText({
         wafMetrics.blockedAttacksTotal++;
         d1Note("blocked", env, waitUntil);
       }
-    } else if (maxAttackConfidence >= config.alertThreshold) {
+    } else if (enforcedMaxConfidence >= config.alertThreshold) {
       const actionType = config.riskMode === "catch_more" ? "challenge" : "alert_for_review";
       if (decision === "clean") decision = `would_${actionType}`;
     } else if (decision === "clean") {
@@ -1340,6 +1621,7 @@ export function scanText({
   const status =
     liveEnforcement &&
     (decision === "blocked" ||
+      decision === "blocked_request" ||
       decision === "blocked_without_verified_ip" ||
       decision === "block_response")
       ? "blocked"
@@ -1748,6 +2030,16 @@ export function badeggStatus(env = {}, options = {}) {
       outputAction: cfg.outputAction,
       banTtlSeconds: cfg.banTtlSeconds,
       banForever: cfg.banForever,
+      reconBanAfter: RECON_BAN_AFTER,
+      reconStrikeWindowSeconds: Math.round(RECON_STRIKE_WINDOW_MS / 1000),
+      abuseIpdbEnabled: cfg.abuseIpdbEnabled,
+      abuseIpdbCooldownSeconds: cfg.abuseIpdbCooldownSeconds,
+      categoryActions: Object.fromEntries(
+        Object.entries(cfg.categoryActions || {}).map(([k, v]) => [
+          k,
+          { action: v.effectiveAction, reportAbuseIpdb: v.reportAbuseIpdb },
+        ])
+      ),
       inspectedTotal: wafMetrics.inspectedTotal,
       blockedAttacksTotal: wafMetrics.blockedAttacksTotal,
       blockedTempBansTotal: wafMetrics.blockedTempBansTotal,
@@ -2301,6 +2593,7 @@ export async function handleLiftApi(request, env) {
   }
   const existed = tempBans.delete(key);
   rateLimiter.resetSource(key);
+  resetReconStrikes(key);
   return jsonResponse({ ok: true, lifted: rawIp, existed, propagation: "KV is eventually consistent; other locations may take time to reflect this change." });
 }
 
@@ -2330,7 +2623,8 @@ export async function handleBansApi(request, env) {
   for (const [ip, ban] of tempBans) {
     if (ban.mode !== "active") continue;
     bans.push({
-      ip,
+      ip: formatIpForDisplay(ip),
+      key: ip,
       expiresAt: ban.expiresAt,
       forever: ban.expiresAtMs === null,
       reasonCategories: ban.reasonCategories,
@@ -3017,7 +3311,9 @@ export async function handleBadEggRequest(request, env, options = {}, forward) {
 
       if (
         config.enforcementMode === "enforce" &&
-        (scanResult.decision === "blocked" || scanResult.decision === "blocked_without_verified_ip")
+        (scanResult.decision === "blocked" ||
+          scanResult.decision === "blocked_request" ||
+          scanResult.decision === "blocked_without_verified_ip")
       ) {
         const categories = [
           ...new Set(

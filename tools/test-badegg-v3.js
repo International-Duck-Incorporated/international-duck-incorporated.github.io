@@ -47,7 +47,7 @@ test("BadEgg v3 version and rule count", () => {
   assert.equal(BADEGG_VERSION, "3.0");
   assert.equal(status.version, "3.0");
   assert.equal(status.engine, "BadEgg v3");
-  assert.equal(status.waf.rulesLoaded, 29);
+  assert.equal(status.waf.rulesLoaded, 38);
 });
 
 test("IPv4 and IPv6 schema-2 matching", () => {
@@ -302,4 +302,98 @@ test("event writes remain compatible with an old D1 schema", async () => {
   const db={prepare(sql){return {bind(...values){return {run:async()=>{writes.push({sql,values});if(sql.includes('client_ip'))throw new Error('D1_ERROR: table badegg_events has no column named client_ip: SQLITE_ERROR');return {success:true}}}}}}};
   scanText({direction:'input',text:"q=1 UNION SELECT password FROM users' OR '1'='1",clientIp:'203.0.113.78',route:'/compat-test',env:{BADEGG_DB:db},waitUntil:p=>pending.push(p)});
   await Promise.all(pending);assert.equal(writes.length,2);assert.equal(writes[1].values.length,5);
+});
+
+test("Per-category actions & recon_path ladder (ban, strike_ban, block, monitor, ignore)", () => {
+  resetBadEggV3State();
+
+  // Default recon_path uses strike_ban (403 first two hits, temp ban on 3rd hit, never forever)
+  const defaultCfg = resolveConfig({ BADEGG_BAN_FOREVER: "1" });
+  const r1 = scanText({
+    direction: "input",
+    text: "GET /.git/config",
+    route: "/.git/config",
+    clientIp: "198.51.100.88",
+    live: true,
+    config: defaultCfg,
+  });
+  assert.equal(r1.decision, "blocked_request");
+  assert.equal(r1.banRecord, null);
+
+  const r2 = scanText({
+    direction: "input",
+    text: "GET /.env",
+    route: "/.env",
+    clientIp: "198.51.100.88",
+    live: true,
+    config: defaultCfg,
+  });
+  assert.equal(r2.decision, "blocked_request");
+  assert.equal(r2.banRecord, null);
+
+  const r3 = scanText({
+    direction: "input",
+    text: "GET /wp-config.php",
+    route: "/wp-config.php",
+    clientIp: "198.51.100.88",
+    live: true,
+    config: defaultCfg,
+  });
+  assert.equal(r3.decision, "blocked");
+  assert.ok(r3.banRecord);
+  assert.equal(r3.banRecord.forever, false);
+
+  // Override recon_path -> immediate ban, cross_site_scripting -> block (403 no ban),
+  // sql_injection -> monitor (log only), template_injection -> ignore (skip rule)
+  const customCfg = resolveConfig({
+    BADEGG_CATEGORY_ACTIONS: JSON.stringify({
+      recon_path: { action: "ban", reportAbuseIpdb: true },
+      cross_site_scripting: { action: "block", reportAbuseIpdb: false },
+      sql_injection: { action: "monitor", reportAbuseIpdb: false },
+      template_injection: { action: "ignore", reportAbuseIpdb: false },
+    }),
+  });
+
+  const reconImmediate = scanText({
+    direction: "input",
+    text: "GET /.env.production",
+    route: "/.env.production",
+    clientIp: "198.51.100.89",
+    live: true,
+    config: customCfg,
+  });
+  assert.equal(reconImmediate.decision, "blocked");
+  assert.ok(reconImmediate.banRecord);
+
+  const xssBlockOnly = scanText({
+    direction: "input",
+    text: "q=<script>alert(1)</script>",
+    clientIp: "198.51.100.90",
+    live: true,
+    config: customCfg,
+  });
+  assert.equal(xssBlockOnly.decision, "blocked_request");
+  assert.equal(xssBlockOnly.banRecord, null);
+
+  const sqliMonitored = scanText({
+    direction: "input",
+    text: "q=1 UNION SELECT password FROM users",
+    clientIp: "198.51.100.91",
+    live: true,
+    config: customCfg,
+  });
+  assert.equal(sqliMonitored.decision, "monitored_category");
+  assert.equal(sqliMonitored.status, "inspected");
+  assert.equal(sqliMonitored.banRecord, null);
+  assert.equal(sqliMonitored.findings.length >= 1, true);
+
+  const sstiIgnored = scanText({
+    direction: "input",
+    text: "q={{7*7}}{{config.__class__}}",
+    clientIp: "198.51.100.92",
+    live: true,
+    config: customCfg,
+  });
+  assert.equal(sstiIgnored.decision, "clean");
+  assert.equal(sstiIgnored.findings.length, 0);
 });
