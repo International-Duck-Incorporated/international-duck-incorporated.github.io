@@ -46,6 +46,7 @@ import {
   MAX_UNINSPECTED_REQUEST_BYTES,
   RISK_PROFILES,
   configEnvView,
+  canonicalProtectionPath,
   normalizeConfigValue,
   resolveConfig,
   sanitizeConfigOverrides,
@@ -1849,7 +1850,8 @@ export async function loadConfigRecord(env = {}, options = {}) {
     if (raw && typeof raw === "object" && !Array.isArray(raw)) {
       // Accept both the stored shape and a bare override map.
       const source = raw.values && typeof raw.values === "object" ? raw.values : raw;
-      const { values } = sanitizeConfigOverrides(source);
+      const { values, errors } = sanitizeConfigOverrides(source);
+      if (errors.some(e=>e.key === "BADEGG_DISALLOWED_PATHS")) throw new Error("invalid_path_policy");
       const revision = Number.parseInt(String(raw.revision ?? ""), 10);
       record = {
         values,
@@ -2731,6 +2733,21 @@ export async function handleBadEggRequest(request, env, options = {}, forward) {
   const url = new URL(request.url);
   const route = url.pathname.slice(0, 256);
   const requestInfo = requestTelemetry(request);
+
+  // Operator-supplied path denials apply to every method and enforcement mode,
+  // including operator routes, before an allowlist or scan can bypass them.
+  if (!Array.isArray(config.disallowedPaths)) return gatewayErrorResponse(503, "BadEgg path policy is invalid. Please retry later.", {"retry-after":"60"});
+  const pathRules=config.disallowedPaths.filter(r=>r.host === "*" || r.host === url.hostname.toLowerCase().replace(/\.$/,""));
+  if (pathRules.length) {
+    const normalized=canonicalProtectionPath(url.pathname);
+    if (normalized === null) return gatewayErrorResponse(400, "BadEgg could not safely normalize the request path.");
+    if (pathRules.some(r=>r.match === "exact" ? normalized === r.path : normalized.startsWith(r.path))) {
+      const ip=getClientIp(request);
+      d1Note("blocked", env, waitUntil);
+      d1PersistEvent(d1Event("blocked_disallowed_path", ["disallowed_path"], "blocked", route), env, waitUntil, {ip,host:url.hostname,method:request.method,requestInfo});
+      return blockedResponse(ip, env, {reason:"disallowed_path"});
+    }
+  }
 
   // 1. Diagnostics endpoint (?badegg-status=1). Gated like the console: it
   //    reports the effective policy, so an open endpoint would hand the same

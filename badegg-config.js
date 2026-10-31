@@ -93,6 +93,7 @@ export const CONFIG_GROUPS = [
  *   - "text"    free string
  */
 export const CONFIG_SCHEMA = [
+  { key:"BADEGG_DISALLOWED_PATHS", group:"inspection", label:"Always-disallowed paths", type:"path-rules", default:"[]", help:"JSON list of host, path and exact/prefix match. Enforced in Monitor and before operator routes." },
   {
     key: "BADEGG_MODE",
     group: "enforcement",
@@ -384,6 +385,23 @@ function clampNumber(value, min, max) {
   return Math.min(max, Math.max(min, value));
 }
 
+// Normalize for deny matching only; this does not rewrite the forwarded URL.
+// Decode bounded repeated encodings, resolve slash/backslash and dot segments.
+// Malformed or excessive encodings return null and are rejected for hosts with rules.
+export function canonicalProtectionPath(value) {
+  if (typeof value !== "string" || !value.startsWith("/") || value.length > 2048) return null;
+  let path=value;
+  for(let i=0;i<5;i++){
+    if(!/%[0-9a-f]{2}/i.test(path))break;
+    if(i===4)return null;
+    try { path=decodeURIComponent(path); } catch { return null; }
+  }
+  if(/[\x00-\x1f\x7f]/.test(path) || path.length>2048) return null;
+  path=path.replace(/\\/g,"/");
+  const out=[];for(const segment of path.split("/")){if(!segment || segment===".")continue;if(segment===".."){out.pop();continue}out.push(segment)}
+  return "/"+out.join("/");
+}
+
 /**
  * Turn one operator-supplied value into the canonical env string for `field`.
  *
@@ -393,6 +411,23 @@ function clampNumber(value, min, max) {
  * is not a number at all, or a select value that is not offered, is an error.
  */
 export function normalizeConfigValue(field, raw) {
+  if (field.type === "path-rules") {
+    let rules;try { rules=JSON.parse(String(raw ?? "[]")); } catch { return {error:"Path rules must be valid JSON."}; }
+    if (!Array.isArray(rules) || rules.length > 200) return {error:"Expected at most 200 path rules."};
+    const clean=[], seen=new Set();
+    for (const rule of rules) {
+      if (!rule || typeof rule!=="object" || Array.isArray(rule) || typeof rule.host!=="string" || typeof rule.path!=="string" || !["exact","prefix"].includes(rule.match)) return {error:"Each path rule needs host, path and exact/prefix match."};
+      const host=rule.host.trim().toLowerCase().replace(/\.$/,"");
+      if (host!=="*") { try { const u=new URL(`https://${host}/`);if(!host || host.length>253 || u.hostname!==host || u.port || u.username || u.password || u.pathname!=="/" || u.search || u.hash || !/^[a-z0-9.-]+$/.test(host) || host.includes("..")) throw Error(); } catch { return {error:"Use an exact hostname (or *) without a URL, port or path."}; } }
+      if (/[?#]/.test(rule.path)) return {error:"Rule paths cannot contain query strings or fragments."};
+      const path=canonicalProtectionPath(rule.path);
+      if(path===null) return {error:"Invalid or excessively encoded path."};
+      const key=JSON.stringify([host,path,rule.match]);if(seen.has(key))return {error:"Duplicate path rule."};seen.add(key);
+      clean.push({host,path,match:rule.match});
+    }
+    return {value:JSON.stringify(clean)};
+  }
+
   if (field.type === "toggle") {
     if (typeof raw === "boolean") return { value: raw ? "1" : "0" };
     const text = String(raw ?? "")
@@ -533,6 +568,7 @@ export function resolveConfig(env = {}, overrides = null) {
   return {
     riskMode,
     enforcementMode,
+    disallowedPaths: (() => { const v=normalizeConfigValue(CONFIG_BY_KEY.get("BADEGG_DISALLOWED_PATHS"), source?.BADEGG_DISALLOWED_PATHS ?? "[]"); return v.error ? null : JSON.parse(v.value); })(),
     autoBlockEnabled: source?.BADEGG_AUTO_BLOCK !== "0",
     autoBlockThreshold: thresholdOverride ?? RISK_PROFILES[riskMode].autoBlockThreshold,
     alertThreshold: RISK_PROFILES[riskMode].alertThreshold,
