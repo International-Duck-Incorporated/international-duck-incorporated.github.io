@@ -49,6 +49,64 @@ export const RISK_PROFILES = {
   },
 };
 
+export const CATEGORY_ACTION_OPTIONS = [
+  {
+    value: "default",
+    label: "Default",
+    description: "Use BadEgg's shipped action for this category (strike-ban for recon paths, ban for exploits).",
+  },
+  {
+    value: "ban",
+    label: "Ban IP",
+    description: "Refuse with 403 and apply an immediate temporary or forever IP ban.",
+  },
+  {
+    value: "strike_ban",
+    label: "403 then Ban (3 strikes)",
+    description: "Refuse each hit with 403; apply a finite temporary ban after 3 hits in 10 minutes.",
+  },
+  {
+    value: "block",
+    label: "Block request only (403)",
+    description: "Refuse the request with 403 without banning the client IP.",
+  },
+  {
+    value: "monitor",
+    label: "Monitor only",
+    description: "Record the event for visibility and let the request proceed.",
+  },
+  {
+    value: "ignore",
+    label: "Ignore / Off",
+    description: "Skip rules in this category during request inspection.",
+  },
+];
+
+export const CONFIGURABLE_CATEGORIES = [
+  { id: "recon_path", label: "Recon & scanner paths", defaultAction: "strike_ban", defaultAbuseIpdb: true, abuseCategories: [19, 21] },
+  { id: "sql_injection", label: "SQL injection", defaultAction: "ban", defaultAbuseIpdb: true, abuseCategories: [16, 21] },
+  { id: "command_injection", label: "Command injection", defaultAction: "ban", defaultAbuseIpdb: true, abuseCategories: [15, 21] },
+  { id: "cross_site_scripting", label: "Cross-site scripting (XSS)", defaultAction: "ban", defaultAbuseIpdb: true, abuseCategories: [21] },
+  { id: "path_traversal", label: "Path traversal", defaultAction: "ban", defaultAbuseIpdb: true, abuseCategories: [21] },
+  { id: "nosql_injection", label: "NoSQL injection", defaultAction: "ban", defaultAbuseIpdb: true, abuseCategories: [21] },
+  { id: "template_injection", label: "Template injection (SSTI)", defaultAction: "ban", defaultAbuseIpdb: true, abuseCategories: [15, 21] },
+  { id: "ssrf", label: "Server-side request forgery (SSRF)", defaultAction: "ban", defaultAbuseIpdb: true, abuseCategories: [15, 21] },
+  { id: "prototype_pollution", label: "Prototype pollution", defaultAction: "ban", defaultAbuseIpdb: true, abuseCategories: [21] },
+  { id: "xml_external_entity", label: "XML external entity (XXE)", defaultAction: "ban", defaultAbuseIpdb: true, abuseCategories: [21] },
+  { id: "header_injection", label: "HTTP header / CRLF injection", defaultAction: "ban", defaultAbuseIpdb: true, abuseCategories: [21] },
+  { id: "malicious_upload", label: "Malicious file upload", defaultAction: "ban", defaultAbuseIpdb: true, abuseCategories: [15, 21] },
+  { id: "graphql_abuse", label: "GraphQL depth / introspection abuse", defaultAction: "ban", defaultAbuseIpdb: false, abuseCategories: [21] },
+  { id: "prompt_injection", label: "AI prompt injection", defaultAction: "ban", defaultAbuseIpdb: false, abuseCategories: [21] },
+  { id: "rate_limit", label: "Rate-limit flood escalation", defaultAction: "ban", defaultAbuseIpdb: false, abuseCategories: [4, 19] },
+];
+
+export const CONFIGURABLE_CATEGORY_BY_ID = new Map(
+  CONFIGURABLE_CATEGORIES.map((entry) => [entry.id, entry])
+);
+
+const VALID_CATEGORY_ACTIONS = new Set(CATEGORY_ACTION_OPTIONS.map((opt) => opt.value));
+
+
 /**
  * Groups are presentation only: they order and label the dashboard sections.
  * The gateway ignores them.
@@ -70,7 +128,7 @@ export const CONFIG_GROUPS = [
     id: "inspection",
     label: "Request & response inspection",
     description:
-      "The 29 deterministic WAF rules, and what happens to secrets found on the way out.",
+      "The deterministic WAF rules, and what happens to secrets found on the way out.",
   },
   {
     id: "limits",
@@ -358,6 +416,34 @@ export const CONFIG_SCHEMA = [
     placeholder: "198.51.100.7, 2001:db8:dead::/48",
     help: "Comma separated IPs or CIDRs that are blocked on every request, in monitor and enforce mode alike, and before the rate limiter. Checked before the allowlist, so it wins.",
   },
+  {
+    key: "BADEGG_CATEGORY_ACTIONS",
+    group: "enforcement",
+    label: "Per-category actions & AbuseIPDB",
+    type: "category-actions",
+    default: "{}",
+    help: "JSON map of detection category overrides ({ action: default|ban|strike_ban|block|monitor|ignore, reportAbuseIpdb: boolean }).",
+  },
+  {
+    key: "BADEGG_ABUSEIPDB_ENABLED",
+    group: "enforcement",
+    label: "AbuseIPDB auto-reporting",
+    type: "toggle",
+    default: "0",
+    help: "When enabled, the central BadEgg Worker reports blocked public IPs for enabled categories to AbuseIPDB v2.",
+  },
+  {
+    key: "BADEGG_ABUSEIPDB_COOLDOWN_S",
+    group: "limits",
+    label: "AbuseIPDB per-IP cooldown",
+    type: "number",
+    default: "3600",
+    min: 900,
+    max: 604_800,
+    step: 300,
+    unit: "seconds",
+    help: "Minimum seconds before reporting the same IP address to AbuseIPDB again (minimum 900s = 15 minutes).",
+  },
 ];
 
 /** key -> schema entry. */
@@ -411,6 +497,56 @@ export function canonicalProtectionPath(value) {
  * is not a number at all, or a select value that is not offered, is an error.
  */
 export function normalizeConfigValue(field, raw) {
+  if (field.type === "category-actions") {
+    let parsed;
+    try {
+      parsed = typeof raw === "object" && raw !== null ? raw : JSON.parse(String(raw ?? "{}"));
+    } catch {
+      return { error: "Category actions must be valid JSON." };
+    }
+    if (!parsed || typeof parsed !== "object" || Array.isArray(parsed)) {
+      return { error: "Category actions must be a JSON object keyed by category name." };
+    }
+    const clean = {};
+    for (const key of Object.keys(parsed).sort()) {
+      const meta = CONFIGURABLE_CATEGORY_BY_ID.get(key);
+      if (!meta) {
+        return { error: `Unknown detection category "${key}".` };
+      }
+      const entry = parsed[key];
+      let action = "default";
+      let reportAbuseIpdb = meta.defaultAbuseIpdb;
+      if (typeof entry === "string") {
+        action = entry.trim().toLowerCase();
+      } else if (entry && typeof entry === "object" && !Array.isArray(entry)) {
+        if (entry.action !== undefined) {
+          action = String(entry.action || "").trim().toLowerCase();
+        }
+        const rawAbuseFlag = entry.reportAbuseIpdb !== undefined ? entry.reportAbuseIpdb : entry.abuseipdb;
+        if (rawAbuseFlag !== undefined) {
+          if (typeof rawAbuseFlag !== "boolean") {
+            return { error: `Category "${key}" reportAbuseIpdb must be true or false.` };
+          }
+          reportAbuseIpdb = rawAbuseFlag;
+        }
+      } else {
+        return { error: `Category "${key}" must be an action string or { action, reportAbuseIpdb } object.` };
+      }
+      if (!VALID_CATEGORY_ACTIONS.has(action)) {
+        return {
+          error: `Category "${key}" action must be one of: ${[...VALID_CATEGORY_ACTIONS].join(", ")}.`,
+        };
+      }
+      if (key === "rate_limit" && action !== "default" && action !== "ban") {
+        return { error: `Category "rate_limit" only supports default/ban action plus reportAbuseIpdb.` };
+      }
+      if (action !== "default" || reportAbuseIpdb !== meta.defaultAbuseIpdb) {
+        clean[key] = { action, reportAbuseIpdb };
+      }
+    }
+    return { value: JSON.stringify(clean) };
+  }
+
   if (field.type === "path-rules") {
     let rules;try { rules=JSON.parse(String(raw ?? "[]")); } catch { return {error:"Path rules must be valid JSON."}; }
     if (!Array.isArray(rules) || rules.length > 200) return {error:"Expected at most 200 path rules."};
@@ -527,6 +663,52 @@ export function sanitizeConfigOverrides(input) {
  *   which win over the environment. Only keys that passed `sanitizeConfigOverrides`
  *   should be passed here.
  */
+export function resolveCategoryActions(raw = "{}") {
+  const field = CONFIG_BY_KEY.get("BADEGG_CATEGORY_ACTIONS");
+  const normalized = normalizeConfigValue(field, raw ?? "{}");
+  const overrides = normalized.error ? {} : JSON.parse(normalized.value);
+  const resolved = {};
+  for (const meta of CONFIGURABLE_CATEGORIES) {
+    const ov = overrides[meta.id];
+    const configuredAction = ov?.action || "default";
+    const effectiveAction = configuredAction === "default" ? meta.defaultAction : configuredAction;
+    const reportAbuseIpdb =
+      typeof ov?.reportAbuseIpdb === "boolean" ? ov.reportAbuseIpdb : meta.defaultAbuseIpdb;
+    resolved[meta.id] = {
+      action: configuredAction,
+      effectiveAction,
+      reportAbuseIpdb,
+      abuseCategories: [...meta.abuseCategories],
+    };
+  }
+  return resolved;
+}
+
+export function effectiveCategoryAction(category, config = null) {
+  const entry = config?.categoryActions?.[category];
+  if (entry?.effectiveAction) return entry.effectiveAction;
+  const meta = CONFIGURABLE_CATEGORY_BY_ID.get(category);
+  return meta ? meta.defaultAction : "ban";
+}
+
+export function shouldReportCategoryToAbuseIpdb(category, config = null) {
+  const entry = config?.categoryActions?.[category];
+  if (typeof entry?.reportAbuseIpdb === "boolean") return entry.reportAbuseIpdb;
+  const meta = CONFIGURABLE_CATEGORY_BY_ID.get(category);
+  return meta ? meta.defaultAbuseIpdb : false;
+}
+
+export function abuseIpdbCategoriesFor(categories = []) {
+  const ids = new Set();
+  for (const cat of categories) {
+    const meta = CONFIGURABLE_CATEGORY_BY_ID.get(cat);
+    if (meta) {
+      for (const id of meta.abuseCategories) ids.add(id);
+    }
+  }
+  return [...ids].sort((a, b) => a - b);
+}
+
 export function resolveConfig(env = {}, overrides = null) {
   const source = overrides && typeof overrides === "object" ? { ...env, ...overrides } : env || {};
   const rawRisk = String(source?.BADEGG_RISK_MODE || "minimize_false_bans").trim();
@@ -606,6 +788,11 @@ export function resolveConfig(env = {}, overrides = null) {
     // Raw, lowercased IP/CIDR entries. Matching happens in the gateway, which
     // already owns the IPv4/IPv6 parsers.
     banAlways,
+    categoryActions: resolveCategoryActions(source?.BADEGG_CATEGORY_ACTIONS ?? "{}"),
+    abuseIpdbEnabled: BOOLEAN_TRUE.has(
+      String(source?.BADEGG_ABUSEIPDB_ENABLED || "0").trim().toLowerCase()
+    ),
+    abuseIpdbCooldownSeconds: intOr(source?.BADEGG_ABUSEIPDB_COOLDOWN_S, 3600, 900, 604_800),
   };
 }
 

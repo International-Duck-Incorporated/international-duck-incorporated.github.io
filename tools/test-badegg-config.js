@@ -608,3 +608,28 @@ test("a finite ban still expires on schedule", async () => {
   assert.ok(record.expiresAtMs > Date.now());
   assert.ok(await getActiveTemporaryBan("203.0.113.70", env));
 });
+
+test("category actions and AbuseIPDB settings validate and canonicalise", () => {
+  const clean = sanitizeConfigOverrides({
+    BADEGG_CATEGORY_ACTIONS: JSON.stringify({
+      sql_injection: { action: "strike_ban", reportAbuseIpdb: true },
+      recon_path: "block",
+    }),
+    BADEGG_ABUSEIPDB_ENABLED: "true",
+    BADEGG_ABUSEIPDB_COOLDOWN_S: "100", // clamps to 900s minimum
+  });
+  assert.equal(clean.errors.length, 0);
+  assert.equal(clean.values.BADEGG_ABUSEIPDB_ENABLED, "1");
+  assert.equal(clean.values.BADEGG_ABUSEIPDB_COOLDOWN_S, "900");
+  const resolved = resolveConfig({}, clean.values);
+  assert.equal(resolved.abuseIpdbEnabled, true);
+  assert.equal(resolved.abuseIpdbCooldownSeconds, 900);
+  assert.equal(resolved.categoryActions.sql_injection.effectiveAction, "strike_ban");
+  assert.equal(resolved.categoryActions.recon_path.effectiveAction, "block");
+
+  const bad = sanitizeConfigOverrides({
+    BADEGG_CATEGORY_ACTIONS: JSON.stringify({ unknown_cat: "ban" }),
+  });
+  assert.equal(bad.errors.length, 1);
+  assert.equal(bad.errors[0].key, "BADEGG_CATEGORY_ACTIONS");
+});
