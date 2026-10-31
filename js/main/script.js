@@ -9,6 +9,9 @@ const isShadowbannedLogin = (login) => SHADOWBANNED_USERS.has(normalizeLogin(log
 const isGithubBannedLogin = (login) => GITHUB_BANNED_USERS.has(normalizeLogin(login));
 const GITLAB = "https://gitlab.com";
 const GITLAB_API = `${GITLAB}/api/v4`;
+const GITHUB_API = "https://api.github.com";
+const GH_ORG_PATH = "International-Duck-Incorporated";
+const GH_ORG_API = `${GITHUB_API}/orgs/${GH_ORG_PATH}`;
 const GL_GROUP_PATH = "international-duck-incorporated";
 const GL_GROUP = `${GITLAB}/groups/${GL_GROUP_PATH}`;
 const GL_GROUP_API = `${GITLAB_API}/groups/${GL_GROUP_PATH}`;
@@ -274,10 +277,26 @@ async function syncOrganization() {
   });
   setText("[data-org-name]", group.name || "International Duck Incorporated");
   setText("[data-org-repos]", projects.length);
-  setText(
-    "[data-org-stars]",
-    projects.reduce((total, project) => total + (project.star_count || 0), 0)
-  );
+
+  // Repository counts stay split by host; the stars tile shows their sum.
+  const gitlabStars = projects.reduce((total, project) => total + (project.star_count || 0), 0);
+  const githubRepos = await getJSON(
+    `${GH_ORG_API}/repos?per_page=100&type=public`,
+    "application/json"
+  ).catch(() => null);
+  if (Array.isArray(githubRepos)) {
+    const githubStars = githubRepos.reduce(
+      (total, repo) => total + (repo.stargazers_count || 0),
+      0
+    );
+    setText("[data-org-repos-github]", githubRepos.length);
+    setText("[data-org-stars]", gitlabStars + githubStars);
+    const starsTile = $("[data-org-stars-tile]");
+    if (starsTile) {
+      starsTile.title = `Combined GitLab and GitHub stars: ${gitlabStars} on GitLab, ${githubStars} on GitHub`;
+      starsTile.setAttribute("aria-label", starsTile.title);
+    }
+  }
   if (subgroups && subgroups.length) setText("[data-org-subgroups-count]", subgroups.length);
 }
 

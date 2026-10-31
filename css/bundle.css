@@ -530,6 +530,18 @@ svg {
 .profile-stats b {
   font-size: 0.9rem;
 }
+.profile-stats b.stat-platforms {
+  color: #88918b;
+  font-size: 0.63rem;
+  font-weight: 600;
+  line-height: 1.5;
+}
+.profile-stats b.stat-platforms span {
+  color: #d9dedb;
+  font-size: inherit;
+  font-variant-numeric: tabular-nums;
+  font-weight: 700;
+}
 .profile-foot {
   display: flex;
   min-height: 48px;

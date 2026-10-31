@@ -38,6 +38,8 @@ CURSEFORGE_URL = (
 )
 CURSEFORGE_NAME = "Beacon QoL"
 RELEASES_URL = "https://gitlab.com/international-duck-incorporated/Beacon/-/releases"
+REPOSITORY_URL = "https://gitlab.com/international-duck-incorporated/Beacon"
+GITHUB_REPOSITORY_URL = "https://github.com/International-Duck-Incorporated/Beacon"
 DOWNLOAD_URL = CURSEFORGE_URL
 
 CATEGORY_BLURB = {
@@ -130,7 +132,7 @@ def main() -> int:
       <section class="directory-foot glass-card reveal">
         <h2>Where this list comes from</h2>
         <p>{verification}</p>
-        <p>Every Download link on this page goes to <b><a href="{html.escape(CURSEFORGE_URL, quote=True)}" target="_blank" rel="noreferrer">{CURSEFORGE_NAME} on CurseForge</a></b> (all release and alpha builds). Release notes and tagged source history live on <a href="{html.escape(RELEASES_URL, quote=True)}" target="_blank" rel="noreferrer">GitLab</a>, and the <a href="https://gitlab.com/international-duck-incorporated/Beacon" target="_blank" rel="noreferrer">source repository</a> is public.</p>
+        <p>Every Download link on this page goes to <b><a href="{html.escape(CURSEFORGE_URL, quote=True)}" target="_blank" rel="noreferrer">{CURSEFORGE_NAME} on CurseForge</a></b> (all release and alpha builds). Release notes and tagged source history live on <a href="{html.escape(RELEASES_URL, quote=True)}" target="_blank" rel="noreferrer">GitLab</a>, and the <a href="{html.escape(REPOSITORY_URL, quote=True)}" target="_blank" rel="noreferrer">source repository</a> is public. The same tree is mirrored on <a href="{html.escape(GITHUB_REPOSITORY_URL, quote=True)}" target="_blank" rel="noreferrer">GitHub</a>.</p>
         <p>Every module heading is linkable - for example <code>/projects/beacon/modules#{modules[0]["id"]}</code> - and each card links to that module's source file.</p>
       </section>
     </div>

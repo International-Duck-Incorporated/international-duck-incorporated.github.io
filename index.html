@@ -125,8 +125,8 @@
       content="Minecraft mods, security tools and autonomous AI projects on GitLab."
     />
     <link rel="icon" href="/assets/org-avatar.png?v=f3debf20" type="image/png" />
-    <link rel="stylesheet" href="/css/bundle.css?v=002b9379" />
-    <script src="/js/main/script.js?v=a5ef0121" defer></script>
+    <link rel="stylesheet" href="/css/bundle.css?v=f7a1d6ac" />
+    <script src="/js/main/script.js?v=d6160967" defer></script>
     <script src="/js/main/pixel-canvas.js?v=1154b86f" defer></script>
     <script src="/js/effects/block-field.js?v=fcbff943" defer></script>
     <script src="/js/pages/easteregg.js?v=c9c8186f" defer></script>
@@ -369,7 +369,7 @@
         <div class="shell">
           <div class="below-head">
             <h2>The organization</h2>
-            <p>live from the GitLab API</p>
+            <p>live from the GitLab + GitHub APIs</p>
           </div>
           <aside class="org-profile glass-card reveal" aria-label="Live organization profile">
             <div class="profile-topline">
@@ -386,7 +386,7 @@
                 decoding="async"
               />
               <div>
-                <small>gitlab.com</small>
+                <small>gitlab.com + github.com</small>
                 <h2 data-org-name>International Duck Incorporated</h2>
                 <a
                   href="https://gitlab.com/international-duck-incorporated"
@@ -398,14 +398,25 @@
             </div>
             <div class="profile-stats">
               <div>
-                <svg><use href="#i-repo" /></svg><span>Repositories</span><b data-org-repos>11</b>
+                <svg><use href="#i-repo" /></svg><span>Repositories</span>
+                <b class="stat-platforms"
+                  ><span data-org-repos>11</span> GitLab<br /><span data-org-repos-github
+                    >8</span
+                  >
+                  GitHub</b
+                >
               </div>
               <div>
                 <svg><use href="#i-users" /></svg><span>Members</span
                 ><b data-org-members-count>6</b>
               </div>
-              <div>
-                <svg><use href="#i-star" /></svg><span>Stars</span><b data-org-stars>0</b>
+              <div
+                data-org-stars-tile
+                role="group"
+                aria-label="Combined GitLab and GitHub stars: 37 on GitLab, 3 on GitHub"
+                title="Combined GitLab and GitHub stars: 37 on GitLab, 3 on GitHub"
+              >
+                <svg><use href="#i-star" /></svg><span>Stars</span><b data-org-stars>40</b>
               </div>
             </div>
           </aside>
@@ -414,7 +425,13 @@
             <div class="glass-card">
               <span class="metric-icon blue"
                 ><svg><use href="#i-repo" /></svg></span
-              ><span><small>PUBLIC REPOSITORIES</small><b data-org-repos>11</b></span>
+              ><span
+                ><small>PUBLIC REPOSITORIES</small
+                ><b
+                  ><span data-org-repos>11</span> GitLab ·
+                  <span data-org-repos-github>8</span> GitHub</b
+                ></span
+              >
             </div>
             <div class="glass-card">
               <span class="metric-icon violet"
@@ -424,7 +441,7 @@
             <div class="glass-card">
               <span class="metric-icon green"
                 ><svg><use href="#i-pulse" /></svg></span
-              ><span><small>DATA SOURCE</small><b>GitLab API</b></span>
+              ><span><small>DATA SOURCE</small><b>GitLab + GitHub API</b></span>
             </div>
           </section>
 
