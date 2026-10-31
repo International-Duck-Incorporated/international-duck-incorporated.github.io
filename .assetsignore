@@ -22,3 +22,18 @@ patch_final_verified.txt
 *.sql
 *.sql.gz
 *.bak
+
+
+# Development files are Worker inputs, not public website assets.
+.github/
+.gitlab-ci.yml
+.editorconfig
+.prettierignore
+.prettierrc.json
+wrangler.jsonc
+badegg-config.js
+tools/
+__pycache__/
+*.pyc
+.gitignore
+pyproject.toml
